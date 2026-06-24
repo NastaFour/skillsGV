@@ -1,0 +1,162 @@
+# Tier 1 instructions for: "prisma migration"
+# Primary: prisma-orm | Confidence: 1
+# Selected (3): prisma-orm, api-response-normalizer, payments
+
+
+<!-- BEGIN prisma-orm -->
+
+---
+name: prisma-orm
+description: Database access management using Prisma ORM. Covers schema design, type mapping, custom query safety, migrations, and relationship enforcement. Use when creating or modifying a Prisma schema, running migrations, or writing queries.
+license: MIT
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+allowed-tools: Bash(node:*) Read
+metadata:
+  trigger: ["prisma", "ORM", "schema.prisma", "migraciones", "seed"]
+  scope: [global, project]
+  version: "1.0.0"
+---
+
+# 💎 Prisma ORM Integration (v5+ Standards)
+
+Use this skill when designing `schema.prisma`, running migrations, or writing prisma client queries.
+
+## 🚨 Implementation Standards
+
+1. **Schema Design**:
+   - Model all relations explicitly using Prisma `@relation` tags.
+   - Enforce database-level defaults (`autoincrement()`, `dbgenerated("gen_random_uuid()")`).
+   - Map roles and status flags using Prisma `enum`.
+
+2. **Audit Raw Queries**:
+   - The use of dynamic raw queries (`prisma.$queryRawUnsafe`) is strictly prohibited.
+   - If raw SQL is necessary for performance (e.g. spatial queries for delivery radius), use `prisma.$queryRaw` with template placeholders to ensure prepared statements are generated automatically:
+     ```typescript
+     // Safe prepared raw query
+     const products = await prisma.$queryRaw`SELECT * FROM "Product" WHERE category = ${category}`;
+     ```
+
+3. **Safe Migrations**:
+   - Never edit generated SQL migration files manually unless performing advanced table splits.
+   - Apply migrations in production using `prisma migrate deploy`. Never run `prisma migrate dev` on a production database.
+
+## 🛒 [APP] Prisma Model
+
+El schema Prisma completo está en [`references/schema-template.md`](references/schema-template.md). Cárgalo solo cuando necesites el modelo de datos completo.
+
+## 🔍 Performance Rules
+- Avoid fetching entire tables when only checking IDs. Use `select` to filter properties (`select: { id: true }`).
+- Limit relation loads to prevent N+1 queries. Use `include` only for directly required elements.
+
+
+<!-- END prisma-orm -->
+
+
+<!-- BEGIN api-response-normalizer -->
+
+---
+name: api-response-normalizer
+description: Patterns to unify API response shapes across different endpoints (raw SQL vs Prisma, nested vs flat IDs). Defines the { data, meta, error } envelope convention, ID consistency rules, and helper function patterns for accessing fields that may be nested or flat. Use when designing endpoints, debugging "barber not found" errors, or fixing data shape mismatches between frontend and backend.
+license: MIT
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
+metadata:
+  trigger: ["data shape mismatch", "barber not found", "id mismatch", "response envelope", "api normalization", "barber.profile", "object object", "data shape", "response shape", "ID consistency"]
+  scope: [global, project]
+  version: "1.0.0"
+allowed-tools: Bash(node:*) Read
+---
+
+# 📐 API Response Normalizer
+
+Unifies data shapes across API endpoints. Prevents bugs where the frontend accesses `barber.profile?.rating` but the API returns a flat UserProfile with `user` nested, or where `barber.id` (UserProfile ID) is sent but the backend filters by `userId` (User ID).
+
+## 📋 When to Use
+
+- Use when designing a new endpoint that returns entity data
+- Use when frontend shows "barber not found" after clicking a list item
+- Use when data appears but fields are empty/undefined (shape mismatch)
+- Use when images show `[object Object]` (string[] vs object[] mismatch)
+- Do NOT use for auth token handling (use `auth-flow-audit`)
+
+## 🚦 Hard Rules
+
+- **Always** wrap responses in `{ data: T, meta?: {...}, error?: {...} }` envelope
+- **Always** make endpoint `/:id` filter by that exact ID field, not a related field
+- **Always** use helper functions for fields that may be nested or flat
+- **Never** return raw Prisma objects without shaping (relations cause surprises)
+- **Never** assume a field is a scalar when Prisma returns a relation object
+
+## 🛠️ Workflow
+
+1. Consult the envelope convention: [envelope-convention.md](references/envelope-convention.md)
+2. Run the ID consistency checker:
+   ```bash
+   node ./.opencode/skills/api-response-normalizer/scripts/check-id-consistency.mjs
+   ```
+3. Fix any ID mismatch (e.g., `req.params.id` used in `where: { userId: id }`)
+4. Apply helper functions for nested/flat field access
+
+## 📚 References
+
+- [Envelope Convention](references/envelope-convention.md) — response shape + ID rules + helpers
+- [`prisma-frontend-types`](../prisma-frontend-types/SKILL.md) — Prisma model → TS type mapping
+- [`api-design`](../api-design/SKILL.md) — REST URL conventions
+- [`frontend-debugging-protocol`](../../02-dev-roles/frontend-debugging-protocol/SKILL.md) — data shape diagnosis
+
+
+<!-- END api-response-normalizer -->
+
+
+<!-- BEGIN payments -->
+
+---
+name: payments
+description: Checkout and payment flows for the Venezuela ecosystem in [APP]. Covers BCV USD/VES conversion, Pago Móvil (C2P or manual reference), Cashea BNPL, and ACID Prisma transactions. Use when implementing checkout, Pago Móvil, Cashea, or Venezuelan payment integrations. Do not use for international gateways (Stripe, PayPal).
+license: MIT
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+allowed-tools: Bash(node:*) Read
+metadata:
+  trigger: ["pagos", "BCV", "pago móvil", "cashea", "checkout", "Venezuela"]
+  scope: [global, project]
+  version: "1.0.0"
+---
+
+# 🇻🇪 Pagos, Checkout y Multi-Moneda
+
+Pipeline A del [[APP] Workflow](../../01-planning-process/application-workflow/SKILL.md). Implementa creación de órdenes, procesamiento de pagos venezolanos, e integraciones financieras.
+
+---
+
+## 📂 Referencias (cargar solo cuando se necesiten)
+
+| Archivo | Contenido | Cuándo cargar |
+|---|---|---|
+| `references/bcv-integration.md` | Modelo Prisma multi-moneda + BCVRateService con caché | Al diseñar el schema de órdenes o integrar tasa BCV |
+| `references/pago-movil-flows.md` | Checkout ACID transaction + Pago Móvil Manual + C2P | Al implementar checkout o integrar Pago Móvil |
+| `references/cashea-bnpl.md` | Flujo Cashea BNPL + webhook criptográfico | Al integrar Cashea como método de pago |
+
+---
+
+## 🔒 Reglas de Negocio
+
+- **Efectivo en Divisas**: Delivery cobra en destino, marca `PAID`.
+- **Detección de Fraude**: Referencia duplicada en 30 días → banner rojo `[🔴 POSIBLE DUPLICADO]`.
+- **Devoluciones**: Cashea → API de ajuste de cuotas. Pago Móvil → transferencia reversa o Nota de Crédito.
+
+## 🧪 Checkpoints de Pruebas
+
+- [ ] BCV: recuperación de tasa + fallback ante caída del servidor externo
+- [ ] C2P: rollback de Prisma si OTP es rechazado por el banco
+- [ ] Cashea Webhook: firma HMAC-SHA256 + actualización atómica de orden
+- [ ] Prevención de Fraude: referencia duplicada dispara bandera roja
+
+## 🔗 Skills relacionados
+
+- `../postgresql/SKILL.md` — ACID transactions y integridad referencial
+- `../prisma-orm/SKILL.md` — schema y migraciones
+- `../socketio/SKILL.md` — notificaciones de pago confirmado
+- `../../05-frontend/maps-gps/SKILL.md` — tracking del delivery que cobra en destino
+- `../../01-planning-process/application-workflow/SKILL.md` — Pipeline A completo
+
+
+<!-- END payments -->
