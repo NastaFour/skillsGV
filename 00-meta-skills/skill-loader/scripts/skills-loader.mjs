@@ -3,7 +3,7 @@
  * skills-loader.mjs — Tier 0/1 enforcement for the skills catalog.
  *
  * Caches skill frontmatter with mtime in ~/.skill-router-cache.json.
- * Emits tier0-context.json (12 always-on skills, ~2K tokens) on first run
+ * Emits tier0-context.json (14 always-on skills, ~2K tokens) on first run
  * or when any Tier 0 source mtime changes.
  * Per-turn, invokes skill-router internally and emits tier1-instructions.txt
  * with ONLY the bodies of skills the router selected via tier1toLoad[].
