@@ -33,10 +33,10 @@ Chain strategy: pending
 
 ## Fase 2: Núcleo del harness (WU2)
 
-- [ ] 2.1 Crear `_shared/sdd-phase-common.md`: carga de skills, retrieval `mem_search`→`mem_get_observation`, persistencia por modo (engram/openspec/hybrid/none, topic keys `sdd/{change}/{artifact}`, `capture_prompt: false`), envelope de 6 campos, guard de 400 líneas (artifact-store-abstraction)
-- [ ] 2.2 Crear `00-meta-skills/sdd-orchestrator/SKILL.md`: orquestador delgado (rutea, no ejecuta), DAG proposal→specs→tasks→apply→verify→archive (design ramifica de proposal), modos auto/interactive con gatekeeper, dedup, executor-first para Antigravity (harness-orchestration)
-- [ ] 2.3 Crear `00-meta-skills/sdd-{init,explore,propose,spec,design}/SKILL.md`: vendored MIT con header de atribución, frontmatter agentskills.io, contrato de resultado; dependencia insatisfecha → `status: blocked` sin avanzar (harness-orchestration)
-- [ ] 2.4 `harness-map.md`: documentar punto de inserción RDD post-verify pre-archive + mapeo de lentes code-reviewer/judgment-day, sin mecanismo (rdd-extension-point)
+- [x] 2.1 Crear `_shared/sdd-phase-common.md`: carga de skills, retrieval `mem_search`→`mem_get_observation`, persistencia por modo (engram/openspec/hybrid/none, topic keys `sdd/{change}/{artifact}`, `capture_prompt: false`), envelope de 6 campos, guard de 400 líneas (artifact-store-abstraction)
+- [x] 2.2 Crear `00-meta-skills/sdd-orchestrator/SKILL.md`: orquestador delgado (rutea, no ejecuta), DAG proposal→specs→tasks→apply→verify→archive (design ramifica de proposal), modos auto/interactive con gatekeeper, dedup, executor-first para Antigravity (harness-orchestration)
+- [x] 2.3 Crear `00-meta-skills/sdd-{init,explore,propose,spec,design}/SKILL.md`: vendored MIT con header de atribución, frontmatter agentskills.io, contrato de resultado; dependencia insatisfecha → `status: blocked` sin avanzar (harness-orchestration)
+- [x] 2.4 `harness-map.md`: documentar punto de inserción RDD post-verify pre-archive + mapeo de lentes code-reviewer/judgment-day, sin mecanismo (rdd-extension-point)
 
 ## Fase 3: Fases de cierre (WU3)
 

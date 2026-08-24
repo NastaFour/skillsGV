@@ -59,6 +59,16 @@ This document maps the **51 skills** in this catalog to the **20 Agent Harnesses
 2. **#4 Execution Mode** — Configurable en `AGENTS.md` pero sin skill dedicada. Pendiente.
 3. **03-ai-ml y 04-05-frontend** — No mapeadas explícitamente. Las skills existen pero no están referenciadas a un harness concreto.
 
+## 🔌 Punto de extensión RDD (documentación, Slice 1)
+
+> Documentación únicamente — el mecanismo RDD NO se implementa en Slice 1: sin congelamiento de candidato, sin recibo/receipt y sin validación en gates de entrega.
+
+- **Inserción**: entre `sdd-verify` y `sdd-archive` en el pipeline SDD del harness:
+  `sdd-verify → gate de review (extensión RDD) → sdd-archive`.
+- **Propósito**: dejar declarado el punto donde, en un slice futuro, podrá insertarse una revisión acotada con recibo (receipt) y validación en gates de entrega (pre-commit/pre-push/pre-pr/release), sin activarla hoy.
+- **Mapeo de lentes existentes (informativo)**: los lentes de review de gentle-ai se corresponden con skills ya presentes en el catálogo — `02-dev-roles/code-reviewer` (lentes 4R: readability, reliability, resilience, risk) y `02-dev-roles/judgment-day` (doble juez adversarial). El mapeo es informativo: no activa ningún mecanismo RDD.
+- **Regla Slice 1**: el pipeline continúa de `sdd-verify` a `sdd-archive` sin gate de review; no se ejecuta ningún mecanismo de review RDD.
+
 ## 📚 Referencias externas
 
 - [Gentleman Programming: 20 Agent Harnesses](https://www.youtube.com/@GentlemanProgramming) (video original)
