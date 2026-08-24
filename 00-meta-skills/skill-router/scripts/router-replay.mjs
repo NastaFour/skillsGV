@@ -24,12 +24,15 @@
  *     malformedLines: [{line, reason}],
  *     consistency: {checked, groupsInMatrix, groupsCovered,
  *                   missingCanonicalCoverage[], fixturesMigrated,
- *                   fixturesMissingFromCorpus[]}
+ *                   fixturesMissingFromCorpus[], error?}
  *   }
  *
  * Exit codes: 0 = all cases match and corpus is clean,
- *             1 = discrepancies, malformed lines or consistency errors,
- *             2 = unreadable inputs / usage error.
+ *             1 = discrepancies, malformed lines, consistency errors, or
+ *                 reference inputs (overlap-matrix.json /
+ *                 overlap-smoke-tests.json) that are missing or unparseable
+ *                 while --no-consistency was not passed (FAIL CLOSED),
+ *             2 = unreadable corpus / usage error.
  *
  * Usage:
  *   node router-replay.mjs [--corpus <path>] [--router <path>]
@@ -209,7 +212,11 @@ console.log(JSON.stringify(report, null, 2));
 const failed =
   discrepancies.length > 0 ||
   malformedLines.length > 0 ||
-  (report.consistency.checked &&
-    (report.consistency.missingCanonicalCoverage.length > 0 ||
-      report.consistency.fixturesMissingFromCorpus.length > 0));
+  (report.consistency.checked
+    ? report.consistency.missingCanonicalCoverage.length > 0 ||
+      report.consistency.fixturesMissingFromCorpus.length > 0
+    : consistency); // gate enabled but not checked: reference inputs missing/unparseable -> FAIL CLOSED
+if (consistency && !report.consistency.checked) {
+  console.error(`router-replay: consistency gate failed closed: ${report.consistency.error || "not checked"}`);
+}
 process.exit(failed ? 1 : 0);
