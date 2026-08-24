@@ -7,8 +7,12 @@
  *     snapshot.json  {version:1, change, contractHash, units:{[id]:{status,evidence}}, lastSeq}
  *     events.jsonl   append-only {seq,type,unitId,payload,prevHash}, one unit per event;
  *                    every committed line ends with "\n" (an unterminated tail = interrupted write)
- *     journal.lock   exclusive lock (open flag "wx") holding {pid, ts, host}; an orphan lock
- *                    older than the stale timeout is recovered
+ *     journal.lock   exclusive lock (open flag "wx") holding {pid, ts, host,
+ *                    token}; an orphan lock older than the stale timeout is
+ *                    recovered through an ATOMIC RENAME-STEAL re-verified
+ *                    against the recorded token, so two concurrent recoverers
+ *                    can never both take ownership (the loser observes ENOENT
+ *                    or a token mismatch and treats it as contention)
  *
  * Invariants (kit E3, Node-only, Windows-first, no Bash):
  *   - Append-only: historical events are never rewritten. Every open re-verifies the
@@ -41,7 +45,7 @@
  * Exit codes: 0 ok | 1 verify found issues | 2 usage/input error |
  *             3 lock busy with no wait budget left | 4 journal corruption
  */
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync,
   renameSync, statSync, truncateSync, unlinkSync, writeFileSync, writeSync,
@@ -124,6 +128,63 @@ function isStaleLock(lockPath, staleMs) {
   }
 }
 
+/** The unique token written inside the lock at creation, or null if unreadable. */
+function readLockToken(lockPath) {
+  try {
+    const parsed = JSON.parse(readFileSync(lockPath, "utf8"));
+    return typeof parsed.token === "string" ? parsed.token : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Recover an orphan lock without the classic TOCTOU race.
+ *
+ * Naive "check stale -> unlink" is not atomic: two concurrent recoverers can
+ * both pass the staleness check and each unlink the OTHER's freshly created
+ * lock, ending with double ownership. The recovery here is a two-step atomic
+ * steal:
+ *   1. rename(lockPath -> unique tmp): exactly one recoverer can move the
+ *      file; every loser gets ENOENT and restarts from scratch (contention).
+ *   2. re-read the moved bytes and require the SAME token we inspected before
+ *      the rename. A mismatch means the slot was replaced by a fresh writer
+ *      between our read and our rename — restore it when possible and back
+ *      off WITHOUT ever creating our own lock on top of a displaced one.
+ * An orphan whose content cannot be parsed (no verifiable token) is never
+ * blindly removed; it fails closed with exit 3 so a live writer's lock can
+ * never be mistaken for an orphan.
+ */
+function recoverOrphanLock(paths, staleMs) {
+  emit(`recovering orphan lock older than ${staleMs} ms: ${paths.lockPath}`);
+  const staleToken = readLockToken(paths.lockPath);
+  if (!staleToken) {
+    throw new JournalError(3, `orphan lock has no readable token; remove it manually after checking no writer is active: ${paths.lockPath}`);
+  }
+  const stealPath = `${paths.lockPath}.steal-${randomUUID()}`;
+  try {
+    renameSync(paths.lockPath, stealPath); // atomic possession; losers get ENOENT
+  } catch (err) {
+    if (err.code === "ENOENT" || err.code === "EPERM" || err.code === "EACCES") {
+      return false; // lost the race -> contention, re-evaluate from scratch
+    }
+    throw err;
+  }
+  if (readLockToken(stealPath) !== staleToken) {
+    // We displaced a lock that was NOT the stale one we inspected.
+    if (!existsSync(paths.lockPath)) {
+      try {
+        renameSync(stealPath, paths.lockPath); // put the fresh lock back
+      } catch {
+        /* slot got repopulated meanwhile; leave the tmp for inspection */
+      }
+    }
+    throw new JournalError(3, `lost orphan-lock recovery race at ${paths.lockPath} (use --wait <ms>)`);
+  }
+  unlinkSync(stealPath); // stale lock legitimately disposed of
+  return true;
+}
+
 function acquireLock(paths, { waitMs = 0, staleMs = DEFAULT_STALE_MS } = {}) {
   const deadline = Date.now() + Math.max(0, waitMs);
   for (;;) {
@@ -131,7 +192,7 @@ function acquireLock(paths, { waitMs = 0, staleMs = DEFAULT_STALE_MS } = {}) {
       // Exclusive creation ("wx"): the second concurrent writer gets EEXIST.
       const fd = openSync(paths.lockPath, "wx");
       try {
-        writeSync(fd, JSON.stringify({ pid: process.pid, ts: nowIso(), host: hostname() }));
+        writeSync(fd, JSON.stringify({ pid: process.pid, ts: nowIso(), host: hostname(), token: randomUUID() }));
         fsyncSync(fd);
       } finally {
         closeSync(fd);
@@ -140,8 +201,7 @@ function acquireLock(paths, { waitMs = 0, staleMs = DEFAULT_STALE_MS } = {}) {
     } catch (err) {
       if (err.code !== "EEXIST") throw err;
       if (isStaleLock(paths.lockPath, staleMs)) {
-        emit(`recovering orphan lock older than ${staleMs} ms: ${paths.lockPath}`);
-        unlinkSync(paths.lockPath);
+        recoverOrphanLock(paths, staleMs);
         continue;
       }
       if (Date.now() >= deadline) {
