@@ -92,7 +92,7 @@ Aditivo: se eliminan skills y archivos nuevos, se revierte el diff de índices. 
 ## Success Criteria
 
 - [ ] `validate-skills.mjs --strict` exit 0 tras slice-2.
-- [ ] Router: query "3d" → `three-js-web` primario (smoke).
+- [ ] Router: queries tipo "3d scene three.js" o "three.js webgl" resuelven `three-js-web` como primario (smoke). La query literal «3d» no es alcanzable por diseño: el router descarta tokens de menos de 4 caracteres (`MIN_TRIGGER_LENGTH = 4`).
 - [ ] Replay E2 corre sin llamadas a modelos y emite métricas.
 - [ ] Journal E3 recupera un write interrumpido sin pérdida.
 - [ ] `install-skills.mjs --dry-run` y uninstall solo-propios verificados.
