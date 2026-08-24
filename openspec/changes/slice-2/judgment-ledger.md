@@ -44,3 +44,16 @@ directly on `main` as atomic work units (one commit per ID).
 | `git status --porcelain` | clean |
 
 No review lifecycle actions were run beyond this ledger; nothing pushed.
+
+## Scoped re-judgment (final)
+
+- Judge B: clean (indings: []) — all 8 IDs verified fixed at HEAD, no fix-caused defects.
+- Judge A: 2 findings — (1) WARNING fix-caused, pply-journal.mjs:173-185: residual narrow race where a slow recoverer can rename away a live writer's fresh lock during the restore window (triple interleaving recoverer+acquirer; much narrower than the original TOCTOU, which the fix correctly closes for the two-recoverer case proven by tests); (2) SUGGESTION fix-caused, install-skills.mjs:457-462: discoverForeignFiles under-lists symlink/junction foreign entries (retained but not listed).
+- Disposition per protocol: single-judge WARNING/SUGGESTION are recorded as suspect/follow-up, not auto-fixed. No confirmed severe findings remain.
+
+## Terminal verdict
+
+- Rounds used: judgment 1 + correction 1 (8 fixes, commits 4fd6718..004809f) + scoped re-judgment.
+- Confirmed severe after re-judgment: none. Suspects: 1 WARNING (journal lock triple-interleaving window), 1 SUGGESTION (symlink listing). INFO follow-ups unchanged.
+- Independent gates at close: validate-skills --strict exit 0 (151 pass), worktree clean.
+- **JUDGMENT: APPROVED** — emitted by the orchestrator per the judgment-day protocol, 2026-08-24. Follow-ups recorded in this ledger and Engram.
