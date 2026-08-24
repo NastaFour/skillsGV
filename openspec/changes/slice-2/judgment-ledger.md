@@ -57,3 +57,28 @@ No review lifecycle actions were run beyond this ledger; nothing pushed.
 - Confirmed severe after re-judgment: none. Suspects: 1 WARNING (journal lock triple-interleaving window), 1 SUGGESTION (symlink listing). INFO follow-ups unchanged.
 - Independent gates at close: validate-skills --strict exit 0 (151 pass), worktree clean.
 - **JUDGMENT: APPROVED** — emitted by the orchestrator per the judgment-day protocol, 2026-08-24. Follow-ups recorded in this ledger and Engram.
+
+## Follow-ups (post-verdict mini-change)
+
+Maintainer-authorized mini-change executed after the APPROVED verdict (not a new
+judgment round). Three atomic work units on `main`, base `3b3a0db`.
+
+| ID | Fix commit (SHA) | Evidence |
+|---|---|---|
+| F1 | `7730b7a` | Residual single-owner violation closed: a token-mismatch (displaced LIVE lock) is now restored via a bounded exclusive-create retry (new exported `restoreDisplacedLock`, 3 × `openSync("wx")`, `POLL_MS` between attempts); if the slot stays occupied (EEXIST through all attempts) the recoverer fails closed with exit 3 (contention) and keeps the displaced copy on disk for inspection, instead of proceeding with two writers. New deterministic tests reproduce the triple interleaving without real concurrency: displaced live token at the steal-target path + third acquirer occupying lockPath → error code 3, occupying owner's lock bytes intact (single logical owner), steal copy retained; free-slot restore returns the displaced lock byte-identical. Journal suite: 5 pass / 0 fail. |
+| F2 | `537433c` | Foreign discovery no longer under-lists links: `walkFiles` emits symlink/junction entries marked (`symlink: true`) WITHOUT recursing into them (cycle safety); `discoverForeignFiles` lists them with a "(symlink)" marker; install paths filter them out so they are never dereferenced into owned copies; uninstall never deletes or follows them; `--uninstall` help text updated. Scratch proof on final code: planted junction listed as «linked-skill (symlink)» under the retained block together with a planted foreign SKILL.md, link and target preserved on disk, all 10 owned files removed. |
+| F3 | `e5a2377` | Success criterion #2 reworded to the achievable form: «queries tipo "3d scene three.js" / "three.js webgl" resuelven `three-js-web` como primario», adding the documented reason — the literal «3d» query is unreachable by design because the router discards tokens shorter than `MIN_TRIGGER_LENGTH = 4` (skill-router.mjs:81). Part (b) required NO diff: `animation-sources.md` already titles the entry «AniJS *(citada históricamente como «Animajs.css»)*» keeping the curated URL (anijs.github.io), author (Dariel Noel) and purpose, unchanged since creation commit `dc4d4b8`; repo-wide grep finds no remaining standalone «Animajs.css» title (only the historical-citation note and an apply-progress narrative record). |
+
+### Final verification suite (post-follow-ups)
+
+| Check | Result |
+|---|---|
+| `node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict` | exit 0 — 151 pass · 0 issues |
+| Journal suite (`node --test apply-journal.test.mjs`, incl. new contention tests) | 5 pass / 0 fail |
+| Replay ×2 (`router-replay.mjs`) | exit 0 both runs, stdout byte-identical (accuracy 1, 13 cases, consistency checked true) |
+| Uninstall foreign listing (temp dir, final code) | junction listed as `(symlink)` + foreign file under retained block; both preserved on disk; owned files removed |
+| `git status --porcelain` | clean |
+
+Rollback boundary: revert `7730b7a..e5a2377` (three commits) — no data migration,
+journal format untouched, manifest format untouched. No review lifecycle actions;
+nothing pushed.
