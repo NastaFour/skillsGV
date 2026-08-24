@@ -9,9 +9,16 @@
  *   node install-skills.mjs --symlink                                # Symlink instead of copy
  *   node install-skills.mjs --dry-run                                # Preview only
  *   node install-skills.mjs --only "04-backend,05-frontend"          # Filter by category
+ *   node install-skills.mjs [--target <path>] --uninstall            # Remove only manifest-owned files
+ *   node install-skills.mjs [--target <path>] --rollback             # Revert the last install generation
  *
  * Detects which agents are installed and creates the right folder structure for each.
  * Cross-platform: Windows uses junctions, macOS/Linux use symlinks.
+ *
+ * Ownership lifecycle: every install records what it created/overwrote in
+ * `<target>/.skills-install/manifest.json`. Uninstall and rollback only ever touch
+ * files whose current content still matches the manifest (user edits are retained),
+ * and never touch foreign files planted alongside installed skills.
  */
 
 import {
@@ -20,14 +27,18 @@ import {
   readdirSync,
   statSync,
   symlinkSync,
+  lstatSync,
   copyFileSync,
   readFileSync,
   cpSync,
   writeFileSync,
+  renameSync,
   rmSync,
+  rmdirSync,
 } from "node:fs";
 import { dirname, join, relative, resolve, sep, basename } from "node:path";
 import { homedir, platform } from "node:os";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,6 +52,8 @@ let useSymlink = false;
 let dryRun = false;
 let onlyCategories = null;
 let skipDetect = false;
+let doUninstall = false;
+let doRollback = false;
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -50,6 +63,8 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--dry-run") dryRun = true;
   else if (a === "--only") onlyCategories = args[++i].split(",").map((s) => s.trim());
   else if (a === "--all-tools") skipDetect = true;
+  else if (a === "--uninstall") doUninstall = true;
+  else if (a === "--rollback") doRollback = true;
   else if (a === "--help" || a === "-h") {
     printHelp();
     process.exit(0);
@@ -57,6 +72,11 @@ for (let i = 0; i < args.length; i++) {
     console.error(`Unknown argument: ${a}`);
     process.exit(2);
   }
+}
+
+if (doUninstall && doRollback) {
+  console.error("--uninstall and --rollback are mutually exclusive.");
+  process.exit(2);
 }
 
 const isWindows = platform() === "win32";
@@ -162,6 +182,10 @@ Options:
   --dry-run            Preview changes without writing
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
   --all-tools          Skip detection; install for all known tools
+  --uninstall          Remove only files recorded as owned in the manifest (foreign or
+                       user-edited files are retained and listed). Requires a manifest.
+  --rollback           Revert the last install generation (restores overwritten previous
+                       state, removes files that were new). Registered in manifest history.
   --help, -h           Show this help
 
 Examples:
@@ -218,6 +242,312 @@ function copyDirSync(src, dest) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Ownership lifecycle (manifest, dry-run plan, uninstall, rollback)
+// ---------------------------------------------------------------------------
+
+const LIFECYCLE_ROOT = target || homedir();
+const INSTALL_META_DIR = join(LIFECYCLE_ROOT, ".skills-install");
+const MANIFEST_PATH = join(INSTALL_META_DIR, "manifest.json");
+const BACKUPS_DIR = join(INSTALL_META_DIR, "backups");
+
+function sha256File(p) {
+  return createHash("sha256").update(readFileSync(p)).digest("hex");
+}
+
+function walkFiles(dir, rel = "") {
+  const out = [];
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const r = rel ? join(rel, e.name) : e.name;
+    if (e.isDirectory()) out.push(...walkFiles(join(dir, e.name), r));
+    else if (e.isFile()) out.push({ abs: join(dir, e.name), rel: r });
+  }
+  return out.sort((a, b) => (a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0));
+}
+
+function loadManifest() {
+  if (!existsSync(MANIFEST_PATH)) return null;
+  try {
+    return JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
+  } catch (err) {
+    console.error(`❌ Manifest at ${MANIFEST_PATH} is unreadable (${err.message}); refusing to act.`);
+    process.exit(1);
+  }
+}
+
+function saveManifest(mf) {
+  // Atomic replace: write sibling tmp then rename over the manifest.
+  const tmp = `${MANIFEST_PATH}.tmp-${process.pid}`;
+  mkdirSync(INSTALL_META_DIR, { recursive: true });
+  writeFileSync(tmp, JSON.stringify(mf, null, 2) + "\n", "utf8");
+  renameSync(tmp, MANIFEST_PATH);
+}
+
+function backupPrevFile(absDest, generation, idx) {
+  const dir = join(BACKUPS_DIR, `g${generation}`);
+  mkdirSync(dir, { recursive: true });
+  const name = `${idx}-${basename(absDest)}`;
+  const dest = join(dir, name);
+  copyFileSync(absDest, dest);
+  return relative(INSTALL_META_DIR, dest);
+}
+
+function emptyManifest(mode) {
+  return {
+    version: 1,
+    generation: 0,
+    ts: null,
+    tool: null,
+    mode,
+    entries: [],
+    previousGenerations: [],
+    history: [],
+  };
+}
+
+/**
+ * Copy one skill directory file-by-file, recording ownership entries.
+ * Never wholesale-deletes the destination: pre-existing foreign files are left
+ * untouched and never recorded as owned. Overwritten files get their previous
+ * content backed up so --rollback can restore it.
+ */
+function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc) {
+  const skillName = basename(srcSkillDir);
+  const dest = join(destSkillsDir, skillName);
+  if (dryRun) {
+    for (const f of walkFiles(srcSkillDir)) {
+      const d = join(dest, f.rel);
+      console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
+    }
+    return;
+  }
+  if (existsSync(dest)) {
+    const stat = lstatSync(dest);
+    if (stat.isSymbolicLink()) rmSync(dest, { force: true }); // swap old link; real dirs are copied over
+  }
+  const files = walkFiles(srcSkillDir);
+  const firstOwn = entriesAcc.length;
+  for (const f of files) {
+    const d = join(dest, f.rel);
+    mkdirSync(dirname(d), { recursive: true });
+    let prevState = "new";
+    let prevSha256;
+    let prevBackup;
+    if (existsSync(d)) {
+      prevState = "overwritten";
+      prevSha256 = sha256File(d);
+      prevBackup = backupPrevFile(d, generation, entriesAcc.length + 1);
+    }
+    copyFileSync(f.abs, d);
+    entriesAcc.push({
+      dest: d,
+      src: f.abs,
+      sha256: null, // hashed after post-copy fixups below
+      prevState,
+      ...(prevSha256 ? { prevSha256 } : {}),
+      ...(prevBackup ? { prevBackup } : {}),
+    });
+  }
+  fixSharedImports(dest);
+  fixCrossSkillRefs(dest);
+  for (let i = firstOwn; i < entriesAcc.length; i++) {
+    const e = entriesAcc[i];
+    if (existsSync(e.dest)) e.sha256 = sha256File(e.dest);
+  }
+  console.log(`  ✅ copied: ${skillName} (${files.length} files owned)`);
+}
+
+/** Record a completed run as a new generation in the manifest. */
+function commitGeneration(toolIds, mode, entries, nextGen) {
+  if (dryRun || entries.length === 0) return;
+  const mf = loadManifest() || emptyManifest(mode);
+  if (mf.generation > 0 && Array.isArray(mf.entries) && mf.entries.length > 0) {
+    mf.previousGenerations.push({
+      generation: mf.generation,
+      ts: mf.ts,
+      tool: mf.tool,
+      mode: mf.mode,
+      entries: mf.entries,
+    });
+  }
+  mf.generation = nextGen;
+  mf.ts = new Date().toISOString();
+  mf.tool = toolIds.join("+");
+  mf.mode = mode;
+  mf.entries = entries;
+  saveManifest(mf);
+  console.log(`\n🗂️  generation ${mf.generation} recorded in ${MANIFEST_PATH} (${entries.length} files owned)`);
+}
+
+/** All files ever owned, keyed by dest; latest record wins. */
+function collectOwned(mf) {
+  const byDest = new Map();
+  for (const gen of mf.previousGenerations || []) {
+    for (const e of gen.entries) byDest.set(e.dest, e);
+  }
+  for (const e of mf.entries || []) byDest.set(e.dest, e);
+  return [...byDest.values()];
+}
+
+function linkExists(p) {
+  try {
+    lstatSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function removeFileOwned(entry, stats, action) {
+  if (entry.kind === "symlink") {
+    if (!linkExists(entry.dest)) return;
+    rmSync(entry.dest, { force: true });
+    stats.removed++;
+    console.log(`  🗑️  ${action} symlink: ${entry.dest}`);
+    return;
+  }
+  if (!existsSync(entry.dest)) return;
+  if (sha256File(entry.dest) !== entry.sha256) {
+    stats.retained.push(entry.dest);
+    console.log(`  🔒 retained (edited since install): ${entry.dest}`);
+    return;
+  }
+  rmSync(entry.dest, { force: true });
+  stats.removed++;
+  console.log(`  🗑️  ${action}: ${entry.dest}`);
+}
+
+/** Remove directories that became empty under the skills roots we cleaned. */
+function pruneEmptyDirs(dirs) {
+  const sorted = [...new Set(dirs)].sort((a, b) => b.length - a.length); // deepest first
+  for (const d of sorted) {
+    try {
+      rmdirSync(d); // only succeeds when empty
+    } catch {}
+  }
+}
+
+function parentDirsOf(filePaths, stopAt) {
+  const dirs = [];
+  for (const p of filePaths) {
+    let d = dirname(p);
+    while (d.startsWith(stopAt) && d !== stopAt && d.length > stopAt.length) {
+      dirs.push(d);
+      d = dirname(d);
+    }
+  }
+  return dirs;
+}
+
+function cmdUninstall() {
+  const mf = loadManifest();
+  if (!mf) {
+    console.error(`❌ No manifest at ${MANIFEST_PATH}; nothing identifiable to uninstall. Aborting without deleting anything.`);
+    process.exit(1);
+  }
+  console.log("🧹 Uninstall (manifest-owned files only)\n");
+  const owned = collectOwned(mf);
+  const stats = { removed: 0, retained: [] };
+  if (dryRun) {
+    for (const e of owned) {
+      const gone = e.kind === "symlink" ? !linkExists(e.dest) : !existsSync(e.dest);
+      const keep = !gone && e.kind !== "symlink" && sha256File(e.dest) !== e.sha256;
+      console.log(`  [dry-run] ${gone ? "already absent" : keep ? "retain (edited)" : "delete"} ${e.dest}`);
+    }
+    console.log(`\n✨ Dry-run complete. No changes written.`);
+    return;
+  }
+  for (const e of owned) removeFileOwned(e, stats, "uninstalled");
+  pruneEmptyDirs(parentDirsOf(stats.removed ? owned.map((o) => o.dest) : [], LIFECYCLE_ROOT));
+  mf.history.push({
+    type: "uninstall",
+    ts: new Date().toISOString(),
+    removed: stats.removed,
+    retained: stats.retained.length,
+  });
+  saveManifest(mf);
+  if (stats.retained.length) {
+    console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length}):`);
+    for (const p of stats.retained) console.log(`   - ${p}`);
+  }
+  console.log(`\n✨ Uninstalled ${stats.removed} owned file(s)/link(s).`);
+}
+
+function cmdRollback() {
+  const mf = loadManifest();
+  if (!mf) {
+    console.error(`❌ No manifest at ${MANIFEST_PATH}; no generation to roll back. Aborting without deleting anything.`);
+    process.exit(1);
+  }
+  if (!mf.entries || mf.entries.length === 0) {
+    console.log("Nothing to roll back: no active generation in the manifest.");
+    return;
+  }
+  const rolledGeneration = mf.generation;
+  console.log(`⏪ Rollback of generation ${rolledGeneration}\n`);
+  const stats = { restored: 0, removed: 0, retained: [] };
+  for (const e of mf.entries) {
+    if (dryRun) {
+      console.log(`  [dry-run] ${e.prevState === "overwritten" ? "restore previous content of" : "delete"} ${e.dest}`);
+      continue;
+    }
+    if (e.kind === "symlink") {
+      if (existsSync(e.dest)) rmSync(e.dest, { force: true });
+      stats.removed++;
+      continue;
+    }
+    if (e.prevState === "new") {
+      removeFileOwned(e, stats, "rollback-removed");
+      continue;
+    }
+    // overwritten: restore previous content from backup when untouched.
+    if (!existsSync(e.dest)) continue;
+    if (sha256File(e.dest) !== e.sha256) {
+      stats.retained.push(e.dest);
+      console.log(`  🔒 retained (edited since install): ${e.dest}`);
+      continue;
+    }
+    const backupPath = join(INSTALL_META_DIR, e.prevBackup);
+    if (!existsSync(backupPath)) {
+      console.warn(`  ⚠️  backup missing, kept as-is: ${e.dest}`);
+      continue;
+    }
+    copyFileSync(backupPath, e.dest);
+    rmSync(backupPath, { force: true });
+    stats.restored++;
+    console.log(`  ♻️  restored previous content: ${e.dest}`);
+  }
+  if (dryRun) {
+    console.log(`\n✨ Dry-run complete. No changes written.`);
+    return;
+  }
+  mf.history.push({
+    type: "rollback",
+    ts: new Date().toISOString(),
+    generation: rolledGeneration,
+    restored: stats.restored,
+    removed: stats.removed,
+    retained: stats.retained.length,
+  });
+  const prev = (mf.previousGenerations || []).pop();
+  if (prev) {
+    mf.generation = prev.generation;
+    mf.ts = prev.ts;
+    mf.tool = prev.tool;
+    if (prev.mode) mf.mode = prev.mode; // restored generation keeps its own install mode
+    mf.entries = prev.entries;
+  } else {
+    mf.generation = 0;
+    mf.ts = null;
+    mf.tool = null;
+    mf.entries = [];
+  }
+  saveManifest(mf);
+  console.log(
+    `\n✨ Rollback done: ${stats.restored} restored, ${stats.removed} removed, ${stats.retained.length} retained. Manifest back to generation ${mf.generation}.`
+  );
+}
+
 function fixSharedImports(skillDestDir) {
   const scriptsDir = join(skillDestDir, "scripts");
   if (!existsSync(scriptsDir)) return;
@@ -256,52 +586,51 @@ function fixCrossSkillRefs(skillDestDir) {
   }
 }
 
-function installSkill(srcSkillDir, destSkillsDir) {
+function installSkill(srcSkillDir, destSkillsDir, generation, entriesAcc) {
   const skillName = basename(srcSkillDir);
   const dest = join(destSkillsDir, skillName);
-  if (dryRun) {
-    console.log(`  [dry-run] ${srcSkillDir} -> ${dest}`);
-    return;
-  }
-  if (existsSync(dest)) {
-    try {
-      const stat = statSync(dest);
-      if (stat.isSymbolicLink() || stat.isDirectory()) {
-        // Remove existing (symlink or directory) before installing
-        rmSync(dest, { recursive: true, force: true });
-      }
-    } catch {}
-  }
   if (useSymlink) {
+    if (dryRun) {
+      console.log(`  [dry-run] ${srcSkillDir} -> ${dest}`);
+      return;
+    }
+    let prevState = "new";
+    if (existsSync(dest)) {
+      const stat = lstatSync(dest);
+      if (stat.isSymbolicLink()) {
+        prevState = "overwritten";
+        rmSync(dest, { force: true });
+      } else {
+        // Never wipe a real directory just to place a link: owned files must be
+        // uninstalled through the manifest first.
+        console.warn(`  ⚠️  ${skillName}: destination exists as a real directory; skipped. Run --uninstall first.`);
+        return;
+      }
+    }
     try {
       symlinkSync(srcSkillDir, dest, isWindows ? "junction" : "dir");
+      entriesAcc.push({ dest, src: srcSkillDir, sha256: null, kind: "symlink", prevState });
       console.log(`  ✅ symlink: ${skillName}`);
     } catch (err) {
       console.warn(`  ⚠️  symlink failed for ${skillName}, falling back to copy: ${err.message}`);
-      copyDirSync(srcSkillDir, dest);
-      fixSharedImports(dest);
-      fixCrossSkillRefs(dest);
-      console.log(`  ✅ copied: ${skillName}`);
+      installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc);
+      return;
     }
   } else {
-    copyDirSync(srcSkillDir, dest);
-    fixSharedImports(dest);
-    fixCrossSkillRefs(dest);
-    console.log(`  ✅ copied: ${skillName}`);
-    // Surface non-standard files copied (LICENSE.txt, references/, assets/)
-    // so a human can confirm they survive the install. Silent otherwise.
-    const hasLicense = existsSync(join(srcSkillDir, "LICENSE.txt"));
-    const hasRefs = existsSync(join(srcSkillDir, "references"));
-    const hasAssets = existsSync(join(srcSkillDir, "assets"));
-    const extras = [];
-    if (hasLicense) extras.push("LICENSE.txt");
-    if (hasRefs) extras.push("references/");
-    if (hasAssets) extras.push("assets/");
-    if (extras.length) console.log(`     └─ carried: ${extras.join(", ")}`);
+    installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc);
   }
 }
 
 function main() {
+  if (doUninstall) {
+    cmdUninstall();
+    return;
+  }
+  if (doRollback) {
+    cmdRollback();
+    return;
+  }
+
   console.log("📦 Skill Installer (Cross-Tool Distribution)\n");
   console.log(`Catalog: ${CATALOG_ROOT}`);
   console.log(`Platform: ${platform()}`);
@@ -328,6 +657,10 @@ function main() {
     process.exit(0);
   }
 
+  const currentMf = loadManifest();
+  const nextGen = (currentMf && currentMf.generation ? currentMf.generation : 0) + 1;
+  const entriesAcc = [];
+
   console.log(`🔍 Detected ${filtered.length} tool(s): ${filtered.map((t) => t.name).join(", ")}\n`);
 
   const skills = collectSkills(CATALOG_ROOT);
@@ -350,7 +683,7 @@ function main() {
 
     for (const skillDir of skills) {
       try {
-        installSkill(skillDir, installPath);
+        installSkill(skillDir, installPath, nextGen, entriesAcc);
       } catch (err) {
         console.error(`  ❌ ${basename(skillDir)}: ${err.message}`);
       }
@@ -361,17 +694,30 @@ function main() {
       if (existsSync(sharedSrc)) {
         const sharedDest = join(installPath, "_shared");
         if (dryRun) {
-          console.log(`  [dry-run] _shared -> ${sharedDest}`);
+          for (const f of walkFiles(sharedSrc)) {
+            const d = join(sharedDest, f.rel);
+            console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
+          }
         } else {
-          if (existsSync(sharedDest)) rmSync(sharedDest, { recursive: true, force: true });
-          copyDirSync(sharedSrc, sharedDest);
+          installSkillTracked(sharedSrc, installPath, nextGen, entriesAcc);
           console.log(`  ✅ copied: _shared (shared script resources)`);
         }
       }
     }
   }
 
-  console.log(`\n✨ Done. ${dryRun ? "(dry-run, no changes written)" : "Restart your AI tools to load the new skills."}`);
+  if (dryRun) {
+    console.log(`\n✨ Dry-run plan complete (create/overwrite lines above). No changes written.`);
+    return;
+  }
+
+  commitGeneration(
+    filtered.map((t) => t.id),
+    useSymlink ? "symlink" : "copy",
+    entriesAcc,
+    nextGen
+  );
+  console.log(`\n✨ Done. Restart your AI tools to load the new skills.`);
 }
 
 main();
