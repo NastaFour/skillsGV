@@ -11,7 +11,7 @@ Distributes skills from this catalog to multiple AI agent configurations using c
 Generates new skills following the official agentskills.io spec (name lowercase-hyphen, description under 1024 chars). Creates the folder structure (SKILL.md + references/, scripts/, assets/), validates frontmatter constraints, and seeds the SKILLS.md index. Use when adding a new skill, refactoring an existing one, or bootstrapping a skill catalog.
 
 ## skill-loader
-Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (12 always-on skills, ~2K tokens) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the "route first" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body.
+Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (14 always-on skills, ~2K tokens) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the "route first" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body.
 
 ## professional-planner
 Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains.
@@ -33,3 +33,9 @@ Decision-support system that compresses the human's last-20% judgment from 30 mi
 
 ## dod-checker
 Act as the strict Gatekeeper for the "Definition of Done" (DoD). Run this skill to evaluate a feature or phase. Blocks stage checkoffs if SOLID, DRY, or 2026 security guardrails are bypassed.
+
+## engram-integration
+Persistent cross-session memory for AI coding agents via the Engram binary — one-liner setup (engram setup <agent>), 20 MCP tools (mem_save/mem_search/mem_judge...), SQLite+FTS5, git sync, optional cloud. Use when an agent should remember decisions and bugs across sessions instead of starting over.
+
+## kill-switches
+Implements emergency stop mechanisms for AI agent processes: heartbeat dead-man switches, process group SIGKILL, stalled session quarantine, and zombie process cleanup. Use when running long autonomous sessions, multi-agent workflows, or unattended CI/CD agents.

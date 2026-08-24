@@ -1,7 +1,7 @@
 {
-  "generatedAt": 1787543529619,
+  "generatedAt": 1787547375617,
   "schemaVersion": 1,
-  "skillCount": 12,
+  "skillCount": 14,
   "skills": [
     {
       "name": "skill-router",
@@ -21,7 +21,7 @@
     },
     {
       "name": "skill-loader",
-      "description": "Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (12 always-on skills, ~2K tokens) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the \"route first\" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body."
+      "description": "Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (14 always-on skills, ~2K tokens) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the \"route first\" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body."
     },
     {
       "name": "professional-planner",
@@ -50,6 +50,14 @@
     {
       "name": "dod-checker",
       "description": "Act as the strict Gatekeeper for the \"Definition of Done\" (DoD). Run this skill to evaluate a feature or phase. Blocks stage checkoffs if SOLID, DRY, or 2026 security guardrails are bypassed."
+    },
+    {
+      "name": "engram-integration",
+      "description": "Persistent cross-session memory for AI coding agents via the Engram binary — one-liner setup (engram setup <agent>), 20 MCP tools (mem_save/mem_search/mem_judge...), SQLite+FTS5, git sync, optional cloud. Use when an agent should remember decisions and bugs across sessions instead of starting over."
+    },
+    {
+      "name": "kill-switches",
+      "description": "Implements emergency stop mechanisms for AI agent processes: heartbeat dead-man switches, process group SIGKILL, stalled session quarantine, and zombie process cleanup. Use when running long autonomous sessions, multi-agent workflows, or unattended CI/CD agents."
     }
   ]
 }

@@ -110,8 +110,10 @@ function logCheckTelemetry(skillName, allowed) {
   }
 }
 
-// The 12 Tier 0 (always-on) skills. Hardcoded so we don't need to modify
-// 12 SKILL.md files; updates here are versioned with the loader.
+// The 14 Tier 0 (always-on) skills. Hardcoded so we don't need to modify
+// 14 SKILL.md files; updates here are versioned with the loader.
+// Source of truth: the Tier 0 set documented in AGENTS.md (union of the
+// documented set and {skill-loader, decision-gate}).
 const TIER0_SKILLS = [
   "skill-router",
   "skill-validator",
@@ -125,6 +127,8 @@ const TIER0_SKILLS = [
   "session-notes",
   "decision-gate",
   "dod-checker",
+  "engram-integration",
+  "kill-switches",
 ];
 
 // ---------- Args ----------

@@ -70,7 +70,7 @@ flowchart TD
 Cuando el agente detecte las siguientes acciones, **debe** cargar la skill correspondiente ANTES de actuar.
 
 > **Two-tier loading (PrD blindaje):**
-> - **Tier 0 (siempre cargadas, ~12 skills, ~2K tokens):** `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `professional-planner`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `kill-switches`, `dod-checker`.
+> - **Tier 0 (siempre cargadas, 14 skills, ~2K tokens):** `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `skill-loader`, `professional-planner`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `decision-gate`, `kill-switches`, `dod-checker`.
 > - **Tier 1 (on-demand via `skill-router`):** las skills restantes. El router decide cuáles cargar por turn — el agente solo carga Tier 1 skills listadas en `tier1toLoad` del output del router.
 >
 > **Antes de cualquier turn que pueda invocar otra skill, correr `skill-router` primero:**
