@@ -28,7 +28,35 @@
         "gate": "validate-skills.mjs --strict exit 0 (151 pass)",
         "integracion": "SKILL.md Pasos 5-6: evento ANTES de [x]; apply-progress derivado del snapshot"
       }
+    },
+    "4.1": {
+      "status": "completed",
+      "evidence": {
+        "red": "harness temp dir slice2-pr4-installer-test.mjs contra codigo pre-implementacion: exit 1 con fallos genuinos - G1 manifest exists FAIL (no hay manifest), G1 foreign file survived install FAIL (rmSync wholesale borra archivos ajenos del usuario en cada install), G2 dry-run reports overwrites FAIL (plan incompleto), G3 no ejecutado por crash del arnes (--uninstall inexistente)",
+        "green": "mismo harness post-implementacion: ALL GROUPS PASSED 33/33 checks exit 0 - archivo ajeno plantado sobrevive uninstall y figura retenido; edited SKILL.md retenido; uninstall sin manifest aborta exit 1 sin borrar nada"
+      }
+    },
+    "4.2": {
+      "status": "completed",
+      "evidence": {
+        "test": "G1: install --target temp --tool claude-code --only 05-frontend -> exit 0",
+        "result": "<target>/.skills-install/manifest.json {version:1,generation:1,ts,tool:claude-code,mode:copy,entries:[{dest,src,sha256,prevState:new|overwritten}]}; sha256 de SKILL.md coincide con disco; USER-NOTES.md ajeno previo NO figura como propio"
+      }
+    },
+    "4.3": {
+      "status": "completed",
+      "evidence": {
+        "test": "G2+G3+G4 sobre temp dir",
+        "result": "--dry-run emite plan create/overwrite por archivo sin mutar FS (snapshot .claude identico, generation intacta); --uninstall borra solo entries con hash vigente (_shared eliminado), retiene FOREIGN.md y SKILL.md editado listandolos; --rollback restaura contenido previo desde backup (prevSha256+prevBackup) o elimina si era new, history registra rollback, manifest vuelve a generacion 1"
+      }
+    },
+    "4.4": {
+      "status": "completed",
+      "evidence": {
+        "cycle": "install -> dry-run -> uninstall -> rollback completo en temp dirs g1/g2/g3/g4/g4b/g4c sin Bash, Node puro Windows-first",
+        "gate": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict -> exit 0, 151 pass, 0 issues"
+      }
     }
   },
-  "lastSeq": 4
+  "lastSeq": 8
 }

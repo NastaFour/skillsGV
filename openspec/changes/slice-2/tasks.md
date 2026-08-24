@@ -58,10 +58,10 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 4: Installer lifecycle E4 (WU4→PR-4)
 
-- [ ] 4.1 RED amenaza filesystem destructivo: archivo ajeno plantado en temp target sobrevive al uninstall y figura como retenido; uninstall sin manifest → abort exit≠0 sin borrar nada; falla hasta existir 4.3 (installer-lifecycle)
-- [ ] 4.2 Manifest por generación `<target>/.skills-install/manifest.json` `{generation, ts, tool, mode, entries[{dest, src, sha256, prevState:"new"|"overwritten", prevSha256?}]}`; archivos preexistentes ajenos no figuran como propios (installer-lifecycle)
-- [ ] 4.3 Flags en `install-skills.mjs`: `--uninstall` borra solo entries con hash vigente y retiene/lista ajenos o editados; `--rollback` restaura prevSha o elimina si era nuevo, registrado en historial; `--dry-run` emite plan completo incl. sobrescrituras sin mutar FS (installer-lifecycle)
-- [ ] 4.4 Ciclo completo en temp dir sin Bash: install → dry-run → uninstall → rollback; gate PR-4: V exit 0 (installer-lifecycle)
+- [x] 4.1 RED amenaza filesystem destructivo: archivo ajeno plantado en temp target sobrevive al uninstall y figura como retenido; uninstall sin manifest → abort exit≠0 sin borrar nada; falla hasta existir 4.3 (installer-lifecycle)
+- [x] 4.2 Manifest por generación `<target>/.skills-install/manifest.json` `{generation, ts, tool, mode, entries[{dest, src, sha256, prevState:"new"|"overwritten", prevSha256?}]}`; archivos preexistentes ajenos no figuran como propios (installer-lifecycle)
+- [x] 4.3 Flags en `install-skills.mjs`: `--uninstall` borra solo entries con hash vigente y retiene/lista ajenos o editados; `--rollback` restaura prevSha o elimina si era nuevo, registrado en historial; `--dry-run` emite plan completo incl. sobrescrituras sin mutar FS (installer-lifecycle)
+- [x] 4.4 Ciclo completo en temp dir sin Bash: install → dry-run → uninstall → rollback; gate PR-4: V exit 0 (installer-lifecycle)
 
 ## Fase 5: Docs E1/E5/E6 + delta hooks (WU5→PR-5)
 
