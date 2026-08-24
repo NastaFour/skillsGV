@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **129 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **135 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 ## 00-meta-skills
 
@@ -11,6 +11,12 @@ Catálogo de **129 skills** compatible con [agentskills.io](https://agentskills.
 | skill-sync | [00-meta-skills/skill-sync/SKILL.md](00-meta-skills/skill-sync/SKILL.md) |
 | skill-validator | [00-meta-skills/skill-validator/SKILL.md](00-meta-skills/skill-validator/SKILL.md) |
 | skill-router | [00-meta-skills/skill-router/SKILL.md](00-meta-skills/skill-router/SKILL.md) ← deterministic routing, replaces ~80% of LLM skill selection |
+| sdd-orchestrator | [00-meta-skills/sdd-orchestrator/SKILL.md](00-meta-skills/sdd-orchestrator/SKILL.md) ← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup |
+| sdd-init | [00-meta-skills/sdd-init/SKILL.md](00-meta-skills/sdd-init/SKILL.md) ← SDD init: stack/testing capabilities, registry and persistence |
+| sdd-explore | [00-meta-skills/sdd-explore/SKILL.md](00-meta-skills/sdd-explore/SKILL.md) ← SDD exploration before committing to a change |
+| sdd-propose | [00-meta-skills/sdd-propose/SKILL.md](00-meta-skills/sdd-propose/SKILL.md) ← SDD change proposal: intent, scope, approach |
+| sdd-spec | [00-meta-skills/sdd-spec/SKILL.md](00-meta-skills/sdd-spec/SKILL.md) ← SDD delta specs with requirements and scenarios |
+| sdd-design | [00-meta-skills/sdd-design/SKILL.md](00-meta-skills/sdd-design/SKILL.md) ← SDD technical design and architecture approach |
 
 ## 01-planning-process
 

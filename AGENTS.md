@@ -15,7 +15,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Testing | `07-testing/` | testing-patterns, playwright, pytest |
 | DevOps | `08-devops/` | ci-cd, kill-switches, monitoring, observability |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
-| Meta-Skills | `00-meta-skills/` | skill-creator, skill-sync, skill-validator, skill-router, skill-loader |
+| Meta-Skills | `00-meta-skills/` | skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design |
 
 ## 🔄 Ciclo de Desarrollo (9 Agentes con SDD)
 
