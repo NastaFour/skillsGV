@@ -373,6 +373,89 @@ function runIndexSyncChecks(catalogNames, skills, targetPath) {
   return issues;
 }
 
+/**
+ * Skills excluded from the registry index (skill-registry-protocol):
+ * _shared, skill-registry and sdd-*.
+ */
+function isRegistryExcluded(name) {
+  return name === "_shared" || name === "skill-registry" || name.startsWith("sdd-");
+}
+
+/**
+ * Parse SKILLS.md into a Map of skill name → relative SKILL.md path.
+ * Rows look like: | skill-name | [00-meta-skills/foo/SKILL.md](...) | ...
+ */
+function parseSkillsMdEntries(content) {
+  const entries = new Map();
+  const rows = content.matchAll(/^\|\s*([a-z0-9-]+)\s*\| \[([^\]]+SKILL\.md)\]/gm);
+  for (const m of rows) {
+    entries.set(m[1], m[2].trim().replace(/\\/g, "/"));
+  }
+  return entries;
+}
+
+/**
+ * Parse .atl/skill-registry.md into a Map of skill name → relative SKILL.md path.
+ * Rows look like: | `skill-name` | <description> | `scope` | `00-meta-skills/foo/SKILL.md` |
+ * (legacy 3-column rows without scope are also accepted).
+ */
+function parseRegistryEntries(content) {
+  const entries = new Map();
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("|")) continue;
+    const nameMatch = trimmed.match(/^\|\s*`([a-z0-9-]+)`\s*\|/);
+    if (!nameMatch) continue;
+    const pathMatches = [...trimmed.matchAll(/`([^`]+SKILL\.md)`/g)];
+    if (pathMatches.length === 0) continue;
+    const path = pathMatches[pathMatches.length - 1][1].trim().replace(/\\/g, "/");
+    entries.set(nameMatch[1], path);
+  }
+  return entries;
+}
+
+/**
+ * Consistency check SKILLS.md ↔ .atl/skill-registry.md (skill-registry-protocol).
+ * Both indexes must agree on name and path per skill. Skills excluded from the
+ * registry (_shared, skill-registry, sdd-*) are not expected in the registry.
+ */
+function runRegistryConsistencyCheck(skills, targetPath) {
+  const issues = [];
+  const skillsMdPath = join(targetPath, "SKILLS.md");
+  const registryPath = join(targetPath, ".atl", "skill-registry.md");
+
+  if (!existsSync(registryPath)) {
+    issues.push({ severity: "error", check: "registry-missing", msg: ".atl/skill-registry.md not found in target path" });
+    return issues;
+  }
+
+  const skillsMdEntries = parseSkillsMdEntries(readFileSync(skillsMdPath, "utf8"));
+  const registryEntries = parseRegistryEntries(readFileSync(registryPath, "utf8"));
+
+  // 1. Every registry entry must exist in SKILLS.md with the same path.
+  for (const [name, path] of registryEntries) {
+    const skillsPath = skillsMdEntries.get(name);
+    if (skillsPath === undefined) {
+      issues.push({ severity: "error", check: "registry-entry-missing-in-skills", msg: `Registry entry "${name}" is missing in SKILLS.md` });
+    } else if (skillsPath !== path) {
+      issues.push({ severity: "error", check: "registry-entry-path-mismatch", msg: `Registry path for "${name}" (${path}) does not match SKILLS.md (${skillsPath})` });
+    }
+  }
+
+  // 2. Every non-excluded skill in SKILLS.md must exist in the registry.
+  for (const [name, path] of skillsMdEntries) {
+    if (isRegistryExcluded(name)) continue;
+    const registryPath2 = registryEntries.get(name);
+    if (registryPath2 === undefined) {
+      issues.push({ severity: "error", check: "registry-entry-missing", msg: `Skill "${name}" is in SKILLS.md but missing in .atl/skill-registry.md` });
+    } else if (registryPath2 !== path) {
+      issues.push({ severity: "error", check: "registry-entry-path-mismatch", msg: `SKILLS.md path for "${name}" (${path}) does not match registry (${registryPath2})` });
+    }
+  }
+
+  return issues;
+}
+
 const skills = walkSkills(targetPath);
 
 // First pass: collect all skill names so redirect targets can be validated
@@ -410,6 +493,17 @@ if (!skipIndexSync) {
       else totalInfo++;
     }
     results.push({ file: "SKILLS.md / AGENTS.md", issues: syncIssues });
+  }
+
+  // Consistency check SKILLS.md ↔ .atl/skill-registry.md (skill-registry-protocol)
+  const registryIssues = runRegistryConsistencyCheck(skills, targetPath);
+  if (registryIssues.length > 0) {
+    for (const issue of registryIssues) {
+      if (issue.severity === "error") totalErrors++;
+      else if (issue.severity === "warning") totalWarnings++;
+      else totalInfo++;
+    }
+    results.push({ file: "SKILLS.md / .atl/skill-registry.md", issues: registryIssues });
   }
 }
 
