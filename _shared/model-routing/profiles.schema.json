@@ -40,6 +40,17 @@
     "phaseProfile": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Objeto vacío = la fase hereda defaultAlias. Un perfil propio exige alias (provider/notes son opcionales junto a alias).",
+      "oneOf": [
+        {
+          "maxProperties": 0,
+          "description": "Sin perfil propio: la fase hereda defaultAlias."
+        },
+        {
+          "required": ["alias"],
+          "description": "Perfil propio: alias obligatorio; provider y notes opcionales."
+        }
+      ],
       "properties": {
         "alias": {
           "type": "string",
