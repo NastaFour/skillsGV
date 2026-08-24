@@ -8,11 +8,18 @@
  * The fix uses an atomic rename-steal verified against the token written
  * inside the lock at creation.
  *
+ * F1 follow-up: deterministic reproduction of the residual triple-interleaving
+ * window — a slow recoverer displaces a LIVE (token-mismatch) lock via the
+ * rename-steal while a third acquirer occupies the absent lockPath during the
+ * restore. The recoverer must fail closed with exit 3 (contention) and leave
+ * exactly one logical owner, never proceed with two writers.
+ *
  * Run: node --test 00-meta-skills/sdd-apply/scripts/apply-journal.test.mjs
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { restoreDisplacedLock } from "./apply-journal.mjs";
 import {
   existsSync,
   mkdirSync,
@@ -124,6 +131,59 @@ test("an unparseable stale orphan fails closed instead of being blindly removed"
     assert.equal(r.code, 3, `expected fail-closed exit 3, got ${r.code}: ${r.stderr}`);
     assert.ok(existsSync(s.lockPath), "unverifiable orphan must not be deleted automatically");
     assert.match(r.stderr, /token/);
+  } finally {
+    rmSync(s.root, { recursive: true, force: true });
+  }
+});
+
+// --- F1 follow-up: triple interleaving (displaced live lock vs third acquirer) ---
+
+function lockBytes(token, host) {
+  return Buffer.from(
+    JSON.stringify({ pid: process.pid, ts: new Date().toISOString(), host, token }),
+    "utf8"
+  );
+}
+
+test("triple interleaving: displaced live lock + slot grabbed by a third acquirer -> fail closed exit 3, single owner preserved", () => {
+  const s = makeScratch();
+  try {
+    // Deterministic post-steal world:
+    //   - a slow recoverer already renamed a LIVE writer's lock away (token
+    //     mismatch detected) and holds the displaced bytes at the steal path;
+    //   - meanwhile a THIRD acquirer won the now-absent slot with its own
+    //     exclusive create and is the current logical owner.
+    const thirdAcquirer = lockBytes("third-acquirer-token", "third-acquirer");
+    writeFileSync(s.lockPath, thirdAcquirer);
+    const stealPath = `${s.lockPath}.steal-forced`;
+    writeFileSync(stealPath, lockBytes("displaced-live-token", "live-writer"));
+
+    assert.throws(
+      () => restoreDisplacedLock({ lockPath: s.lockPath }, stealPath),
+      (err) => err?.code === 3 && /contention|occupied/i.test(err.message),
+      "restore must fail closed with contention (exit 3), never proceed with two owners"
+    );
+    assert.ok(
+      readFileSync(s.lockPath).equals(thirdAcquirer),
+      "the occupying owner's lock must stay byte-intact (single logical owner)"
+    );
+    assert.equal(recordedEvents(s.eventsPath).length, 0, "no ownership transfer may occur during contention");
+    assert.ok(existsSync(stealPath), "displaced copy kept on disk for inspection");
+  } finally {
+    rmSync(s.root, { recursive: true, force: true });
+  }
+});
+
+test("mismatch restore with a free slot: displaced live lock returns byte-identical", () => {
+  const s = makeScratch();
+  try {
+    const displaced = lockBytes("displaced-live-token", "live-writer");
+    const stealPath = `${s.lockPath}.steal-forced`;
+    writeFileSync(stealPath, displaced);
+
+    assert.equal(restoreDisplacedLock({ lockPath: s.lockPath }, stealPath), true);
+    assert.ok(readFileSync(s.lockPath).equals(displaced), "restored bytes identical to the displaced live lock");
+    assert.equal(existsSync(stealPath), false, "temporary steal copy disposed after successful restore");
   } finally {
     rmSync(s.root, { recursive: true, force: true });
   }

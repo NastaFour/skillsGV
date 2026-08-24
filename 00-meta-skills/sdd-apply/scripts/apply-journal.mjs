@@ -58,6 +58,8 @@ const SNAPSHOT_VERSION = 1;
 export const GENESIS_HASH = "genesis";
 const POLL_MS = 200;
 const DEFAULT_STALE_MS = 60_000;
+/** Bounded retry budget for putting a displaced live lock back (F1 follow-up). */
+export const LOCK_RESTORE_ATTEMPTS = 3;
 
 /** Typed failure: always released through openJournal's catch before exiting. */
 class JournalError extends Error {
@@ -139,6 +141,50 @@ function readLockToken(lockPath) {
 }
 
 /**
+ * Put a displaced LIVE lock back at its canonical path before backing off.
+ *
+ * A token mismatch after the rename-steal means we displaced a lock that
+ * belongs to a live writer. While lockPath is absent, a third acquirer can
+ * win the slot with its own exclusive create, so the restore itself must be
+ * race-safe: it recreates the displaced bytes via openSync("wx") — which
+ * fails with EEXIST instead of clobbering whoever occupies the slot — inside
+ * a bounded retry. If the slot stays occupied, the restore gives up WITHOUT
+ * ever taking ownership and keeps the displaced copy on disk for inspection,
+ * failing closed with exit 3: proceeding would leave the legitimate owner
+ * lockless next to an interloper, i.e. two concurrent writers.
+ */
+export function restoreDisplacedLock(paths, stealPath) {
+  const displaced = readFileSync(stealPath);
+  for (let attempt = 1; attempt <= LOCK_RESTORE_ATTEMPTS; attempt++) {
+    let fd;
+    try {
+      fd = openSync(paths.lockPath, "wx"); // exclusive create: never clobbers the occupant
+    } catch (err) {
+      if (err.code !== "EEXIST") throw err;
+      if (attempt === LOCK_RESTORE_ATTEMPTS) {
+        throw new JournalError(
+          3,
+          `cannot restore displaced live lock: ${basename(paths.lockPath)} stayed occupied through ${LOCK_RESTORE_ATTEMPTS} exclusive-create attempts (contention; displaced copy kept for inspection at ${basename(stealPath)})`
+        );
+      }
+      sleepSync(POLL_MS);
+      continue;
+    }
+    try {
+      writeSync(fd, displaced);
+      fsyncSync(fd);
+    } catch (err) {
+      try { unlinkSync(paths.lockPath); } catch { /* best effort: drop our partial restore */ }
+      throw err;
+    } finally {
+      closeSync(fd);
+    }
+    unlinkSync(stealPath); // canonical slot holds the original bytes again
+    return true;
+  }
+}
+
+/**
  * Recover an orphan lock without the classic TOCTOU race.
  *
  * Naive "check stale -> unlink" is not atomic: two concurrent recoverers can
@@ -149,8 +195,10 @@ function readLockToken(lockPath) {
  *      file; every loser gets ENOENT and restarts from scratch (contention).
  *   2. re-read the moved bytes and require the SAME token we inspected before
  *      the rename. A mismatch means the slot was replaced by a fresh writer
- *      between our read and our rename — restore it when possible and back
- *      off WITHOUT ever creating our own lock on top of a displaced one.
+ *      between our read and our rename — we displaced a LIVE lock, so it is
+ *      put back via restoreDisplacedLock (bounded exclusive-create retry;
+ *      fail-closed exit 3 if a third acquirer keeps the slot occupied) and we
+ *      back off WITHOUT ever creating our own lock on top of a displaced one.
  * An orphan whose content cannot be parsed (no verifiable token) is never
  * blindly removed; it fails closed with exit 3 so a live writer's lock can
  * never be mistaken for an orphan.
@@ -171,14 +219,10 @@ function recoverOrphanLock(paths, staleMs) {
     throw err;
   }
   if (readLockToken(stealPath) !== staleToken) {
-    // We displaced a lock that was NOT the stale one we inspected.
-    if (!existsSync(paths.lockPath)) {
-      try {
-        renameSync(stealPath, paths.lockPath); // put the fresh lock back
-      } catch {
-        /* slot got repopulated meanwhile; leave the tmp for inspection */
-      }
-    }
+    // We displaced a lock that was NOT the stale one we inspected: it belongs
+    // to a live writer. Restore it (best effort), then back off as contention
+    // either way — never take ownership on top of a displaced live writer.
+    restoreDisplacedLock(paths, stealPath);
     throw new JournalError(3, `lost orphan-lock recovery race at ${paths.lockPath} (use --wait <ms>)`);
   }
   unlinkSync(stealPath); // stale lock legitimately disposed of
