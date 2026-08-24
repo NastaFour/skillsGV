@@ -147,6 +147,7 @@ Catálogo de **150 skills** compatible con [agentskills.io](https://agentskills.
 | lottie-animations | [05-frontend/lottie-animations/SKILL.md](05-frontend/lottie-animations/SKILL.md) ← `references/lottie-integration.md`, `scripts/check-lottie.mjs` |
 | motion-accessibility | [05-frontend/motion-accessibility/SKILL.md](05-frontend/motion-accessibility/SKILL.md) ← `references/reduced-motion.md`, `references/performance.md`, `scripts/check-motion-a11y.mjs` |
 | three-js-web | [05-frontend/three-js-web/SKILL.md](05-frontend/three-js-web/SKILL.md) ← `references/core-threejs.md`, `references/r3f-patterns.md`, `references/drei-helpers.md`, `references/performance-webgl.md`, `references/spline-no-code.md` |
+| web-animation-sources | [05-frontend/web-animation-sources/SKILL.md](05-frontend/web-animation-sources/SKILL.md) ← `references/animation-sources.md` (10 referencias curadas por tópico) |
 | vercel-react-best-practices | [05-frontend/vercel-react-best-practices/SKILL.md](05-frontend/vercel-react-best-practices/SKILL.md) ← Vercel Engineering: React & Next.js performance rules, server components, bundle optimization |
 | vercel-composition-patterns | [05-frontend/vercel-composition-patterns/SKILL.md](05-frontend/vercel-composition-patterns/SKILL.md) ← scalable React composition, compound components, React 19 API |
 | vercel-react-view-transitions | [05-frontend/vercel-react-view-transitions/SKILL.md](05-frontend/vercel-react-view-transitions/SKILL.md) ← native ViewTransition animations, shared elements, CSS pseudo-elements |
