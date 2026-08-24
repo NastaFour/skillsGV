@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + SDD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 149 skills to 3-5.
+description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + SDD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 151 skills to 3-5.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex, DeepSeek. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
@@ -14,7 +14,7 @@ metadata:
 
 Replaces ~80% of stochastic "which skill do I load?" reasoning with **exact trigger matching**. The agent only decides for the ~20% of cases where the router returns low confidence.
 
-> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 149 skills × ~150 tokens.
+> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 151 skills × ~150 tokens.
 
 ## When to Use
 
@@ -86,7 +86,7 @@ Flags:
 }
 ```
 
-`tier1toLoad` tells the agent exactly which Tier 1 skill bodies to read. 1-3 skills, not 149.
+`tier1toLoad` tells the agent exactly which Tier 1 skill bodies to read. 1-3 skills, not 151.
 
 ## Integration
 

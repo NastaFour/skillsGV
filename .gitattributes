@@ -1,0 +1,6 @@
+# The apply journal hashes raw bytes per line (events.jsonl) and chains them
+# into snapshot.json. Any EOL rewrite (e.g. core.autocrlf=true turning LF into
+# CRLF on checkout) breaks hash verification with "hash chain broken".
+# Disable all text handling for journal artifacts: git must treat them as
+# opaque binary and never convert, normalize, or diff their line endings.
+openspec/**/journal/** -text

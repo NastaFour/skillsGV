@@ -56,7 +56,73 @@
         "cycle": "install -> dry-run -> uninstall -> rollback completo en temp dirs g1/g2/g3/g4/g4b/g4c sin Bash, Node puro Windows-first",
         "gate": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict -> exit 0, 151 pass, 0 issues"
       }
+    },
+    "5.1": {
+      "status": "completed",
+      "evidence": {
+        "archivo": "00-meta-skills/sdd-orchestrator/references/model-routing.md",
+        "protocolo": "interfaz catalogo list()/resolve(phase); perfiles declarativos; degradacion documentada sin catalogo",
+        "grep_comandos_runtime": "Select-String patron .mjs|node|npm|npx|curl|opencode model/run/serve|codex exec/-- -> 0 coincidencias (cero comandos hardcodeados)",
+        "tui": "solo menciones 'sin TUI obligatoria' (3), ninguna obligatoria"
+      }
+    },
+    "5.2": {
+      "status": "completed",
+      "evidence": {
+        "archivos": [
+          "_shared/model-routing/profiles.schema.json",
+          "_shared/model-routing/profiles.example.json"
+        ],
+        "fases": [
+          "propose",
+          "spec",
+          "design",
+          "tasks",
+          "apply",
+          "verify"
+        ],
+        "positivo": "mini-validador subset JSON Schema ($ref/$defs,type,const,required,additionalProperties,minLength) sobre example -> VALID exit 0",
+        "negativo": "instancia corrupta (version ausente + propiedad bogus + alias vacio) -> INVALID con 3 errores precisos, exit 1"
+      }
+    },
+    "5.3": {
+      "status": "completed",
+      "evidence": {
+        "archivo": "00-meta-skills/harness-map.md",
+        "cambios": [
+          "seccion 'Politica de review' nueva: disposicion causal (solo introducido/empeorado bloquea con evidencia; deuda preexistente follow-up aparte; perfiles opt-in sin declaracion -> politica base)",
+          "seccion Model Routing actualizada de 'diferido a Slice 2' a 'activo desde Slice 2' con referencia al protocolo y delta model-routing-hooks",
+          "fila tabla harnesses extendidos apunta ahora a sdd-orchestrator/references/model-routing.md"
+        ],
+        "cross_check": "vocabulario compartido verificado por Select-String contra 02-dev-roles/code-reviewer/references/review-policy.md (introducido/empeorado/follow-up/opt-in/causal presentes en ambos)"
+      }
+    },
+    "5.4": {
+      "status": "completed",
+      "evidence": {
+        "archivo": "02-dev-roles/code-reviewer/references/review-policy.md",
+        "contenido": "reflejo SHOULD de la Politica de review: fuente unica de verdad en harness-map (gana ante discrepancia), tabla causal introducido/empeorado/preexistente/fuera-de-alcance con evidencia minima para bloquear, perfiles opt-in que nunca relajan causalidad, uso con lentes 4R",
+        "consistencia": "misma disposicion causal del punto RDD documentada en harness-map; cross-check textual aprobado"
+      }
+    },
+    "5.5": {
+      "status": "completed",
+      "evidence": {
+        "archivo": "00-meta-skills/harness-map.md",
+        "seccion": "Punto de extension AHE (diseno doc-only, Slice 2) insertada junto al punto RDD",
+        "contenido": "3 sidecars evaluator/debugger/evolver con responsabilidad + insercion propuesta post-verify; 4 niveles de evidencia static_contract/transcript_replay/live_smoke/manual_oracle con criterio de aplicacion y acumulatividad; nota explicita SIN mecanismo ejecutable y OPEN-1 diferido; relacion RDD/AHE independiente: activar uno no habilita al otro",
+        "spec_check": "cubre Requirement sidecars descritos, niveles enumerados, sin mecanismo ejecutable, ubicacion junto a RDD"
+      }
+    },
+    "5.6": {
+      "status": "completed",
+      "evidence": {
+        "gate_V": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict -> exit 0, '151 pass · 0 with issues', 0 errors/warnings/info",
+        "smoke_router": "skill-router.mjs --query '3d scene three.js' --json -> primary three-js-web, confidence 1, exit 0",
+        "replay_determinista": "router-replay.mjs x2 -> REPLAY_IDENTICAL (Compare-Object vacío), {total:13, exactMatches:13, accuracy:1, discrepancies:[], malformedLines:[]}, consistency 8/8 grupos + 12/12 fixtures, exit 0",
+        "carpetas_nuevas": "git diff --name-status main...HEAD -> solo .gitattributes + 4 docs (model-routing.md, review-policy.md, profiles.schema.json, profiles.example.json); SKILL.md nuevos: 0; conteo total SKILL.md: 151"
+      }
     }
   },
-  "lastSeq": 8
+  "lastSeq": 14
 }
