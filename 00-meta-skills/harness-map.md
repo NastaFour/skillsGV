@@ -46,7 +46,7 @@ This document maps the **151 skills** in this catalog to the **20 Agent Harnesse
 
 | Harness ext. | Resuelve | Skill |
 |---|---|---|
-| Model Routing | Asigna modelo por fase SDD | Diferido a Slice 2 (perfiles de modelo por fase; ver sección «Model Routing (diferido a Slice 2)») |
+| Model Routing | Asigna modelo por fase SDD | `00-meta-skills/sdd-orchestrator` (protocolo declarativo `references/model-routing.md` + perfiles `_shared/model-routing/`; activo desde Slice 2) |
 | Permission Security | Sandbox de comandos | `AGENTS.md` reglas |
 | Backup/Rollback | Snapshots antes de cambios | _(manual)_ |
 | Compaction Recovery | Recupera contexto post-compact | `01-planning-process/project-tracker` |
@@ -64,13 +64,24 @@ This document maps the **151 skills** in this catalog to the **20 Agent Harnesse
 
 1. **03-ai-ml y 04-05-frontend** — No mapeadas explícitamente. Las skills existen pero no están referenciadas a un harness concreto.
 
-## 🚀 Model Routing (diferido a Slice 2)
+## 🚀 Model Routing (activo desde Slice 2)
 
-> Documentación únicamente — el routing de modelos por fase NO se implementa en Slice 1.
+> Documentación de protocolo — el routing lo resuelve el agente LLM leyendo el catálogo del runtime. Sin comandos hardcodeados, sin TUI obligatoria, sin ejecutable.
 
-- **Perfiles de modelo por fase**: asignar un modelo distinto por fase SDD (perfil GLM en OpenCode, alias `glm` en Kiro, presets de effort en Codex) queda DIFERIDO a Slice 2, según la spec `model-routing-hooks`.
-- **GLM no es target de skill-sync**: GLM 5.3 es un **modelo**, no un harness de agente con directorio de configuración propio. La portabilidad a GLM NO se resuelve añadiendo un target a `install-skills.mjs`; se resuelve por **routing de modelos** (proveedor GLM en OpenCode multi-mode por fase, o alias `glm` en Kiro), diferido a Slice 2.
-- **Regla Slice 1**: no hay perfiles de modelo por fase; el pipeline SDD corre con la selección de modelo por defecto del agente.
+- **Perfiles de modelo por fase**: cada fase SDD (propose, spec, design, tasks, apply, verify) puede declarar su modelo vía alias lógico; el contrato completo (interfaz `list()`/`resolve(phase)`, formato declarativo y algoritmo de resolución) vive en `00-meta-skills/sdd-orchestrator/references/model-routing.md`, con perfiles validados contra `_shared/model-routing/profiles.schema.json`.
+- **Resolución por catálogo del runtime**: OpenCode, Antigravity y Codex exponen catálogos distintos; el mismo protocolo se aplica contra el catálogo propio de cada runtime sin reescribir la definición del routing.
+- **Degradación documentada**: si el runtime no expone catálogo, las fases usan el modelo por defecto y el pipeline no falla (limitación registrada en el protocolo).
+- **GLM no es target de skill-sync**: GLM 5.3 es un **modelo**, no un harness de agente con directorio de configuración propio. La portabilidad a GLM NO se resuelve añadiendo un target a `install-skills.mjs`; se resuelve por **routing de modelos** (proveedor GLM en OpenCode multi-mode por fase, o alias `glm` en Kiro), ahora activo.
+- **Delta `model-routing-hooks`**: el requisito «Perfiles por fase diferidos» pasó de DIFERIDO (Slice 1: MUST NOT implementarlo) a ACTIVADO por esta capability desde Slice 2.
+
+## ⚖️ Política de review
+
+> Fuente única de verdad de la política de revisión del harness. La skill de review (`02-dev-roles/code-reviewer/references/review-policy.md`) la REFLEJA como SHOULD y referencia esta sección; no la duplica.
+
+- **Disposición causal**: solo bloquean la aprobación los hallazgos **introducidos o empeorados** por el cambio bajo revisión (con evidencia en el diff o en comportamiento activado por él).
+- **Deuda preexistente aparte**: defectos que ya existían fuera del diff se reportan como **follow-up documentado** (issue/nota del cambio) y NO bloquean el PR actual.
+- **Perfiles opt-in**: los perfiles de arquitectura de review (p. ej. conjuntos adicionales de lentes) SOLO aplican cuando se declaran explícitamente en la configuración del cambio; **sin declaración → política base única** (causalidad + reporte aparte). Un perfil declarado agrega reglas pero nunca relaja la causalidad como criterio de bloqueo.
+- **Consistencia con RDD**: esta disposición es la misma que documenta el punto de extensión RDD (sección siguiente): una revisión futura con recibo clasificaría hallazgos bajo este mismo criterio causal.
 
 ## 🔌 Punto de extensión RDD (documentación, Slice 1)
 
