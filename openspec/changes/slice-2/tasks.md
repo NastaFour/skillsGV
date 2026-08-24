@@ -51,10 +51,10 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 3: Journal apply-progress E3 (WU3→PR-3)
 
-- [ ] 3.1 Implementar `sdd-apply/scripts/apply-journal.mjs` (módulo+CLI), estado en `openspec/changes/{change}/journal/`: snapshot.json `{version:1, change, contractHash, units{id:{status,evidence}}, lastSeq}`; events.jsonl append-only `{seq,type,unitId,payload,prevHash}` con `\n` final; journal.lock exclusivo `wx`+PID con recuperación de huérfanos >stale-timeout (apply-progress-journal)
-- [ ] 3.2 Idempotencia (re-registrar unitId no muta snapshot ni duplica evento efectivo); append-only (mutar eventos históricos rechazado); escritor concurrente espera o falla controlado sin corromper estado (apply-progress-journal)
-- [ ] 3.3 Recuperación: al abrir, replay de eventos sobre snapshot; última línea truncada se descarta y su unidad queda `interrupted-retry`; unidades confirmadas se conservan; simular abort en temp dir (apply-progress-journal)
-- [ ] 3.4 Integrar en `sdd-apply/SKILL.md` Pasos 5–6: evento emitido ANTES de marcar `[x]`; apply-progress DERIVADO del snapshot; merge queda como capa de reporte; Node puro Windows-first sin Bash; gate PR-3: V exit 0 (apply-progress-journal)
+- [x] 3.1 Implementar `sdd-apply/scripts/apply-journal.mjs` (módulo+CLI), estado en `openspec/changes/{change}/journal/`: snapshot.json `{version:1, change, contractHash, units{id:{status,evidence}}, lastSeq}`; events.jsonl append-only `{seq,type,unitId,payload,prevHash}` con `\n` final; journal.lock exclusivo `wx`+PID con recuperación de huérfanos >stale-timeout (apply-progress-journal)
+- [x] 3.2 Idempotencia (re-registrar unitId no muta snapshot ni duplica evento efectivo); append-only (mutar eventos históricos rechazado); escritor concurrente espera o falla controlado sin corromper estado (apply-progress-journal)
+- [x] 3.3 Recuperación: al abrir, replay de eventos sobre snapshot; última línea truncada se descarta y su unidad queda `interrupted-retry`; unidades confirmadas se conservan; simular abort en temp dir (apply-progress-journal)
+- [x] 3.4 Integrar en `sdd-apply/SKILL.md` Pasos 5–6: evento emitido ANTES de marcar `[x]`; apply-progress DERIVADO del snapshot; merge queda como capa de reporte; Node puro Windows-first sin Bash; gate PR-3: V exit 0 (apply-progress-journal)
 
 ## Fase 4: Installer lifecycle E4 (WU4→PR-4)
 
