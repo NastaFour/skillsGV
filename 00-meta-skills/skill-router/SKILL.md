@@ -19,7 +19,7 @@ Replaces ~80% of stochastic "which skill do I load?" reasoning with **exact trig
 ## When to Use
 
 - **Before any turn** that might invoke a skill: run `skill-router.mjs` first.
-- When you want to know if a diff is **trivial** (skip SDD) or **needs SDD** (invoke `professional-planner`).
+- When you want to know if a diff is **trivial** (skip SDD) or **needs SDD** (invoke `sdd-orchestrator`; `professional-planner` remains the reference methodology).
 - When 2+ skills have semantic overlap (e.g. `nextjs` deprecated vs `nextjs-15`, `engram` vs `mcp-integration`) — the router resolves it deterministically via `deprecated` flag.
 - When new skills overlap semantically (pilot `figma-implement`/`figma-mcp`, `nano-banana`/`banana-claude`, MCP hybrids) — the router de-ties via `references/overlap-matrix.json` (D4): if ≥2 members of a group are in the top-4 and the group leads the scoring (current top-1 is a member), `primary = canonical`.
 
@@ -38,7 +38,7 @@ skill-router.mjs (deterministic, classic Node)
 {
   primary:    "skill-name" | null,      // best exact match, null if confidence <0.6
   secondary:  ["skill-a", "skill-b"],   // other candidates
-  needsSDD:   true | false,             // touches 2+ categories → invoke professional-planner
+  needsSDD:   true | false,             // touches 2+ categories → invoke sdd-orchestrator
   trivial:    true | false,             // diff <20 lines + no critical markers → skip SDD
   skipJudgmentDay: true | false,        // diff <100 lines AND no auth/payments/migrations → code-reviewer only
   deprecatedHit: "nextjs" | null        // if user mentioned a deprecated skill, where to redirect
@@ -90,7 +90,7 @@ Flags:
 
 ## Integration
 
-- [`professional-planner`](../../professional-planner/SKILL.md) — invoke when `needsSDD=true`.
+- [`sdd-orchestrator`](../sdd-orchestrator/SKILL.md) — invoke when `needsSDD=true` (`professional-planner` remains the reference methodology).
 - [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) — skip when `skipJudgmentDay=true`.
 - [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — abort if router returns confidence 0 on a critical-area query.
 
