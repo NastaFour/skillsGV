@@ -23,6 +23,13 @@
       "note": "Empate real dentro del grupo: figma-mcp lidera el scoring por triggers (figma mcp, figma design context, figma node) y figma-implement también está en el top-4 (figma url). El grupo lidera el ruteo, así que la matriz des-empata promoviendo el canónico figma-implement."
     },
     {
+      "id": "figma-canonical-keyword-only",
+      "query": "inspect the figma design context and extract the tokens",
+      "expectedPrimary": "figma-mcp",
+      "group": "figma",
+      "note": "El canónico figma-implement entra al top-4 solo por keywords (triggerScore=0, kwScore=0.5) mientras figma-mcp lidera con trigger real (figma design context). El hook D4 NO debe promover un canónico sin trigger propio: primary = figma-mcp (líder actual, confidence 1), nunca null."
+    },
+    {
       "id": "banana-image-gen-resolve",
       "query": "generate an image with nano banana or banana claude for the blog thumbnail",
       "expectedPrimary": "nano-banana",

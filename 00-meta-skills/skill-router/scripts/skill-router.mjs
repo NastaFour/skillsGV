@@ -164,7 +164,11 @@ if (overlapGroups.length > 0 && scored.length > 0) {
     const hitsInTop4 = members.filter((m) => top4Names.has(m)).length;
     if (hitsInTop4 >= 2) {
       const canonicalEntry = scored.find((s) => s.name === group.canonical);
-      if (canonicalEntry) {
+      // Promote only when the canonical earned its place with its own trigger
+      // hit (triggerScore >= 1). A canonical that entered the top-4 via keyword
+      // overlap alone has no genuine claim to the primary slot: promoting it
+      // would force confidence <=0.5 and primary=null. Keep the current leader.
+      if (canonicalEntry && canonicalEntry.triggerScore >= 1) {
         scored = [canonicalEntry, ...scored.filter((s) => s.name !== canonicalEntry.name)];
       }
       break;

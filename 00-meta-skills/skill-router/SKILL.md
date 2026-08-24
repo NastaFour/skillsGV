@@ -69,7 +69,7 @@ Flags:
    - `needsSDD`: query touches 2+ distinct category prefixes (`04-backend`, `05-frontend`, etc.) AND diff >20 lines.
    - `trivial`: diff <20 lines AND query has no markers `auth|payment|prisma|migration|socketio|ssl|secret`.
    - `skipJudgmentDay`: diff <100 lines AND no markers `auth|payments|migration|sql|ssl`.
-7. **Overlap matrix** (D4): after scoring, if ≥2 members of an `overlap-matrix.json` group are in the top-4 AND the group leads the scoring (current top-1 is a member), `primary = canonical` and the other members stay in `secondary`/`tier1toLoad`. Members in the top-4 that are only keyword noise never displace a genuine primary. Matrix smoke tests in `references/overlap-smoke-tests.json`.
+7. **Overlap matrix** (D4): after scoring, if ≥2 members of an `overlap-matrix.json` group are in the top-4 AND the group leads the scoring (current top-1 is a member), `primary = canonical` — only when the canonical itself has a trigger hit (`triggerScore >= 1`); a keyword-only canonical never displaces the leader. Members in the top-4 that are only keyword noise never displace a genuine primary. Matrix smoke tests in `references/overlap-smoke-tests.json`.
 
 ## Output contract
 
