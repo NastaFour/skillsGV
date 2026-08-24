@@ -1,6 +1,6 @@
 ---
 name: web-animation-sources
-description: Curaduría de las 10 referencias clásicas de animación web (hover effects, loading animations, efectos 3D, entrance animations, microinteracciones, background y mouse animations, librerías CSS y componentes React), cada una con autor/fuente, URL y propósito. Use when searching animation references, inspiration sources, or curated examples — es una lista curada de fuentes, no una guía de implementación.
+description: Referencias curadas de animaciones web (hover effects, loading animations, entrance animations, microinteracciones, librerías CSS y componentes React) con autor, URL y propósito. Use when searching animation references or inspiration sources.
 license: MIT
 metadata:
   trigger: ["hover effects", "loading animation", "entrance animation", "animate.css"]
