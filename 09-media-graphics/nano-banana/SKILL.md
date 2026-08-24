@@ -72,5 +72,5 @@ Be specific: style, mood, colors, composition. Add **"no text"** to avoid render
 
 ## References
 
-- [`11-mcp-hybrid/asset-generator-mcp`](../../11-mcp-hybrid/asset-generator-mcp/SKILL.md) — MCP-based asset generation (canonical for `banana-image-gen` group tie-breaking is this skill).
+- [`11-mcp-hybrid/asset-generator-mcp`](../../11-mcp-hybrid/asset-generator-mcp/SKILL.md) — MCP-based asset generation (canonical for `banana-image-gen` group tie-breaking is `nano-banana`).
 - Fuente original (MIT): [kkoppenhaver/cc-nano-banana](https://github.com/kkoppenhaver/cc-nano-banana).
