@@ -2,7 +2,7 @@
 name: sdd-orchestrator
 description: "Trigger: sdd new, sdd continue, sdd ff, SDD change, feature >1 archivo. Thin orchestrator that routes SDD phases without executing them: DAG, auto/interactive modes, gatekeeper, dedup. Use when starting or continuing an SDD change."
 license: MIT
-allowed-tools: Read Task
+allowed-tools: Read Task Bash(git:*,gh:*)
 metadata:
   author: gentleman-programming
   version: "1.0.0"
