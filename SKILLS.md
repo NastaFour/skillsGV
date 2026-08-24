@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **140 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **149 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 ## 00-meta-skills
 
@@ -151,6 +151,7 @@ Catálogo de **140 skills** compatible con [agentskills.io](https://agentskills.
 | vercel-react-view-transitions | [05-frontend/vercel-react-view-transitions/SKILL.md](05-frontend/vercel-react-view-transitions/SKILL.md) ← native ViewTransition animations, shared elements, CSS pseudo-elements |
 | web-design-guidelines | [05-frontend/web-design-guidelines/SKILL.md](05-frontend/web-design-guidelines/SKILL.md) ← review UI code for Web Interface Guidelines compliance, accessibility, UX audit |
 | interface-design | [05-frontend/interface-design/SKILL.md](05-frontend/interface-design/SKILL.md) ← craft-first UI for dashboards, SaaS apps, admin panels, tokens (Linear/Stripe standard) |
+| figma-implement | [05-frontend/figma-implement/SKILL.md](05-frontend/figma-implement/SKILL.md) ← plegado Capa 1: Figma → código 1:1 (canónico del grupo figma), design context + screenshots vía MCP |
 
 ## 06-code-quality
 
@@ -185,6 +186,24 @@ Catálogo de **140 skills** compatible con [agentskills.io](https://agentskills.
 | monitoring | [08-devops/monitoring/SKILL.md](08-devops/monitoring/SKILL.md) |
 | observability | [08-devops/observability/SKILL.md](08-devops/observability/SKILL.md) |
 | store-deployment-eas | [08-devops/store-deployment-eas/SKILL.md](08-devops/store-deployment-eas/SKILL.md) ← `references/eas-setup.md`, `scripts/check-eas-config.mjs` |
+
+## 09-media-graphics
+
+| Skill | Path |
+|---|---|
+| nano-banana | [09-media-graphics/nano-banana/SKILL.md](09-media-graphics/nano-banana/SKILL.md) ← canónico del grupo banana-image-gen: generación/edición de imágenes con Nano Banana (Gemini CLI nanobanana) |
+| banana-claude | [09-media-graphics/banana-claude/SKILL.md](09-media-graphics/banana-claude/SKILL.md) ← Creative Director: prompt engineering, modos de dominio y control de aspecto para imágenes profesionales |
+
+## 11-mcp-hybrid
+
+| Skill | Path |
+|---|---|
+| component-scrapper-mcp | [11-mcp-hybrid/component-scrapper-mcp/SKILL.md](11-mcp-hybrid/component-scrapper-mcp/SKILL.md) ← scrapea componentes de sitios en vivo vía MCP y los reutiliza como código project-ready |
+| oklch-theme-injector | [11-mcp-hybrid/oklch-theme-injector/SKILL.md](11-mcp-hybrid/oklch-theme-injector/SKILL.md) ← temas de color perceptivo OKLCH/OKHSL sobre la taxonomía de tokens HSL |
+| motion-video-pipeline | [11-mcp-hybrid/motion-video-pipeline/SKILL.md](11-mcp-hybrid/motion-video-pipeline/SKILL.md) ← pipeline motion-to-video: render de frames y ensamblaje con timing determinístico |
+| ux-auditor-agent | [11-mcp-hybrid/ux-auditor-agent/SKILL.md](11-mcp-hybrid/ux-auditor-agent/SKILL.md) ← auditoría UX/usabilidad/accesibilidad con hallazgos priorizados y evidencia |
+| asset-generator-mcp | [11-mcp-hybrid/asset-generator-mcp/SKILL.md](11-mcp-hybrid/asset-generator-mcp/SKILL.md) ← assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo |
+| figma-mcp | [11-mcp-hybrid/figma-mcp/SKILL.md](11-mcp-hybrid/figma-mcp/SKILL.md) ← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP |
 
 ## professional-planner
 

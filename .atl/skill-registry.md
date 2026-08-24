@@ -2,7 +2,7 @@
 
 > Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.
 > Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).
-> Total de skills indexadas: 129.
+> Total de skills indexadas: 138.
 
 ## Archivos de convención y contexto del proyecto
 
@@ -127,6 +127,7 @@
 | `electron` | Electron desktop application patterns: main/renderer process architecture, IPC communication, security hardening (contextIsolation, sandbox), native menus, auto-update, and packaging. Trigger when building or reviewing an Electron app, or when the user asks about desktop apps with web technologies, main/renderer communication, or Electron security. NOTE: skillsGV also has `electronjs` — this skill extends it with Gentleman Programming patterns. | `project` | `05-frontend/electron/SKILL.md` |
 | `electronjs` | Desktop application development with Electron.js. Covers main/renderer process separation, secure IPC communication channels, contextIsolation, and window bounds management. Use when building desktop wrappers, cash register interfaces, or regional manager software. | `project` | `05-frontend/electronjs/SKILL.md` |
 | `expo-production-auditor` | Audits and prevents native build failures on Android/iOS. Runs Hermes compatibility analysis, circular dependency detection, and production bundler checks. Use before EAS build, when Expo native build fails, or when adding native modules. | `project` | `05-frontend/expo-production-auditor/SKILL.md` |
+| `figma-implement` | Trigger: figma implement, implementar figma, figma url, node id, design to code, pixel perfect figma, traducir diseno figma. Translate Figma nodes into production-ready code with 1:1 visual fidelity using the Figma MCP workflow (design context, screenshots, assets, and project-convention translation). Use when the user provides a Figma URL or node ID, or asks to implement designs or components that must match Figma specs. Canonical for the figma group. | `project` | `05-frontend/figma-implement/SKILL.md` |
 | `forms-validation-react` | Patterns for form validation using React Hook Form + Zod with shared schemas in packages/shared-types. Covers base RHF+Zod pattern, multi-step wizard forms, and shared schema conventions for web and mobile. Use when creating login, register, booking, review, or profile edit forms. | `project` | `05-frontend/forms-validation-react/SKILL.md` |
 | `i18n-localization` | Internationalization patterns for [APP] using i18next with Spanish (primary) and English (secondary) support. Covers web (react-i18next) and mobile (expo-localization + i18next) setup, translation file structure, and locale-aware formatting (dates, currencies). Use when adding multi-language support or localizing notification templates. | `project` | `05-frontend/i18n-localization/SKILL.md` |
 | `interface-design` | Craft-first interface design for dashboards, admin panels, SaaS apps, tools, settings pages, data interfaces, and interactive products. Use when designing, building, reviewing, auditing, or refining product UI where visual craft, layout hierarchy, tokens, states, visual direction, or design-system consistency matter. Not for marketing pages, landing pages, campaigns, or brand-only work. | `project` | `05-frontend/interface-design/SKILL.md` |
@@ -190,6 +191,24 @@
 | `monitoring` | Logging, healthchecks, and telemetry standards for [APP]. Covers Pino/Winston setup, healthcheck endpoints, correlation-ID tracing, and alerts. Use when configuring observability for the backend. Do not use for CI/CD pipelines or infrastructure setup. | `project` | `08-devops/monitoring/SKILL.md` |
 | `observability` | Configures observability stack: OpenTelemetry traces, Prometheus metrics, structured logging, and distributed tracing. Use when adding telemetry to services, configuring dashboards, or debugging production issues with traces. | `project` | `08-devops/observability/SKILL.md` |
 | `store-deployment-eas` | Deployment patterns for publishing [APP] Expo apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment management (dev/staging/prod), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates. | `project` | `08-devops/store-deployment-eas/SKILL.md` |
+
+## Media y Gráficos (09-media-graphics/)
+
+| Skill | Disparador / Descripción | Scope | Path |
+|---|---|---|---|
+| `banana-claude` | Trigger: banana claude, creative director, generar imagen profesional, image generation, crear imagen de marca, visual asset, /banana. Act as a Creative Director for AI image generation powered by Gemini Nano Banana, with prompt engineering, domain modes, and aspect-ratio control. Use when the user wants a crafted, production-grade image or brand visual rather than a quick render. | `project` | `09-media-graphics/banana-claude/SKILL.md` |
+| `nano-banana` | Trigger: nano banana, generar imagen, generate image, crear imagen, thumbnail, banner, icono, imagen ia. Generate and edit images with Nano Banana (Gemini CLI nanobanana extension). Use when the user asks to create, generate, edit, or restore any image, icon, diagram, pattern, illustration, thumbnail, or banner — this is the canonical image-generation skill for the banana-image-gen group. | `project` | `09-media-graphics/nano-banana/SKILL.md` |
+
+## Híbridas MCP (11-mcp-hybrid/)
+
+| Skill | Disparador / Descripción | Scope | Path |
+|---|---|---|---|
+| `asset-generator-mcp` | Trigger: asset generator, generar assets, generar icono, generar logo, generate icon, generate logo, generate asset, generar grafico. Generate visual assets (icons, logos, illustrations, backgrounds) via MCP-based generation tools with consistent style. Use when the user needs production-ready image assets matching a style brief instead of hand-drawn placeholders. | `project` | `11-mcp-hybrid/asset-generator-mcp/SKILL.md` |
+| `component-scrapper-mcp` | Trigger: scrape component, scrapper, extraer componente, reutilizar UI, component scraper. Scrape components from a live site or design source via an MCP server and turn them into reusable, project-ready UI code. Use when the user wants to extract a real component, page section, or pattern from an existing site and reuse it locally instead of rebuilding it by hand. | `project` | `11-mcp-hybrid/component-scrapper-mcp/SKILL.md` |
+| `figma-mcp` | Trigger: figma mcp, figma design context, get_design_context, figma node, extraer tokens figma, figma tokens, figma screenshot. Inspect and extract structured data from Figma files (design context, metadata, tokens, screenshots) through the native Figma MCP server. Use when the user wants to read or audit a Figma design, extract tokens/component data, or needs design context for implementation. Non-canonical member of the figma group. | `project` | `11-mcp-hybrid/figma-mcp/SKILL.md` |
+| `motion-video-pipeline` | Trigger: motion video, video pipeline, motion pipeline, animar video, video animado, motion graphics video. Orchestrate a motion-to-video pipeline: design motion sequences, render frames, and assemble them into video with correct timing. Use when the user wants animated graphics exported as a video file, an intro/outro, or a motion storyboard rendered end to end. | `project` | `11-mcp-hybrid/motion-video-pipeline/SKILL.md` |
+| `oklch-theme-injector` | Trigger: oklch, color space, perceptual color, theme injector, paleta perceptiva, okhsl. Generate and inject OKLCH (perceptual) color themes into a design system, complementing HSL-based tokens. Use when the user wants perceptually uniform color scales, better light/dark theme contrast, or to migrate an HSL/hex palette to OKLCH via MCP-driven tooling. | `project` | `11-mcp-hybrid/oklch-theme-injector/SKILL.md` |
+| `ux-auditor-agent` | Trigger: ux audit, auditoria ux, auditoria de experiencia, user experience review, evaluar ux. Audit an interface against UX heuristics, accessibility, and interaction best practices, returning prioritized findings with evidence. Use when the user wants a UX review, usability check, or accessibility evaluation of a screen, flow, or design before shipping. | `project` | `11-mcp-hybrid/ux-auditor-agent/SKILL.md` |
 
 ## Planificación SDD (professional-planner/)
 

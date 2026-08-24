@@ -406,6 +406,8 @@ const CATEGORY_TITLES = {
   "06-code-quality": "Calidad de Código (06-code-quality/)",
   "07-testing": "Testing (07-testing/)",
   "08-devops": "DevOps (08-devops/)",
+  "09-media-graphics": "Media y Gráficos (09-media-graphics/)",
+  "11-mcp-hybrid": "Híbridas MCP (11-mcp-hybrid/)",
   "professional-planner": "Planificación SDD (professional-planner/)",
 };
 
