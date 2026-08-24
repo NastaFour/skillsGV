@@ -42,12 +42,12 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 2: Corpus + replay E2 (WU2→PR-2)
 
-- [ ] 2.1 RED amenaza subprocesos: query con metacaracteres de shell (`;`, `|`, `$()`) debe tratarse como texto plano, sin escape ni corrupción de ejecución; falla hasta existir 2.3 (router-replay-corpus)
-- [ ] 2.2 Crear `skill-router/references/routing-corpus.jsonl`, línea `{id, query, expectedPrimary, group?, source}`: migrar casos de `overlap-smoke-tests.json` + caso three-js-web (router-replay-corpus, overlap-matrix)
-- [ ] 2.3 Implementar `skill-router/scripts/router-replay.mjs`: spawnSync(process.execPath,[router,"--query",q,"--json"]) con args array SIN shell:true, timeout por caso y exit code capturado; salida estable `{total, exactMatches, accuracy, discrepancies[{id,line,query,expected,got}]}` (router-replay-corpus)
-- [ ] 2.4 Línea malformada del corpus se reporta con su número de línea (router-replay-corpus)
-- [ ] 2.5 Determinismo offline: 2 corridas byte-idénticas (diff vacío), cero llamadas a modelos (router-replay-corpus)
-- [ ] 2.6 Consistencia triple matriz↔fixture↔corpus para three-js-web; gate PR-2: V exit 0 (overlap-matrix, router-replay-corpus)
+- [x] 2.1 RED amenaza subprocesos: query con metacaracteres de shell (`;`, `|`, `$()`) debe tratarse como texto plano, sin escape ni corrupción de ejecución; falla hasta existir 2.3 (router-replay-corpus)
+- [x] 2.2 Crear `skill-router/references/routing-corpus.jsonl`, línea `{id, query, expectedPrimary, group?, source}`: migrar casos de `overlap-smoke-tests.json` + caso three-js-web (router-replay-corpus, overlap-matrix)
+- [x] 2.3 Implementar `skill-router/scripts/router-replay.mjs`: spawnSync(process.execPath,[router,"--query",q,"--json"]) con args array SIN shell:true, timeout por caso y exit code capturado; salida estable `{total, exactMatches, accuracy, discrepancies[{id,line,query,expected,got}]}` (router-replay-corpus)
+- [x] 2.4 Línea malformada del corpus se reporta con su número de línea (router-replay-corpus)
+- [x] 2.5 Determinismo offline: 2 corridas byte-idénticas (diff vacío), cero llamadas a modelos (router-replay-corpus)
+- [x] 2.6 Consistencia triple matriz↔fixture↔corpus para three-js-web; gate PR-2: V exit 0 (overlap-matrix, router-replay-corpus)
 
 ## Fase 3: Journal apply-progress E3 (WU3→PR-3)
 

