@@ -65,12 +65,12 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 5: Docs E1/E5/E6 + delta hooks (WU5→PR-5)
 
-- [ ] 5.1 Crear `sdd-orchestrator/references/model-routing.md`: protocolo declarativo con interfaz list()/resolve(phase) sobre catálogo del runtime; degradación documentada sin catálogo (modelo default, pipeline no falla); grep confirma cero comandos runtime hardcodeados ni TUI obligatoria (model-routing)
-- [ ] 5.2 Crear `_shared/model-routing/profiles.schema.json` + `profiles.example.json` (fases propose/spec/design/tasks/apply/verify); example valida contra schema (model-routing, model-routing-hooks)
-- [ ] 5.3 `harness-map.md` sección «Política de review»: solo lo introducido/empeorado bloquea; deuda preexistente → follow-up aparte; perfiles opt-in (sin declaración → política base); actualizar nota E1 de diferido a activo en Slice 2 (review-policy, model-routing-hooks)
-- [ ] 5.4 Crear `02-dev-roles/code-reviewer/references/review-policy.md` (SHOULD), consistente con la disposición causal RDD; cross-check textual harness-map ↔ skill (review-policy)
-- [ ] 5.5 `harness-map.md` sección «Punto de extensión AHE» junto al RDD: sidecars evaluator/debugger/evolver (responsabilidad + inserción post-verify propuesta); niveles static_contract/transcript_replay/live_smoke/manual_oracle con criterio de aplicación; SIN mecanismo ejecutable; OPEN-1 diferido; activar uno no habilita al otro (ahe-extension-point, rdd-extension-point)
-- [ ] 5.6 Gate PR-5 doc-only: cero carpetas de skill nuevas (contador permanece en 151); V exit 0 (ahe-extension-point)
+- [x] 5.1 Crear `sdd-orchestrator/references/model-routing.md`: protocolo declarativo con interfaz list()/resolve(phase) sobre catálogo del runtime; degradación documentada sin catálogo (modelo default, pipeline no falla); grep confirma cero comandos runtime hardcodeados ni TUI obligatoria (model-routing)
+- [x] 5.2 Crear `_shared/model-routing/profiles.schema.json` + `profiles.example.json` (fases propose/spec/design/tasks/apply/verify); example valida contra schema (model-routing, model-routing-hooks)
+- [x] 5.3 `harness-map.md` sección «Política de review»: solo lo introducido/empeorado bloquea; deuda preexistente → follow-up aparte; perfiles opt-in (sin declaración → política base); actualizar nota E1 de diferido a activo en Slice 2 (review-policy, model-routing-hooks)
+- [x] 5.4 Crear `02-dev-roles/code-reviewer/references/review-policy.md` (SHOULD), consistente con la disposición causal RDD; cross-check textual harness-map ↔ skill (review-policy)
+- [x] 5.5 `harness-map.md` sección «Punto de extensión AHE» junto al RDD: sidecars evaluator/debugger/evolver (responsabilidad + inserción post-verify propuesta); niveles static_contract/transcript_replay/live_smoke/manual_oracle con criterio de aplicación; SIN mecanismo ejecutable; OPEN-1 diferido; activar uno no habilita al otro (ahe-extension-point, rdd-extension-point)
+- [x] 5.6 Gate PR-5 doc-only: cero carpetas de skill nuevas (contador permanece en 151); V exit 0 (ahe-extension-point)
 
 ## Fase 6: Verificación final (E2E/RED)
 

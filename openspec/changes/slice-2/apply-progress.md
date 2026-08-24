@@ -1,6 +1,6 @@
 # Apply Progress: slice-2
 
-> Fuente de reporte (no de verdad): el estado acumulado de unidades completadas por lote. Lotes completados: WU1 → PR-1 (Fase 1), WU2 → PR-2 (Fase 2), WU3 → PR-3 (Fase 3) y WU4 → PR-4 (Fase 4). Desde E3 la fuente de verdad durable es el journal (`journal/snapshot.json`); este archivo es la capa de reporte.
+> Fuente de reporte (no de verdad): el estado acumulado de unidades completadas por lote. Lotes completados: WU1 → PR-1 (Fase 1), WU2 → PR-2 (Fase 2), WU3 → PR-3 (Fase 3), WU4 → PR-4 (Fase 4) y WU5 → PR-5 (Fase 5). Desde E3 la fuente de verdad durable es el journal (`journal/snapshot.json`); este archivo es la capa de reporte.
 
 ## Estado acumulado
 
@@ -10,7 +10,7 @@
 | 2 — Corpus + replay E2 (WU2→PR-2) | 2.1–2.6 | ✅ Completas (6/6) |
 | 3 — Journal apply-progress E3 (WU3→PR-3) | 3.1–3.4 | ✅ Completas (4/4) |
 | 4 — Installer lifecycle E4 (WU4→PR-4) | 4.1–4.4 | ✅ Completas (4/4) |
-| 5 — Docs E1/E5/E6 (WU5→PR-5) | 5.1–5.6 | ⬜ Pendientes |
+| 5 — Docs E1/E5/E6 + delta hooks (WU5→PR-5) | 5.1–5.6 | ✅ Completas (6/6) |
 | 6 — Verificación final | 6.1–6.6 | ⬜ Pendientes |
 
 ## Evidencia de unidad de trabajo — WU1 (PR-1)
@@ -74,7 +74,33 @@
 | `d2ad4a9` | D7 installer lifecycle | Manifest por generación (`.skills-install/manifest.json`) con backups de sobrescritura; copy file-by-file sin borrado wholesale; `--dry-run` plan completo no mutante; `--uninstall` solo-propios con retención listada y abort sin manifest; `--rollback` de última generación con registro en historial; symlinks como entries de link sin borrar directorios reales |
 | (este commit) | Marcas SDD Fase 4 | tasks.md `[x]` 4.1–4.4 + apply-progress merge + journal seq 5–8 |
 
+## Evidencia de unidad de trabajo — WU5 (PR-5)
+
+| Evidencia | Valor |
+|---|---|
+| Comando de test enfocado y resultado exacto | Gate doc-only (5.6): `node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict` → exit 0, «151 pass · 0 with issues, 0 errors · 0 warnings · 0 info». Verificación 5.2: mini-validador del subset JSON Schema empleado por `profiles.schema.json` (`$ref`/`$defs`, `type`, `const`, `required`, `additionalProperties:false`, `minLength`) sobre `profiles.example.json` → VALID exit 0; instancia corrupta deliberada (sin `version`, propiedad adicional `bogus`, alias vacío) → INVALID con 3 errores precisos, exit 1. Verificación 5.1: Select-String con patrones de comandos runtime (`.mjs`, `node `, `npm`, `npx`, `curl`, invocaciones estilo CLI) sobre `model-routing.md` → 0 coincidencias; «TUI» aparece solo en contexto «sin TUI obligatoria» (3 menciones). Cross-check textual 5.4: vocabulario causal compartido (`introducido`/`empeorado`/`follow-up`/`opt-in`/`causal`) presente en harness-map y review-policy.md |
+| Comando/scenario de harness runtime y resultado exacto | Smoke router: `skill-router.mjs --query "3d scene three.js" --json` → `{primary:"three-js-web", confidence:1}`, exit 0. Replay determinista ×2: `router-replay.mjs` dos corridas → `REPLAY_IDENTICAL` (Compare-Object vacío), `{total:13, exactMatches:13, accuracy:1, discrepancies:[], malformedLines:[]}`, consistencia triple 8/8 grupos + 12/12 fixtures. Cero carpetas de skill nuevas: `git diff --name-status main...HEAD` = `.gitattributes` + 4 docs; SKILL.md nuevos: 0; conteo total: 151 |
+| Límite de rollback | Revertir los diffs de: `.gitattributes`, `00-meta-skills/skill-router/SKILL.md` (+ regenerar tier0-context/registro), `00-meta-skills/sdd-orchestrator/references/model-routing.md`, `_shared/model-routing/`, secciones nuevas de `00-meta-skills/harness-map.md` y `02-dev-roles/code-reviewer/references/review-policy.md`. No afecta código ejecutable (PR-5 es doc-only) ni el trabajo de PRs 1–4 |
+
+## Commits (rama `slice2/pr5-docs-deltas`, stacked-to-main desde `main` @ 9e17188)
+
+| Commit | Unidad | Contenido |
+|---|---|---|
+| `3e594a5` | FIX cross-cutting 1 | `.gitattributes` con `openspec/**/journal/** -text`: git trata el journal como binario opaco y nunca reescribe sus EOL (protege la cadena hash del journal frente a `core.autocrlf=true`; riesgo latente documentado en WU4). Incluyó reparación previa de bytes CRLF→LF del working tree (reproducía «hash chain broken at events.jsonl:2» tras el merge de PR-4) + renormalización del índice |
+| `87ecae9` | FIX heredado PR-1 | Contadores residuales «149»→«151»: `skill-router/SKILL.md` (frontmatter description + cuerpo ×2) + regeneración de derivados (`tier0-context.json/md` vía `--emit-tier0`, `.atl/skill-registry.md` vía `--emit-registry`). V exit 0 tras el cambio |
+| `2dfb7f3` | E1 (5.1+5.2) | `sdd-orchestrator/references/model-routing.md` (interfaz `list()`/`resolve(phase)`, formato declarativo, algoritmo del agente, degradación sin catálogo) + `_shared/model-routing/profiles.{schema,example}.json` (6 fases; example VALID contra schema) |
+| `b57f1b1` | E5 (5.3+5.4) | harness-map: sección «⚖️ Política de review» (causalidad + perfiles opt-in) y Model Routing actualizado de «diferido» a «activo desde Slice 2» (delta hooks); `code-reviewer/references/review-policy.md` como reflejo SHOULD |
+| (este commit) | E6 (5.5) + marcas SDD Fase 5 | harness-map: sección «🔬 Punto de extensión AHE» junto al RDD (sidecars + 4 niveles de evidencia, doc-only, OPEN-1 diferido); tasks.md `[x]` 5.1–5.6 + apply-progress merge + journal seq 9–14 |
+
 ## Decisiones y hallazgos de implementación
+
+### WU5 (PR-5)
+- **FIX 1 materializó su amenaza antes de empezar**: al abrir la fase, el journal reportaba «hash chain broken at events.jsonl:2» — `core.autocrlf=true` había reescrito LF→CRLF en events.jsonl/snapshot.json durante el merge de PR-4 a main (mismo gotcha de WU4, ahora en el flujo normal merge/checkout). Reparación: restaurar bytes exactos de HEAD vía `git show` + write buffer Node, luego `.gitattributes` `-text` para `openspec/**/journal/**` + `git add --renormalize`. Tras el fix, `verify` ok y el riesgo queda cerrado estructuralmente.
+- **Gotcha de renormalización**: al añadir `-text`, git dejó de limpiar EOL al comparar y los journal files aparecían como modificados aunque `git diff` estuviera vacío (stat-cache + transición de atributos); `git add --renormalize <path>` lo resuelve sin producir diff.
+- **Schema sin dependencias**: no hay node_modules en el catálogo, así que la validación example↔schema se hizo con un mini-validador autónomo que cubre exactamente las keywords que emplea el schema; se verificó también el camino negativo (instancia corrupta → INVALID exit 1). El schema usa objeto vacío `{}` como «fase hereda defaultAlias», evitando `oneOf` innecesario.
+- **Perfiles ejemplo alineados con la convención del kit**: `opus` para propose/design y `sonnet` para el resto — ilustrativos; los alias solo cobran significado contra el catálogo del runtime (`resolve(phase)`).
+- **Alcance respetado**: `openspec/config.yaml` aún dice «catálogo de 149 skills» — residual detectado FUERA del alcance autorizado de este fix (solo skill-router + tier0); queda anotado como follow-up para verificación final o mantenimiento.
+- **Presupuesto**: PR-5 doc-only ≈ 300 líneas cambiadas (dentro de la estimación 300–520).
 
 ### WU4 (PR-4)
 - **RED confirmó la amenaza real**: el instalador preexistente ejecutaba `rmSync(recursive)` del directorio destino antes de copiar — cada re-instalación DESTRUYA silenciosamente archivos del usuario dentro de skills instaladas (ajenos o editados). El nuevo flujo copy es file-by-file y nunca borra wholesale: los ajenos sobreviven y jamás entran al manifest.
