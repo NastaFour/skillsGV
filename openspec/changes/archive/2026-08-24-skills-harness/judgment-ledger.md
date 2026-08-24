@@ -59,3 +59,24 @@ Actor acotado (bounded fix, sin review ni nuevo juicio) — autorizado por el us
 - `node 00-meta-skills/skill-router/scripts/skill-router.mjs --query "get the figma design context and tokens for this node" --json` → `primary: figma-mcp`, `confidence: 1`.
 - `node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry` → exit 0, 138 skills indexadas, byte-idempotente.
 - `git status` limpio al cierre.
+
+---
+
+# Ronda de corrección 2
+
+Re-juicio acotado (ambos jueces) sobre el ledger + delta de la ronda 1: 6 defectos residuales causados/relacionados con la corrección. El usuario autorizó corregir todo. Actor acotado final (bounded fix round 2, sin review ni nuevo juicio). Cada corrección es una unidad de trabajo atómica (conventional commits, sin atribución IA).
+
+| ID | Fix (commit SHA) | Evidencia |
+|---|---|---|
+| R1 | `4e4fd25` | Header de `skills-loader.mjs` actualizado a «14 always-on skills» (coherente con el comentario inline «The 14 Tier 0» y `TIER0_SKILLS` de 14). Test: `--status` → exit 0, «Tier 0 set: 14 skills»; 0 referencias «12 always-on» en el header; `tier0-context.json` skillCount=14. |
+| R2 | `62c98fa` | Tabla Tier System de `skill-loader/SKILL.md` ahora lista 14 entradas: +`engram-integration`, +`kill-switches` (mismo orden que `TIER0_SKILLS`). Test: comparación programática fila SKILL.md vs `TIER0_SKILLS` vs nombres de `tier0-context.json` → 14/14/14 con igualdad exacta de arreglos, exit 0. |
+| R3 | `12a1771` | `sdd-verify/SKILL.md` `allowed-tools: Read Bash(node:*)` → `Read Write Bash(node:*)` (la fase debe persistir el verify-report en modos openspec/hybrid; consistente con sdd-apply/sdd-archive). Test: `validate-skills --strict` → exit 0, 149/149, 0 errores, 0 warnings. |
+| R4 | `c40eed1` | `sdd-orchestrator/SKILL.md` `allowed-tools: Read Task` → `Read Task Bash(git:*,gh:*)` (el cuerpo manda bash inline para estado git/gh; sintaxis de prefijo consistente con `Bash(git:*,node:*)` de sdd-archive). Test: `validate-skills --strict` → exit 0, 149/149, 0 errores, 0 warnings. |
+| R5 | `04a0b8a` | `skill-router/SKILL.md` líneas 22/41/93: `needsSDD` rutea a `sdd-orchestrator`; `professional-planner` queda como metodología de referencia (coherente con AGENTS.md y la regla de arranque). Test: 3 spots verificados por aserción de texto, 0 referencias «invoke professional-planner» residuales; `validate-skills --strict` → exit 0. |
+| R6 | `36fc805` | Bullet D4 de «When to Use» (`skill-router/SKILL.md:24`) ya no describe promoción incondicional: `primary = canonical` solo cuando el grupo lidera Y el canónico tiene trigger propio (`triggerScore >= 1`); un canónico solo-keyword nunca desplaza al líder. Test: aserción de consistencia bullet vs paso 7 del algoritmo (ambos con `triggerScore >= 1`); fixture `figma-canonical-keyword-only` sigue esperando primary=figma-mcp. |
+
+## Verificación global post-corrección (exit codes y evidencia en vivo)
+
+- `node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict` → exit 0 (149/149 pass, 0 errores, 0 warnings).
+- Smoke fixtures del router (runner propio sobre `overlap-smoke-tests.json`) → 11/11 green (incluye `figma-canonical-keyword-only`: primary=figma-mcp).
+- `git status` limpio al cierre.
