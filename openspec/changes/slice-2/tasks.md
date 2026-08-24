@@ -74,9 +74,9 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 6: Verificación final (E2E/RED)
 
-- [ ] 6.1 Query "3d"/three.js → primario three-js-web en smoke y corpus (overlap-matrix, router-replay-corpus)
-- [ ] 6.2 Replay determinista ×2 byte-idéntico, offline (router-replay-corpus)
-- [ ] 6.3 Journal recupera escritura interrumpida sin pérdida (temp dir) (apply-progress-journal)
-- [ ] 6.4 Dry-run/uninstall/rollback en temp dir con archivo ajeno retenido (installer-lifecycle)
-- [ ] 6.5 E1 activa perfiles vía catálogo en OpenCode sin comandos hardcodeados; runtime sin catálogo degrada según lo documentado (model-routing-hooks)
-- [ ] 6.6 Los 7 success criteria de proposal.md verificados + V global exit 0 (proposal)
+- [x] 6.1 Query "3d"/three.js → primario three-js-web en smoke y corpus (overlap-matrix, router-replay-corpus)
+- [x] 6.2 Replay determinista ×2 byte-idéntico, offline (router-replay-corpus)
+- [x] 6.3 Journal recupera escritura interrumpida sin pérdida (temp dir) (apply-progress-journal)
+- [x] 6.4 Dry-run/uninstall/rollback en temp dir con archivo ajeno retenido (installer-lifecycle)
+- [x] 6.5 E1 activa perfiles vía catálogo en OpenCode sin comandos hardcodeados; runtime sin catálogo degrada según lo documentado (model-routing-hooks)
+- [x] 6.6 Los 7 success criteria de proposal.md verificados + V global exit 0 (proposal)

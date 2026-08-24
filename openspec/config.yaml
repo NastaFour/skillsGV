@@ -1,16 +1,16 @@
-﻿# openspec/config.yaml â€” ConfiguraciÃ³n SDD del proyecto skills-catalog
-# AlmacÃ©n de artefactos: hybrid (archivos openspec/ + memoria Engram)
+# openspec/config.yaml — Configuración SDD del proyecto skills-catalog
+# Almacén de artefactos: hybrid (archivos openspec/ + memoria Engram)
 
 schema: spec-driven
 
-# AlmacÃ©n de artefactos SDD (artifact-store-abstraction)
+# Almacén de artefactos SDD (artifact-store-abstraction)
 # Modos: engram | openspec | hybrid | none
-# ResoluciÃ³n: elecciÃ³n de sesiÃ³n > config > default (engram si disponible, si no none)
+# Resolución: elección de sesión > config > default (engram si disponible, si no none)
 artifact_store: hybrid
 
-# ConvenciÃ³n de topic keys (artifact-store-abstraction)
-# Formato: sdd/{change}/{artifact} â€” upsert por topic_key, nunca duplicar.
-# En modo hybrid cada fase escribe el archivo openspec Y guarda la misma versiÃ³n
+# Convención de topic keys (artifact-store-abstraction)
+# Formato: sdd/{change}/{artifact} — upsert por topic_key, nunca duplicar.
+# En modo hybrid cada fase escribe el archivo openspec Y guarda la misma versión
 # en Engram (mem_save con capture_prompt: false).
 topic_keys:
   proposal: "sdd/{change}/proposal"
@@ -24,30 +24,30 @@ topic_keys:
   state: "sdd/{change}/state"
 
 context: |
-  Proyecto: skills-catalog (catÃ¡logo de 149 skills, spec agentskills.io)
-  Stack: catÃ¡logo plano de archivos SKILL.md; sin package.json ni lockfile.
-  Runtime de verificaciÃ³n: Node.js v24 (scripts .mjs sin dependencias npm).
-  ConvenciÃ³n: documentaciÃ³n en espaÃ±ol (AGENTS.md, SKILLS.md); nombres
-  de skill en lowercase-hyphen; frontmatter segÃºn agentskills.io.
+  Proyecto: skills-catalog (catálogo de 151 skills, spec agentskills.io)
+  Stack: catálogo plano de archivos SKILL.md; sin package.json ni lockfile.
+  Runtime de verificación: Node.js v24 (scripts .mjs sin dependencias npm).
+  Convención: documentación en español (AGENTS.md, SKILLS.md); nombres
+  de skill en lowercase-hyphen; frontmatter según agentskills.io.
 
 rules:
   proposal:
-    - Incluir plan de rollback para cambios que modifiquen el Ã­ndice o el frontmatter de muchas skills.
+    - Incluir plan de rollback para cambios que modifiquen el índice o el frontmatter de muchas skills.
   specs:
     - Usar escenarios Given/When/Then para requisitos de comportamiento.
     - Usar palabras clave RFC 2119 (MUST, SHALL, SHOULD, MAY) en los requisitos.
   design:
-    - Documentar decisiones de arquitectura con su justificaciÃ³n.
+    - Documentar decisiones de arquitectura con su justificación.
     - Para cambios que toquen varias skills, incluir un diagrama o matriz de impacto.
   tasks:
-    - Agrupar por fase, con numeraciÃ³n jerÃ¡rquica.
-    - Mantener tareas completables en una sesiÃ³n.
-    - Toda tarea que cree o modifique un SKILL.md debe incluir la validaciÃ³n con skill-validator.
+    - Agrupar por fase, con numeración jerárquica.
+    - Mantener tareas completables en una sesión.
+    - Toda tarea que cree o modifique un SKILL.md debe incluir la validación con skill-validator.
   apply:
     guidelines:
-      - Seguir los patrones existentes del catÃ¡logo (frontmatter, referencias locales en references/).
+      - Seguir los patrones existentes del catálogo (frontmatter, referencias locales en references/).
       - Toda skill nueva o modificada debe cumplir la spec agentskills.io.
-      - La descripciÃ³n del frontmatter debe ser una sola lÃ­nea, trigger-first y no superar 250 caracteres.
+      - La descripción del frontmatter debe ser una sola línea, trigger-first y no superar 250 caracteres.
     tdd: false
     test_command: "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict"
   verify:
@@ -55,13 +55,13 @@ rules:
     build_command: ""
     coverage_threshold: 0
   archive:
-    - Advertir antes de fusionar deltas destructivos (eliminaciÃ³n o renombrado de skills).
+    - Advertir antes de fusionar deltas destructivos (eliminación o renombrado de skills).
 
 testing:
   strict_tdd: false
-  reason: "CatÃ¡logo de contenido, no base de cÃ³digo de aplicaciÃ³n. No existe test runner; la verificaciÃ³n se realiza con los scripts del propio catÃ¡logo."
+  reason: "Catálogo de contenido, no base de código de aplicación. No existe test runner; la verificación se realiza con los scripts del propio catálogo."
   verification_commands:
     - command: "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs [--json] [--strict]"
-      purpose: "ValidaciÃ³n de cumplimiento de la spec agentskills.io (exit 0 = limpio)"
+      purpose: "Validación de cumplimiento de la spec agentskills.io (exit 0 = limpio)"
     - command: "node 00-meta-skills/skill-router/scripts/skill-router.mjs --query \"<tarea>\" [--json]"
       purpose: "Ruteo determinista de skills (smoke test del harness)"
