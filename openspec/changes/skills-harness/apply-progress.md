@@ -2,49 +2,57 @@
 
 **Change**: skills-harness
 **Modo**: Standard (strict TDD desactivado — catálogo de contenido, sin test runner)
-**Batch actual**: PR-3 / WU3 (Fases de cierre)
-**Rama**: `slice/pr3-wu3-closing-phases` (base `f6984a4` main, stacked-to-main; PR-1 y PR-2 mergeados a main)
+**Batch actual**: PR-4 / WU4 (Registro y bootstrap)
+**Rama**: `slice/pr4-wu4-registry-bootstrap` (base `ee37a36` main, stacked-to-main; PR-1, PR-2 y PR-3 mergeados a main)
 
-## Tareas completadas en este batch (PR-3 / WU3)
+## Tareas completadas en este batch (PR-4 / WU4)
 
-- [x] 3.1 Crear `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/SKILL.md`: apply con apply-progress merge, verify contra specs, archive con deltas, onboard docente (harness-orchestration)
-- [x] 3.2 `harness-map.md`: documentar routing de modelos diferido a Slice 2; GLM no es target de skill-sync (model-routing-hooks)
-- [x] 3.3 `harness-map.md`: cerrar brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode)
+- [x] 4.1 `skill-loader/scripts/skills-loader.mjs`: modo `--emit-registry` (reutiliza walk + cache mtime; excluye `_shared`, `skill-registry`, `sdd-*`) (skill-registry-protocol)
+- [x] 4.2 `skill-validator/scripts/validate-skills.mjs`: check de consistencia `SKILLS.md` ↔ `.atl/skill-registry.md` (nombre + path) (skill-registry-protocol)
+- [x] 4.3 Regenerar `.atl/skill-registry.md` (columna scope; excluye `_shared`/`skill-registry`/`sdd-*`); validar con `validate-skills.mjs --strict` exit 0 (skill-registry-protocol)
+- [x] 4.4 `AGENTS.md`: regla de arranque (router antes de cada turno; orquestador si >1 archivo); filas piloto DIFERIDAS a WU5 (ver Desviaciones)
+- [x] 4.5 `openspec/config.yaml`: `artifact_store: hybrid` + convención de topic keys (artifact-store-abstraction)
+- [x] Fix de consistencia autorizado: header de `harness-map.md` corregido de «51 skills» a «140 skills» (bug de doc pre-existente en el tema de consistencia de índices)
 
-## Archivos cambiados (batch PR-3 / WU3)
+## Archivos cambiados (batch PR-4 / WU4)
 
 | Archivo | Acción | Detalle |
 |---|---|---|
-| `00-meta-skills/sdd-tasks/SKILL.md` | Creado | Fase vendored MIT con header de atribución (3.1): desglose de tareas con Review Workload Forecast, guard de 400 líneas, unidades de trabajo |
-| `00-meta-skills/sdd-apply/SKILL.md` | Creado | Ídem (3.1): implementación con protocolo de merge de apply-progress, Evidencia de Unidad de Trabajo, guard de carga |
-| `00-meta-skills/sdd-verify/SKILL.md` | Creado | Ídem (3.1): verificación contra specs con matriz de cumplimiento, veredicto PASS/FAIL, sin dependencia del binario gentle-ai |
-| `00-meta-skills/sdd-archive/SKILL.md` | Creado | Ídem (3.1): sync de delta specs + movimiento a archive con Contrato de Copia Mecánica (`diff -r` readback) |
-| `00-meta-skills/sdd-onboard/SKILL.md` | Creado | Ídem (3.1): walkthrough docente del ciclo SDD completo, ejecución inline |
-| `00-meta-skills/harness-map.md` | Modificado | Cierre de brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode) + sección «Model Routing (diferido a Slice 2)» con nota GLM no target de skill-sync (3.2, 3.3) |
-| `SKILLS.md` | Modificado | Registro de las 5 skills nuevas del harness (requisito del sync de índice del validador); contador 135 → 140 |
-| `AGENTS.md` | Modificado | Fila de categoría Meta-Skills con los 5 nombres nuevos (requisito del sync de índice del validador) |
-| `openspec/changes/skills-harness/tasks.md` | Modificado | Tareas 3.1-3.3 marcadas `[x]` |
-| `openspec/changes/skills-harness/apply-progress.md` | Actualizado | Este artefacto (merge con batches PR-1/WU1 y PR-2/WU2) |
+| `00-meta-skills/skill-loader/scripts/skills-loader.mjs` | Modificado | Modo nuevo `--emit-registry` (4.1): reutiliza `walkSkills` + `buildIndex` (cache mtime), excluye `_shared`/`skill-registry`/`sdd-*`, agrupa por categoría top-level y escribe `.atl/skill-registry.md` con columna scope. Además endurece el parseo de frontmatter para YAML block scalars (`>`) y strings con comillas (casos `jira-epic`, `brainstorming`, `vercel-composition-patterns`) |
+| `00-meta-skills/skill-validator/scripts/validate-skills.mjs` | Modificado | Nuevo check de consistencia `SKILLS.md` ↔ `.atl/skill-registry.md` (4.2): cada entrada del registro debe existir en SKILLS.md con mismo nombre+path, y cada skill no excluida de SKILLS.md debe estar indexada en el registro; excluye `_shared`/`skill-registry`/`sdd-*`. Corre bajo el mismo guard `--skip-index-sync` |
+| `.atl/skill-registry.md` | Regenerado | Regenerado con `--emit-registry` (4.3): columna scope, 129 skills indexadas, excluye `_shared`/`skill-registry`/`sdd-*`, descripciones completas (block scalars y quotes resueltos) |
+| `AGENTS.md` | Modificado | Sección «🚀 Regla de arranque (harness)» (4.4): router antes de cada turno, orquestador si >1 archivo/dominio, contrato por fase + topic keys. Filas piloto NO añadidas (diferidas a WU5) |
+| `openspec/config.yaml` | Modificado | `artifact_store: hybrid` + `topic_keys` `sdd/{change}/{artifact}` (4.5) |
+| `00-meta-skills/harness-map.md` | Modificado | Header «51 skills» → «140 skills» (fix autorizado) |
+| `openspec/changes/skills-harness/tasks.md` | Modificado | Tareas 4.1-4.5 marcadas `[x]` |
+| `openspec/changes/skills-harness/apply-progress.md` | Actualizado | Este artefacto (merge con batches PR-1/WU1, PR-2/WU2 y PR-3/WU3) |
 
 ## Evidencia de unidad de trabajo (Work Unit Evidence)
 
 | Evidencia | Valor requerido | Resultado |
 |---|---|---|
-| Comando de test enfocado y resultado exacto | `node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict` (raíz del catálogo) | PASS — exit 0; 140 skills escaneadas, 0 errores, 0 warnings; las 5 skills nuevas pasan la spec agentskills.io (incluye `allowed-tools` requerido en strict, sin referencias rotas) |
-| Comando/scenario de harness runtime | N/A con razón — el piloto E2E SDD (fases tasks→archive emitiendo contrato en OpenCode/Antigravity) requiere un runtime de agente y está planificado en la fase de verificación (tarea 6.3); este batch verifica el protocolo y el frontmatter con el validador del catálogo | N/A con razón |
-| Límite de rollback | Eliminar `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/` y revertir los commits de `harness-map.md`, `SKILLS.md`, `AGENTS.md`, `tasks.md` y `apply-progress.md` (`git revert` de la rama) | Sin afectar trabajo no relacionado (WU1/WU2/WU4/WU5 intactos) |
+| Comando de test enfocado y resultado exacto | `node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict` (raíz del catálogo) | PASS — exit 0; 140 skills escaneadas, 0 errores, 0 warnings; incluye el nuevo check de consistencia SKILLS.md ↔ registro sin hallazgos. Test negativo confirmado: romper un path en `.atl/skill-registry.md` produce `registry-entry-path-mismatch` (error), y restaurar vuelve a exit 0 |
+| Comando/scenario de harness runtime | `node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry` (raíz del catálogo) | PASS — exit 0; «Emitted .atl/skill-registry.md (129 skills indexed, 10 categories)»; re-ejecución idempotente (working tree limpio tras el commit; sin diff nuevo). Output bien formado: columna scope, paths exactos, UTF-8 correcto |
+| Límite de rollback | Revertir la rama `slice/pr4-wu4-registry-bootstrap` (`git revert` o `git reset --hard main`) para restaurar: `skills-loader.mjs`, `validate-skills.mjs`, `.atl/skill-registry.md`, `AGENTS.md`, `openspec/config.yaml`, `harness-map.md` | Sin afectar trabajo no relacionado (WU1/WU2/WU3/WU5 intactos); `.atl/` no está en `.gitignore` (está trackeado) |
 
 ## Desviaciones del diseño
 
-1. **Registro en `SKILLS.md`/`AGENTS.md` adelantado desde WU4 (requerido por el gate de verificación — misma lección que WU2)**: el validador `--strict` incluye checks de sync de índice (`index-sync-missing-skill`, `agents-sync-missing-skill`) que fallan con exit 1 si las 5 skills nuevas no están en `SKILLS.md` y `AGENTS.md`. Para que PR-3 pase `validate-skills.mjs --strict` exit 0 (test enfocado de WU3 en tasks.md), se añadieron SOLO las filas de registro mínimas (tabla `00-meta-skills` + fila de categoría Meta-Skills y contador 135→140). NO se incluye la regla de arranque ni las filas piloto de la tarea 4.4 (WU4), ni la regeneración de `.atl/skill-registry.md` (4.3, WU4).
-2. **Adaptación vendored (fases tasks/apply/verify/archive/onboard)**: las fases eliminan referencias a `skills/_shared/sdd-phase-common.md`, `skills/_shared/openspec-convention.md`, `skills/_shared/sdd-status-contract.md`, `references/report-format.md`, `strict-tdd-verify.md` y `../_shared/sdd-phase-common.md` porque esos archivos no existen en el catálogo (referencias rotas = error/warning en strict). El contenido se inlinó o se reemplazó por la referencia al protocolo común local (`_shared/sdd-phase-common.md`, citado por nombre). Se añadió `allowed-tools: Read` (requerido en strict) y `metadata.version` semver. Se eliminaron los campos runtime-específicos `disable-model-invocation`/`user-invocable`/`delegate_only` (el patrón executor-first se conserva en el cuerpo). `sdd-verify` y `sdd-archive` prescinden de los mecanismos del binario gentle-ai (receipts, `gentle-ai sdd-verify-validate`, authority preflight): el RDD es doc-only en Slice 1 y no hay binario en el catálogo; conservan lo esencial (matriz de cumplimiento, veredicto, gate de completitud de tareas, Contrato de Copia Mecánica con `diff -r`).
+1. **Filas piloto de AGENTS.md y +9 filas de SKILLS.md DIFERIDAS a WU5 (decisión del procedimiento de 4.4)**: la tarea 4.4 pedía agregar la regla de arranque + filas piloto en AGENTS.md y +9 filas en SKILLS.md. Las 9 skills piloto (5 híbridas MCP + figma-mcp + nano-banana + banana-claude + figma-implement) se crean en WU5 (tareas 5.1/5.2) y NO existen todavía. Se probó que agregar una fila en SKILLS.md que apunte a un path inexistente rompe `validate-skills.mjs --strict` (check `index-sync-orphan`, error exit 1). Por el procedimiento de decisión de 4.4 («NUNCA dejar el validador en rojo»), en este batch se agregó SOLO la regla de arranque de AGENTS.md; las filas piloto y las +9 filas de SKILLS.md quedan diferidas a WU5 (PR-5) cuando las skills existan.
+2. **`getField` del loader endurecido (requerido por la regeneración correcta)**: el parseo original de frontmatter no manejaba YAML block scalars (`description: >`) ni strings con comillas dobles, lo que producía descripciones incorrectas en el registro (p. ej. `jira-epic` con descripción `>`, `brainstorming` con comillas). Se mejoró `getField` en `skills-loader.mjs` (fold de líneas indentadas para `>`/`|`, strip de comillas) — cambio aditivo dentro de 4.1, sin alterar el comportamiento de los modos existentes.
+3. **`openspec/config.yaml` context sigue diciendo «129 skills»**: el contexto describe el catálogo indexado (129, sin las 11 `sdd-*`), no el total de SKILL.md (140). No se modificó porque el fix autorizado de conteo era únicamente el header de `harness-map.md`; se registra como nota.
 
 ## Problemas encontrados
 
-1. **Sin remoto git configurado** (heredado de PR-1/PR-2): `git remote -v` vacío. PR-3 no puede abrirse; la rama `slice/pr3-wu3-closing-phases` queda lista para push cuando exista remoto.
-2. **Header de `harness-map.md` desactualizado (pre-existente, no tocado)**: dice "51 skills" pero el catálogo tiene 140; queda pendiente de corrección (fuera de alcance de WU3, se puede corregir en WU4).
+1. **Sin remoto git configurado** (heredado de PR-1/PR-2/PR-3): `git remote -v` vacío. PR-4 no puede abrirse; la rama `slice/pr4-wu4-registry-bootstrap` queda lista para push cuando exista remoto.
+2. **Header de `harness-map.md` desactualizado**: corregido en este batch (51 → 140) como fix de consistencia autorizado; ya no es un problema abierto.
 
 ## Historial de batches previos
+
+### Batch PR-3 / WU3 (Fases de cierre) — `slice/pr3-wu3-closing-phases`
+
+- [x] 3.1 Crear `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/SKILL.md`
+- [x] 3.2 `harness-map.md`: routing de modelos diferido a Slice 2; GLM no es target de skill-sync
+- [x] 3.3 `harness-map.md`: cerrar brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode)
 
 ### Batch PR-2 / WU2 (Núcleo del harness) — `slice/pr2-wu2-harness-core`
 
@@ -69,20 +77,25 @@
 - [x] 3.1 Crear `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/SKILL.md` (PR-3/WU3)
 - [x] 3.2 `harness-map.md`: routing de modelos diferido a Slice 2; GLM no es target de skill-sync (PR-3/WU3)
 - [x] 3.3 `harness-map.md`: cerrar brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode) (PR-3/WU3)
+- [x] 4.1 `skills-loader.mjs`: modo `--emit-registry` (PR-4/WU4)
+- [x] 4.2 `validate-skills.mjs`: check de consistencia SKILLS.md ↔ registro (PR-4/WU4)
+- [x] 4.3 Regenerar `.atl/skill-registry.md` con columna scope; validar strict exit 0 (PR-4/WU4)
+- [x] 4.4 `AGENTS.md`: regla de arranque (filas piloto diferidas a WU5) (PR-4/WU4)
+- [x] 4.5 `openspec/config.yaml`: `artifact_store: hybrid` + topic keys (PR-4/WU4)
+- [x] Fix autorizado: header `harness-map.md` «51» → «140» (PR-4/WU4)
 
 ## Tareas restantes
 
-- [ ] 4.1 a 4.5 (WU4 → PR-4): `--emit-registry`, consistencia, regla de arranque AGENTS.md, filas piloto SKILLS.md, config.yaml
-- [ ] 5.1 a 5.5 (WU5 → PR-5): lote piloto, matriz de solapamiento, hook del router, smoke tests
+- [ ] 5.1 a 5.5 (WU5 → PR-5): lote piloto (9 skills), overlap-matrix.json, hook del router, smoke tests, regen tier0. Incluye las filas piloto de AGENTS.md y las +9 filas de SKILLS.md diferidas desde 4.4
 - [ ] 6.1 a 6.4 (Verificación)
 
 ## Frontera de workload / PR
 
 - **Modo**: PR encadenado (chained PR slice, stacked-to-main)
-- **Unidad actual**: WU3 — fases tasks→archive + doc routing (model routing diferido, brechas #16/#4)
-- **Frontera**: PR-3 comienza en `f6984a4` (main, PR-2 mergeado) y termina en el último commit de esta rama; no incluye nada de WU4-WU5
-- **Impacto en presupuesto de revisión**: ~1.000 líneas añadidas (5 SKILL.md + doc + registro) — por encima del guard de 400; justificado por el split en work units por commit; cada commit es una unidad de trabajo revisable independiente
+- **Unidad actual**: WU4 — registro + bootstrap (--emit-registry, consistencia, regla de arranque, config.yaml)
+- **Frontera**: PR-4 comienza en `ee37a36` (main, PR-3 mergeado) y termina en el último commit de esta rama; no incluye nada de WU5-WU6 (skills piloto, matriz, hook del router)
+- **Impacto en presupuesto de revisión**: ~280 líneas netas (117 loader + 94 validator + registro regenerado + 11 AGENTS + 1 harness-map + 20 config) — por debajo del guard de 400; dividido en 6 commits por unidad de trabajo
 
 ## Estado
 
-11/11 tareas acumuladas completadas (1.1, 1.2, 2.1-2.4, 3.1-3.3). PR-3 listo para revisión; siguiente batch (WU4 → PR-4).
+15/15 tareas acumuladas completadas (1.1, 1.2, 2.1-2.4, 3.1-3.3, 4.1-4.5 + fix). PR-4 listo para revisión; siguiente batch (WU5 → PR-5).
