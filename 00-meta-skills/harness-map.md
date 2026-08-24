@@ -1,6 +1,6 @@
 # 🧭 Harness Map — Skills ↔ 20 Agent Harnesses
 
-This document maps the **149 skills** in this catalog to the **20 Agent Harnesses** framework (Gentleman Programming taxonomy, 2026). Use it to identify gaps and to understand which skill serves each operational concern.
+This document maps the **150 skills** in this catalog to the **20 Agent Harnesses** framework (Gentleman Programming taxonomy, 2026). Use it to identify gaps and to understand which skill serves each operational concern.
 
 ## 🎯 The 20 Agent Harnesses
 

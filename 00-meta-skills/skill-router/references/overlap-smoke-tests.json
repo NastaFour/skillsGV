@@ -77,6 +77,13 @@
       "expectedPrimary": "asset-generator-mcp",
       "group": "hybrid-asset-generator",
       "note": "Grupo unitario: primary esperado = asset-generator-mcp sin falsos primarios contra frontend-designer/ai-ui-generation."
+    },
+    {
+      "id": "three-js-web-resolve",
+      "query": "3d scene three.js",
+      "expectedPrimary": "three-js-web",
+      "group": "three-js-web",
+      "note": "Grupo unitario: primary esperado = three-js-web sin falsos primarios contra motion-framer/motion-gsap/visual-effects (CSS 3D ≠ WebGL)."
     }
   ]
 }

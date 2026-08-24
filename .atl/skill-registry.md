@@ -2,7 +2,7 @@
 
 > Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.
 > Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).
-> Total de skills indexadas: 138.
+> Total de skills indexadas: 139.
 
 ## Archivos de convención y contexto del proyecto
 
@@ -150,6 +150,7 @@
 | `state-management` | DEPRECATED. Use zustand-5 instead. Legacy conceptual state-management overview kept for retrocompatibility. The skill-router ignores this skill. | `global, project` | `05-frontend/state-management/SKILL.md` |
 | `tailwind-4` | Tailwind CSS 4 patterns — cn() utility, semantic theme classes (never var() or hex in className), style constants for chart libraries, responsive/dark-mode patterns. Use when styling with Tailwind 4 so the AI avoids the className-as-inline-CSS anti-pattern. | `global, project` | `05-frontend/tailwind-4/SKILL.md` |
 | `tailwindcss` | Standards and guidelines for Tailwind CSS styling. Prevents runtime CSS string interpolation issues, organizes responsive layouts, and ensures clean utility classes compilation. Use when styling with Tailwind, configuring JIT, or building responsive layouts. | `global, project` | `05-frontend/tailwindcss/SKILL.md` |
+| `three-js-web` | Desarrollo web 3D en tiempo real con three.js, react-three-fiber (R3F) y drei como una sola unidad en React. Cubre escenas WebGL, cámara y renderer, modelos GLTF, helpers drei, performance de GPU y Spline como alternativa no-code. Use when building 3D scenes, WebGL experiences, react-three-fiber components, drei helpers, or evaluating Spline as a no-code 3D option. | `global, project` | `05-frontend/three-js-web/SKILL.md` |
 | `vercel-composition-patterns` | React composition patterns that scale. Use when refactoring components with | `project` | `05-frontend/vercel-composition-patterns/SKILL.md` |
 | `vercel-react-best-practices` | React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements. | `project` | `05-frontend/vercel-react-best-practices/SKILL.md` |
 | `vercel-react-view-transitions` | Guide for implementing smooth, native-feeling animations using React's View Transition API (`<ViewTransition>` component, `addTransitionType`, and CSS view transition pseudo-elements). Use this skill whenever the user wants to add page transitions, animate route changes, create shared element animations, animate enter/exit of components, animate list reorder, implement directional (forward/back) navigation animations, or integrate view transitions in Next.js. Also use when the user mentions view transitions, `startViewTransition`, `ViewTransition`, transition types, or asks about animating between UI states in React without third-party animation libraries. | `project` | `05-frontend/vercel-react-view-transitions/SKILL.md` |

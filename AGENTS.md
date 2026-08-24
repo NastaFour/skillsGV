@@ -10,7 +10,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion |
 | AI / ML | `03-ai-ml/` | ai-orchestration, ai-scalability-mlops, api-ai-billing, llm-integration, ai-sdk-5, prompt-engineering, research-first |
 | Backend | `04-backend/` | docker, error-handling, mcp-integration, api-design, expressjs, jwt-bcrypt, microservices, nodejs, payments, postgresql, prisma-orm, socketio, django-drf, java-21, spring-boot-3 |
-| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement |
+| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement, three-js-web |
 | Code Quality | `06-code-quality/` | pnpm-workspaces, turborepo, biome, changesets, env-management, solid-clean-code, typescript, dependency-guardian, elixir-antipatterns, changelog-generator |
 | Testing | `07-testing/` | testing-patterns, playwright, pytest |
 | DevOps | `08-devops/` | ci-cd, kill-switches, monitoring, observability |
@@ -144,6 +144,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | prefers-reduced-motion / animation performance / 60fps | `05-frontend/motion-accessibility` |
 | Framer Motion / animation / spring / AnimatePresence | `05-frontend/motion-framer` |
 | GSAP / timeline / SplitText / MorphSVG / Flip | `05-frontend/motion-gsap` |
+| Three.js / react-three-fiber / drei / WebGL / escena 3D | `05-frontend/three-js-web` |
 | dotenv / env vars undefined / ESM imports | `04-backend/nodejs-module-loading` |
 | Notificaciones / email / SMS / multichannel | `04-backend/notifications-multichannel` |
 | Offline / sync / sin conexión / queue | `05-frontend/offline-sync-mobile` |
