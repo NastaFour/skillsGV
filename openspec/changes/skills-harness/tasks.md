@@ -46,11 +46,11 @@ Chain strategy: pending
 
 ## Fase 4: Registro y bootstrap (WU4)
 
-- [ ] 4.1 `skill-loader/scripts/skills-loader.mjs`: añadir modo `--emit-registry` (reutiliza walk + cache mtime; excluye `_shared`, `skill-registry`, `sdd-*`) (skill-registry-protocol)
-- [ ] 4.2 `skill-validator/scripts/validate-skills.mjs`: check de consistencia `SKILLS.md` ↔ `.atl/skill-registry.md` (nombre + path) (skill-registry-protocol)
-- [ ] 4.3 Regenerar `.atl/skill-registry.md` (columna scope; excluye `_shared`/`skill-registry`/`sdd-*`); validar con `validate-skills.mjs --strict` exit 0 (skill-registry-protocol)
-- [ ] 4.4 `AGENTS.md`: regla de arranque (router antes de cada turno; orquestador si >1 archivo) + filas piloto; `SKILLS.md`: +9 filas (harness-bootstrap)
-- [ ] 4.5 `openspec/config.yaml`: `artifact_store: hybrid` + convención de topic keys (artifact-store-abstraction)
+- [x] 4.1 `skill-loader/scripts/skills-loader.mjs`: añadir modo `--emit-registry` (reutiliza walk + cache mtime; excluye `_shared`, `skill-registry`, `sdd-*`) (skill-registry-protocol)
+- [x] 4.2 `skill-validator/scripts/validate-skills.mjs`: check de consistencia `SKILLS.md` ↔ `.atl/skill-registry.md` (nombre + path) (skill-registry-protocol)
+- [x] 4.3 Regenerar `.atl/skill-registry.md` (columna scope; excluye `_shared`/`skill-registry`/`sdd-*`); validar con `validate-skills.mjs --strict` exit 0 (skill-registry-protocol)
+- [x] 4.4 `AGENTS.md`: regla de arranque (router antes de cada turno; orquestador si >1 archivo) + filas piloto; `SKILLS.md`: +9 filas (harness-bootstrap)
+- [x] 4.5 `openspec/config.yaml`: `artifact_store: hybrid` + convención de topic keys (artifact-store-abstraction)
 
 ## Fase 5: Lote piloto y matriz (WU5)
 

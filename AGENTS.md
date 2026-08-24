@@ -17,6 +17,17 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
 | Meta-Skills | `00-meta-skills/` | skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard |
 
+## 🚀 Regla de arranque (harness)
+
+> **Regla de arranque (harness)** — aplica a todo agente que trabaje con este catálogo, sin declaración manual del usuario:
+
+1. **Router antes de cada turno**: antes de cualquier turno que pueda invocar otra skill, correr `skill-router` primero (Tier 0 siempre cargado; Tier 1 solo las listadas en `tier1toLoad` del output del router).
+   ```bash
+   node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <staged-lines>] [--json]
+   ```
+2. **Orquestador si >1 archivo**: si el trabajo toca 2+ archivos o 2+ dominios de negocio, invocar `sdd-orchestrator` (SDD) en lugar de ejecutar inline; el orquestador rutea las fases del DAG sin ejecutarlas.
+3. **Contrato por fase**: cada fase SDD devuelve `{ status, executive_summary, artifacts, next_recommended, risks, skill_resolution }`; los artefactos se persisten por topic key `sdd/{change}/{artifact}` en el almacén declarado en `openspec/config.yaml` (`artifact_store: hybrid`).
+
 ## 🔄 Ciclo de Desarrollo (9 Agentes con SDD)
 
 ```mermaid

@@ -15,7 +15,12 @@
  *   node skills-loader.mjs --emit-tier0
  *   node skills-loader.mjs --turn "<query>" [--diff <n>] --emit-tier1
  *   node skills-loader.mjs --check <skill-name> [--turn-cache <file>]
+ *   node skills-loader.mjs --emit-registry
  *   node skills-loader.mjs --status
+ *
+ * --emit-registry regenerates .atl/skill-registry.md from the same walk +
+ * mtime cache used by the other modes, excluding _shared, skill-registry and
+ * sdd-* skills (skill-registry-protocol).
  *
  * Exit codes: 0 = ok, 1 = not allowed (route-first), 2 = invalid args
  */
@@ -134,16 +139,17 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--emit-tier1") mode = "emit-tier1";
   else if (args[i] === "--turn") { mode = "emit-tier1"; query = args[++i]; }
   else if (args[i] === "--check") { mode = "check"; checkName = args[++i]; }
+  else if (args[i] === "--emit-registry") mode = "emit-registry";
   else if (args[i] === "--status") mode = "status";
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--turn-cache") turnCache = args[++i];
   else if (args[i] === "--help" || args[i] === "-h") {
-    console.log("Usage: skills-loader.mjs --emit-tier0 | --turn \"<q>\" [--diff <n>] --emit-tier1 | --check <name> | --status");
+    console.log("Usage: skills-loader.mjs --emit-tier0 | --turn \"<q>\" [--diff <n>] --emit-tier1 | --check <name> | --emit-registry | --status");
     process.exit(0);
   }
 }
 
-if (!mode) { console.error("Missing mode: --emit-tier0 | --emit-tier1 | --check | --status"); process.exit(2); }
+if (!mode) { console.error("Missing mode: --emit-tier0 | --emit-tier1 | --check | --emit-registry | --status"); process.exit(2); }
 
 // ---------- Helpers ----------
 function statSafe(p) { try { return statSync(p); } catch { return null; } }
@@ -168,7 +174,24 @@ function parseFrontmatter(content) {
 function getField(fm, field) {
   const re = new RegExp(`^[ \\t]*${field}:\\s*(.+?)(?:\\r?\\n[a-z-]+:|$)`, "ms");
   const m = fm.match(re);
-  return m ? m[1].trim() : null;
+  if (!m) return null;
+  let value = m[1].trim();
+  // YAML block scalar (">" or "|"): fold the following indented lines.
+  if (value === ">" || value === "|") {
+    const rest = fm.slice(m.index + m[0].length);
+    const parts = [];
+    for (const line of rest.split(/\r?\n/)) {
+      if (line.trim() === "") { if (value === "|") parts.push(""); continue; }
+      if (!/^\s/.test(line)) break; // next top-level key
+      parts.push(line.trim());
+    }
+    return (value === ">" ? parts.join(" ") : parts.join("\n")).trim();
+  }
+  // Quoted YAML string: strip surrounding quotes.
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    value = value.slice(1, -1);
+  }
+  return value;
 }
 function readFileUtf8(p) {
   const buf = readFileSync(p);
@@ -366,8 +389,99 @@ function modeStatus() {
   }
 }
 
+// ---------- Mode: --emit-registry ----------
+// Regenerate .atl/skill-registry.md from the catalog walk + mtime cache.
+// Excludes _shared, skill-registry and sdd-* skills (skill-registry-protocol).
+// The registry is an index, not a summary: exact SKILL.md path per skill.
+const REGISTRY_PATH = join(CATALOG_ROOT, ".atl", "skill-registry.md");
+
+// Category display titles (top-level catalog folders → human-readable section).
+const CATEGORY_TITLES = {
+  "00-meta-skills": "Meta-Skills (00-meta-skills/)",
+  "01-planning-process": "Planificación y Procesos (01-planning-process/)",
+  "02-dev-roles": "Roles de Desarrollo (SDD) (02-dev-roles/)",
+  "03-ai-ml": "IA / ML (03-ai-ml/)",
+  "04-backend": "Backend (04-backend/)",
+  "05-frontend": "Frontend (05-frontend/)",
+  "06-code-quality": "Calidad de Código (06-code-quality/)",
+  "07-testing": "Testing (07-testing/)",
+  "08-devops": "DevOps (08-devops/)",
+  "professional-planner": "Planificación SDD (professional-planner/)",
+};
+
+// Skills excluded from the registry index (spec skill-registry-protocol).
+function isRegistryExcluded(name) {
+  return name === "_shared" || name === "skill-registry" || name.startsWith("sdd-");
+}
+
+function modeEmitRegistry() {
+  const cache = loadCache();
+  const index = buildIndex(cache);
+  saveCache(cache);
+
+  // Index only skills that belong in the registry (exclude _shared, skill-registry, sdd-*)
+  const indexed = index
+    .filter((s) => !isRegistryExcluded(s.name))
+    .sort((a, b) => a.rel.localeCompare(b.rel));
+
+  // Group by top-level category folder (first path segment), preserving catalog order.
+  const groups = new Map();
+  for (const s of indexed) {
+    const cat = s.rel.split(/[\\/]/)[0];
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push(s);
+  }
+
+  const lines = [];
+  lines.push("# Skill Registry — skills-catalog");
+  lines.push("");
+  lines.push("> Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.");
+  lines.push("> Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).");
+  lines.push(`> Total de skills indexadas: ${indexed.length}.`);
+  lines.push("");
+  lines.push("## Archivos de convención y contexto del proyecto");
+  lines.push("");
+  lines.push("| Archivo | Rol |");
+  lines.push("|---|---|");
+  lines.push("| `AGENTS.md` | Reglas globales, auto-invoke list y guía de uso del catálogo |");
+  lines.push("| `SKILLS.md` | Índice completo del catálogo con paths y descripciones |");
+  lines.push("| `opencode.json` | Configuración de OpenCode para este workspace |");
+  lines.push("| `install.mjs` | Instalador raíz del catálogo |");
+  lines.push("| `00-meta-skills/harness-map.md` | Mapa del harness de meta-skills |");
+  lines.push("| `00-meta-skills/skill-validator/scripts/validate-skills.mjs` | Validador de spec agentskills.io |");
+  lines.push("| `00-meta-skills/skill-router/scripts/skill-router.mjs` | Router determinista de skills |");
+  lines.push("| `00-meta-skills/skill-sync/scripts/install-skills.mjs` | Instalador cross-tool |");
+  lines.push("| `00-meta-skills/skill-loader/scripts/` | Tier 0/1 loading + telemetría |");
+  lines.push("");
+
+  for (const [cat, skills] of groups) {
+    lines.push(`## ${CATEGORY_TITLES[cat] || cat}`);
+    lines.push("");
+    lines.push("| Skill | Disparador / Descripción | Scope | Path |");
+    lines.push("|---|---|---|---|");
+    const sorted = [...skills].sort((a, b) => a.name.localeCompare(b.name));
+    for (const s of sorted) {
+      const path = s.rel.replace(/\\/g, "/");
+      lines.push(`| \`${s.name}\` | ${s.desc} | \`project\` | \`${path}\` |`);
+    }
+    lines.push("");
+  }
+
+  lines.push("## Notas de uso");
+  lines.push("");
+  lines.push("- **Alcance (scope)**: cada skill tiene alcance `project` (directorio del catálogo, con su `references/` local).");
+  lines.push("- **Resolución**: los sub-agentes reciben el path exacto del `SKILL.md` y leen el archivo completo; este índice nunca sustituye la fuente.");
+  lines.push("- **Regeneración**: ejecutar `node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry` tras agregar, renombrar o eliminar skills.");
+  lines.push("");
+
+  mkdirSync(dirname(REGISTRY_PATH), { recursive: true });
+  writeFileSync(REGISTRY_PATH, lines.join("\n"), "utf8");
+  console.log(`✅ Emitted .atl/skill-registry.md (${indexed.length} skills indexed, ${groups.size} categories)`);
+}
+
 // ---------- Dispatch ----------
 if (mode === "emit-tier0") modeEmitTier0();
 else if (mode === "emit-tier1") await modeEmitTier1();
 else if (mode === "check") modeCheck();
+else if (mode === "emit-registry") modeEmitRegistry();
 else if (mode === "status") modeStatus();

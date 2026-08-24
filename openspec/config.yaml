@@ -3,6 +3,26 @@
 
 schema: spec-driven
 
+# Almacén de artefactos SDD (artifact-store-abstraction)
+# Modos: engram | openspec | hybrid | none
+# Resolución: elección de sesión > config > default (engram si disponible, si no none)
+artifact_store: hybrid
+
+# Convención de topic keys (artifact-store-abstraction)
+# Formato: sdd/{change}/{artifact} — upsert por topic_key, nunca duplicar.
+# En modo hybrid cada fase escribe el archivo openspec Y guarda la misma versión
+# en Engram (mem_save con capture_prompt: false).
+topic_keys:
+  proposal: "sdd/{change}/proposal"
+  explore: "sdd/{change}/explore"
+  spec: "sdd/{change}/spec"
+  design: "sdd/{change}/design"
+  tasks: "sdd/{change}/tasks"
+  apply-progress: "sdd/{change}/apply-progress"
+  verify-report: "sdd/{change}/verify-report"
+  archive-report: "sdd/{change}/archive-report"
+  state: "sdd/{change}/state"
+
 context: |
   Proyecto: skills-catalog (catálogo de 129 skills, spec agentskills.io)
   Stack: catálogo plano de archivos SKILL.md; sin package.json ni lockfile.
