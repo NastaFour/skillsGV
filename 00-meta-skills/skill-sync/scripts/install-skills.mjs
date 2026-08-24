@@ -47,7 +47,7 @@ const CATALOG_ROOT = resolve(__dirname, "../../..");
 
 const args = process.argv.slice(2);
 let target = null;
-let tool = null;
+const tools = [];
 let useSymlink = false;
 let dryRun = false;
 let onlyCategories = null;
@@ -58,7 +58,7 @@ let doRollback = false;
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === "--target") target = resolve(args[++i]);
-  else if (a === "--tool") tool = args[++i];
+  else if (a === "--tool") tools.push(args[++i]);
   else if (a === "--symlink") useSymlink = true;
   else if (a === "--dry-run") dryRun = true;
   else if (a === "--only") onlyCategories = args[++i].split(",").map((s) => s.trim());
@@ -177,7 +177,9 @@ Usage:
 
 Options:
   --target <path>      Install into a specific project directory (default: global install for detected tools)
-  --tool <id>          Install for a specific tool only (claude-code, opencode, cursor, copilot, codex, gemini-cli, antigravity, kiro, windsurf, deepseek)
+  --tool <id>          Install for specific tool(s) only; repeatable, e.g.
+                       --tool claude-code --tool cursor
+                       (claude-code, opencode, cursor, copilot, codex, gemini-cli, antigravity, kiro, windsurf, deepseek)
   --symlink            Use symlinks (junctions on Windows) instead of copy
   --dry-run            Preview changes without writing
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
@@ -674,10 +676,10 @@ function main() {
         }
       });
 
-  const filtered = tool ? detected.filter((t) => t.id === tool) : detected;
+  const filtered = tools.length ? detected.filter((t) => tools.includes(t.id)) : detected;
   if (filtered.length === 0) {
     console.log("❌ No matching tools detected.");
-    if (!tool) {
+    if (tools.length === 0) {
       console.log("   Use --all-tools to install for all known tools.");
       console.log("   Or specify --tool <id> for a specific tool.");
     }
