@@ -177,6 +177,14 @@ Actualice `tasks.md` — cambie `- [ ]` a `- [x]` para las tareas completadas:
 - [ ] 1.3 Añadir rutas de auth a `internal/server/server.go`  ← aún pendiente
 ```
 
+**Orden obligatorio (journal durable, E3)**: antes de cambiar una tarea a `[x]`, registre la unidad en el journal del cambio. Si el registro falla, NO marque la tarea y repórtela como bloqueada: un `[x]` sin evento previo es pérdida silenciosa de trazabilidad.
+
+```
+node 00-meta-skills/sdd-apply/scripts/apply-journal.mjs record --change {change-name} --unit {tarea} --evidence "{\"comando\":\"...\", \"resultado\":\"exit 0\"}"
+```
+
+El journal (`openspec/changes/{change}/journal/`) mantiene un snapshot JSON versionado, un historial `events.jsonl` append-only con hash encadenado y un lock exclusivo: IDs idempotentes (re-registrar una unidad no duplica efecto) y recuperación determinista de escrituras interrumpidas (la unidad afectada queda `interrupted-retry`, lista para reintentar). Implementado en Node puro, Windows-first, sin Bash.
+
 ### Paso 6: Persistir progreso
 
 **Este paso es OBLIGATORIO — no lo omita.**
@@ -187,7 +195,15 @@ Siga la sección **C** del Protocolo Común de Fase SDD.
 - type: `architecture`
 - También actualice el artefacto de tareas con marcas `[x]` vía `mem_update` (engram) o edición de archivo (openspec/hybrid).
 
-#### Protocolo de merge
+**Fuente de verdad (E3)**: el estado durable del apply-progress vive en el journal del cambio (`openspec/changes/{change}/journal/`: snapshot versionado replegable desde `events.jsonl`). Genere la vista consolidada con:
+
+```
+node 00-meta-skills/sdd-apply/scripts/apply-journal.mjs report --change {change-name}
+```
+
+El protocolo de merge siguiente queda como **capa de reporte** entre lotes (narrativa y evidencia por batch); ante discrepancia entre el archivo derivado y el snapshot, gana el snapshot.
+
+#### Protocolo de merge (capa de reporte)
 
 Al guardar apply-progress:
 1. Si leyó progreso previo en el Paso 2b, su artefacto DEBE incluir TODAS las tareas completadas previamente (copie su estado y evidencia) MÁS sus nuevas completaciones
