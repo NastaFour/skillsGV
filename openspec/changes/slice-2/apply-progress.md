@@ -90,7 +90,8 @@
 | `87ecae9` | FIX heredado PR-1 | Contadores residuales «149»→«151»: `skill-router/SKILL.md` (frontmatter description + cuerpo ×2) + regeneración de derivados (`tier0-context.json/md` vía `--emit-tier0`, `.atl/skill-registry.md` vía `--emit-registry`). V exit 0 tras el cambio |
 | `2dfb7f3` | E1 (5.1+5.2) | `sdd-orchestrator/references/model-routing.md` (interfaz `list()`/`resolve(phase)`, formato declarativo, algoritmo del agente, degradación sin catálogo) + `_shared/model-routing/profiles.{schema,example}.json` (6 fases; example VALID contra schema) |
 | `b57f1b1` | E5 (5.3+5.4) | harness-map: sección «⚖️ Política de review» (causalidad + perfiles opt-in) y Model Routing actualizado de «diferido» a «activo desde Slice 2» (delta hooks); `code-reviewer/references/review-policy.md` como reflejo SHOULD |
-| (este commit) | E6 (5.5) + marcas SDD Fase 5 | harness-map: sección «🔬 Punto de extensión AHE» junto al RDD (sidecars + 4 niveles de evidencia, doc-only, OPEN-1 diferido); tasks.md `[x]` 5.1–5.6 + apply-progress merge + journal seq 9–14 |
+| `b5d5618` | Marcas SDD Fase 5 (parcial) | tasks.md `[x]` 5.1–5.6 + apply-progress merge + journal seq 9–14 |
+| (este commit) | E6 (5.5) | harness-map: sección «🔬 Punto de extensión AHE» junto al RDD (sidecars + 4 niveles de evidencia, doc-only, OPEN-1 diferido); corrección del ledger de commits de este archivo |
 
 ## Decisiones y hallazgos de implementación
 

@@ -93,6 +93,31 @@ This document maps the **151 skills** in this catalog to the **20 Agent Harnesse
 - **Mapeo de lentes existentes (informativo)**: los lentes de review de gentle-ai se corresponden con skills ya presentes en el catálogo — `02-dev-roles/code-reviewer` (lentes 4R: readability, reliability, resilience, risk) y `02-dev-roles/judgment-day` (doble juez adversarial). El mapeo es informativo: no activa ningún mecanismo RDD.
 - **Regla Slice 1**: el pipeline continúa de `sdd-verify` a `sdd-archive` sin gate de review; no se ejecuta ningún mecanismo de review RDD.
 
+## 🔬 Punto de extensión AHE (diseño doc-only, Slice 2)
+
+> **Documentación únicamente** — AHE (Agentic Harness Evaluation) es DISEÑO, no mecanismo: slice-2 MUST NOT implementar sidecars ni niveles de evidencia ejecutables. Su activación está DIFERIDA (decisión abierta OPEN-1). Ningún componente AHE se ejecuta ni intercepta el pipeline hoy.
+
+**Relación con RDD**: puntos de extensión relacionados pero **independientes** — RDD observa el cambio de código antes de archivar; AHE observaría la salud del propio harness SDD. Activar uno NO habilita al otro; cada uno requiere su propia decisión.
+
+### Sidecars propuestos (responsabilidad e inserción)
+
+| Sidecar | Responsabilidad | Inserción propuesta |
+|---|---|---|
+| **Evaluator** | Evalúa resultados de las fases contra criterios objetivos (contratos, evidencia de verificación) | Post-`sdd-verify`, pre-`sdd-archive` (mismo vecindario que el gate RDD, pero evaluando el proceso, no el diff) |
+| **Debugger** | Diagnostica fallos recurrentes del pipeline (fases bloqueadas, gates que fallan sin causa clara) | On-demand tras un fallo de fase; no tiene posición fija en el flujo feliz |
+| **Evolver** | Propone mejoras del harness a partir de patrones observados (nuevos lentes, ajustes de presupuesto, gaps de cobertura) | Periódico/offline; sus propuestas entran al catálogo por el flujo normal de cambios (SDD), nunca como mutación directa |
+
+### Niveles de evidencia (con criterio de aplicación)
+
+| Nivel | Qué produce | Cuándo aplica |
+|---|---|---|
+| `static_contract` | Chequeo estructural de artefactos (existencia, forma, campos del contrato de resultado) | Siempre disponible y barato; primer nivel ante cualquier duda de salud del pipeline |
+| `transcript_replay` | Reproducción offline de una sesión pasada sobre corpus/entradas grabadas | Cuando se quiere regresión determinista sin ejecutar modelos (precedente: router-replay) |
+| `live_smoke` | Ejecución acotada en vivo de una fase o query real | Para validar integración con un runtime concreto cuando lo estático/replay no alcanza |
+| `manual_oracle` | Juicio humano explícito como fuente de verdad | Cuando el criterio es subjetivo o no hay oráculo mecanizable; documenta la decisión humana |
+
+Cada evaluación AHE futura declararía qué nivel usa y por qué; los niveles son acumulativos (un `live_smoke` puede apoyarse en `static_contract` previo).
+
 ## 📚 Referencias externas
 
 - [Gentleman Programming: 20 Agent Harnesses](https://www.youtube.com/@GentlemanProgramming) (video original)
