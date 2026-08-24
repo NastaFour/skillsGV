@@ -32,13 +32,13 @@ Convención: `V` = `node 00-meta-skills/skill-validator/scripts/validate-skills.
 
 ## Fase 1: Media wave + registro (WU1→PR-1)
 
-- [ ] 1.1 Crear `05-frontend/three-js-web/SKILL.md`: triggers ≥4 chars (`three.js`,`threejs`,`react-three-fiber`,`drei`,`webgl`,`3d scene`); description menciona 3D/R3F (triggers cortos los descarta MIN_TRIGGER_LENGTH); cuerpo conciso enlazando 5 facetas; frontmatter validado con V (three-js-web)
-- [ ] 1.2 Crear sus `references/{core-threejs,r3f-patterns,drei-helpers,performance-webgl,spline-no-code}.md`; Spline como sección no-code dentro de la skill (no skill aparte); cero enlaces huérfanos vía V (three-js-web)
-- [ ] 1.3 Crear `05-frontend/web-animation-sources/SKILL.md` + `references/animation-sources.md`: exactamente 10 entradas agrupadas por tópico, formato {título, autor/fuente, URL, propósito}; lista curada SIN instrucciones embebidas; conteo = 10 (web-animation-sources)
-- [ ] 1.4 Registrar ambas skills en el MISMO PR: `SKILLS.md` (tabla 05-frontend + contador 149→151) y `AGENTS.md` (tabla + 2 filas Auto-Invoke) (three-js-web, web-animation-sources)
-- [ ] 1.5 Regenerar `.atl/skill-registry.md` con `skills-loader.mjs --emit-registry`; V exit 0 con los 3 índices sincronizados; negativo: skill sin entrada hace fallar --strict (three-js-web)
-- [ ] 1.6 `overlap-matrix.json`: grupo unitario `{id:"three-js-web", members:["three-js-web"], note}` delimitando vs motion-framer/motion-gsap/visual-effects (CSS 3D ≠ WebGL); fixture par en `overlap-smoke-tests.json`; smoke: query "3d scene three.js" → primario three-js-web (overlap-matrix)
-- [ ] 1.7 Contadores cosméticos en `harness-map.md`; gate PR-1: V exit 0 + fixtures verdes (overlap-matrix)
+- [x] 1.1 Crear `05-frontend/three-js-web/SKILL.md`: triggers ≥4 chars (`three.js`,`threejs`,`react-three-fiber`,`drei`,`webgl`,`3d scene`); description menciona 3D/R3F (triggers cortos los descarta MIN_TRIGGER_LENGTH); cuerpo conciso enlazando 5 facetas; frontmatter validado con V (three-js-web)
+- [x] 1.2 Crear sus `references/{core-threejs,r3f-patterns,drei-helpers,performance-webgl,spline-no-code}.md`; Spline como sección no-code dentro de la skill (no skill aparte); cero enlaces huérfanos vía V (three-js-web)
+- [x] 1.3 Crear `05-frontend/web-animation-sources/SKILL.md` + `references/animation-sources.md`: exactamente 10 entradas agrupadas por tópico, formato {título, autor/fuente, URL, propósito}; lista curada SIN instrucciones embebidas; conteo = 10 (web-animation-sources)
+- [x] 1.4 Registrar ambas skills en el MISMO PR: `SKILLS.md` (tabla 05-frontend + contador 149→151) y `AGENTS.md` (tabla + 2 filas Auto-Invoke) (three-js-web, web-animation-sources)
+- [x] 1.5 Regenerar `.atl/skill-registry.md` con `skills-loader.mjs --emit-registry`; V exit 0 con los 3 índices sincronizados; negativo: skill sin entrada hace fallar --strict (three-js-web)
+- [x] 1.6 `overlap-matrix.json`: grupo unitario `{id:"three-js-web", members:["three-js-web"], note}` delimitando vs motion-framer/motion-gsap/visual-effects (CSS 3D ≠ WebGL); fixture par en `overlap-smoke-tests.json`; smoke: query "3d scene three.js" → primario three-js-web (overlap-matrix)
+- [x] 1.7 Contadores cosméticos en `harness-map.md`; gate PR-1: V exit 0 + fixtures verdes (overlap-matrix)
 
 ## Fase 2: Corpus + replay E2 (WU2→PR-2)
 
