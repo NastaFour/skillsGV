@@ -17,7 +17,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
 | MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
-| Meta-Skills | `00-meta-skills/` | skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard |
+| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard |
 
 ## 🚀 Regla de arranque (harness)
 
@@ -89,6 +89,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Bug complejo / no obvio | `02-dev-roles/expert-debugger` + `02-dev-roles/systematic-debugging` |
 | Security audit / vulnerability scan | `02-dev-roles/security-audit` |
 | Performance issues | `02-dev-roles/performance-refactor` + `05-frontend/vercel-react-best-practices` |
+| Onboarding del catálogo / instalar, usar o mantener el sistema de skills | `00-meta-skills/catalog-usage` |
 | Crear nueva skill | `00-meta-skills/skill-creator` |
 | Sincronizar skills cross-tool | `00-meta-skills/skill-sync` |
 | Validar SKILL.md contra spec | `00-meta-skills/skill-validator` |
