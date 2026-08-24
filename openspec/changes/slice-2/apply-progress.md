@@ -1,6 +1,6 @@
 # Apply Progress: slice-2
 
-> Fuente de reporte (no de verdad): el estado acumulado de unidades completadas por lote. Lotes completados: WU1 → PR-1 (Fase 1), WU2 → PR-2 (Fase 2) y WU3 → PR-3 (Fase 3). Desde E3 la fuente de verdad durable es el journal (`journal/snapshot.json`); este archivo es la capa de reporte.
+> Fuente de reporte (no de verdad): el estado acumulado de unidades completadas por lote. Lotes completados: WU1 → PR-1 (Fase 1), WU2 → PR-2 (Fase 2), WU3 → PR-3 (Fase 3) y WU4 → PR-4 (Fase 4). Desde E3 la fuente de verdad durable es el journal (`journal/snapshot.json`); este archivo es la capa de reporte.
 
 ## Estado acumulado
 
@@ -9,8 +9,7 @@
 | 1 — Media wave + registro (WU1→PR-1) | 1.1–1.7 | ✅ Completas (7/7) |
 | 2 — Corpus + replay E2 (WU2→PR-2) | 2.1–2.6 | ✅ Completas (6/6) |
 | 3 — Journal apply-progress E3 (WU3→PR-3) | 3.1–3.4 | ✅ Completas (4/4) |
-| 3 — Journal apply-progress E3 (WU3→PR-3) | 3.1–3.4 | ✅ Completas (4/4) |
-| 4 — Installer lifecycle E4 (WU4→PR-4) | 4.1–4.4 | ⬜ Pendientes |
+| 4 — Installer lifecycle E4 (WU4→PR-4) | 4.1–4.4 | ✅ Completas (4/4) |
 | 5 — Docs E1/E5/E6 (WU5→PR-5) | 5.1–5.6 | ⬜ Pendientes |
 | 6 — Verificación final | 6.1–6.6 | ⬜ Pendientes |
 
@@ -60,7 +59,32 @@
 | `a733c01` | Integración E3 | `SKILL.md` Pasos 5–6: evento ANTES de `[x]`; apply-progress DERIVADO del snapshot; protocolo de merge reclasificado como capa de reporte |
 | (este commit) | Marcas SDD Fase 3 | tasks.md `[x]` 3.1–3.4 + apply-progress merge + journal del piloto en vivo |
 
+## Evidencia de unidad de trabajo — WU4 (PR-4)
+
+| Evidencia | Valor |
+|---|---|
+| Comando de test enfocado y resultado exacto | RED (4.1, pre-producción): arnés `%TEMP%\opencode\slice2-pr4-installer-test.mjs` contra el instalador actual → exit 1 con fallos genuinos: `G1 manifest exists FAIL` (no hay manifest), `G1 foreign file survived install FAIL` (el `rmSync` wholesale del install destruye archivos ajenos del usuario en cada corrida — la amenaza destructiva de la matriz), `G2 dry-run reports overwrites FAIL`, G3 ni ejecutado (`--uninstall` inexistente → exit 2). GREEN (post-implementación): mismo arnés → `ALL GROUPS PASSED` 33/33 checks, exit 0: ajeno plantado sobrevive al uninstall y sale listado como retenido; propio editado retenido; uninstall sin manifest aborta exit 1 sin borrar nada |
+| Comando/scenario de harness runtime y resultado exacto | Ciclo completo en temp dirs (g1/g2/g3/g4/g4b/g4c), Node puro sin Bash: manifest `{version:1, generation:1, ts, tool:"claude-code", mode:"copy", entries:[{dest,src,sha256,prevState}]}` con sha256 verificado contra disco y USER-NOTES.md ajeno excluido del ownership; dry-run 2ª generación emite plan create/overwrite por archivo con snapshot de `.claude` byte-idéntico y generación intacta; uninstall borra solo entries con hash vigente (`_shared/` eliminado completo) y retiene/lista FOREIGN.md + SKILL.md editado; rollback gen2→gen1 restaura contenido previo desde backup (`prevSha256`+`prevBackup`) o elimina archivos new, history registra `{type:"rollback",...}` y el manifest vuelve a la vista de generación 1; rollback de generación all-new elimina sus archivos; gate PR-4: `validate-skills.mjs --strict` → exit 0 («151 pass · 0 with issues») |
+| Límite de rollback | Revertir el diff de `00-meta-skills/skill-sync/scripts/install-skills.mjs` (un commit). Los manifests/backups creados durante pruebas viven solo en temp dirs. No afecta trabajo de PRs 1–3 ni 5 |
+
+## Commits (rama `slice2/pr4-installer-lifecycle`, stacked-to-main desde `main` @ a1b501c)
+
+| Commit | Unidad | Contenido |
+|---|---|---|
+| `d2ad4a9` | D7 installer lifecycle | Manifest por generación (`.skills-install/manifest.json`) con backups de sobrescritura; copy file-by-file sin borrado wholesale; `--dry-run` plan completo no mutante; `--uninstall` solo-propios con retención listada y abort sin manifest; `--rollback` de última generación con registro en historial; symlinks como entries de link sin borrar directorios reales |
+| (este commit) | Marcas SDD Fase 4 | tasks.md `[x]` 4.1–4.4 + apply-progress merge + journal seq 5–8 |
+
 ## Decisiones y hallazgos de implementación
+
+### WU4 (PR-4)
+- **RED confirmó la amenaza real**: el instalador preexistente ejecutaba `rmSync(recursive)` del directorio destino antes de copiar — cada re-instalación DESTRUYA silenciosamente archivos del usuario dentro de skills instaladas (ajenos o editados). El nuevo flujo copy es file-by-file y nunca borra wholesale: los ajenos sobreviven y jamás entran al manifest.
+- **Backups para rollback**: restaurar `prevState:"overwritten"` exige el contenido previo, no solo su hash; se respalda en `.skills-install/backups/g{N}/{idx}-{basename}` y el entry referencia `prevBackup`. El backup consumido se borra tras restaurar. Campos aditivos sobre la forma literal de 4.2 (`prevBackup`, `kind:"symlink"`).
+- **Ownership acumulativo**: uninstall opera sobre TODAS las generaciones (`entries` vigentes + `previousGenerations[]`), deduplicado por `dest` con último registro ganador; así un archivo instalado en gen1 sigue siendo propio aunque gen2 no lo haya tocado. Rollback en cambio usa SOLO la última generación y hace pop hacia la vista anterior.
+- **Seguridad simétrica en rollback**: igual que uninstall, solo toca archivos cuyo sha256 vigente coincide con lo instalado; un archivo propio editado después de la instalación se RETIENE (no se puede descartar intención del usuario). Desviación menor documentada: A8 decía «restaura prevSha» sin condicional; el escenario de spec («archivos propios vuelven al estado previo») se cumple para archivos intactos.
+- **Symlink mode**: los links/junctions se registran como entries `kind:"symlink"` (sha256 null); uninstall/borrar-link no atraviesa el target. Cambio de comportamiento heredado documentado: instalar symlink sobre un directorio REAL existente ahora se omite con advertencia (antes lo borraba recursivamente) — pedir `--uninstall` primero.
+- **Presupuesto**: 420 líneas cambiadas (+383/−37), sobre la estimación 200–320 pero bajo el techo vigente del proyecto (`review_budget_lines` = 800/PR). El excedente viene de backups de sobrescritura, poda de directorios vacíos post-uninstall y rutas seguras para symlink.
+- **Journal CRLF gotcha (hallazgo cross-cutting)**: `core.autocrlf=true` reescribió LF→CRLF en `journal/events.jsonl` al mergear PR-3; el journal hashea bytes crudos por línea → «hash chain broken at events.jsonl:2». Reparación aplicada antes de registrar Fase 4: restaurar los bytes exactos de HEAD (LF) vía `git show` + write buffer — valida nuevamente (`verify` ok). Riesgo latente: cualquier checkout/filtro futuro puede reintroducirlo; mitigación sugerida fuera de este slice: entrada `.gitattributes` (`openspec/**/journal/** -text`). También se eliminó una fila duplicada de Fase 3 en la tabla de Estado acumulado (artefacto de merge previo).
+
 
 ### WU3 (PR-3)
 - **Orden crash-safe por construcción**: el evento se appendea y fsync ANTES de reemplazar el snapshot atómicamente (tmp + rename). Crash entre ambos pasos → el replay sobre el snapshot rancio restaura el estado (T4b); crash a mitad de línea → la cola sin `\n` se descarta, la unidad queda `interrupted-retry` y el archivo se trunca al prefijo confirmado (T4a). El `\n` final es el marcador de commit del evento.
