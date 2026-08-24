@@ -197,6 +197,27 @@ function getField(fm, field) {
   }
   return value;
 }
+function getMetadataScope(fm) {
+  // metadata.scope is a YAML array inside the metadata: block; default "project".
+  const startRe = /^[ \t]*metadata:\s*$/m;
+  const startMatch = fm.match(startRe);
+  if (!startMatch) return "project";
+  const rest = fm.slice(startMatch.index + startMatch[0].length);
+  const blockLines = [];
+  for (const line of rest.split(/\r?\n/)) {
+    if (line.trim() === "") { blockLines.push(line); continue; }
+    if (!/^\s/.test(line)) break; // next top-level key
+    blockLines.push(line);
+  }
+  const block = blockLines.join("\n");
+  const scopeRe = /^[ \t]*scope:\s*(.+)$/m;
+  const m = block.match(scopeRe);
+  if (!m) return "project";
+  const inner = m[1].trim().replace(/^\[/, "").replace(/\]$/, "").trim();
+  if (!inner) return "project";
+  const items = inner.split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+  return items.length > 0 ? items.join(", ") : "project";
+}
 function readFileUtf8(p) {
   const buf = readFileSync(p);
   if (buf.length >= 3 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) {
@@ -223,21 +244,23 @@ function buildIndex(cache) {
     const mtime = statSync(f).mtimeMs;
     const rel = relative(CATALOG_ROOT, f);
     const cached = cache.files[rel];
-    let name, desc;
-    if (cached && cached.mtime === mtime) {
+    let name, desc, scope;
+    if (cached && cached.mtime === mtime && cached.scope !== undefined) {
       // Reuse cached parsed data — no re-read
       name = cached.name;
       desc = cached.desc;
+      scope = cached.scope;
     } else {
-      // Re-parse frontmatter
+      // Re-parse frontmatter (also migrates pre-scope cache entries)
       const content = readFileUtf8(f);
       const fm = parseFrontmatter(content);
       if (!fm) continue;
       name = getField(fm, "name") || basename(dirname(f));
       desc = getField(fm, "description") || "";
-      cache.files[rel] = { mtime, name, desc };
+      scope = getMetadataScope(fm);
+      cache.files[rel] = { mtime, name, desc, scope };
     }
-    index.push({ name, desc, file: f, rel });
+    index.push({ name, desc, scope, file: f, rel });
   }
   return index;
 }
@@ -468,14 +491,14 @@ function modeEmitRegistry() {
     const sorted = [...skills].sort((a, b) => a.name.localeCompare(b.name));
     for (const s of sorted) {
       const path = s.rel.replace(/\\/g, "/");
-      lines.push(`| \`${s.name}\` | ${s.desc} | \`project\` | \`${path}\` |`);
+      lines.push(`| \`${s.name}\` | ${s.desc} | \`${s.scope}\` | \`${path}\` |`);
     }
     lines.push("");
   }
 
   lines.push("## Notas de uso");
   lines.push("");
-  lines.push("- **Alcance (scope)**: cada skill tiene alcance `project` (directorio del catálogo, con su `references/` local).");
+  lines.push("- **Alcance (scope)**: alcance declarado en `metadata.scope` del frontmatter de cada skill (default `project` cuando está ausente).");
   lines.push("- **Resolución**: los sub-agentes reciben el path exacto del `SKILL.md` y leen el archivo completo; este índice nunca sustituye la fuente.");
   lines.push("- **Regeneración**: ejecutar `node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry` tras agregar, renombrar o eliminar skills.");
   lines.push("");
