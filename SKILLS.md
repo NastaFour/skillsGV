@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **135 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **140 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 ## 00-meta-skills
 
@@ -17,6 +17,11 @@ Catálogo de **135 skills** compatible con [agentskills.io](https://agentskills.
 | sdd-propose | [00-meta-skills/sdd-propose/SKILL.md](00-meta-skills/sdd-propose/SKILL.md) ← SDD change proposal: intent, scope, approach |
 | sdd-spec | [00-meta-skills/sdd-spec/SKILL.md](00-meta-skills/sdd-spec/SKILL.md) ← SDD delta specs with requirements and scenarios |
 | sdd-design | [00-meta-skills/sdd-design/SKILL.md](00-meta-skills/sdd-design/SKILL.md) ← SDD technical design and architecture approach |
+| sdd-tasks | [00-meta-skills/sdd-tasks/SKILL.md](00-meta-skills/sdd-tasks/SKILL.md) ← SDD task breakdown with review workload forecast |
+| sdd-apply | [00-meta-skills/sdd-apply/SKILL.md](00-meta-skills/sdd-apply/SKILL.md) ← SDD implementation with apply-progress merge |
+| sdd-verify | [00-meta-skills/sdd-verify/SKILL.md](00-meta-skills/sdd-verify/SKILL.md) ← SDD verification against specs with compliance matrix |
+| sdd-archive | [00-meta-skills/sdd-archive/SKILL.md](00-meta-skills/sdd-archive/SKILL.md) ← SDD archive: sync delta specs and close the change |
+| sdd-onboard | [00-meta-skills/sdd-onboard/SKILL.md](00-meta-skills/sdd-onboard/SKILL.md) ← SDD walkthrough onboarding on the real codebase |
 
 ## 01-planning-process
 

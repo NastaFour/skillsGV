@@ -40,9 +40,9 @@ Chain strategy: pending
 
 ## Fase 3: Fases de cierre (WU3)
 
-- [ ] 3.1 Crear `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/SKILL.md`: apply con apply-progress merge, verify contra specs, archive con deltas, onboard docente (harness-orchestration)
-- [ ] 3.2 `harness-map.md`: documentar routing de modelos diferido a Slice 2; GLM no es target de skill-sync (model-routing-hooks)
-- [ ] 3.3 `harness-map.md`: cerrar brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode)
+- [x] 3.1 Crear `00-meta-skills/sdd-{tasks,apply,verify,archive,onboard}/SKILL.md`: apply con apply-progress merge, verify contra specs, archive con deltas, onboard docente (harness-orchestration)
+- [x] 3.2 `harness-map.md`: documentar routing de modelos diferido a Slice 2; GLM no es target de skill-sync (model-routing-hooks)
+- [x] 3.3 `harness-map.md`: cerrar brechas #16 (Skill Resolution Feedback) y #4 (Execution Mode)
 
 ## Fase 4: Registro y bootstrap (WU4)
 
