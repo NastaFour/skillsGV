@@ -2,7 +2,7 @@
 name: sdd-verify
 description: "Validate the implementation against specs, design and tasks. Trigger: orchestrator launches verification for a change."
 license: MIT
-allowed-tools: Read Bash(node:*)
+allowed-tools: Read Write Bash(node:*)
 metadata:
   author: gentleman-programming
   version: "1.0.0"
