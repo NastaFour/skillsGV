@@ -78,6 +78,8 @@ El orquestador debe proveer el estado estructurado del Protocolo Común. Úselo 
 
 Devuelva `## Verification Report` con cambio, modo, tabla de completitud, evidencia de build/tests/coverage, matriz de cumplimiento de spec, tabla de corrección, tabla de coherencia de diseño, problemas agrupados como CRITICAL/WARNING/SUGGESTION, y veredicto final `PASS`, `PASS WITH WARNINGS` o `FAIL`.
 
+Además, devuelva el envelope de resultado de exactamente seis campos (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`) según la sección **D** del Protocolo Común — el reporte es el contenido del artefacto, el envelope es el contrato de retorno al orquestador.
+
 ```
 ## Verification Report
 
