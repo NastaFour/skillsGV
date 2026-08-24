@@ -59,7 +59,7 @@ flowchart TD
 - **Nunca** almacenar JWT en LocalStorage/AsyncStorage. **Usar**: access tokens en memoria (variable de módulo), refresh tokens en HTTP-only cookies con flag `Secure` y `SameSite=Strict`.
 - **Nunca** procesar payloads de Socket.io sin validar. **Usar**: esquemas Zod compartidos en `packages/contracts/` antes de cualquier lógica de negocio.
 - **Nunca** usar `any` en TypeScript. **Usar**: `unknown` + narrowing con Zod, o tipos explícitos del dominio.
-- **Nunca** escribir código nuevo sin pasar por SDD. **Usar**: invocar `professional-planner` para features que tocan 2+ archivos o 2+ dominios de negocio.
+- **Nunca** escribir código nuevo sin pasar por SDD. **Usar**: invocar `sdd-orchestrator` para features que tocan 2+ archivos o 2+ dominios de negocio (`professional-planner` queda como metodología de referencia).
 - **Siempre** usar `pnpm expo install` para paquetes móviles nativos. **Nunca** `pnpm add` directo, ya que rompe la compatibilidad con el SDK de Expo. Validar después con `dependency-guardian`.
 - **Siempre** correr `pnpm expo prebuild --clean` antes de un EAS build. **Usar**: la skill `expo-production-auditor` para auditar 4 frentes (circular deps, Hermes, assets, sync de deps nativas).
 - **Siempre** registrar decisiones arquitectónicas y bugs complejos. **Usar**: la skill `tech-escalation-adr` para ADRs y `expert-debugger` para postmortems.
@@ -93,7 +93,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Sincronizar skills cross-tool | `00-meta-skills/skill-sync` |
 | Validar SKILL.md contra spec | `00-meta-skills/skill-validator` |
 | Cargar skills por turno / telemetría de sesión | `00-meta-skills/skill-loader` |
-| Iniciar feature >1 archivo | `professional-planner` (SDD) |
+| Iniciar feature >1 archivo | `00-meta-skills/sdd-orchestrator` (SDD) |
 | Configurar env vars / secrets | `06-code-quality/env-management` |
 | Error handling / Result types | `04-backend/error-handling` |
 | Configurar MCP servers | `04-backend/mcp-integration` |
@@ -173,7 +173,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Auditoría UX / usabilidad / accesibilidad | `11-mcp-hybrid/ux-auditor-agent` |
 | Generar assets / iconos / logos IA | `11-mcp-hybrid/asset-generator-mcp` |
 
-**Regla de los 3 capas**: si la acción toca 2+ skills de categorías distintas, invocar `professional-planner` primero para confirmar la SDD-phase apropiada.
+**Regla de los 3 capas**: si la acción toca 2+ skills de categorías distintas, invocar `sdd-orchestrator` primero para confirmar la SDD-phase apropiada (`professional-planner` queda como metodología de referencia).
 
 ## 📦 Uso
 
