@@ -184,8 +184,10 @@ Options:
   --dry-run            Preview changes without writing
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
   --all-tools          Skip detection; install for all known tools
-  --uninstall          Remove only files recorded as owned in the manifest (foreign or
-                       user-edited files are retained and listed). Requires a manifest.
+  --uninstall          Remove only files recorded as owned in the manifest (foreign,
+                       user-edited, and symlinked entries are retained and listed;
+                       symlinks/junctions are never followed or deleted).
+                       Requires a manifest.
   --rollback           Revert the last install generation (restores overwritten previous
                        state, removes files that were new). Registered in manifest history.
   --help, -h           Show this help
@@ -261,7 +263,11 @@ function walkFiles(dir, rel = "") {
   const out = [];
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const r = rel ? join(rel, e.name) : e.name;
-    if (e.isDirectory()) out.push(...walkFiles(join(dir, e.name), r));
+    if (e.isSymbolicLink()) {
+      // Listed (so uninstall discovery can report it) but NEVER recursed into
+      // (cycle safety) and NEVER dereferenced into an owned copy.
+      out.push({ abs: join(dir, e.name), rel: r, symlink: true });
+    } else if (e.isDirectory()) out.push(...walkFiles(join(dir, e.name), r));
     else if (e.isFile()) out.push({ abs: join(dir, e.name), rel: r });
   }
   return out.sort((a, b) => (a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0));
@@ -318,6 +324,7 @@ function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc)
   const dest = join(destSkillsDir, skillName);
   if (dryRun) {
     for (const f of walkFiles(srcSkillDir)) {
+      if (f.symlink) continue; // source symlinks are never dereferenced into owned copies
       const d = join(dest, f.rel);
       console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
     }
@@ -327,7 +334,7 @@ function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc)
     const stat = lstatSync(dest);
     if (stat.isSymbolicLink()) rmSync(dest, { force: true }); // swap old link; real dirs are copied over
   }
-  const files = walkFiles(srcSkillDir);
+  const files = walkFiles(srcSkillDir).filter((f) => !f.symlink); // never dereference source symlinks into owned copies
   const firstOwn = entriesAcc.length;
   for (const f of files) {
     const d = join(dest, f.rel);
@@ -442,10 +449,12 @@ function parentDirsOf(filePaths, stopAt) {
 }
 
 /**
- * Files currently living under the installed skills roots that the manifest
- * never owned (foreign skills planted by the user, or stray files inside the
- * skills tree). Read-only discovery: uninstall lists them so the operator can
- * decide, but never deletes them — that is the ownership-lifecycle promise.
+ * Entries currently living under the installed skills roots that the manifest
+ * never owned (foreign skills planted by the user, stray files inside the
+ * skills tree, or symlink/junction entries). Read-only discovery: uninstall
+ * lists them so the operator can decide, but never deletes them — that is the
+ * ownership-lifecycle promise. Symlinks are listed with a "(symlink)" marker
+ * and are neither followed nor deleted.
  */
 function discoverForeignFiles(ownedDests) {
   const foreign = [];
@@ -456,7 +465,8 @@ function discoverForeignFiles(ownedDests) {
   }
   for (const root of roots) {
     for (const f of walkFiles(root)) {
-      if (!ownedDests.has(f.abs)) foreign.push(f.abs);
+      if (ownedDests.has(f.abs)) continue;
+      foreign.push(f.symlink ? `${f.abs} (symlink)` : f.abs);
     }
   }
   return foreign;
@@ -724,6 +734,7 @@ function main() {
         const sharedDest = join(installPath, "_shared");
         if (dryRun) {
           for (const f of walkFiles(sharedSrc)) {
+            if (f.symlink) continue;
             const d = join(sharedDest, f.rel);
             console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
           }
