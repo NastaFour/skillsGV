@@ -62,7 +62,7 @@ Chain strategy: pending
 
 ## Fase 6: Verificación
 
-- [ ] 6.1 RED (threat Git selection): `git -C <root> status` limpio, `git fsck` sin errores, `.git.corrupt-*` sin mutación (harness-bootstrap)
-- [ ] 6.2 RED (threat Commit state): primer commit contiene el árbol completo; staged paths = paths revisados
-- [ ] 6.3 E2E: `install-skills.mjs --target <proyecto de prueba>`; arranque autónomo (Tier 0 + router); piloto SDD con las 8 fases emitiendo contrato en OpenCode y Antigravity (estado vía Engram) (harness-bootstrap, harness-orchestration)
-- [ ] 6.4 Validar todos los SKILL.md nuevos/modificados con `validate-skills.mjs --strict` exit 0 (rules.tasks de config.yaml)
+- [x] 6.1 RED (threat Git selection): `git -C <root> status` limpio, `git fsck` sin errores, `.git.corrupt-*` sin mutación (harness-bootstrap)
+- [x] 6.2 RED (threat Commit state): primer commit contiene el árbol completo; staged paths = paths revisados
+- [x] 6.3 E2E: `install-skills.mjs --target <proyecto de prueba>`; arranque autónomo (Tier 0 + router); piloto SDD con las 8 fases emitiendo contrato en OpenCode y Antigravity (estado vía Engram) (harness-bootstrap, harness-orchestration)
+- [x] 6.4 Validar todos los SKILL.md nuevos/modificados con `validate-skills.mjs --strict` exit 0 (rules.tasks de config.yaml)
