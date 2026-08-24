@@ -2,7 +2,7 @@
 name: sdd-archive
 description: "Archive a completed SDD change by syncing delta specs. Trigger: orchestrator launches archive after implementation and verification."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit Bash(git:*,node:*)
 metadata:
   author: gentleman-programming
   version: "1.0.0"

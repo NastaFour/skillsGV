@@ -2,7 +2,7 @@
 name: sdd-apply
 description: "Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit Bash(node:*)
 metadata:
   author: gentleman-programming
   version: "1.0.0"

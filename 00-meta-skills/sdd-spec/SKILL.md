@@ -2,7 +2,7 @@
 name: sdd-spec
 description: "Write SDD delta specs with requirements and scenarios. Trigger: orchestrator launches spec work for a change."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit
 metadata:
   author: gentleman-programming
   version: "1.0.0"

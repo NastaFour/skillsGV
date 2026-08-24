@@ -2,7 +2,7 @@
 name: sdd-propose
 description: "Create an SDD change proposal with intent, scope, and approach. Trigger: orchestrator launches proposal work for a change."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit
 metadata:
   author: gentleman-programming
   version: "1.0.0"

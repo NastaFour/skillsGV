@@ -2,7 +2,7 @@
 name: sdd-init
 description: "Trigger: sdd init, iniciar sdd, openspec init. Initialize SDD context, testing capabilities, registry, and persistence."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit
 metadata:
   author: gentleman-programming
   version: "1.0.0"

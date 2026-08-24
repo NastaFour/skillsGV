@@ -2,7 +2,7 @@
 name: sdd-design
 description: "Create the SDD technical design and architecture approach. Trigger: orchestrator launches design for a change."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit
 metadata:
   author: gentleman-programming
   version: "1.0.0"

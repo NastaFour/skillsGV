@@ -2,7 +2,7 @@
 name: sdd-tasks
 description: "Break an SDD change into implementation tasks. Trigger: orchestrator launches task planning for a change."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit
 metadata:
   author: gentleman-programming
   version: "1.0.0"

@@ -2,7 +2,7 @@
 name: sdd-onboard
 description: "Walk users through the SDD workflow on the real codebase. Trigger: orchestrator launches onboarding for the full SDD cycle."
 license: MIT
-allowed-tools: Read
+allowed-tools: Read Write Edit Bash(node:*)
 metadata:
   author: gentleman-programming
   version: "1.0.0"
