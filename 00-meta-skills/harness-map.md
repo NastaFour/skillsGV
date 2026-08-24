@@ -6,15 +6,15 @@ This document maps the **149 skills** in this catalog to the **20 Agent Harnesse
 
 | # | Harness | Resuelve | Skill(es) del catálogo |
 |---|---|---|---|
-| 1 | **SDD Orchestrator** | Coordina las fases SDD sin ejecutar inline | `professional-planner` |
+| 1 | **SDD Orchestrator** | Coordina las fases SDD sin ejecutar inline | `00-meta-skills/sdd-orchestrator` |
 | 2 | **Delegation** | Decide qué tarea es inline vs subagente | `01-planning-process/agents`, `02-dev-roles/feature-implementer` |
 | 3 | **SDD Init** | Calibra stack y capacidades de testing del proyecto | `01-planning-process/project-tracker`, `01-planning-process/tech-stack-advisor` |
 | 4 | **Execution Mode** | Equilibrio entre velocidad y control humano | `00-meta-skills/sdd-orchestrator` (modos `auto` con gatekeeper / `interactive` con aprobación por fase) |
 | 5 | **Artifact Store** | El chat NO es la fuente de verdad; los artefactos sí | `01-planning-process/engram-integration` (futuro MCP) |
-| 6 | **Phase DAG** | Impide que se salten etapas del SDD | `professional-planner` (con `references/sdd-methodology.md`) |
-| 7 | **Artifact Dependency** | Inputs obligatorios por fase | `professional-planner` (con `references/templates.md`) |
-| 8 | **Result Contract** | Estados predecibles entre fases | `professional-planner` (define contrato de artefactos entre fases) |
-| 9 | **SDD Artifact Grammar** | Lenguaje común para fases y artefactos | `professional-planner` |
+| 6 | **Phase DAG** | Impide que se salten etapas del SDD | `00-meta-skills/sdd-orchestrator` (DAG de fases) |
+| 7 | **Artifact Dependency** | Inputs obligatorios por fase | `00-meta-skills/sdd-*` + `_shared/sdd-phase-common.md` (dependencias de entrada por fase) |
+| 8 | **Result Contract** | Estados predecibles entre fases | `_shared/sdd-phase-common.md` (sección D — envelope de 6 campos) |
+| 9 | **SDD Artifact Grammar** | Lenguaje común para fases y artefactos | `_shared/sdd-phase-common.md` (topic keys y artefactos por fase) |
 | 10 | **Engram Memory** | Memoria persistente entre sesiones | `01-planning-process/engram-integration` |
 | 11 | **Strict TDD** | Red → Green → Triangulate → Refactor | `07-testing/testing-patterns` |
 | 12 | **Verify** | Verificación con evidencia, no solo finalización | `02-dev-roles/qa-tester` |
@@ -31,7 +31,7 @@ This document maps the **149 skills** in this catalog to the **20 Agent Harnesse
 
 | Categoría | Harnesses cubiertos |
 |---|---|
-| 00-meta-skills | 14, 15 |
+| 00-meta-skills | 1, 6, 7, 8, 9, 14, 15 |
 | 01-planning-process | 2, 3, 5, 6, 7, 9, 10, 13, 17 |
 | 02-dev-roles | 2, 8, 12, 18, 19 |
 | 03-ai-ml | _(no mapped yet)_ |
@@ -40,7 +40,7 @@ This document maps the **149 skills** in this catalog to the **20 Agent Harnesse
 | 06-code-quality | _(no mapped yet)_ |
 | 07-testing | 11 |
 | 08-devops | 20 |
-| professional-planner | 1, 6, 7, 9 |
+| professional-planner | _(metodología de referencia — ver `00-meta-skills/sdd-*`)_ |
 
 **Harnesses extendidos (no core 20):**
 
