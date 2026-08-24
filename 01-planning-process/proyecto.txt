@@ -1,0 +1,18 @@
+para: Una app móvil para un supermercado para pedir el mercado. 
+Que se pueda administrar desde página web, dónde el rol de los
+empleados es tener el inventario al día para actualizar 
+la base de datos(lo que se vaya agotando), y reunir
+los productos  de las compras confirmadas para que posteriormente 
+un delivery lo lleve al destino fijado por el 
+comprador además  de darle soporte al cliente por 
+algún fallo como la falta de stock de un producto
+ o  cualquier fallo que pueda tener una aplicación 
+
+
+(adapta las skills que me has dado, y las skills que te estoy dando en este momento, para que trabajen en conjunto una llame a la otra y asi,mejoralas adaptalas al proyecto y etc si crees que falta una skill para el proceso del proyecto añadela)
+
+Capa	Tecnologías (todas las dominas)
+Backend	Node.js + Express + PostgreSQL + Prisma + JWT + Socket.io
+App cliente	React Native (Expo) + Socket.io client
+Panel admin	React + Vite + Tailwind + Socket.io client
+Infraestructura	NPM Workspaces (monorepo), despliegue en VPS o servicio como Railway / Render

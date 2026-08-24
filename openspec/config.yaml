@@ -1,0 +1,47 @@
+# openspec/config.yaml — Configuración SDD del proyecto skills-catalog
+# Almacén de artefactos: hybrid (archivos openspec/ + memoria Engram)
+
+schema: spec-driven
+
+context: |
+  Proyecto: skills-catalog (catálogo de 129 skills, spec agentskills.io)
+  Stack: catálogo plano de archivos SKILL.md; sin package.json ni lockfile.
+  Runtime de verificación: Node.js v24 (scripts .mjs sin dependencias npm).
+  Convención: documentación en español (AGENTS.md, SKILLS.md); nombres
+  de skill en lowercase-hyphen; frontmatter según agentskills.io.
+
+rules:
+  proposal:
+    - Incluir plan de rollback para cambios que modifiquen el índice o el frontmatter de muchas skills.
+  specs:
+    - Usar escenarios Given/When/Then para requisitos de comportamiento.
+    - Usar palabras clave RFC 2119 (MUST, SHALL, SHOULD, MAY) en los requisitos.
+  design:
+    - Documentar decisiones de arquitectura con su justificación.
+    - Para cambios que toquen varias skills, incluir un diagrama o matriz de impacto.
+  tasks:
+    - Agrupar por fase, con numeración jerárquica.
+    - Mantener tareas completables en una sesión.
+    - Toda tarea que cree o modifique un SKILL.md debe incluir la validación con skill-validator.
+  apply:
+    guidelines:
+      - Seguir los patrones existentes del catálogo (frontmatter, referencias locales en references/).
+      - Toda skill nueva o modificada debe cumplir la spec agentskills.io.
+      - La descripción del frontmatter debe ser una sola línea, trigger-first y no superar 250 caracteres.
+    tdd: false
+    test_command: "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict"
+  verify:
+    test_command: "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict"
+    build_command: ""
+    coverage_threshold: 0
+  archive:
+    - Advertir antes de fusionar deltas destructivos (eliminación o renombrado de skills).
+
+testing:
+  strict_tdd: false
+  reason: "Catálogo de contenido, no base de código de aplicación. No existe test runner; la verificación se realiza con los scripts del propio catálogo."
+  verification_commands:
+    - command: "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs [--json] [--strict]"
+      purpose: "Validación de cumplimiento de la spec agentskills.io (exit 0 = limpio)"
+    - command: "node 00-meta-skills/skill-router/scripts/skill-router.mjs --query \"<tarea>\" [--json]"
+      purpose: "Ruteo determinista de skills (smoke test del harness)"

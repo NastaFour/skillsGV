@@ -1,0 +1,15 @@
+# Ignorar la carpeta 'mio' y todo su contenido
+mio/
+
+# Telemetría de sesión (generado automáticamente por skill-loader)
+.skills-used.json
+
+# Archivos de caché del router (generados en runtime)
+~/.skill-router-cache.json
+~/.skill-router-turn.json
+
+# Backup del .git corrupto (recuperación 2026-08-24)
+.git.corrupt-*/
+
+# Config local con secretos (API key Context7) — migrar a variable de entorno en WU1
+opencode.json
