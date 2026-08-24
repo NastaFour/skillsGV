@@ -24,7 +24,7 @@ topic_keys:
   state: "sdd/{change}/state"
 
 context: |
-  Proyecto: skills-catalog (catálogo de 129 skills, spec agentskills.io)
+  Proyecto: skills-catalog (catálogo de 149 skills, spec agentskills.io)
   Stack: catálogo plano de archivos SKILL.md; sin package.json ni lockfile.
   Runtime de verificación: Node.js v24 (scripts .mjs sin dependencias npm).
   Convención: documentación en español (AGENTS.md, SKILLS.md); nombres
