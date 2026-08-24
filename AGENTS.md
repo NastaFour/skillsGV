@@ -10,10 +10,12 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion |
 | AI / ML | `03-ai-ml/` | ai-orchestration, ai-scalability-mlops, api-ai-billing, llm-integration, ai-sdk-5, prompt-engineering, research-first |
 | Backend | `04-backend/` | docker, error-handling, mcp-integration, api-design, expressjs, jwt-bcrypt, microservices, nodejs, payments, postgresql, prisma-orm, socketio, django-drf, java-21, spring-boot-3 |
-| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design |
+| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement |
 | Code Quality | `06-code-quality/` | pnpm-workspaces, turborepo, biome, changesets, env-management, solid-clean-code, typescript, dependency-guardian, elixir-antipatterns, changelog-generator |
 | Testing | `07-testing/` | testing-patterns, playwright, pytest |
 | DevOps | `08-devops/` | ci-cd, kill-switches, monitoring, observability |
+| Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
+| MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
 | Meta-Skills | `00-meta-skills/` | skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard |
 
@@ -163,6 +165,13 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Crear/modificar ticket u Epic de Jira | `01-planning-process/jira-epic` + `01-planning-process/jira-task` |
 | Escribir tests unitarios en Python / pytest | `07-testing/pytest` |
 | Crear/modificar servicio Spring Boot | `04-backend/spring-boot-3` |
+| Implementar diseño Figma / design-to-code / URL de Figma | `05-frontend/figma-implement` + `11-mcp-hybrid/figma-mcp` |
+| Generar imágenes IA / Nano Banana / banana claude | `09-media-graphics/nano-banana` + `09-media-graphics/banana-claude` |
+| Scrapear componente / reutilizar UI existente | `11-mcp-hybrid/component-scrapper-mcp` |
+| Tema de color perceptivo / OKLCH / OKHSL | `11-mcp-hybrid/oklch-theme-injector` |
+| Motion-to-video / pipeline de video / intro animada | `11-mcp-hybrid/motion-video-pipeline` |
+| Auditoría UX / usabilidad / accesibilidad | `11-mcp-hybrid/ux-auditor-agent` |
+| Generar assets / iconos / logos IA | `11-mcp-hybrid/asset-generator-mcp` |
 
 **Regla de los 3 capas**: si la acción toca 2+ skills de categorías distintas, invocar `professional-planner` primero para confirmar la SDD-phase apropiada.
 

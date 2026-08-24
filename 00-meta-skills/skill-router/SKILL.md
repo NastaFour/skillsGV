@@ -21,6 +21,7 @@ Replaces ~80% of stochastic "which skill do I load?" reasoning with **exact trig
 - **Before any turn** that might invoke a skill: run `skill-router.mjs` first.
 - When you want to know if a diff is **trivial** (skip SDD) or **needs SDD** (invoke `professional-planner`).
 - When 2+ skills have semantic overlap (e.g. `nextjs` deprecated vs `nextjs-15`, `engram` vs `mcp-integration`) — the router resolves it deterministically via `deprecated` flag.
+- When new skills overlap semantically (pilot `figma-implement`/`figma-mcp`, `nano-banana`/`banana-claude`, MCP hybrids) — the router de-ties via `references/overlap-matrix.json` (D4): if ≥2 members of a group are in the top-4 and the group leads the scoring (current top-1 is a member), `primary = canonical`.
 
 ## When NOT to Use
 
@@ -68,6 +69,7 @@ Flags:
    - `needsSDD`: query touches 2+ distinct category prefixes (`04-backend`, `05-frontend`, etc.) AND diff >20 lines.
    - `trivial`: diff <20 lines AND query has no markers `auth|payment|prisma|migration|socketio|ssl|secret`.
    - `skipJudgmentDay`: diff <100 lines AND no markers `auth|payments|migration|sql|ssl`.
+7. **Overlap matrix** (D4): after scoring, if ≥2 members of an `overlap-matrix.json` group are in the top-4 AND the group leads the scoring (current top-1 is a member), `primary = canonical` and the other members stay in `secondary`/`tier1toLoad`. Members in the top-4 that are only keyword noise never displace a genuine primary. Matrix smoke tests in `references/overlap-smoke-tests.json`.
 
 ## Output contract
 

@@ -103,7 +103,7 @@ const validSkillNames = new Set(index.map((s) => s.name));
 
 // Scoring
 const qLower = query.toLowerCase();
-const scored = [];
+let scored = [];
 for (const s of index) {
   if (s.deprecated) continue;
   let triggerScore = 0; // from word-boundary exact trigger matches
@@ -134,6 +134,43 @@ for (const s of index) {
   }
 }
 scored.sort((a, b) => b.score - a.score);
+
+// === Overlap-matrix resolution (D4, overlap-matrix spec) ===
+// Load references/overlap-matrix.json and break semantic ties: if ≥2 members
+// of a group appear in the top-4 scored candidates, promote the group's
+// canonical to first place (primary) and keep the other members in secondary.
+// Both skills stay routable — the matrix only de-ties, it never hides a skill.
+const OVERLAP_MATRIX_PATH = join(__dirname, "../references/overlap-matrix.json");
+function loadOverlapGroups() {
+  try {
+    const parsed = JSON.parse(readFileSync(OVERLAP_MATRIX_PATH, "utf8"));
+    return Array.isArray(parsed.groups) ? parsed.groups : [];
+  } catch {
+    return [];
+  }
+}
+const overlapGroups = loadOverlapGroups();
+if (overlapGroups.length > 0 && scored.length > 0) {
+  const top4Names = new Set(scored.slice(0, 4).map((s) => s.name));
+  const leader = scored[0];
+  for (const group of overlapGroups) {
+    const members = group.members || [];
+    // De-tie only when the group actually leads the routing: the current top-1
+    // candidate must be a member of the group. Otherwise the members sitting in
+    // the top-4 are keyword noise and must not displace a genuine primary
+    // (e.g. "generate an app icon with the asset generator" must not promote
+    // nano-banana just because banana-claude and nano-banana both kw-score).
+    if (!leader || !members.includes(leader.name)) continue;
+    const hitsInTop4 = members.filter((m) => top4Names.has(m)).length;
+    if (hitsInTop4 >= 2) {
+      const canonicalEntry = scored.find((s) => s.name === group.canonical);
+      if (canonicalEntry) {
+        scored = [canonicalEntry, ...scored.filter((s) => s.name !== canonicalEntry.name)];
+      }
+      break;
+    }
+  }
+}
 
 // Determine primary + deprecated hit
 let primary = null;

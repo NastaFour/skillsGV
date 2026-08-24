@@ -49,16 +49,16 @@ Chain strategy: pending
 - [x] 4.1 `skill-loader/scripts/skills-loader.mjs`: añadir modo `--emit-registry` (reutiliza walk + cache mtime; excluye `_shared`, `skill-registry`, `sdd-*`) (skill-registry-protocol)
 - [x] 4.2 `skill-validator/scripts/validate-skills.mjs`: check de consistencia `SKILLS.md` ↔ `.atl/skill-registry.md` (nombre + path) (skill-registry-protocol)
 - [x] 4.3 Regenerar `.atl/skill-registry.md` (columna scope; excluye `_shared`/`skill-registry`/`sdd-*`); validar con `validate-skills.mjs --strict` exit 0 (skill-registry-protocol)
-- [x] 4.4 `AGENTS.md`: regla de arranque (router antes de cada turno; orquestador si >1 archivo) + filas piloto; `SKILLS.md`: +9 filas (harness-bootstrap)
+- [x] 4.4 `AGENTS.md`: regla de arranque (router antes de cada turno; orquestador si >1 archivo) + filas piloto; `SKILLS.md`: +9 filas (harness-bootstrap) — regla de arranque en WU4; filas piloto y +9 filas completadas en WU5/PR-5 (ver apply-progress)
 - [x] 4.5 `openspec/config.yaml`: `artifact_store: hybrid` + convención de topic keys (artifact-store-abstraction)
 
 ## Fase 5: Lote piloto y matriz (WU5)
 
-- [ ] 5.1 Crear 5 híbridas nativas `11-mcp-hybrid/{component-scrapper-mcp,oklch-theme-injector,motion-video-pipeline,ux-auditor-agent,asset-generator-mcp}/SKILL.md` (catalog-content-wave)
-- [ ] 5.2 Crear `11-mcp-hybrid/figma-mcp`, `09-media-graphics/{nano-banana,banana-claude}` (vendored con atribución) y `05-frontend/figma-implement` (plegado Capa 1) (catalog-content-wave)
-- [ ] 5.3 Crear `skill-router/references/overlap-matrix.json` (grupos figma, banana-image-gen, híbridas unitarias con nota de delimitación) + `overlap-smoke-tests.json` (overlap-matrix)
-- [ ] 5.4 `skill-router/scripts/skill-router.mjs`: hook ~30 líneas — si ≥2 members en top-4, `primary = canonical`, resto `secondary` (overlap-matrix)
-- [ ] 5.5 Regenerar `tier0-context.json`; correr smoke tests: primary resuelto = esperado de la matriz (overlap-matrix)
+- [x] 5.1 Crear 5 híbridas nativas `11-mcp-hybrid/{component-scrapper-mcp,oklch-theme-injector,motion-video-pipeline,ux-auditor-agent,asset-generator-mcp}/SKILL.md` (catalog-content-wave)
+- [x] 5.2 Crear `11-mcp-hybrid/figma-mcp`, `09-media-graphics/{nano-banana,banana-claude}` (vendored con atribución) y `05-frontend/figma-implement` (plegado Capa 1) (catalog-content-wave)
+- [x] 5.3 Crear `skill-router/references/overlap-matrix.json` (grupos figma, banana-image-gen, híbridas unitarias con nota de delimitación) + `overlap-smoke-tests.json` (overlap-matrix)
+- [x] 5.4 `skill-router/scripts/skill-router.mjs`: hook ~30 líneas — si ≥2 members en top-4, `primary = canonical`, resto `secondary` (overlap-matrix)
+- [x] 5.5 Regenerar `tier0-context.json`; correr smoke tests: primary resuelto = esperado de la matriz (overlap-matrix)
 
 ## Fase 6: Verificación
 
