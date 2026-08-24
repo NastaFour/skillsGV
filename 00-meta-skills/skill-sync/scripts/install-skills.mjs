@@ -439,6 +439,27 @@ function parentDirsOf(filePaths, stopAt) {
   return dirs;
 }
 
+/**
+ * Files currently living under the installed skills roots that the manifest
+ * never owned (foreign skills planted by the user, or stray files inside the
+ * skills tree). Read-only discovery: uninstall lists them so the operator can
+ * decide, but never deletes them — that is the ownership-lifecycle promise.
+ */
+function discoverForeignFiles(ownedDests) {
+  const foreign = [];
+  const roots = new Set();
+  for (const agent of AGENT_TARGETS) {
+    const root = target ? agent.projectInstallPath(target) : agent.globalInstallPath(homedir());
+    if (existsSync(root)) roots.add(root);
+  }
+  for (const root of roots) {
+    for (const f of walkFiles(root)) {
+      if (!ownedDests.has(f.abs)) foreign.push(f.abs);
+    }
+  }
+  return foreign;
+}
+
 function cmdUninstall() {
   const mf = loadManifest();
   if (!mf) {
@@ -447,28 +468,34 @@ function cmdUninstall() {
   }
   console.log("🧹 Uninstall (manifest-owned files only)\n");
   const owned = collectOwned(mf);
-  const stats = { removed: 0, retained: [] };
+  const ownedDests = new Set(owned.map((o) => o.dest));
+  const stats = { removed: 0, retained: [], foreign: [] };
   if (dryRun) {
     for (const e of owned) {
       const gone = e.kind === "symlink" ? !linkExists(e.dest) : !existsSync(e.dest);
       const keep = !gone && e.kind !== "symlink" && sha256File(e.dest) !== e.sha256;
       console.log(`  [dry-run] ${gone ? "already absent" : keep ? "retain (edited)" : "delete"} ${e.dest}`);
     }
+    for (const p of discoverForeignFiles(ownedDests)) {
+      console.log(`  [dry-run] retain (foreign) ${p}`);
+    }
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
   for (const e of owned) removeFileOwned(e, stats, "uninstalled");
+  stats.foreign = discoverForeignFiles(ownedDests);
   pruneEmptyDirs(parentDirsOf(stats.removed ? owned.map((o) => o.dest) : [], LIFECYCLE_ROOT));
   mf.history.push({
     type: "uninstall",
     ts: new Date().toISOString(),
     removed: stats.removed,
     retained: stats.retained.length,
+    foreign: stats.foreign.length,
   });
   saveManifest(mf);
-  if (stats.retained.length) {
-    console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length}):`);
-    for (const p of stats.retained) console.log(`   - ${p}`);
+  if (stats.retained.length || stats.foreign.length) {
+    console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length + stats.foreign.length}):`);
+    for (const p of [...stats.retained, ...stats.foreign]) console.log(`   - ${p}`);
   }
   console.log(`\n✨ Uninstalled ${stats.removed} owned file(s)/link(s).`);
 }
