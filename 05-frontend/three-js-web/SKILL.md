@@ -41,7 +41,7 @@ El stack 3D web como una sola unidad: three.js es el motor WebGL, react-three-fi
 
 ## 🧊 Spline (alternativa no-code)
 
-Cuando el equipo no escribe código WebGL, Spline permite diseñar la escena visualmente y embeberla. Es una sección de alternativa dentro de esta skill, no un stack separado: evaluá trade-offs en [spline-no-code.md](references/spline-no-code.md) antes de elegir.
+Cuando el equipo no escribe código WebGL, Spline permite diseñar la escena visualmente y embeberla. Es una sección de alternativa dentro de esta skill, no un stack separado: evalúe trade-offs en [spline-no-code.md](references/spline-no-code.md) antes de elegir.
 
 ## 📚 References
 

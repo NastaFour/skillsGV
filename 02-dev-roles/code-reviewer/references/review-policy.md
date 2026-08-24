@@ -4,7 +4,7 @@
 
 ## Regla central: causalidad
 
-Durante una revisión, clasificá cada hallazgo por su relación causal con el cambio bajo revisión:
+Durante una revisión, clasifique cada hallazgo por su relación causal con el cambio bajo revisión:
 
 | Clasificación | Criterio | Consecuencia |
 |---|---|---|
