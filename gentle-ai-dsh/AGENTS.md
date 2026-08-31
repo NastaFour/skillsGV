@@ -13,7 +13,7 @@ empezar trabajo real:
 | Engram (memoria) | ENGRAM_MCP_COMMAND, ENGRAM_MCP_ARGS | binario local `engram` o `pnpm dlx ...` |
 | Context7 (docs) | (sin key — endpoint público) | https://mcp.context7.com/mcp |
 | OpenDesign (diseño) | (ya cableado en el preset) | herramientas mcp__open-design__* |
-| Modelo flash | DSH_FLASH_MODEL | default `deepseek-v4-flash` |
+| Modelo flash | DSH_FLASH_MODEL | default `deepseek-v4-flash` (servido por `opencode-go`) |
 
 Si falta alguna: **avisá** al usuario cuál falta y dale el comando exacto, y seguí
 trabajando sin memoria/docs hasta que la setee (el modo es disabled-safe, no te

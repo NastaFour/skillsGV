@@ -216,7 +216,7 @@
         backgroundMode: continuable
         maxDepth: 3
         agentOptions:
-          provider: !!js process.env.DSH_FLASH_PROVIDER || 'deepseek-official'
+          provider: !!js process.env.DSH_FLASH_PROVIDER || 'opencode-go'
           model: !!js process.env.DSH_FLASH_MODEL || 'deepseek-v4-flash'
           maxTokens: 16000
 
@@ -228,7 +228,7 @@
         backgroundMode: continuable
         maxDepth: 3
         agentOptions:
-          provider: !!js process.env.DSH_FLASH_PROVIDER || 'deepseek-official'
+          provider: !!js process.env.DSH_FLASH_PROVIDER || 'opencode-go'
           model: !!js process.env.DSH_FLASH_MODEL || 'deepseek-v4-flash'
           maxTokens: 16000
 
@@ -240,7 +240,7 @@
         backgroundMode: continuable
         maxDepth: 3
         agentOptions:
-          provider: !!js process.env.DSH_STRONG_PROVIDER || 'deepseek-official'
+          provider: !!js process.env.DSH_STRONG_PROVIDER || 'opencode-go'
           model: !!js process.env.DSH_STRONG_MODEL || 'deepseek-v4-pro'
 
     - id: tool-subagent-codex

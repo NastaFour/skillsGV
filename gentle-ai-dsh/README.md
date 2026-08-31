@@ -57,9 +57,9 @@ absent until you set them.
 
 | Env var | Purpose | Default |
 |---|---|---|
-| DSH_FLASH_PROVIDER | Provider for mechanical SDD phases (spec/tasks/apply/verify) | deepseek-official |
+| DSH_FLASH_PROVIDER | Provider for mechanical SDD phases (spec/tasks/apply/verify) | opencode-go |
 | DSH_FLASH_MODEL | Flash (cheap) model | deepseek-v4-flash |
-| DSH_STRONG_PROVIDER | Provider for propose/design/Judgment Day | deepseek-official |
+| DSH_STRONG_PROVIDER | Provider for propose/design/Judgment Day | opencode-go |
 | DSH_STRONG_MODEL | Strong model | deepseek-v4-pro |
 
 Set them in the dsh Host environment (PowerShell):
