@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "source": "_shared/agent-roster/roster.json",
+  "generatedAt": "2026-08-31T03:23:00.785Z",
+  "routing": {
+    "gentle-orchestrator": {
+      "tier": "strong",
+      "effort": "max",
+      "delegate_only": false,
+      "tool": "main"
+    },
+    "jd-judge-a": {
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent_strong"
+    },
+    "jd-judge-b": {
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent_strong"
+    },
+    "sdd-apply": {
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent_strong"
+    },
+    "jd-fix-agent": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-risk": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-readability": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-reliability": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-resilience": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-refuter": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "review-validator": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-init": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-explore": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-propose": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-spec": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-design": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-tasks": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-verify": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-archive": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true,
+      "tool": "subagent"
+    },
+    "sdd-onboard": {
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": false,
+      "tool": "main"
+    }
+  }
+}
