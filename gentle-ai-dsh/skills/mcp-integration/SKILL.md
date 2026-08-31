@@ -51,8 +51,8 @@ AI Agent ←→ MCP Client ←→ MCP Server (tools, resources, prompts)
       "args": ["mcp", "--tools=agent"]
     },
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@context7/mcp-server"]
+      "command": "pnpm",
+      "args": ["dlx", "@context7/mcp-server"]
     }
   }
 }

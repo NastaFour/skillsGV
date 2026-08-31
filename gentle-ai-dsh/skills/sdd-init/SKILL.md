@@ -72,4 +72,4 @@ Esta fase no tiene dependencias de entrada obligatorias (es la raíz del pipelin
 
 ## Referencias
 
-- [Protocolo común de fase SDD](../../_shared/sdd-phase-common.md) — secciones A (carga de skills), B (recuperación), C (persistencia) y D (envelope).
+- [Protocolo común de fase SDD](../_shared/sdd-phase-common.md) — secciones A (carga de skills), B (recuperación), C (persistencia) y D (envelope).

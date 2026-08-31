@@ -113,4 +113,4 @@ En cada fase, el agente devuelve: `status` (`success|partial|blocked`), `executi
 
 ## Referencias
 
-- [Protocolo común de fase SDD](../../_shared/sdd-phase-common.md) — carga de skills, recuperación, persistencia, envelope y guard de 400 líneas.
+- [Protocolo común de fase SDD](../_shared/sdd-phase-common.md) — carga de skills, recuperación, persistencia, envelope y guard de 400 líneas.

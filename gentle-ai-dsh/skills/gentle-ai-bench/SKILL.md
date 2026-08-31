@@ -1,6 +1,7 @@
 ---
 name: gentle-ai-bench
 description: "Trigger: bench, journey, journeys, driven mode, gentle-ai-bench, journey corpus, j-numbers, bench axis. Author and verify gentle-ai bench journeys; go test ./bench never proves driven execution."
+allowed-tools: Read Write Bash(node:*,go:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
   author: "Gentleman-Programming"

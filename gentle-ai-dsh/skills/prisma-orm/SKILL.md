@@ -13,7 +13,7 @@ metadata:
 # 💎 Prisma ORM Integration (v5+ Standards)
 
 > [!IMPORTANT]
-> Consult [_shared/references/docs-cache/prisma-orm.md](../../_shared/references/docs-cache/prisma-orm.md) before querying Context7
+> Consult [_shared/references/docs-cache/prisma-orm.md](../_shared/references/docs-cache/prisma-orm.md) before querying Context7
 
 Use this skill when designing `schema.prisma`, running migrations, or writing prisma client queries.
 

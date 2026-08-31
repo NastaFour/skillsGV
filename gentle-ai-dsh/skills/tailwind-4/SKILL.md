@@ -13,7 +13,7 @@ metadata:
 # Tailwind CSS 4
 
 > [!IMPORTANT]
-> Consult [_shared/references/docs-cache/tailwind-4.md](../../_shared/references/docs-cache/tailwind-4.md) before querying Context7
+> Consult [_shared/references/docs-cache/tailwind-4.md](../_shared/references/docs-cache/tailwind-4.md) before querying Context7
 
 ## Styling Decision Tree
 

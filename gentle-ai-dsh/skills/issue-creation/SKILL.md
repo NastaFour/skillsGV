@@ -1,6 +1,7 @@
 ---
 name: issue-creation
 description: "Create and triage GitHub issues from repository evidence. Trigger: issue creation, bug reports, feature requests, or issue approval."
+allowed-tools: Read Write Bash(gh:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
   author: gentleman-programming

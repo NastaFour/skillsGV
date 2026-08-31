@@ -13,7 +13,7 @@ metadata:
 # Next.js 15 (App Router)
 
 > [!IMPORTANT]
-> Consult [_shared/references/docs-cache/nextjs-15.md](../../_shared/references/docs-cache/nextjs-15.md) before querying Context7
+> Consult [_shared/references/docs-cache/nextjs-15.md](../_shared/references/docs-cache/nextjs-15.md) before querying Context7
 
 ## App Router File Conventions
 

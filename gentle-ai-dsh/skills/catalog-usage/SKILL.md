@@ -91,4 +91,4 @@ Agregar una skill nueva (los gates son obligatorios y viven en el mismo commit):
 
 - [skill-sync](../skill-sync/SKILL.md) — instalador cross-tool y estrategias de sincronización.
 - [AGENTS.md](../../AGENTS.md) — reglas globales, arranque del harness y Auto-Invoke List.
-- [SKILLS.md](../../SKILLS.md) — índice completo del catálogo.
+- `SKILLS.md` — índice completo del catálogo (vive en el repo del catálogo, no en la instalación).

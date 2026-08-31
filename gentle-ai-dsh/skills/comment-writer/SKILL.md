@@ -1,6 +1,7 @@
 ---
 name: comment-writer
 description: "Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments."
+allowed-tools: Read Write Bash(gh:*)
 license: Apache-2.0
 metadata:
   author: gentleman-programming

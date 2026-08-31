@@ -1,6 +1,7 @@
 ---
 name: skill-registry
 description: "Trigger: update skills, skill registry, actualizar skills, after skill changes. Index available skills by trigger and path."
+allowed-tools: Read Write Bash(node:*) Glob Grep
 license: MIT
 metadata:
   author: gentleman-programming

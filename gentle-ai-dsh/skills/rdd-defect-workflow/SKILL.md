@@ -1,6 +1,7 @@
 ---
 name: rdd-defect-workflow
 description: "Trigger: RDD, receipt-driven development, review authority, receipt/lineage, correction/recovery, delivery gate/kill switch, bounded review defects. Guide work."
+allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 license: Apache-2.0
 metadata:
   author: gentleman-programming
