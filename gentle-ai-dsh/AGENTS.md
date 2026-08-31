@@ -57,6 +57,11 @@ demás → delegar. Cargá **gentle-orchestrator** para el protocolo completo + 
 roster de 20 agentes. **Si un subagente falla o devuelve vacío → RE-LANZALO una
 vez + investigá el porqué** (leé el error, no asumas).
 
+**Roster de agentes (20)**: la fuente de verdad declarativa vive en el catálogo
+skillsGV (`_shared/agent-roster/roster.json` + meta-skill **agent-roster**); el
+routing de este preset se sincroniza con
+`node 00-meta-skills/agent-roster/scripts/apply.mjs --runtime dsh`.
+
 ## 2 · De dónde salen las skills
 
 El catálogo (206 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por

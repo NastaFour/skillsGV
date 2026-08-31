@@ -17,7 +17,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
 | MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp, open-design |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
-| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator |
+| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator, agent-roster |
 | Matt Pocock | `12-matt-pocock/` | ask-matt, code-review, codebase-design, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs, grilling, handoff, implement, improve-codebase-architecture, migrate-to-shoehorn, prototype, research, resolving-merge-conflicts, scaffold-exercises, setup-pre-commit, tdd, teach, to-questionnaire, to-spec, to-tickets, triage, wait-what, wayfinder, wizard, writing-for-agents |
 
 ## 🚀 Regla de arranque (harness)
@@ -99,6 +99,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Sincronizar skills cross-tool | `00-meta-skills/skill-sync` |
 | Validar SKILL.md contra spec | `00-meta-skills/skill-validator` |
 | Cargar skills por turno / telemetría de sesión | `00-meta-skills/skill-loader` |
+| Cambiar proveedor/modelo de los agentes | `00-meta-skills/agent-roster` |
 | Iniciar feature >1 archivo | `00-meta-skills/sdd-orchestrator` (SDD) |
 | Configurar env vars / secrets | `06-code-quality/env-management` |
 | Error handling / Result types | `04-backend/error-handling` |

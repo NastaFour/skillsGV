@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **192 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **193 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -8,6 +8,7 @@ Catálogo de **192 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| agent-roster | [00-meta-skills/agent-roster/SKILL.md](00-meta-skills/agent-roster/SKILL.md) ← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models) |
 | catalog-usage | [00-meta-skills/catalog-usage/SKILL.md](00-meta-skills/catalog-usage/SKILL.md) ← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento |
 | skill-creator | [00-meta-skills/skill-creator/SKILL.md](00-meta-skills/skill-creator/SKILL.md) |
 | skill-loader | [00-meta-skills/skill-loader/SKILL.md](00-meta-skills/skill-loader/SKILL.md) ← two-tier loading, session telemetry, route-first enforcement |

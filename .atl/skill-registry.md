@@ -2,7 +2,7 @@
 
 > Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.
 > Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).
-> Total de skills indexadas: 181.
+> Total de skills indexadas: 182.
 
 ## Archivos de convención y contexto del proyecto
 
@@ -22,6 +22,7 @@
 
 | Skill | Disparador / Descripción | Scope | Path |
 |---|---|---|---|
+| `agent-roster` | Trigger: cambiar proveedor/modelo de los agentes, roster de agentes, routing por agente, configurar modelos de sub-agentes, perfiles de modelo, set-models, aplicar roster. Sistema declarativo portable: 20 agentes (tier, effort, delegate_only) en una sola fuente de verdad, generador de configuración por runtime y switcher de proveedor con un comando. Use when changing the model/provider of all agents at once, syncing the agent roster across runtimes, or adding a new runtime adapter. | `root-only` | `00-meta-skills/agent-roster/SKILL.md` |
 | `catalog-usage` | Trigger: instalar skills, catálogo de skills, usar el catálogo, skill-sync, install-skills, onboarding, rollback, uninstall. Onboarding y operación del catálogo para agentes: instalación, uso diario y mantenimiento. | `global, project` | `00-meta-skills/catalog-usage/SKILL.md` |
 | `gentle-orchestrator` | Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, SDD. Coordinator protocol: delegate ALL real work to sub-agents, run small reads/writes inline, re-launch failed agents. Load as the orchestrator identity for any non-trivial task. | `project` | `00-meta-skills/gentle-orchestrator/SKILL.md` |
 | `skill-creator` | Generates new skills following the official agentskills.io spec (name lowercase-hyphen, description under 1024 chars). Creates the folder structure (SKILL.md + references/, scripts/, assets/), validates frontmatter constraints, and seeds the SKILLS.md index. Use when adding a new skill, refactoring an existing one, or bootstrapping a skill catalog. | `root-only` | `00-meta-skills/skill-creator/SKILL.md` |

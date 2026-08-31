@@ -76,6 +76,12 @@ spec/tasks/apply/verify). In dsh the routing is **env-only**: those aliases map 
 DSH_STRONG_MODEL (opus) and DSH_FLASH_MODEL (sonnet). The profile file is
 documentation, not a runtime config here — decided (E4), so it is no longer orphaned.
 
+The canonical 20-agent roster lives in the skillsGV catalog
+(`_shared/agent-roster/roster.json` + the **agent-roster** meta-skill);
+`node 00-meta-skills/agent-roster/scripts/apply.mjs --runtime dsh` emits
+`preset/roster.routing.json` (agent → tier/effort/tool) and syncs the fallback
+defaults above.
+
 ## How to work (once installed)
 
 In a gentle-ai session, say **/sdd new** or "SDD change". The orchestrator loads
