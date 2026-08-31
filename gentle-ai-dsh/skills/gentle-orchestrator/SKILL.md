@@ -39,7 +39,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 | sdd-spec | flash | sdd-spec | specs Given/When/Then |
 | sdd-design | fuerte | sdd-design | diseño técnico |
 | sdd-tasks | flash | sdd-tasks | desglose + forecast |
-| sdd-apply | flash | sdd-apply | implementa por lotes |
+| sdd-apply | fuerte | sdd-apply | implementa por lotes (pro) |
 | sdd-verify | fuerte | sdd-verify | valida contra specs |
 | sdd-archive | flash | sdd-archive | cierra + sincroniza deltas |
 | sdd-onboard | flash | sdd-onboard | guía el ciclo (docente) |

@@ -57,7 +57,7 @@ absent until you set them.
 
 | Env var | Purpose | Default |
 |---|---|---|
-| DSH_FLASH_PROVIDER | Provider for mechanical SDD phases (spec/tasks/apply/verify) | opencode-go |
+| DSH_FLASH_PROVIDER | Provider for mechanical SDD phases (spec/tasks/archive) | opencode-go |
 | DSH_FLASH_MODEL | Flash (cheap) model | deepseek-v4-flash |
 | DSH_STRONG_PROVIDER | Provider for propose/design/Judgment Day | opencode-go |
 | DSH_STRONG_MODEL | Strong model | deepseek-v4-pro |
@@ -65,7 +65,7 @@ absent until you set them.
 Set them in the dsh Host environment (PowerShell):
 
     $env:DSH_FLASH_MODEL  = 'deepseek-v4-flash'   # cheap / mechanical phases
-    $env:DSH_STRONG_MODEL = 'deepseek-v4-pro' # propose / design / judges
+    $env:DSH_STRONG_MODEL = 'deepseek-v4-pro' # propose / design / apply / judges
 
 Both must be models your provider actually serves. Sub-agents are bounded with
 maxDepth 3 + maxTokens 16000 (flash) to cap token burn; ralph has maxRounds 64.

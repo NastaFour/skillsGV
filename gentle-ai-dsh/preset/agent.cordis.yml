@@ -33,8 +33,8 @@
       Delegate the real work; only small mechanical fixes (1 file, no pending
       design) may be done inline. Two delegation tools carry the model routing:
       subagent / subagent_fork run on a cheap "flash" model for mechanical SDD
-      phases (spec, tasks, apply, archive); subagent_strong keeps the strong model
-      for propose, design, verify, Judgment Day judges, and reviewers. If a
+      phases (spec, tasks, archive); subagent_strong keeps the strong model for
+      propose, design, sdd-apply, verify, Judgment Day judges, and reviewers. If a
       sub-agent fails or returns empty/invalid, RE-LAUNCH it once with more
       context and investigate why — never assume. You stay on the strong model
       for planning and synthesis. Persist durable context to Engram (memory) and

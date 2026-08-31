@@ -44,7 +44,7 @@ skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 
 1. sdd-init → sdd-explore → sdd-propose  (delegá con **subagent_strong**)
 2. sdd-spec / sdd-design                  (**subagent_strong** para design)
-3. sdd-tasks → sdd-apply → sdd-verify     (**subagent** / flash)
+3. sdd-tasks (flash) → sdd-apply (**subagent_strong** / pro) → sdd-verify (fuerte)
 4. **judgment-day** (revisión dual adversarial, **subagent_strong**)
 5. **code-reviewer** / **verification-before-completion** antes de dar por terminado
 
