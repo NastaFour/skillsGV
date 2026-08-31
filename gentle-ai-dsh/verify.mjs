@@ -24,7 +24,7 @@ function loadYaml() {
 }
 const yaml = loadYaml();
 if (!yaml) {
-  console.error('FAIL: js-yaml not found (npm i in this package, or a dsh runtime, is required).');
+  console.error('FAIL: js-yaml not found (pnpm add in this package, or a dsh runtime, is required).');
   process.exit(1);
 }
 

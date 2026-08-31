@@ -1,7 +1,7 @@
 # gentle-ai-dsh
 
 **Gentle-AI ecosystem for DeepSeek Harness** — one command installs the full
-multi-agent stack: Spec-Driven Development (SDD) orchestrator, 169 skills,
+multi-agent stack: Spec-Driven Development (SDD) orchestrator, 206 skills,
 Engram + Context7 + OpenDesign over MCP.
 
 This is an **addon** (a per-session agent preset + a skills catalog + an
@@ -20,16 +20,16 @@ everything" possible.
 
 ## Install
 
-    npm i -g gentle-ai-dsh
+    pnpm add -g gentle-ai-dsh
     gentle-ai-dsh --set-default
 
 or without installing globally:
 
-    npx gentle-ai-dsh --set-default
+    pnpm dlx gentle-ai-dsh --set-default
 
 The installer:
 
-1. copies the 169 skills to ~/.agents/skills
+1. copies the 206 skills to ~/.agents/skills
 2. copies the gentle-ai preset to ~/.dsh/.agent-presets/gentle-ai
 3. writes the bootstrap AGENTS.md to ~/.dsh/AGENTS.md
 4. (with --set-default) sets agent-presets.default: gentle-ai
@@ -115,7 +115,7 @@ Claude-Code-oriented swarms) and is not bundled.
       skills/               206 skills + _shared
       AGENTS.md             bootstrap onboarding (installed to ~/.dsh/AGENTS.md)
       cordis.patch.yml      empty host-plane bundle hook (see note below)
-      package.json          npm package + dsh.bundle.patch
+      package.json          registry package + dsh.bundle.patch
 
 ## Note on cordis.patch.yml
 

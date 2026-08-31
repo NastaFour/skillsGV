@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // gentle-ai-dsh installer - one command to install the Gentle-AI addon for DeepSeek Harness.
 //
-//   npx gentle-ai-dsh                 # install (default)
-//   npx gentle-ai-dsh --set-default   # install and make gentle-ai the default mode
-//   npx gentle-ai-dsh --dry-run       # preview only
-//   npx gentle-ai-dsh doctor          # verify an existing install
-//   npx gentle-ai-dsh --uninstall     # remove what we installed
+//   pnpm dlx gentle-ai-dsh                 # install (default)
+//   pnpm dlx gentle-ai-dsh --set-default   # install and make gentle-ai the default mode
+//   pnpm dlx gentle-ai-dsh --dry-run       # preview only
+//   pnpm dlx gentle-ai-dsh doctor          # verify an existing install
+//   pnpm dlx gentle-ai-dsh --uninstall     # remove what we installed
 //
 // What it does (install):
-//   1. copy the 152-skill catalog to ~/.agents/skills
+//   1. copy the 206-skill bundle to ~/.agents/skills
 //   2. copy the "gentle-ai" agent preset to ~/.dsh/.agent-presets/gentle-ai
 //   3. write the bootstrap AGENTS.md to ~/.dsh/AGENTS.md (backed up if it exists)
 //   4. optionally set agent-presets.default: gentle-ai
@@ -34,9 +34,9 @@ function printHelp() {
   console.log('gentle-ai-dsh - Gentle-AI addon installer for DeepSeek Harness');
   console.log('');
   console.log('Usage:');
-  console.log('  npx gentle-ai-dsh [--set-default] [--dry-run] [--dsh-home <p>] [--agents-home <p>]');
-  console.log('  npx gentle-ai-dsh doctor');
-  console.log('  npx gentle-ai-dsh --uninstall');
+  console.log('  pnpm dlx gentle-ai-dsh [--set-default] [--dry-run] [--dsh-home <p>] [--agents-home <p>]');
+  console.log('  pnpm dlx gentle-ai-dsh doctor');
+  console.log('  pnpm dlx gentle-ai-dsh --uninstall');
   console.log('');
   console.log('Options:');
   console.log('  --set-default   set agent-presets.default = gentle-ai');

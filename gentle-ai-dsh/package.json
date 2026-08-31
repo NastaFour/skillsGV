@@ -1,7 +1,7 @@
 {
   "name": "gentle-ai-dsh",
   "version": "0.1.0",
-  "description": "Gentle-AI ecosystem for DeepSeek Harness: SDD multi-agent orchestrator, 169 skills, Engram + Context7 MCP, and OpenDesign integration — one command.",
+  "description": "Gentle-AI ecosystem for DeepSeek Harness: SDD multi-agent orchestrator, 206 skills, Engram + Context7 MCP, and OpenDesign integration — one command.",
   "type": "module",
   "bin": {
     "gentle-ai-dsh": "bin/gentle-dsh.mjs"

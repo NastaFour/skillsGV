@@ -10,7 +10,7 @@ empezar trabajo real:
 
 | Necesidad | Variable de entorno | Cómo obtenerla |
 |---|---|---|
-| Engram (memoria) | ENGRAM_MCP_COMMAND, ENGRAM_MCP_ARGS | binario local `engram` o `npx ...` |
+| Engram (memoria) | ENGRAM_MCP_COMMAND, ENGRAM_MCP_ARGS | binario local `engram` o `pnpm dlx ...` |
 | Context7 (docs) | (sin key — endpoint público) | https://mcp.context7.com/mcp |
 | OpenDesign (diseño) | (ya cableado en el preset) | herramientas mcp__open-design__* |
 | Modelo flash | DSH_FLASH_MODEL | default `deepseek-v4-flash` |
@@ -34,7 +34,7 @@ Hay 14 skills "tier 0" siempre-activas, definidas en
 skill-validator, skill-sync, professional-planner, sdd-orchestrator, ...).
 
 Regla dura: **antes de cada turno que pueda cargar otra skill, corré
-skill-router** para bajar 169 → 3-5 candidatas. No leas el cuerpo de una skill
+skill-router** para bajar 206 → 3-5 candidatas. No leas el cuerpo de una skill
 fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
@@ -59,9 +59,9 @@ vez + investigá el porqué** (leé el error, no asumas).
 
 ## 2 · De dónde salen las skills
 
-El catálogo (169 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
+El catálogo (206 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
 nombre con la herramienta **skill**. Antes de cualquier turno que pueda cargar
-otra skill, usá **skill-router** para reducir 169 → 3-5 candidatas. El catálogo
+otra skill, usá **skill-router** para reducir 206 → 3-5 candidatas. El catálogo
 es la fuente de verdad; no lo edites desde la sesión salvo que te lo pidan.
 
 ## 3 · Memoria y documentación
@@ -97,5 +97,7 @@ está) y avisá al usuario.
   protocolo **skill-harvest** (Parte C del README): buscá en Engram lo aprendido,
   identificá 1-3 patrones repetibles y escribí un TXT en la carpeta _inbox
   (env SKILLS_INBOX). Nunca crees la skill automáticamente — recomendala.
-- **Doctor al arranque**: al iniciar sesión corré **npx gentle-ai-dsh doctor**; si
+- **Doctor al arranque**: al iniciar sesión corré **pnpm dlx gentle-ai-dsh doctor**; si
   algo falta, avisá con el comando exacto (no trabajes a ciegas con MCP caídos).
+- **Package manager: pnpm only — `npm`/`npx` rechazados.** Usá `pnpm` para
+  instalar y correr scripts, y `pnpm dlx` en lugar de `npx`.

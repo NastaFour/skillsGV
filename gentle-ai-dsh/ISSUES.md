@@ -6,7 +6,7 @@ Pendientes (para abrir como issues en GitHub):
 ## E2 · Tests del installer (node:test)
 - node:test para: --dry-run sin escritura, instalación en un DSH_HOME temporal
   (env override) + doctor PASS, y --uninstall que restaura el AGENTS.md de backup.
-- Gate: npm test en verde antes de publish.
+- Gate: pnpm test en verde antes de publish.
 
 ## E3 · Bench journey mínimo (gentle-ai-bench)
 - Un journey SDD end-to-end sobre un cambio trivial del propio harness que
