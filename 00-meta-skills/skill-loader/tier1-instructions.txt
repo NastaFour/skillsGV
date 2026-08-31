@@ -1,343 +1,241 @@
-# Tier 1 instructions for: "testing telemetry integration"
-# Primary: observability | Confidence: 1
-# Selected (3): observability, qa-tester, testing-patterns
+# Tier 1 instructions for: "implementar endpoint de booking con prisma y validacion zod"
+# Primary: booking-scheduling-domain | Confidence: 1
+# Selected (3): booking-scheduling-domain, prisma-orm, api-design
 
 
-<!-- BEGIN observability -->
+<!-- BEGIN booking-scheduling-domain -->
 
 ---
-name: observability
-description: Configures observability stack: OpenTelemetry traces, Prometheus metrics, structured logging, and distributed tracing. Use when adding telemetry to services, configuring dashboards, or debugging production issues with traces.
+name: booking-scheduling-domain
+description: Core booking and scheduling logic for [APP] — slot availability, conflict detection with ACID transactions, no-show timeout protocol, and barber reassignment. Use when implementing createBooking, availability queries, slot management, or debugging double-booking race conditions.
 license: MIT
-compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
-allowed-tools: Bash(node:*) Read
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
-  trigger: ["observability", "OpenTelemetry", "tracing", "metrics", "Prometheus", "Grafana", "telemetry", "distributed tracing"]
+  trigger: ["booking", "reserva", "slot", "availability", "disponibilidad", "conflict", "race condition", "double booking", "no-show", "no show", "reasignacion", "scheduling"]
   scope: [global, project]
   version: "1.0.0"
+allowed-tools: Bash(node:*) Read
 ---
 
-# 📊 Observability — Traces, Metrics, Logs
+# 📅 Booking & Scheduling Domain
 
-Use this skill when implementing OpenTelemetry, configuring Prometheus/Grafana, or adding distributed tracing.
+The heart of [APP]. Covers slot availability, conflict detection with ACID transactions, no-show timeout, and barber reassignment. Prevents the race condition where two clients book the same slot simultaneously.
 
 ## 📋 When to Use
 
-- Use when adding OpenTelemetry instrumentation to a service
-- Use when configuring Prometheus metrics endpoints
-- Use when setting up Grafana dashboards
-- Use when debugging production issues with distributed traces
-- Do NOT use for basic logging (see monitoring skill)
+- Use when implementing `createBooking`, `getAvailability`, or slot management
+- Use when debugging double-booking or race conditions in booking creation
+- Use when implementing no-show auto-cancel or barber reassignment
+- Do NOT use for the booking UI (use `react-native` or `react-vite`)
 
 ## 🚦 Hard Rules
 
-- **Always** use OpenTelemetry SDK for traces (vendor-neutral)
-- **Always** propagate `traceparent` headers across service boundaries
-- **Always** expose `/metrics` endpoint in Prometheus format
-- **Never** log full request/response bodies in traces (PII risk)
-- **Never** use `console.log` for production telemetry
+- **Always** use `$transaction` with conflict check inline when creating a booking
+- **Never** check availability and create booking in separate queries (race condition)
+- **Always** store all times in UTC in the database, convert to local for display
+- **Always** account for service duration + buffer when calculating slot availability
+- **Never** allow a booking that overlaps an existing active booking for the same barber
 
-## 🛠️ OpenTelemetry Setup
+## 🛠️ Workflow
 
-```bash
-pnpm add @opentelemetry/sdk-node @opentelemetry/api @opentelemetry/exporter-trace-otlp-http
-```
-
-```typescript
-// packages/telemetry/src/tracing.ts
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { Resource } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
-
-const sdk = new NodeSDK({
-  resource: new Resource({
-    [ATTR_SERVICE_NAME]: 'mercado-api',
-  }),
-  traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces',
-  }),
-});
-
-sdk.start();
-```
-
-## 📈 Prometheus Metrics
-
-```typescript
-// apps/backend/src/routes/metrics.ts
-import { Registry, Counter, Histogram } from 'prom-client';
-
-const register = new Registry();
-
-export const httpRequestsTotal = new Counter({
-  name: 'http_requests_total',
-  help: 'Total HTTP requests',
-  labelNames: ['method', 'path', 'status'],
-  registers: [register],
-});
-
-export const httpRequestDuration = new Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'HTTP request duration',
-  labelNames: ['method', 'path'],
-  buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5],
-  registers: [register],
-});
-
-// GET /metrics
-router.get('/metrics', async (_req, res) => {
-  res.set('Content-Type', register.contentType);
-  res.end(await register.metrics());
-});
-```
-
-## 🔗 Trace Context Propagation
-
-```typescript
-// Propagate traceparent in outgoing HTTP calls
-import { context, propagation } from '@opentelemetry/api';
-
-const headers = {};
-propagation.inject(context.active(), headers);
-await fetch(otherServiceUrl, { headers });
-
-// Propagate in Socket.io
-socket.emit('event', data, { traceparent: headers.traceparent });
-```
+1. Read the slot logic rules: [slot-logic.md](references/slot-logic.md)
+2. Read the conflict resolution pattern: [conflict-resolution.md](references/conflict-resolution.md)
+3. Read the no-show protocol: [no-show-protocol.md](references/no-show-protocol.md)
+4. Check type definitions: [types.md](references/types.md)
+5. Run the checker to verify booking queries use transactions:
+   ```bash
+   node ./.opencode/skills/booking-scheduling-domain/scripts/check-booking-queries.mjs
+   ```
 
 ## 📚 References
 
-- [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
-- [Prometheus client for Node.js](https://github.com/siimon/prom-client)
-- [Grafana dashboards](https://grafana.com/grafana/dashboards/)
+- [Slot Logic](references/slot-logic.md) — duration, buffer, horario laboral
+- [Conflict Resolution](references/conflict-resolution.md) — ACID transaction + race condition diagram
+- [No-Show Protocol](references/no-show-protocol.md) — timeout, auto-cancel, fee, reassignment
+- [Types](references/types.md) — BookingSlot, AvailabilityWindow, ConflictCheck
+- [`prisma-orm`](../prisma-orm/SKILL.md) — transaction patterns
+- [`socketio`](../socketio/SKILL.md) — booking event broadcasting
+- [`background-jobs-queues`](../background-jobs-queues/SKILL.md) — no-show timeout job
 
 
-<!-- END observability -->
+<!-- END booking-scheduling-domain -->
 
 
-<!-- BEGIN qa-tester -->
+<!-- BEGIN prisma-orm -->
 
 ---
-name: qa-tester
-description: Generate comprehensive automated test suites. Use this skill to write unit, integration, or E2E tests using the project's designated testing framework.
+name: prisma-orm
+description: Database access management using Prisma ORM. Covers schema design, type mapping, custom query safety, migrations, and relationship enforcement. Use when creating or modifying a Prisma schema, running migrations, or writing queries.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["qa tester"]
+  trigger: ["prisma", "ORM", "schema.prisma", "migraciones", "seed"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-This skill forces the AI to think destructively, aiming to break the code to ensure its robustness.
+# 💎 Prisma ORM Integration (v5+ Standards)
 
-## Testing Coverage Requirements
-Your test suites MUST explicitly cover these 6 scenarios:
-1. **Happy Path**: The normal, expected flow (minimum 2 tests).
-2. **Edge Cases**: Empty inputs, null values, negative prices/stock, special characters (minimum 3 tests).
-3. **Security & Authentication**: Verify API blocks requests lacking JWT cookies and test Socket server handshake rejections for empty auth tokens.
-4. **Real-time & Cleanups**: Test socket connection closures and verify listeners are successfully detached on unmount (no memory leaks).
-5. **Database Integrity**: Test transactional actions (e.g. mock checkouts that trigger stock shortages) and verify Prisma database state rolls back completely if a single item fails validation.
-6. **SOLID & Clean Code Regression**: After any refactor, assert that no function in the changed module exceeds 40 lines. Confirm no TypeScript `any` type has leaked into interfaces. Scan imports to ensure shared logic has not been duplicated locally instead of being sourced from `@scope/shared-types` or `@scope/shared-utils`. Refer to [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
+> [!IMPORTANT]
+> Consult [_shared/references/docs-cache/prisma-orm.md](../../_shared/references/docs-cache/prisma-orm.md) before querying Context7
 
-## Code Standards for Tests
-- **Descriptive Naming**: Test names must explain exactly what is verified (e.g., `should_rollback_stock_changes_if_order_item_is_depleted`).
-- **Mocking**: Mock external dependencies (payment APIs, GPS locations) cleanly. Use `jest.mock` or MSW.
-- **Setup/Teardown**: Include necessary fixtures, database truncates (`beforeEach`), and server shutdowns (`afterAll`).
-- **Coverage Summary**: End with a bulleted summary of all scenarios covered.
+Use this skill when designing `schema.prisma`, running migrations, or writing prisma client queries.
+
+## 🚨 Implementation Standards
+
+1. **Schema Design**:
+   - Model all relations explicitly using Prisma `@relation` tags.
+   - Enforce database-level defaults (`autoincrement()`, `dbgenerated("gen_random_uuid()")`).
+   - Map roles and status flags using Prisma `enum`.
+
+2. **Audit Raw Queries**:
+   - The use of dynamic raw queries (`prisma.$queryRawUnsafe`) is strictly prohibited.
+   - If raw SQL is necessary for performance (e.g. spatial queries for delivery radius), use `prisma.$queryRaw` with template placeholders to ensure prepared statements are generated automatically:
+     ```typescript
+     // Safe prepared raw query
+     const products = await prisma.$queryRaw`SELECT * FROM "Product" WHERE category = ${category}`;
+     ```
+
+3. **Safe Migrations**:
+   - Never edit generated SQL migration files manually unless performing advanced table splits.
+   - Apply migrations in production using `prisma migrate deploy`. Never run `prisma migrate dev` on a production database.
+
+## 🛒 [APP] Prisma Model
+
+El schema Prisma completo está en [`references/schema-template.md`](references/schema-template.md). Cárgalo solo cuando necesites el modelo de datos completo.
+
+## 🔍 Performance Rules
+- Avoid fetching entire tables when only checking IDs. Use `select` to filter properties (`select: { id: true }`).
+- Limit relation loads to prevent N+1 queries. Use `include` only for directly required elements.
 
 
-<!-- END qa-tester -->
+<!-- END prisma-orm -->
 
 
-<!-- BEGIN testing-patterns -->
+<!-- BEGIN api-design -->
 
 ---
-name: testing-patterns
-description: Unit, integration, and E2E testing patterns for the ecosystem. Use when writing tests with Vitest, Supertest, or React Native Testing Library. Do not use for load testing, pentesting, or security audits.
+name: api-design
+description: Defines REST API design conventions: URL structure, HTTP methods, status codes, pagination, filtering, versioning, and error response format. Use when creating new endpoints, designing API contracts, or reviewing API consistency.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["escribir tests", "crear pruebas", "unit test", "integration test", "e2e", "vitest", "jest", "supertest", "coverage"]
+  trigger: ["API design", "REST", "endpoint", "URL structure", "HTTP methods", "API versioning", "pagination"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-# 🧪 Testing Patterns — [APP]
+# 🌐 REST API Design Conventions
 
-Usa este skill al escribir cualquier tipo de test automatizado para el monorepo del supermercado. Sigue los patrones establecidos para mantener consistencia entre backend, admin panel, y app móvil.
+Use this skill when designing or reviewing REST API endpoints.
 
----
+## 📋 When to Use
 
-## 🏛️ Stack de Testing por Capa
+- Use when creating new API endpoints
+- Use when designing request/response contracts with Zod
+- Use when reviewing API consistency across the codebase
+- Do NOT use for GraphQL or gRPC (different conventions)
 
-| Capa | Framework | Runner | Mocking | Ubicación |
-|---|---|---|---|---|
-| Backend (Express) | Vitest + Supertest | Vitest | `vi.mock` / MSW | `apps/backend/__tests__/` |
-| Admin Panel (React/Vite) | Vitest + React Testing Library | Vitest | `vi.mock` / MSW | `apps/admin-panel/src/__tests__/` |
-| Móvil (Expo) | Jest + React Native Testing Library | Jest | `jest.mock` | `apps/mobile-app/__tests__/` |
-| Tipos compartidos | Vitest | Vitest | `vi.mock` | `packages/shared-types/__tests__/` |
+## 🚦 Hard Rules
 
----
+- **Always** use plural nouns for resources (`/api/products`, not `/api/product`)
+- **Always** use kebab-case for URL paths (`/api/order-items`, not `/api/orderItems`)
+- **Always** validate request bodies with Zod before processing
+- **Always** return consistent error format (see Error Responses below)
+- **Always** use proper HTTP status codes (200, 201, 204, 400, 401, 403, 404, 409, 422, 500)
+- **Never** expose internal database IDs in public APIs (use UUIDs)
+- **Never** return 200 for errors
 
-## 📋 Estructura de Archivos de Test
+## 🏗️ URL Structure
 
 ```
-apps/backend/__tests__/
-├── unit/
-│   ├── services/
-│   │   └── bcv.service.test.ts
-│   └── middleware/
-│       └── auth.test.ts
-├── integration/
-│   ├── routes/
-│   │   └── orders.test.ts
-│   └── socket/
-│       └── delivery.test.ts
-└── fixtures/
-    ├── users.ts
-    └── products.ts
+GET    /api/products                  → List products (paginated)
+GET    /api/products/:id              → Get single product
+POST   /api/products                  → Create product
+PATCH  /api/products/:id              → Update product (partial)
+DELETE /api/products/:id              → Delete product
+GET    /api/products/:id/reviews      → List reviews for product
+POST   /api/orders                    → Create order
+GET    /api/orders/:id/tracking       → Get tracking for order
 ```
 
-**Reglas:**
-- Nombres de archivo: `*.test.ts` o `*.spec.ts` (elegir uno y mantener consistencia)
-- Fixtures en `__tests__/fixtures/`, nunca hardcodeados inline
-- Cada `describe` debe cubrir una función o ruta específica
-
----
-
-## ✅ Cobertura Obligatoria (6 escenarios)
-
-Cada feature debe tener tests que cubran:
-
-1. **Happy Path** — flujo normal esperado (mínimo 2 tests)
-2. **Edge Cases** — inputs vacíos, null, negativos, caracteres especiales (mínimo 3)
-3. **Auth/Seguridad** — requests sin JWT bloqueados, socket handshake rechazado sin token
-4. **Real-time Cleanup** — sockets cierran correctamente, listeners detach en unmount
-5. **Integridad DB** — rollback completo si un item falla en transacción ACID
-6. **Regresión SOLID** — ninguna función > 40 líneas, cero `any`, sin lógica duplicada
-
----
-
-## 🔧 Patrones de Test
-
-### Backend: Jest + Supertest
+## 📄 Pagination
 
 ```typescript
-// apps/backend/__tests__/integration/routes/orders.test.ts
-import request from 'supertest';
-import { app } from '../../../src/app';
-import { prisma } from '../../../src/lib/prisma';
-import { createTestUser, generateToken } from '../../fixtures/users';
+// Request: GET /api/products?page=2&limit=20&sort=-createdAt
+const PaginationSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  sort: z.string().optional(),
+});
 
-describe('POST /api/orders', () => {
-  let buyerToken: string;
+// Response format
+{
+  "data": [...],
+  "meta": {
+    "page": 2,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8,
+    "hasNext": true,
+    "hasPrev": true
+  }
+}
+```
 
-  beforeAll(async () => {
-    const buyer = await createTestUser({ role: 'BUYER' });
-    buyerToken = generateToken(buyer);
-  });
+## 🔍 Filtering
 
-  afterAll(async () => {
-    await prisma.order.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.$disconnect();
-  });
+```
+GET /api/products?category=dairy&minPrice=1.5&inStock=true
+```
 
-  it('debe crear una orden y reducir stock en transacción ACID', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .set('Authorization', `Bearer ${buyerToken}`)
-      .send({
-        items: [{ productId: 'prod-1', quantity: 2 }],
-        deliveryAddress: 'Calle 123, Caracas',
-        paymentMethod: 'PAGO_MOVIL',
-      });
-
-    expect(res.status).toBe(201);
-    expect(res.body.order.status).toBe('PENDING');
-    expect(res.body.order.totalUsd).toBeGreaterThan(0);
-  });
-
-  it('debe hacer rollback si stock insuficiente', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .set('Authorization', `Bearer ${buyerToken}`)
-      .send({
-        items: [{ productId: 'prod-1', quantity: 99999 }],
-        deliveryAddress: 'Calle 123',
-        paymentMethod: 'PAGO_MOVIL',
-      });
-
-    expect(res.status).toBe(400);
-    expect(res.body.error).toContain('Insufficient stock');
-  });
-
-  it('debe rechazar request sin JWT', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .send({ items: [], deliveryAddress: 'test' });
-
-    expect(res.status).toBe(401);
-  });
+```typescript
+const ProductFilterSchema = z.object({
+  category: z.string().optional(),
+  minPrice: z.coerce.number().positive().optional(),
+  maxPrice: z.coerce.number().positive().optional(),
+  inStock: z.coerce.boolean().optional(),
+  search: z.string().max(200).optional(),
 });
 ```
 
-### Frontend Admin: React Testing Library + Vitest
+## ❌ Error Responses
 
-```typescript
-// apps/admin-panel/src/__tests__/InventoryTable.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { InventoryTable } from '../components/InventoryTable';
-import { vi } from 'vitest';
-
-describe('InventoryTable', () => {
-  const mockProducts = [
-    { id: '1', name: 'Leche', stock: 10, price: 2.5, category: 'Lácteos' },
-  ];
-
-  it('debe mostrar productos y permitir actualizar stock', () => {
-    const onUpdate = vi.fn();
-    render(<InventoryTable products={mockProducts} onStockUpdate={onUpdate} />);
-
-    expect(screen.getByText('Leche')).toBeDefined();
-    fireEvent.click(screen.getByText('-1'));
-    expect(onUpdate).toHaveBeenCalledWith('1', -1);
-  });
-
-  it('debe mostrar estado vacío cuando no hay productos', () => {
-    render(<InventoryTable products={[]} onStockUpdate={vi.fn()} />);
-    expect(screen.getByText(/sin productos/i)).toBeDefined();
-  });
-});
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Request validation failed",
+    "details": [
+      { "field": "email", "message": "Invalid email format" },
+      { "field": "password", "message": "Must be at least 8 characters" }
+    ]
+  }
+}
 ```
 
-### Móvil: React Native Testing Library
+## 📋 HTTP Status Codes
 
-```typescript
-// apps/mobile-app/__tests__/CatalogScreen.test.tsx
-import { render, fireEvent } from '@testing-library/react-native';
-import { CatalogScreen } from '../app/(tabs)/catalog';
+| Code | Meaning | When to Use |
+|---|---|---|
+| 200 | OK | Successful GET, PATCH |
+| 201 | Created | Successful POST that creates resource |
+| 204 | No Content | Successful DELETE |
+| 400 | Bad Request | Validation error |
+| 401 | Unauthorized | Missing or invalid auth |
+| 403 | Forbidden | Valid auth but insufficient permissions |
+| 404 | Not Found | Resource doesn't exist |
+| 409 | Conflict | Duplicate resource (e.g., email already taken) |
+| 422 | Unprocessable | Semantically invalid (e.g., negative quantity) |
+| 500 | Internal Error | Unhandled server error |
 
-describe('CatalogScreen', () => {
-  it('debe renderizar FlatList con productos', () => {
-    const { getByText } = render(<CatalogScreen />);
-    expect(getByText('Catálogo')).toBeDefined();
-  });
-});
-```
+## 📚 References
 
----
-
-## 🎯 Métricas de Calidad
-
-- **Cobertura mínima**: 80% (statements, branches, functions, lines)
-- **Sin tests flaky**: 0 fallos en CI por intermittencia
-- **Velocidad**: suite completa de backend < 30s, admin < 15s, mobile < 60s
-- Consultar `../02-dev-roles/qa-tester/SKILL.md` para los 6 escenarios obligatorios.
-- Consultar `../02-dev-roles/dod-checker/SKILL.md` para el gate de calidad.
+- [REST API Design Best Practices](https://restfulapi.net/)
+- [Zod validation](https://zod.dev)
+- [HTTP Status Codes](https://httpstatuses.com/)
 
 
-<!-- END testing-patterns -->
+<!-- END api-design -->

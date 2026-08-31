@@ -7,7 +7,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Categoría | Path | Skills |
 |---|---|---|
 | Planning & Process | `01-planning-process/` | project-tracker, tech-stack-advisor, application-workflow, master-prompt, agents, engram-integration, speckit-integration, session-notes, parallelization, tech-escalation-adr, idea-to-prd-express, jira-epic, jira-task, brainstorming |
-| Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion, jd-judge-a, jd-judge-b, jd-fix-agent, review-risk, review-readability, review-reliability, review-resilience, review-refuter |
+| Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion, jd-judge-a, jd-judge-b, jd-fix-agent, review-risk, review-readability, review-reliability, review-resilience, review-refuter, review-validator |
 | AI / ML | `03-ai-ml/` | ai-orchestration, ai-scalability-mlops, api-ai-billing, llm-integration, ai-sdk-5, prompt-engineering, research-first |
 | Backend | `04-backend/` | docker, error-handling, mcp-integration, api-design, expressjs, jwt-bcrypt, microservices, nodejs, payments, postgresql, prisma-orm, socketio, django-drf, java-21, spring-boot-3 |
 | Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement, three-js-web, web-animation-sources, design-driven |
@@ -15,7 +15,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Testing | `07-testing/` | testing-patterns, playwright, pytest |
 | DevOps | `08-devops/` | ci-cd, kill-switches, monitoring, observability |
 | Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
-| MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp |
+| MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp, open-design |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
 | Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator |
 | Matt Pocock | `12-matt-pocock/` | ask-matt, code-review, codebase-design, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs, grilling, handoff, implement, improve-codebase-architecture, migrate-to-shoehorn, prototype, research, resolving-merge-conflicts, scaffold-exercises, setup-pre-commit, tdd, teach, to-questionnaire, to-spec, to-tickets, triage, wait-what, wayfinder, wizard, writing-for-agents |
@@ -60,6 +60,7 @@ flowchart TD
 - **Nunca** almacenar JWT en LocalStorage/AsyncStorage. **Usar**: access tokens en memoria (variable de módulo), refresh tokens en HTTP-only cookies con flag `Secure` y `SameSite=Strict`.
 - **Nunca** procesar payloads de Socket.io sin validar. **Usar**: esquemas Zod compartidos en `packages/contracts/` antes de cualquier lógica de negocio.
 - **Nunca** usar `any` en TypeScript. **Usar**: `unknown` + narrowing con Zod, o tipos explícitos del dominio.
+- **Package manager: pnpm only — npm/npx rechazados.** **Nunca** correr `npm` ni `npx` en comandos, docs o skills. **Usar**: `pnpm` para instalar/scripts y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca las menciones de `npm`/`npx` como ERROR; una skill que deba mencionarlos por una razón documentada declara `allows-npm: <motivo>` en su frontmatter.
 - **Nunca** escribir código nuevo sin pasar por SDD. **Usar**: invocar `sdd-orchestrator` para features que tocan 2+ archivos o 2+ dominios de negocio (`professional-planner` queda como metodología de referencia).
 - **Siempre** usar `pnpm expo install` para paquetes móviles nativos. **Nunca** `pnpm add` directo, ya que rompe la compatibilidad con el SDK de Expo. Validar después con `dependency-guardian`.
 - **Siempre** correr `pnpm expo prebuild --clean` antes de un EAS build. **Usar**: la skill `expo-production-auditor` para auditar 4 frentes (circular deps, Hermes, assets, sync de deps nativas).
@@ -119,7 +120,9 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Animaciones con React View Transitions | `05-frontend/vercel-react-view-transitions` |
 | Verificación estricta antes de completar PR/tarea | `02-dev-roles/verification-before-completion` |
 | Review adversarial paralelo (2 jueces) | `02-dev-roles/judgment-day` |
+| Validación final antes de cualquier claim de "listo" / gate de cierre | `02-dev-roles/review-validator` |
 | Pipeline de diseño formal (D1 brief → D6 design-review) | `05-frontend/design-driven` |
+| Diseño vía OpenDesign / prototipos / slides / imágenes / video | `11-mcp-hybrid/open-design` |
 | Cierre de proyecto / harvest de skills | `00-meta-skills/skill-harvest` |
 | Pre-commit AI review (gga) | `02-dev-roles/code-reviewer` (`references/pre-commit-gga.md`) |
 | PR / conventional commits | `02-dev-roles/github-pr` |
