@@ -31,7 +31,7 @@ react-view-transitions/
 Install via [skills.sh](https://skills.sh):
 
 ```bash
-npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-view-transitions
+pnpm dlx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-view-transitions
 ```
 
 ## Resources

@@ -39,7 +39,7 @@ gga install             # Install git hook
 |---|---|---|
 | Claude | `claude` | [claude.ai/code](https://claude.ai/code) |
 | Gemini | `gemini` | [gemini-cli](https://github.com/google-gemini/gemini-cli) |
-| Codex | `codex` | `npm i -g @openai/codex` |
+| Codex | `codex` | `pnpm add -g @openai/codex` |
 | OpenCode | `opencode` | [opencode.ai](https://opencode.ai) |
 | Ollama | `ollama:<model>` | [ollama.ai](https://ollama.ai) |
 | LM Studio | `lmstudio[:model]` | [lmstudio.ai](https://lmstudio.ai) |

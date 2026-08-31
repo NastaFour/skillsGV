@@ -21,7 +21,7 @@ metadata:
 
 ### 1. Detect package manager
 
-Check for `package-lock.json` (npm), `pnpm-lock.yaml` (pnpm), `yarn.lock` (yarn), `bun.lockb` (bun). Use whichever is present. Default to npm if unclear.
+Check for `pnpm-lock.yaml`. This catalog mandates pnpm; if the repo has no lockfile, run `pnpm install` first to create one.
 
 ### 2. Install dependencies
 
@@ -34,7 +34,7 @@ husky lint-staged prettier
 ### 3. Initialize Husky
 
 ```bash
-npx husky init
+pnpm dlx husky init
 ```
 
 This creates `.husky/` dir and adds `prepare: "husky"` to package.json.
@@ -44,12 +44,12 @@ This creates `.husky/` dir and adds `prepare: "husky"` to package.json.
 Write this file (no shebang needed for Husky v9+):
 
 ```
-npx lint-staged
-npm run typecheck
-npm run test
+pnpm exec lint-staged
+pnpm run typecheck
+pnpm run test
 ```
 
-**Adapt**: Replace `npm` with detected package manager. If repo has no `typecheck` or `test` script in package.json, omit those lines and tell the user.
+**Adapt**: If the repo has no `typecheck` or `test` script in package.json, omit those lines and tell the user.
 
 ### 5. Create `.lintstagedrc`
 
@@ -81,7 +81,7 @@ Only create if no Prettier config exists. Use these defaults:
 - [ ] `.lintstagedrc` exists
 - [ ] `prepare` script in package.json is `"husky"`
 - [ ] `prettier` config exists
-- [ ] Run `npx lint-staged` to verify it works
+- [ ] Run `pnpm exec lint-staged` to verify it works
 
 ### 8. Commit
 

@@ -1,6 +1,6 @@
 ---
 name: wayfinder
-description: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear.
+description: "Trigger: wayfinder, decision tickets. Use when a large chunk of work (more than one agent session) must be planned as a shared map of decision tickets, resolved one at a time."
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:

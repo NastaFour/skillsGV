@@ -9,7 +9,7 @@
 ## 🏗️ Formato de Lista de Tareas (SPEC-Compliant)
 | Tarea | Descripción Técnica | Archivos Afectados | Prueba de Verificación |
 | :--- | :--- | :--- | :--- |
-| T1 | Definir interfaz `IUserAuth` | `src/types/auth.ts` | `npm run lint` |
+| T1 | Definir interfaz `IUserAuth` | `src/types/auth.ts` | `pnpm run lint` |
 | T2 | Implementar validación JWT | `src/middleware/auth.ts` | Test unitario con token expirado |
 
 ## 📐 Estándar de Tipos
