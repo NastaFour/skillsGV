@@ -13,3 +13,6 @@ mio/
 
 # Config local con secretos (API key Context7) — migrar a variable de entorno en WU1
 opencode.json
+
+# Insuums congelados de Judgment Day (proceso, no código)
+_jd-*.diff*
