@@ -1,0 +1,13 @@
+name: dsh-preset-authoring
+trigger: authoring an agent preset (agent.cordis.yml) or cordis.yml for DeepSeek Harness; wiring a new dsh "mode"
+problema: Authoring a dsh preset has two pitfalls that silently break the mode: (1) a YAML "duplication of a tag property" when an expression starts with ! right after the !!js tag, and (2) confusing the three dsh extension units (cordis plugin = npm pkg with apply(ctx); agent preset = a cordis.yml composition; profile = a bundle list).
+contenido:
+  # dsh-preset-authoring (borrador)
+  ## Hard rules
+  - NEVER write `!!js !expr`: YAML reads the leading ! as a second tag. Write `!!js "!expr"` (string-wrapped), the same form the shipped cordis preset uses.
+  - A preset is a per-session COMPOSITION of plugins (a "mode"), not a plugin. To add real services/tools, ship a cordis plugin (npm pkg exporting apply(ctx)).
+  - Verify with a REAL YAML parse, never by neutralizing !!js before parsing (that hides tag collisions). Add a guard: /!!jss*[!&*|>%@]/.
+  - Keep MCP rows disabled until their env vars are set (failOnStartupError: false) so the preset always mounts.
+  ## Env-driven values
+  - Use `!!js process.env.X || 'default'` for model/provider; `!!js "(() => { try { return JSON.parse(...) } catch { return [] } })()"` for JSON args.
+evidencia: gentle-ai-dsh/preset/agent.cordis.yml (mcp-engram/mcp-context7 disabled rows); bug "duplication of a tag property (91:18)" fixed 2026-08-28.

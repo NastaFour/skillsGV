@@ -7,17 +7,18 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Categoría | Path | Skills |
 |---|---|---|
 | Planning & Process | `01-planning-process/` | project-tracker, tech-stack-advisor, application-workflow, master-prompt, agents, engram-integration, speckit-integration, session-notes, parallelization, tech-escalation-adr, idea-to-prd-express, jira-epic, jira-task, brainstorming |
-| Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion |
+| Dev Roles (SDD) | `02-dev-roles/` | architecture-designer, code-reviewer, dod-checker, expert-debugger, security-audit, feature-implementer, frontend-designer, frontend-design, judgment-day, decision-gate, github-pr, performance-refactor, qa-tester, technical-writer, hexagonal-architecture-layers-java, systematic-debugging, verification-before-completion, jd-judge-a, jd-judge-b, jd-fix-agent, review-risk, review-readability, review-reliability, review-resilience, review-refuter |
 | AI / ML | `03-ai-ml/` | ai-orchestration, ai-scalability-mlops, api-ai-billing, llm-integration, ai-sdk-5, prompt-engineering, research-first |
 | Backend | `04-backend/` | docker, error-handling, mcp-integration, api-design, expressjs, jwt-bcrypt, microservices, nodejs, payments, postgresql, prisma-orm, socketio, django-drf, java-21, spring-boot-3 |
-| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement, three-js-web, web-animation-sources |
+| Frontend | `05-frontend/` | electronjs, electron, expo-production-auditor, maps-gps, nextjs, nextjs-15, push-notifications, pwa-capacitor, react-native, react-vite, react-19, ai-ui-generation, tailwindcss, tailwind-4, zod-4, zustand-5, angular-core, angular-forms, angular-performance, angular-architecture, state-management, vercel-react-best-practices, vercel-composition-patterns, vercel-react-view-transitions, web-design-guidelines, interface-design, figma-implement, three-js-web, web-animation-sources, design-driven |
 | Code Quality | `06-code-quality/` | pnpm-workspaces, turborepo, biome, changesets, env-management, solid-clean-code, typescript, dependency-guardian, elixir-antipatterns, changelog-generator |
 | Testing | `07-testing/` | testing-patterns, playwright, pytest |
 | DevOps | `08-devops/` | ci-cd, kill-switches, monitoring, observability |
 | Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
 | MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
-| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard |
+| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator |
+| Matt Pocock | `12-matt-pocock/` | ask-matt, code-review, codebase-design, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs, grilling, handoff, implement, improve-codebase-architecture, migrate-to-shoehorn, prototype, research, resolving-merge-conflicts, scaffold-exercises, setup-pre-commit, tdd, teach, to-questionnaire, to-spec, to-tickets, triage, wait-what, wayfinder, wizard, writing-for-agents |
 
 ## 🚀 Regla de arranque (harness)
 
@@ -64,6 +65,9 @@ flowchart TD
 - **Siempre** correr `pnpm expo prebuild --clean` antes de un EAS build. **Usar**: la skill `expo-production-auditor` para auditar 4 frentes (circular deps, Hermes, assets, sync de deps nativas).
 - **Siempre** registrar decisiones arquitectónicas y bugs complejos. **Usar**: la skill `tech-escalation-adr` para ADRs y `expert-debugger` para postmortems.
 - **Stack base recomendado**: Node/Express/Prisma/PostgreSQL + React/Vite/Tailwind + Expo Router. Cualquier cambio o adición al stack debe proponerse mediante un ADR de la skill `tech-escalation-adr`.
+- **Siempre** guardar decisiones, bugs y descubrimientos en Engram al vuelo (`mem_save`, topic keys `<proyecto>/…`, `design/<proyecto>`); al cerrar sesión `mem_session_summary`; ante conflictos `mem_judge`. "Guardado en memoria" NO es "respondido al usuario": confirmá en el chat.
+- **Siempre** al cierre de cada proyecto (después de TODOS los fixes): correr el protocolo `skill-harvest` (buscar en Engram lo aprendido → 1-3 patrones repetibles → TXT en `_inbox`). Nunca crear la skill automáticamente — recomendarla.
+- **Traductor visual**: si el usuario manda capturas/imágenes y el modelo no ve imágenes, no improvisar — redirigir a Antigravity (u `od`) y exigir spec textual.
 
 ## 🤖 Auto-Invoke List (root)
 
@@ -115,6 +119,8 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Animaciones con React View Transitions | `05-frontend/vercel-react-view-transitions` |
 | Verificación estricta antes de completar PR/tarea | `02-dev-roles/verification-before-completion` |
 | Review adversarial paralelo (2 jueces) | `02-dev-roles/judgment-day` |
+| Pipeline de diseño formal (D1 brief → D6 design-review) | `05-frontend/design-driven` |
+| Cierre de proyecto / harvest de skills | `00-meta-skills/skill-harvest` |
 | Pre-commit AI review (gga) | `02-dev-roles/code-reviewer` (`references/pre-commit-gga.md`) |
 | PR / conventional commits | `02-dev-roles/github-pr` |
 | Memoria cross-session (Engram) | `01-planning-process/engram-integration` |

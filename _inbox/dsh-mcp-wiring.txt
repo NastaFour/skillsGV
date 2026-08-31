@@ -1,0 +1,12 @@
+name: dsh-mcp-wiring
+trigger: wiring MCP servers (Engram, Context7, any) into DeepSeek Harness
+problema: dsh has first-class MCP via @deepseek-ai/dsh-mcp-client (stdio + streamable-http), but the pattern for making it non-breaking (env-driven, graceful degradation, per-session vs host plane) is not obvious.
+contenido:
+  # dsh-mcp-wiring (borrador)
+  ## Hard rules
+  - One dsh-mcp-client instance per MCP server; serverName must be unique and matches [A-Za-z0-9_-]{1,32}; tools surface as mcp__<serverName>__<tool>.
+  - stdio: command/args/env/cwd. streamable-http: url/headers (Authorization via !!js "'Bearer ' + process.env.KEY").
+  - Each row disabled: !!js "!process.env.KEY" — the mode mounts with the row inert until the env is set; failOnStartupError: false + reconnect.enabled: true for resilience.
+  - Only MCP TOOLS are bridged (resources/prompts deferred in 0.1.1-rc.2). Engram = stdio memory; Context7 = streamable-http docs.
+  - Placement: preset (per-session) vs cordis.patch.yml (host/global). Never both with the same serverName (duplicate fails at load).
+evidencia: gentle-ai-dsh/preset/agent.cordis.yml (mcp-engram, mcp-context7); dsh-mcp-client README.

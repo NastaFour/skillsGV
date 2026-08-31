@@ -23,6 +23,8 @@ Catálogo de **152 skills** compatible con [agentskills.io](https://agentskills.
 | sdd-verify | [00-meta-skills/sdd-verify/SKILL.md](00-meta-skills/sdd-verify/SKILL.md) ← SDD verification against specs with compliance matrix |
 | sdd-archive | [00-meta-skills/sdd-archive/SKILL.md](00-meta-skills/sdd-archive/SKILL.md) ← SDD archive: sync delta specs and close the change |
 | sdd-onboard | [00-meta-skills/sdd-onboard/SKILL.md](00-meta-skills/sdd-onboard/SKILL.md) ← SDD walkthrough onboarding on the real codebase |
+| skill-harvest | [00-meta-skills/skill-harvest/SKILL.md](00-meta-skills/skill-harvest/SKILL.md) ← post-project: draft new-skill proposals into _inbox from Engram, never auto-create |
+| gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 
 ## 01-planning-process
 
@@ -56,6 +58,15 @@ Catálogo de **152 skills** compatible con [agentskills.io](https://agentskills.
 | frontend-designer | [02-dev-roles/frontend-designer/SKILL.md](02-dev-roles/frontend-designer/SKILL.md) |
 | frontend-design | [02-dev-roles/frontend-design/SKILL.md](02-dev-roles/frontend-design/SKILL.md) ← Anthropic methodology, anti-AI-slop, signature element |
 | judgment-day | [02-dev-roles/judgment-day/SKILL.md](02-dev-roles/judgment-day/SKILL.md) ← parallel adversarial review (red + blue) |
+| jd-judge-a | [02-dev-roles/jd-judge-a/SKILL.md](02-dev-roles/jd-judge-a/SKILL.md) ← blind Judge A (adversarial reviewer) |
+| jd-judge-b | [02-dev-roles/jd-judge-b/SKILL.md](02-dev-roles/jd-judge-b/SKILL.md) ← blind Judge B (adversarial reviewer) |
+| jd-fix-agent | [02-dev-roles/jd-fix-agent/SKILL.md](02-dev-roles/jd-fix-agent/SKILL.md) ← surgical fix agent for judgment-day |
+| review-risk | [02-dev-roles/review-risk/SKILL.md](02-dev-roles/review-risk/SKILL.md) ← R1 security lens |
+| review-readability | [02-dev-roles/review-readability/SKILL.md](02-dev-roles/review-readability/SKILL.md) ← R2 clarity lens |
+| review-reliability | [02-dev-roles/review-reliability/SKILL.md](02-dev-roles/review-reliability/SKILL.md) ← R3 tests/contracts lens |
+| review-resilience | [02-dev-roles/review-resilience/SKILL.md](02-dev-roles/review-resilience/SKILL.md) ← R4 ops/rollback lens |
+| review-refuter | [02-dev-roles/review-refuter/SKILL.md](02-dev-roles/review-refuter/SKILL.md) ← refutes BLOCKER/CRITICAL findings |
+| review-validator | [02-dev-roles/review-validator/SKILL.md](02-dev-roles/review-validator/SKILL.md) ← gate final: evidencia antes de "listo" |
 | decision-gate | [02-dev-roles/decision-gate/SKILL.md](02-dev-roles/decision-gate/SKILL.md) ← compress human's last-20% judgment to 3 min, traceable |
 | github-pr | [02-dev-roles/github-pr/SKILL.md](02-dev-roles/github-pr/SKILL.md) ← conventional commits, structured PR descriptions |
 | performance-refactor | [02-dev-roles/performance-refactor/SKILL.md](02-dev-roles/performance-refactor/SKILL.md) |
@@ -155,6 +166,7 @@ Catálogo de **152 skills** compatible con [agentskills.io](https://agentskills.
 | web-design-guidelines | [05-frontend/web-design-guidelines/SKILL.md](05-frontend/web-design-guidelines/SKILL.md) ← review UI code for Web Interface Guidelines compliance, accessibility, UX audit |
 | interface-design | [05-frontend/interface-design/SKILL.md](05-frontend/interface-design/SKILL.md) ← craft-first UI for dashboards, SaaS apps, admin panels, tokens (Linear/Stripe standard) |
 | figma-implement | [05-frontend/figma-implement/SKILL.md](05-frontend/figma-implement/SKILL.md) ← plegado Capa 1: Figma → código 1:1 (canónico del grupo figma), design context + screenshots vía MCP |
+| design-driven | [05-frontend/design-driven/SKILL.md](05-frontend/design-driven/SKILL.md) ← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop |
 
 ## 06-code-quality
 
@@ -207,6 +219,7 @@ Catálogo de **152 skills** compatible con [agentskills.io](https://agentskills.
 | ux-auditor-agent | [11-mcp-hybrid/ux-auditor-agent/SKILL.md](11-mcp-hybrid/ux-auditor-agent/SKILL.md) ← auditoría UX/usabilidad/accesibilidad con hallazgos priorizados y evidencia |
 | asset-generator-mcp | [11-mcp-hybrid/asset-generator-mcp/SKILL.md](11-mcp-hybrid/asset-generator-mcp/SKILL.md) ← assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo |
 | figma-mcp | [11-mcp-hybrid/figma-mcp/SKILL.md](11-mcp-hybrid/figma-mcp/SKILL.md) ← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP |
+| open-design | [11-mcp-hybrid/open-design/SKILL.md](11-mcp-hybrid/open-design/SKILL.md) ← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo |
 
 ## professional-planner
 
@@ -221,3 +234,35 @@ Catálogo de **152 skills** compatible con [agentskills.io](https://agentskills.
 - Instalador cross-tool: `node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --target <path>`
 - Shared scripts helper: `_shared/script-utils.mjs` (usado por los scripts `*.mjs` de las skills con `scripts/`)
 - Auto-invoke: ver [AGENTS.md](AGENTS.md) sección 🤖 Auto-Invoke List
+
+## 12-matt-pocock
+
+| Skill | Path |
+|---|---|
+| ask-matt | [12-matt-pocock/ask-matt/SKILL.md](12-matt-pocock/ask-matt/SKILL.md) |
+| code-review | [12-matt-pocock/code-review/SKILL.md](12-matt-pocock/code-review/SKILL.md) |
+| codebase-design | [12-matt-pocock/codebase-design/SKILL.md](12-matt-pocock/codebase-design/SKILL.md) |
+| diagnosing-bugs | [12-matt-pocock/diagnosing-bugs/SKILL.md](12-matt-pocock/diagnosing-bugs/SKILL.md) |
+| domain-modeling | [12-matt-pocock/domain-modeling/SKILL.md](12-matt-pocock/domain-modeling/SKILL.md) |
+| grill-me | [12-matt-pocock/grill-me/SKILL.md](12-matt-pocock/grill-me/SKILL.md) |
+| grill-with-docs | [12-matt-pocock/grill-with-docs/SKILL.md](12-matt-pocock/grill-with-docs/SKILL.md) |
+| grilling | [12-matt-pocock/grilling/SKILL.md](12-matt-pocock/grilling/SKILL.md) |
+| handoff | [12-matt-pocock/handoff/SKILL.md](12-matt-pocock/handoff/SKILL.md) |
+| implement | [12-matt-pocock/implement/SKILL.md](12-matt-pocock/implement/SKILL.md) |
+| improve-codebase-architecture | [12-matt-pocock/improve-codebase-architecture/SKILL.md](12-matt-pocock/improve-codebase-architecture/SKILL.md) |
+| migrate-to-shoehorn | [12-matt-pocock/migrate-to-shoehorn/SKILL.md](12-matt-pocock/migrate-to-shoehorn/SKILL.md) |
+| prototype | [12-matt-pocock/prototype/SKILL.md](12-matt-pocock/prototype/SKILL.md) |
+| research | [12-matt-pocock/research/SKILL.md](12-matt-pocock/research/SKILL.md) |
+| resolving-merge-conflicts | [12-matt-pocock/resolving-merge-conflicts/SKILL.md](12-matt-pocock/resolving-merge-conflicts/SKILL.md) |
+| scaffold-exercises | [12-matt-pocock/scaffold-exercises/SKILL.md](12-matt-pocock/scaffold-exercises/SKILL.md) |
+| setup-pre-commit | [12-matt-pocock/setup-pre-commit/SKILL.md](12-matt-pocock/setup-pre-commit/SKILL.md) |
+| tdd | [12-matt-pocock/tdd/SKILL.md](12-matt-pocock/tdd/SKILL.md) |
+| teach | [12-matt-pocock/teach/SKILL.md](12-matt-pocock/teach/SKILL.md) |
+| to-questionnaire | [12-matt-pocock/to-questionnaire/SKILL.md](12-matt-pocock/to-questionnaire/SKILL.md) |
+| to-spec | [12-matt-pocock/to-spec/SKILL.md](12-matt-pocock/to-spec/SKILL.md) |
+| to-tickets | [12-matt-pocock/to-tickets/SKILL.md](12-matt-pocock/to-tickets/SKILL.md) |
+| triage | [12-matt-pocock/triage/SKILL.md](12-matt-pocock/triage/SKILL.md) |
+| wait-what | [12-matt-pocock/wait-what/SKILL.md](12-matt-pocock/wait-what/SKILL.md) |
+| wayfinder | [12-matt-pocock/wayfinder/SKILL.md](12-matt-pocock/wayfinder/SKILL.md) |
+| wizard | [12-matt-pocock/wizard/SKILL.md](12-matt-pocock/wizard/SKILL.md) |
+| writing-for-agents | [12-matt-pocock/writing-for-agents/SKILL.md](12-matt-pocock/writing-for-agents/SKILL.md) |

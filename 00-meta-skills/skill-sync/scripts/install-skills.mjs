@@ -152,6 +152,13 @@ const AGENT_TARGETS = [
     globalInstallPath: (h) => join(h, ".deepseek", "skills"),
     projectInstallPath: (target) => join(target, ".deepseek", "skills"),
   },
+  {
+    id: "dsh",
+    name: "DeepSeek Harness",
+    detect: (h) => existsSync(join(h, ".dsh")),
+    globalInstallPath: (h) => join(h, ".agents", "skills"),
+    projectInstallPath: (target) => join(target, ".agents", "skills"),
+  },
 ];
 
 function hasBinary(name) {
@@ -179,7 +186,7 @@ Options:
   --target <path>      Install into a specific project directory (default: global install for detected tools)
   --tool <id>          Install for specific tool(s) only; repeatable, e.g.
                        --tool claude-code --tool cursor
-                       (claude-code, opencode, cursor, copilot, codex, gemini-cli, antigravity, kiro, windsurf, deepseek)
+                       (claude-code, opencode, cursor, copilot, codex, gemini-cli, antigravity, kiro, windsurf, deepseek, dsh)
   --symlink            Use symlinks (junctions on Windows) instead of copy
   --dry-run            Preview changes without writing
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
@@ -330,9 +337,9 @@ function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc)
     }
     return;
   }
-  if (existsSync(dest)) {
+  if (linkExists(dest)) {
     const stat = lstatSync(dest);
-    if (stat.isSymbolicLink()) rmSync(dest, { force: true }); // swap old link; real dirs are copied over
+    if (stat.isSymbolicLink()) rmSync(dest, { force: true, recursive: true }); // swap old link; real dirs are copied over
   }
   const files = walkFiles(srcSkillDir).filter((f) => !f.symlink); // never dereference source symlinks into owned copies
   const firstOwn = entriesAcc.length;
@@ -410,7 +417,7 @@ function linkExists(p) {
 function removeFileOwned(entry, stats, action) {
   if (entry.kind === "symlink") {
     if (!linkExists(entry.dest)) return;
-    rmSync(entry.dest, { force: true });
+    rmSync(entry.dest, { force: true, recursive: true });
     stats.removed++;
     console.log(`  🗑️  ${action} symlink: ${entry.dest}`);
     return;
@@ -531,7 +538,7 @@ function cmdRollback() {
       continue;
     }
     if (e.kind === "symlink") {
-      if (existsSync(e.dest)) rmSync(e.dest, { force: true });
+      if (linkExists(e.dest)) rmSync(e.dest, { force: true, recursive: true });
       stats.removed++;
       continue;
     }
@@ -634,11 +641,11 @@ function installSkill(srcSkillDir, destSkillsDir, generation, entriesAcc) {
       return;
     }
     let prevState = "new";
-    if (existsSync(dest)) {
+    if (linkExists(dest)) {
       const stat = lstatSync(dest);
       if (stat.isSymbolicLink()) {
         prevState = "overwritten";
-        rmSync(dest, { force: true });
+        rmSync(dest, { force: true, recursive: true });
       } else {
         // Never wipe a real directory just to place a link: owned files must be
         // uninstalled through the manifest first.
