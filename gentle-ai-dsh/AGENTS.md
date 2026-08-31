@@ -42,10 +42,10 @@ fuera de la selección del router sin re-routear antes.
 Seguí Spec-Driven Development. Arrancá con "/sdd new" o "SDD change". Cargá la
 skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 
-1. sdd-init → sdd-explore → sdd-propose  (delegá con **subagent_strong**)
-2. sdd-spec / sdd-design                  (**subagent_strong** para design)
-3. sdd-tasks (flash) → sdd-apply (**subagent_strong** / pro) → sdd-verify (fuerte)
-4. **judgment-day** (revisión dual adversarial, **subagent_strong**)
+1. sdd-init → sdd-explore → sdd-propose  (delegá con **subagent** / flash)
+2. sdd-spec / sdd-design                  (**subagent** / flash)
+3. sdd-tasks (flash) → sdd-apply (**subagent_strong** / pro) → sdd-verify (flash)
+4. **judgment-day** (revisión dual adversarial, **subagent_strong** / pro — solo los 2 jueces)
 5. **code-reviewer** / **verification-before-completion** antes de dar por terminado
 
 Herramientas de delegación: **subagent** y **subagent_fork** corren en el modelo

@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["tasks sdd", "desglose de tareas", "planificar tareas sdd"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-tasks — Desglose de tareas SDD

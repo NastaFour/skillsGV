@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["explorar", "explore sdd", "investigar idea", "clarificar requisito"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-explore — Exploración de ideas SDD

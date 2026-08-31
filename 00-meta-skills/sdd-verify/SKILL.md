@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["verify sdd", "verificar cambio", "validación contra specs"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-verify — Verificación SDD

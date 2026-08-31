@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["spec sdd", "especificaciones", "delta specs", "requisitos"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-spec — Specs delta SDD

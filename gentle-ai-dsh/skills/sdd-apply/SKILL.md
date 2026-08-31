@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["apply sdd", "implementar tareas", "aplicar cambio sdd"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-apply — Implementación de tareas SDD

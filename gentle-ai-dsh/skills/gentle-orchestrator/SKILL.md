@@ -33,27 +33,27 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 | Agente | Modelo | Skill | Cuándo |
 |---|---|---|---|
 | gentle-orchestrator | fuerte | esta | coordina (vos) |
-| sdd-init | fuerte | sdd-init | detecta stack/capabilities |
-| sdd-explore | fuerte | sdd-explore | mapea el área |
-| sdd-propose | fuerte | sdd-propose | propuesta (intent/scope/approach) |
+| sdd-init | flash | sdd-init | detecta stack/capabilities |
+| sdd-explore | flash | sdd-explore | mapea el área |
+| sdd-propose | flash | sdd-propose | propuesta (intent/scope/approach) |
 | sdd-spec | flash | sdd-spec | specs Given/When/Then |
-| sdd-design | fuerte | sdd-design | diseño técnico |
+| sdd-design | flash | sdd-design | diseño técnico |
 | sdd-tasks | flash | sdd-tasks | desglose + forecast |
 | sdd-apply | fuerte | sdd-apply | implementa por lotes (pro) |
-| sdd-verify | fuerte | sdd-verify | valida contra specs |
+| sdd-verify | flash | sdd-verify | valida contra specs |
 | sdd-archive | flash | sdd-archive | cierra + sincroniza deltas |
 | sdd-onboard | flash | sdd-onboard | guía el ciclo (docente) |
 | jd-judge-a | fuerte | jd-judge-a | judgment-day juez A (ciego) |
 | jd-judge-b | fuerte | jd-judge-b | judgment-day juez B (ciego) |
-| jd-fix-agent | fuerte | jd-fix-agent | aplica fixes del veredicto |
-| review-risk | fuerte | review-risk | R1 seguridad |
-| review-readability | fuerte | review-readability | R2 claridad |
-| review-reliability | fuerte | review-reliability | R3 tests/contratos |
-| review-resilience | fuerte | review-resilience | R4 ops/rollback |
-| review-refuter | fuerte | review-refuter | refuta hallazgos |
-| review-validator | fuerte | review-validator | gate final: evidencia antes de "listo" |
+| jd-fix-agent | flash | jd-fix-agent | aplica fixes del veredicto |
+| review-risk | flash | review-risk | R1 seguridad |
+| review-readability | flash | review-readability | R2 claridad |
+| review-reliability | flash | review-reliability | R3 tests/contratos |
+| review-resilience | flash | review-resilience | R4 ops/rollback |
+| review-refuter | flash | review-refuter | refuta hallazgos |
+| review-validator | flash | review-validator | gate final: evidencia antes de "listo" |
 
-**Cómo spawn-ear**: cargá la skill del agente con `skill()`, y pasá su contenido como prompt a `subagent` (flash) o `subagent_strong` (fuerte) según la columna Modelo.
+**Cómo spawn-ear**: cargá la skill del agente con `skill()`, y pasá su contenido como prompt a `subagent` (flash) o `subagent_strong` (pro) según la columna Modelo. Solo usan `subagent_strong` (pro): vos (`gentle-orchestrator`), los 2 jueces (`jd-judge-a`/`jd-judge-b`) y `sdd-apply`.
 
 ## Retry / Recovery (obligatorio)
 

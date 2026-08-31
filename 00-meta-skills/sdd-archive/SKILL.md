@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["archive sdd", "archivar cambio", "sincronizar deltas specs"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-archive — Archivado SDD

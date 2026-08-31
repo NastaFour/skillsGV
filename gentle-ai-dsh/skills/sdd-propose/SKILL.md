@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["proposal sdd", "propuesta sdd", "nuevo cambio", "new change"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-propose — Propuesta de cambio SDD

@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["sdd init", "iniciar sdd", "openspec init"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-init — Inicialización del contexto SDD

@@ -8,6 +8,7 @@ metadata:
   version: "1.0.0"
   trigger: ["design sdd", "diseño técnico", "arquitectura sdd"]
   scope: [global, project]
+  delegate_only: true
 ---
 
 # sdd-design — Diseño técnico SDD
