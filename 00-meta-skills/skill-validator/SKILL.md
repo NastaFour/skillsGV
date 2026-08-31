@@ -32,10 +32,12 @@ Run `scripts/validate-skills.mjs` (in this folder) to check the entire catalog a
 | `license` (if set) | Info | Recommended |
 | `compatibility` length | Error | Max 500 characters if set |
 | `metadata` (if set) | Info | Recommended for trigger/scope |
-| No `npm` mentions | Warning | Use `pnpm` instead |
-| No `npx` mentions | Warning | Use `pnpm dlx` instead |
+| No `npm` mentions | Error | Use `pnpm` instead (`allows-npm` frontmatter documents justified exceptions) |
+| No `npx` mentions | Error | Use `pnpm dlx` instead |
 | No `any` in code | Warning | Use `unknown` + narrowing |
 | No LocalStorage for tokens | Warning | Use memory + HTTP-only cookies |
+
+**Alcance del walker**: los directorios `gentle-ai-dsh/` (addon DeepSeek Harness con una copia vendored del catálogo) y `_shared/` (recursos compartidos, no skills) quedan excluidos del escaneo. El catálogo principal es la única fuente de verdad. **Regla pnpm-only**: cualquier mención de `npm`/`npx` es ERROR; una skill que deba mencionarlos documenta el motivo en frontmatter `allows-npm: <motivo>` (el check baja a info).
 
 ## 🚀 Usage
 

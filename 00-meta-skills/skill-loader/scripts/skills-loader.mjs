@@ -158,12 +158,18 @@ if (!mode) { console.error("Missing mode: --emit-tier0 | --emit-tier1 | --check 
 // ---------- Helpers ----------
 function statSafe(p) { try { return statSync(p); } catch { return null; } }
 
+// Directories that are never part of the skill catalog: gentle-ai-dsh is the
+// DeepSeek Harness addon that vendors a duplicate copy of the catalog under
+// gentle-ai-dsh/skills/; _shared holds shared resources, not skills. The main
+// catalog is the single source of truth for the index, cache, and registry.
+const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+
 function walkSkills(dir, out = []) {
   const stat = statSafe(dir); if (!stat) return out;
   if (stat.isFile() && basename(dir) === "SKILL.md") return [dir];
   if (!stat.isDirectory()) return out;
   for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === "node_modules" || e.name === ".git" || e.name.startsWith("copia-de-seguridad")) continue;
+    if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
     if (e.isDirectory()) walkSkills(join(dir, e.name), out);
     else if (e.isFile() && e.name === "SKILL.md") out.push(join(dir, e.name));
   }

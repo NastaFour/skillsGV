@@ -55,6 +55,18 @@ function statSafe(p) {
   }
 }
 
+// Directories that are never part of the skill catalog, with the reason:
+// - gentle-ai-dsh: the DeepSeek Harness addon vendors a duplicate copy of the
+//   catalog under gentle-ai-dsh/skills/ (206 bundle SKILL.md files). The main
+//   catalog is the single source of truth; the bundle is a snapshot consumed
+//   by the addon's own installer, not by catalog tooling. Walking it doubled
+//   every index-sync/agents-sync finding.
+// - _shared: shared resources (scripts, references, conventions). Some bundles
+//   carry a SKILL.md marker there, but it is not a skill (name "_shared" is
+//   invalid by spec) — the registry protocol already excludes it; the walker
+//   must not even treat it as a skill candidate.
+const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+
 function walkSkills(dir) {
   const out = [];
   const stat = statSafe(dir);
@@ -65,7 +77,7 @@ function walkSkills(dir) {
   for (const e of entries) {
     const full = join(dir, e.name);
     if (e.isDirectory()) {
-      if (e.name === "node_modules" || e.name === ".git" || e.name.startsWith("copia-de-seguridad")) continue;
+      if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
       out.push(...walkSkills(full));
     } else if (e.isFile() && e.name === "SKILL.md") {
       out.push(full);
@@ -181,13 +193,19 @@ function validate(file, catalogNames) {
     issues.push({ severity: "info", check: "license-missing", msg: "license field recommended (e.g. MIT)" });
   }
 
+  // pnpm-only rule (STRICT): npm/npx are rejected catalog-wide. A skill that
+  // legitimately needs to mention npm (e.g. migration docs, config detection)
+  // must document the reason in frontmatter `allows-npm: <reason>`; the check
+  // then demotes to info instead of failing the catalog.
+  const npmJustified = Boolean(getField(front, "allows-npm"));
   const npmHits = (body.match(/\bnpm\s/g) || []).length;
   const npxHits = (body.match(/\bnpx\s/g) || []).length;
+  const npmSeverity = npmJustified ? "info" : "error";
   if (npmHits > 0) {
-    issues.push({ severity: "warning", check: "no-npm", msg: `Found ${npmHits} mention(s) of 'npm' — use 'pnpm' instead` });
+    issues.push({ severity: npmSeverity, check: "no-npm", msg: `Found ${npmHits} mention(s) of 'npm' — use 'pnpm' instead${npmJustified ? " (justified via allows-npm)" : ""}` });
   }
   if (npxHits > 0) {
-    issues.push({ severity: "warning", check: "no-npx", msg: `Found ${npxHits} mention(s) of 'npx' — use 'pnpm dlx' instead` });
+    issues.push({ severity: npmSeverity, check: "no-npx", msg: `Found ${npxHits} mention(s) of 'npx' — use 'pnpm dlx' instead${npmJustified ? " (justified via allows-npm)" : ""}` });
   }
 
   if (/\bany\b(?!\w)/.test(body) && /typescript/i.test(body)) {
@@ -311,6 +329,14 @@ Options:
   --strict             Treat warnings as errors
   --skip-index-sync    Skip synchronization checks against SKILLS.md and AGENTS.md
   --help               Show this help
+
+Scope:
+  Directories named gentle-ai-dsh (vendored addon bundle) and _shared (shared
+  resources) are excluded from the walk; they are not part of the catalog.
+
+Pnpm-only rule:
+  'npm'/'npx' mentions are errors. A skill that must mention them documents
+  the reason in frontmatter 'allows-npm: <reason>' (check demoted to info).
 
 Exit codes:
   0  pass
