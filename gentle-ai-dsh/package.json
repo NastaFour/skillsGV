@@ -1,0 +1,36 @@
+{
+  "name": "gentle-ai-dsh",
+  "version": "0.1.0",
+  "description": "Gentle-AI ecosystem for DeepSeek Harness: SDD multi-agent orchestrator, 169 skills, Engram + Context7 MCP, and OpenDesign integration — one command.",
+  "type": "module",
+  "bin": {
+    "gentle-ai-dsh": "bin/gentle-dsh.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "bin",
+    "preset",
+    "skills",
+    "cordis.patch.yml",
+    "AGENTS.md",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/installer.test.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "deepseek-harness", "dsh", "gentle-ai", "sdd", "skills", "mcp",
+    "engram", "context7", "open-design", "multi-agent", "orchestrator"
+  ],
+  "license": "MIT"
+}

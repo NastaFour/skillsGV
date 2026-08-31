@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skills-catalog/model-routing/profiles.schema.json",
+  "title": "Perfiles de modelo por fase SDD (model-routing E1)",
+  "description": "Declaración de perfiles de modelo por fase del pipeline SDD, resueltos contra el catálogo del runtime vía la interfaz list()/resolve(phase) documentada en 00-meta-skills/sdd-orchestrator/references/model-routing.md. Configuración declarativa: sin comandos de runtime, sin TUI obligatoria.",
+  "type": "object",
+  "required": ["version", "phases"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "description": "Versión del formato de perfiles."
+    },
+    "defaultAlias": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Alias por defecto para fases sin perfil propio y para degradación cuando un alias no existe en el catálogo."
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Notas libres sobre la intención del perfilado."
+    },
+    "phases": {
+      "type": "object",
+      "required": ["propose", "spec", "design", "tasks", "apply", "verify"],
+      "additionalProperties": false,
+      "description": "Una entrada por fase del pipeline SDD. Objeto vacío = la fase hereda defaultAlias.",
+      "properties": {
+        "propose": { "$ref": "#/$defs/phaseProfile" },
+        "spec": { "$ref": "#/$defs/phaseProfile" },
+        "design": { "$ref": "#/$defs/phaseProfile" },
+        "tasks": { "$ref": "#/$defs/phaseProfile" },
+        "apply": { "$ref": "#/$defs/phaseProfile" },
+        "verify": { "$ref": "#/$defs/phaseProfile" }
+      }
+    }
+  },
+  "$defs": {
+    "phaseProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Objeto vacío = la fase hereda defaultAlias. Un perfil propio exige alias (provider/notes son opcionales junto a alias).",
+      "oneOf": [
+        {
+          "maxProperties": 0,
+          "description": "Sin perfil propio: la fase hereda defaultAlias."
+        },
+        {
+          "required": ["alias"],
+          "description": "Perfil propio: alias obligatorio; provider y notes opcionales."
+        }
+      ],
+      "properties": {
+        "alias": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Alias lógico del modelo; se resuelve contra list() del runtime actual."
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opcional: proveedor esperado del alias, informativo."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opcional: motivo de la asignación de esta fase."
+        }
+      }
+    }
+  }
+}

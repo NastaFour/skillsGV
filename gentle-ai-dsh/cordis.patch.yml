@@ -1,0 +1,8 @@
+# gentle-ai-dsh — host-plane bundle hook (intentionally empty).
+#
+# This addon installs as an AGENT PRESET (a per-session "mode"), plus a skills
+# catalog and an onboarding AGENTS.md. The full composition lives in
+# preset/agent.cordis.yml and is installed by bin/gentle-dsh.mjs, so there are
+# no host-plane rows here. Keeping this patch empty means adding the package to
+# a profile's bundles is a safe no-op; run the installer for the real effect.
+[]

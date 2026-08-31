@@ -1,0 +1,89 @@
+{
+  "description": "Fixtures de smoke test del skill-router (spec overlap-matrix, escenario 'Smoke test del lote'). Cada fixture verifica que el primary resuelto coincide con el esperado de la matriz. Runner: node 00-meta-skills/skill-router/scripts/skill-router.mjs --query \"<query>\" --json",
+  "tests": [
+    {
+      "id": "figma-implement-resolve",
+      "query": "implement this figma design with pixel perfect fidelity from the figma url",
+      "expectedPrimary": "figma-implement",
+      "group": "figma",
+      "note": "La query dispara ambos miembros (figma-implement y figma-mcp); la matriz resuelve primary = figma-implement (canónico)."
+    },
+    {
+      "id": "figma-inspect-only",
+      "query": "get the figma design context and tokens for this node",
+      "expectedPrimary": "figma-mcp",
+      "group": "figma",
+      "note": "Solo puntúa figma-mcp (no-canónico); se respeta el scoring normal sin forzar el canónico."
+    },
+    {
+      "id": "figma-tiebreak-promotes-canonical",
+      "query": "inspect the figma mcp design context and figma node tokens from the figma url",
+      "expectedPrimary": "figma-implement",
+      "group": "figma",
+      "note": "Empate real dentro del grupo: figma-mcp lidera el scoring por triggers (figma mcp, figma design context, figma node) y figma-implement también está en el top-4 (figma url). El grupo lidera el ruteo, así que la matriz des-empata promoviendo el canónico figma-implement."
+    },
+    {
+      "id": "figma-canonical-keyword-only",
+      "query": "inspect the figma design context and extract the tokens",
+      "expectedPrimary": "figma-mcp",
+      "group": "figma",
+      "note": "El canónico figma-implement entra al top-4 solo por keywords (triggerScore=0, kwScore=0.5) mientras figma-mcp lidera con trigger real (figma design context). El hook D4 NO debe promover un canónico sin trigger propio: primary = figma-mcp (líder actual, confidence 1), nunca null."
+    },
+    {
+      "id": "banana-image-gen-resolve",
+      "query": "generate an image with nano banana or banana claude for the blog thumbnail",
+      "expectedPrimary": "nano-banana",
+      "group": "banana-image-gen",
+      "note": "La query dispara ambos miembros; la matriz resuelve primary = nano-banana (canónico)."
+    },
+    {
+      "id": "banana-creative-director",
+      "query": "use banana claude as creative director for a brand visual",
+      "expectedPrimary": "banana-claude",
+      "group": "banana-image-gen",
+      "note": "Solo puntúa banana-claude (no-canónico); se respeta el scoring normal sin forzar el canónico."
+    },
+    {
+      "id": "hybrid-component-scrapper",
+      "query": "scrape this component from the live site with the component scrapper",
+      "expectedPrimary": "component-scrapper-mcp",
+      "group": "hybrid-component-scrapper",
+      "note": "Grupo unitario: primary esperado = componente-scrapper-mcp sin falsos primarios contra mcp-integration."
+    },
+    {
+      "id": "hybrid-oklch-theme",
+      "query": "generate an oklch perceptual color theme for dark mode",
+      "expectedPrimary": "oklch-theme-injector",
+      "group": "hybrid-oklch-theme",
+      "note": "Grupo unitario: primary esperado = oklch-theme-injector sin falsos primarios contra design-system-tokens."
+    },
+    {
+      "id": "hybrid-motion-video",
+      "query": "render a motion video pipeline for the product intro",
+      "expectedPrimary": "motion-video-pipeline",
+      "group": "hybrid-motion-video",
+      "note": "Grupo unitario: primary esperado = motion-video-pipeline sin falsos primarios contra motion-framer/motion-gsap."
+    },
+    {
+      "id": "hybrid-ux-auditor",
+      "query": "run a ux audit on the checkout flow usability",
+      "expectedPrimary": "ux-auditor-agent",
+      "group": "hybrid-ux-auditor",
+      "note": "Grupo unitario: primary esperado = ux-auditor-agent sin falsos primarios contra web-design-guidelines."
+    },
+    {
+      "id": "hybrid-asset-generator",
+      "query": "generate an app icon and logo with the asset generator",
+      "expectedPrimary": "asset-generator-mcp",
+      "group": "hybrid-asset-generator",
+      "note": "Grupo unitario: primary esperado = asset-generator-mcp sin falsos primarios contra frontend-designer/ai-ui-generation."
+    },
+    {
+      "id": "three-js-web-resolve",
+      "query": "3d scene three.js",
+      "expectedPrimary": "three-js-web",
+      "group": "three-js-web",
+      "note": "Grupo unitario: primary esperado = three-js-web sin falsos primarios contra motion-framer/motion-gsap/visual-effects (CSS 3D ≠ WebGL)."
+    }
+  ]
+}

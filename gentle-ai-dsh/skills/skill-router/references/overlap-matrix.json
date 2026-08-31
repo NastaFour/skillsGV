@@ -1,0 +1,53 @@
+{
+  "description": "Matriz de solapamiento del skill-router (spec overlap-matrix, decisión D4). Resuelve pares de skills con solapamiento semántico al primario canónico cuando ≥2 miembros de un grupo aparecen entre los top-4 del scoring. Ambas skills se mantienen ruteables: la matriz solo des-empata, nunca oculta.",
+  "groups": [
+    {
+      "id": "figma",
+      "canonical": "figma-implement",
+      "members": ["figma-implement", "figma-mcp"],
+      "note": "figma-implement es el workflow canónico de implementación (05-frontend, plegado Capa 1); figma-mcp es la superficie de inspección del servidor Figma MCP (11-mcp-hybrid). Si ambas puntúan para una tarea de diseño-a-código, gana figma-implement; figma-mcp queda como secondary/tier1toLoad."
+    },
+    {
+      "id": "banana-image-gen",
+      "canonical": "nano-banana",
+      "members": ["nano-banana", "banana-claude"],
+      "note": "nano-banana es la ruta directa de CLI (gemini nanobanana) y el canónico del grupo; banana-claude es la variante Creative Director (prompt engineering + modos de dominio). Si ambas puntúan para una tarea de generación de imágenes, gana nano-banana; banana-claude queda como secondary/tier1toLoad."
+    },
+    {
+      "id": "hybrid-component-scrapper",
+      "canonical": "component-scrapper-mcp",
+      "members": ["component-scrapper-mcp"],
+      "note": "Grupo unitario de delimitación: component-scrapper-mcp se enfoca en extraer/reutilizar componentes existentes vía MCP. Sus triggers (scrape component, component scraper, scrapper) están acotados para no colisionar con mcp-integration (configuración de servidores MCP, no scraping de componentes)."
+    },
+    {
+      "id": "hybrid-oklch-theme",
+      "canonical": "oklch-theme-injector",
+      "members": ["oklch-theme-injector"],
+      "note": "Grupo unitario de delimitación: oklch-theme-injector complementa design-system-tokens (taxonomía HSL) añadiendo la capa de color perceptivo OKLCH/OKHSL. Sus triggers (oklch, perceptual color, color space) evitan falsos primarios contra design-system-tokens."
+    },
+    {
+      "id": "hybrid-motion-video",
+      "canonical": "motion-video-pipeline",
+      "members": ["motion-video-pipeline"],
+      "note": "Grupo unitario de delimitación: motion-video-pipeline orquesta motion-to-video (render/ensamblaje/exportación). Sus triggers (motion video, video pipeline) se acotan contra motion-framer/motion-gsap (animación UI en vivo, no exportación a video)."
+    },
+    {
+      "id": "hybrid-ux-auditor",
+      "canonical": "ux-auditor-agent",
+      "members": ["ux-auditor-agent"],
+      "note": "Grupo unitario de delimitación: ux-auditor-agent audita experiencia de usuario/usabilidad/accesibilidad. Sus triggers (ux audit, usability, auditoria ux) se delimitan contra web-design-guidelines (revisión de cumplimiento de guías) y frontend-debugging-protocol (síntomas visuales)."
+    },
+    {
+      "id": "hybrid-asset-generator",
+      "canonical": "asset-generator-mcp",
+      "members": ["asset-generator-mcp"],
+      "note": "Grupo unitario de delimitación: asset-generator-mcp produce assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo consistente. Sus triggers (asset generator, generate icon/logo) se acotan contra frontend-designer (SVG codificado a mano) y ai-ui-generation (UI completa)."
+    },
+    {
+      "id": "three-js-web",
+      "canonical": "three-js-web",
+      "members": ["three-js-web"],
+      "note": "Grupo unitario de delimitación: three-js-web cubre 3D en tiempo real vía WebGL (three.js + react-three-fiber + drei como unidad; Spline documentado dentro como sección no-code). Se delimita contra motion-framer/motion-gsap (animación UI 2D) y visual-effects (CSS 3D transforms ≠ WebGL): una query 'css 3d transform' sigue siendo de visual-effects. Los términos cortos '3d'/'r3f' (<4 chars, MIN_TRIGGER_LENGTH) no pueden ser triggers y se cubren vía keywords de la description."
+    }
+  ]
+}
