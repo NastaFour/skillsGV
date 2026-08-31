@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "agents": [
+    {
+      "name": "gentle-orchestrator",
+      "group": "coordinator",
+      "role": "SDD orchestrator: coordinates sub-agents, never does the work inline",
+      "tier": "strong",
+      "effort": "max",
+      "delegate_only": false
+    },
+    {
+      "name": "jd-judge-a",
+      "group": "judgment-day",
+      "role": "Judgment Day blind judge A (read-only adversarial review)",
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "jd-judge-b",
+      "group": "judgment-day",
+      "role": "Judgment Day blind judge B (read-only adversarial review)",
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-apply",
+      "group": "sdd",
+      "role": "SDD implementation by task batches (apply-progress merge)",
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "jd-fix-agent",
+      "group": "review",
+      "role": "Surgical fix agent for confirmed judgment-day findings",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-risk",
+      "group": "review",
+      "role": "R1 risk lens (security, permissions, data exposure, dependencies)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-readability",
+      "group": "review",
+      "role": "R2 readability lens (naming, structure, maintainability)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-reliability",
+      "group": "review",
+      "role": "R3 reliability lens (tests, contracts, determinism, regressions)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-resilience",
+      "group": "review",
+      "role": "R4 resilience lens (fallbacks, retry, rollback, observability)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-refuter",
+      "group": "review",
+      "role": "Adversarial refuter of severe review findings (read-only)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "review-validator",
+      "group": "review",
+      "role": "Final read-only validation gate before any done claim",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-init",
+      "group": "sdd",
+      "role": "SDD bootstrap: stack detection, testing capabilities, persistence",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-explore",
+      "group": "sdd",
+      "role": "SDD exploration before committing to a change",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-propose",
+      "group": "sdd",
+      "role": "SDD change proposal: intent, scope, approach",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-spec",
+      "group": "sdd",
+      "role": "SDD delta specs with requirements and scenarios",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-design",
+      "group": "sdd",
+      "role": "SDD technical design and architecture approach",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-tasks",
+      "group": "sdd",
+      "role": "SDD task breakdown with review workload forecast",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-verify",
+      "group": "sdd",
+      "role": "SDD verification against specs with compliance evidence",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-archive",
+      "group": "sdd",
+      "role": "SDD close: sync delta specs and archive the change",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-onboard",
+      "group": "sdd",
+      "role": "Interactive SDD walkthrough on the real codebase (runs inline, not delegated)",
+      "tier": "flash",
+      "effort": "high",
+      "delegate_only": false
+    }
+  ]
+}

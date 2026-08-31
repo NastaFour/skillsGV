@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "current": "deepseek",
+  "profiles": {
+    "deepseek": {
+      "strong": "opencode-go/deepseek-v4-pro",
+      "flash": "opencode-go/deepseek-v4-flash"
+    },
+    "glm": {
+      "strong": "opencode-go/glm-5.3",
+      "flash": "opencode-go/glm-5.2"
+    }
+  }
+}
