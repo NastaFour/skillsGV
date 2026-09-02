@@ -46,7 +46,7 @@ El reporte de archive es el registro terminal del ciclo. Describe el estado del 
 
 Cuando las fuentes discrepan sobre un hecho, ranquéelas — primero la más autoritativa:
 
-1. **Autoridad de review nativa** — estado estructurado, recibo terminal y contexto de gate post-apply, si existen. Hechos de entrega validados; ganan en todo lo que cubren. En Slice 1 el punto de extensión RDD está documentado sin mecanismo: no existe recibo, y esta fila no aplica.
+1. **Autoridad de review nativa** — estado estructurado, recibo terminal y contexto de gate post-apply, si existen. Hechos de entrega validados; ganan en todo lo que cubren. En Slice 1 el punto de extensión RDD no tenía mecanismo (no existía recibo y esta fila no aplicaba); desde gentle-ai 2.5.0 el mecanismo RDD existe en el runtime (opt-in, apagado por defecto) y el punto de extensión del catálogo delega a él.
 2. **El artefacto de tareas persistido** — visibilidad de completitud, según el Gate de Completitud de Tareas abajo.
 3. **Hechos de estado final explícitos en el prompt de lanzamiento del orquestador** — p. ej. "estos warnings de verify se corrigieron en commits posteriores". El prompt de lanzamiento es el relato más reciente del cambio y supera a los snapshots intermedios.
 4. **`verify-report` y `apply-progress`** — snapshots intermedios. Rango más bajo: historia válida de lo que era cierto en su momento, nunca evidencia de estado final.

@@ -65,7 +65,7 @@ Ejecute esta fase cuando el orquestador/usuario pida inicializar SDD en un proye
 
 ## Contrato de salida
 
-Devuelva el envelope de resultado de exactamente seis campos — `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks` y `skill_resolution` — según la sección **D** del Protocolo Común. Incluya proyecto, stack, modo de persistencia, estado de Strict TDD, tabla de capacidades de testing, IDs/paths de observaciones guardadas, path del registro y el siguiente paso `/sdd-explore` o `/sdd-new`.
+Devuelva el envelope de resultado de exactamente seis campos — `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks` y `skill_resolution` — según la sección **D** del Protocolo Común. Incluya proyecto, stack, modo de persistencia, estado de Strict TDD, tabla de capacidades de testing, IDs/paths de observaciones guardadas, path del registro y el siguiente paso `/gentle-sdd-explore` o `/gentle-sdd-new`.
 
 ## Dependencias y bloqueo
 

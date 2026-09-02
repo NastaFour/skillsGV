@@ -45,7 +45,7 @@ El orquestador debe proveer el estado estructurado del Protocolo Común. Úselo 
 - Registre los comandos de test/build actuales, exit codes y los hashes de salida (`test_output_hash` / `build_output_hash`) en el reporte cuando aplique.
 - La selección de modelo/proveedor/perfil/effort es propiedad del usuario y nunca la cambia la verificación.
 - Esta es la verificación final independiente de requirements/runtime. Una contradicción o un check que falla devuelve FAIL/escalación; nunca inicia 4R, Judgment Day, refuter, otra corrección o validación scoped.
-- El punto de extensión RDD (gate de review post-verify) está documentado sin mecanismo en Slice 1; la verificación no ejecuta ningún mecanismo de review.
+- El punto de extensión RDD (gate de review post-verify): en Slice 1 no había mecanismo; desde gentle-ai 2.5.0 el mecanismo RDD existe en el runtime (opt-in, apagado por defecto) y el punto de extensión del catálogo delega a él. La verificación no ejecuta ningún mecanismo de review por sí misma.
 
 ## Gates de decisión
 

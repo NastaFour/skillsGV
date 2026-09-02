@@ -1,6 +1,6 @@
 ---
 name: judgment-day
-description: Parallel adversarial review where two independent judges review the same target (spec, design, or diff) from opposing stances and surface blind spots before merge. Use after SDD Design or before PR to catch what a single reviewer would miss.
+description: Parallel adversarial review where two independent judges review the same code diff from opposing stances and surface blind spots before merge. Use post-apply / before PR to catch what a single reviewer would miss in a code diff.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires two agent sessions (or two sub-agents) and Node 20+."
 allowed-tools: Bash(node:*) Read
@@ -26,15 +26,16 @@ Else: use [`code-reviewer`](../code-reviewer/SKILL.md) only (1 reviewer, no para
 
 Two independent judges review the same target from opposing stances. The goal is not consensus — it is **conflict surfacing**. Whatever both judges independently flag is almost certainly real; what only one flags is a hypothesis worth checking. Never run merge on a target that has not survived Judgment Day for non-trivial changes.
 
-`judgment-day` belongs to the SDD family (see [`professional-planner`](../professional-planner/SKILL.md)). It slots in **after** `sdd-design` / `sdd-spec` and **before** `sdd-apply` or before opening a PR. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to.
+`judgment-day` belongs to the SDD family (see [`professional-planner`](../professional-planner/SKILL.md)). It slots in **after** `sdd-apply` and **before** opening a PR: adversarial review of the code diff. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to. It MUST NOT be used to validate SDD planning steps (proposal/spec/design/tasks) — that validation belongs to the orchestrator gatekeeper and the phase result contract.
 
 ## When to Use
 
-- After a spec or design is written but before implementation.
+- After implementation completes (`sdd-apply` done) and before opening a PR.
 - Before opening a PR for a non-trivial change (2+ non-trivial files).
 - When the author is too close to the code to see their own assumptions.
 - When the cost of being wrong is higher than the cost of a second review.
 - **Do NOT use** for trivial diffs (docs, formatting, single-line fixes) — it wastes two contexts.
+- **Do NOT use** to validate SDD planning artifacts (proposal/spec/design/tasks) — the orchestrator gatekeeper and the phase result contract own that validation.
 
 ## Setup
 
@@ -100,7 +101,7 @@ After both verdicts are sealed:
 - **Same material, same prompt.** If you give judge 2 more context than judge 1, you have wasted the run.
 - **Two is the minimum, not the maximum.** For high-stakes changes (auth, payments, migrations) use three judges: red, blue, and a **grey** judge who reads only the diff and asks "what is this even for?" — the dumb-question judge catches the obvious.
 - **Cost is ~2× one review.** Worth it when the cost of being wrong is higher. Not worth it for cosmetic changes.
-- **Run before implementation, not after.** Adversarial review of a 50-line spec is cheap; of a 5000-line diff is expensive. Move Judgment Day left.
+- **Review the diff, not the plan.** Judgment Day is adversarial review of CODE (post-apply / pre-PR). Validating the planning steps is the orchestrator gatekeeper's and the result contract's job — pointing the judges at a proposal, spec, design doc or task list re-runs that validation the wrong way.
 
 ## Relationship to other skills
 
@@ -110,11 +111,11 @@ After both verdicts are sealed:
 - [`kill-switches`](../kill-switches/SKILL.md) — if both judges say kill, the kill switch trips.
 - [`professional-planner`](../professional-planner/SKILL.md) — Judgment Day is a phase gate inside SDD.
 
-## Example: judging a design doc
+## Example: judging a payment change
 
 ```
-Target: checkout-payment-service design doc (v3)
-Material: 1 design doc, ~300 lines
+Target: checkout-payment-service staged diff
+Material: staged diff (~300 lines) across charge/refund flows
 
 Judge Red verdict:
   1. 🔴 No idempotency key on /charge — retries double-bill under network blip.
@@ -126,13 +127,13 @@ Judge Blue verdict:
   1. 🔴 Refund flow is not specified — only charge flow. Half the requirement is missing.
   2. 🟡 No requirement covering partial refunds. Will rework in a week.
   3. 🔻 Red will not notice the errors section is copy-pasted from another doc.
-  4. FIX — spec is half-written.
+  4. FIX — half the flow is missing: refund is absent from the diff.
 
 Orchestrator synthesis:
   Overlap: none — different stances caught different halves.
-  Delta: Red's (1) double-bill is concrete — block.  Blue's (1) refund flow is a spec gap — block.
+  Delta: Red's (1) double-bill is concrete — block.  Blue's (1) refund flow missing — block.
   Blind spot: Red predicted Blue would miss DLQ; Blue actually missed it too — DLQ is real risk.
-  Decision: BLOCK. Rewrite spec with refund flow + idempotency key. Re-run Judgment Day.
+  Decision: BLOCK. Add refund flow + idempotency key to the diff, then re-run Judgment Day.
 ```
 
 ## Keywords

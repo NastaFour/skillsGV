@@ -93,13 +93,14 @@ Ejemplo:
 (otros valores: `fallback-registry`, `fallback-path` o `none — no se encontró registro`)
 ```
 
-Nota: el punto de extensión RDD (gate de review entre `sdd-verify` y `sdd-archive`) está documentado sin mecanismo en `00-meta-skills/harness-map.md`; en Slice 1 no se ejecuta ningún mecanismo de review.
+Nota: el punto de extensión RDD (gate de review entre `sdd-verify` y `sdd-archive`) se documentó sin mecanismo en Slice 1; desde gentle-ai 2.5.0 el mecanismo RDD existe en el runtime (opt-in, apagado por defecto vía `gentle-ai review mode enable`) y el punto de extensión del catálogo delega a él (ver `00-meta-skills/harness-map.md`).
 
 ## E. Guard de carga de revisión (400 líneas)
 
 SDD debe proteger la carga cognitiva del reviewer, no solo generar tareas.
 
 - El presupuesto por defecto de review por PR es de **400 líneas cambiadas** (`additions + deletions`).
+- Cuando el forecast de `sdd-tasks` excede ese presupuesto, el orquestador DEBE preguntar al usuario ANTES de aplicar: PRs encadenados/apilados vs `size:exception`. El preflight de sesión del usuario puede fijar un presupuesto mayor (p. ej. 800 líneas); sin esa declaración, 400 es el default.
 - El orquestador DEBE cachear la estrategia de entrega al inicio de sesión: `ask-on-risk` (default), `auto-chain`, `single-pr` o `exception-ok`. Esos cuatro son todo el dominio; cualquier otro valor es inválido: repórtelo y deténgase.
 - El orquestador DEBE pasar `delivery_strategy` a `sdd-tasks` y la decisión resuelta a `sdd-apply`.
 - `sdd-tasks` DEBE pronosticar si el trabajo planeado puede exceder el presupuesto e incluir líneas de guarda en texto plano: `Decision needed before apply: Yes|No`, `Chained PRs recommended: Yes|No` y `400-line budget risk: Low|Medium|High`.

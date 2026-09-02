@@ -11,7 +11,7 @@ Commands that select, continue, apply, verify, or archive an SDD change MUST fir
 - If a change name is provided, use that exact change after confirming it exists in the selected artifact store.
 - If no change name is provided, infer only when the active change is unambiguous from session state or there is exactly one active change.
 - If multiple active changes match or the active change is unclear, ask the user to choose. Do not guess.
-- If no active changes exist, report that no SDD change is active and suggest `/sdd-new <change>`.
+- If no active changes exist, report that no SDD change is active and suggest `/gentle-sdd-new <change>`.
 
 ## Native Engine
 

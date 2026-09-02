@@ -31,5 +31,5 @@ Los lentes 4R (`references/4r-framework.md`) producen hallazgos; esta política 
 
 ## Relación con RDD y AHE
 
-- El punto de extensión RDD (harness-map) declara dónde se insertaría una revisión acotada con recibo entre `sdd-verify` y `sdd-archive`; sigue SIN mecanismo ejecutable. Esta política es la disposición que ese gate futuro reutilizaría.
+- El punto de extensión RDD (harness-map) declara dónde se inserta una revisión acotada con recibo entre `sdd-verify` y `sdd-archive`: en Slice 1 no había mecanismo; desde gentle-ai 2.5.0 el mecanismo RDD existe en el runtime (opt-in, apagado por defecto) y el punto de extensión del catálogo delega a él. Esta política es la disposición que ese gate reutiliza.
 - El punto AHE (evaluación del harness) es independiente: activar uno no habilita al otro.

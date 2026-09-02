@@ -39,8 +39,10 @@ fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
 
-Seguí Spec-Driven Development. Arrancá con "/sdd new" o "SDD change". Cargá la
+Seguí Spec-Driven Development. Arrancá con lenguaje natural («hacé un SDD para X», «SDD change»); si preferís slash, en gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`). **Regla Alan**: el NL siempre funciona; el slash es un alias opcional, no un requisito. Cargá la
 skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
+
+**Entrevista real**: el orquestador te pregunta el modo al arrancar (auto/interactive) y, antes de lanzar spec/design, te hace las decisiones de producto y el brief + questionnaire de diseño (D1/D1b de **design-driven**). Los delegados no pueden preguntar: tus respuestas viajan dentro de su prompt.
 
 1. sdd-init → sdd-explore → sdd-propose  (delegá con **subagent** / flash)
 2. sdd-spec / sdd-design                  (**subagent** / flash)
@@ -51,6 +53,8 @@ skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 Herramientas de delegación: **subagent** y **subagent_fork** corren en el modelo
 flash; **subagent_strong** conserva el modelo fuerte. Vos planificás y sintetizás
 en el modelo fuerte. Nunca avances una fase sin su dependencia satisfecha.
+**Racional (economía de modelos)**: el orquestador fuerte sintetiza y decide;
+la implementación se delega a flash salvo `sdd-apply` y los jueces críticos.
 
 **Delegación (regla dura)**: fix pequeño y mecánico (1 archivo) → inline; todo lo
 demás → delegar. Cargá **gentle-orchestrator** para el protocolo completo + el
@@ -94,7 +98,9 @@ está) y avisá al usuario.
 
 - Artefactos técnicos SDD en inglés (registro neutro/profesional), salvo pedido explícito.
 - Nunca afirmes "listo" sin evidencia de verificación (verification-before-completion).
-- RDD (receipt-driven) es opt-in; si está habilitado, seguí rdd-defect-workflow.
+- RDD (receipt-driven) ya está integrado en gentle-ai 2.5.0: opt-in, apagado por
+  defecto (`gentle-ai review mode enable`); si el usuario lo habilita, seguí
+  **rdd-defect-workflow**.
 - **Traductor visual**: si el usuario manda capturas/imágenes y vos no podés ver
   imágenes, no improvises — redirigí a Antigravity (o **od**) y exigí una spec
   textual antes de continuar.
@@ -106,3 +112,24 @@ está) y avisá al usuario.
   algo falta, avisá con el comando exacto (no trabajes a ciegas con MCP caídos).
 - **Package manager: pnpm only — `npm`/`npx` rechazados.** Usá `pnpm` para
   instalar y correr scripts, y `pnpm dlx` en lugar de `npx`.
+
+## 6 · Reglas del harness (lecciones E3)
+
+- **Solo `run_code`**: en este runtime los subagentes solo pueden llamar
+  `run_code` directamente — decílo explícitamente en cada prompt de delegación
+  (en la sesión 2 hubo 15 llamadas prohibidas a `skill`/`read` antes de recuperarse).
+- **Verificación de delegados SDD**: no asumas que un delegado terminó —
+  verificá que sus artefactos declarados existan; si un delegado se interrumpe,
+  nunca pases a implementación inline saltándote fases (re-lanzalo o reportá).
+- **Planificación a flash**: explore/propose/spec/design/tasks corren en el
+  modelo flash; el orquestador fuerte sintetiza y decide.
+- **Guard de contexto** (~800k tokens): preferí una sesión o un delegado fresco
+  antes del techo — el overflow fatal de la sesión 1 fue previsible a los 772k.
+
+## 7 · codegraph-first
+
+Para mapear o consultar la estructura del código, usá codegraph PRIMERO:
+`codegraph_explore` (MCP) o el CLI read-only (`status`, `query`, `explore`,
+`callers`, `callees`, `impact`, `affected`). Caé a grep/read solo si codegraph
+no está inicializado o falla. No lo inicialices en `$HOME` ni en directorios
+temporales.

@@ -12,6 +12,11 @@ metadata:
 
 Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-agentes**; sintetizá.
 
+## Regla Alan (lenguaje natural primero)
+
+- Preferí triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
+- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependas del slash para arrancar una fase.
+
 ## Reglas de delegación (inline vs delegar)
 
 | Acción | Inline | Delegar |

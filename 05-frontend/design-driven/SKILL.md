@@ -36,6 +36,8 @@ Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
 
 ## F1 · Cuestionario de Unicidad (D1b — la fase MÁS importante, sin atajos)
 
+> **Vía SDD**: si este pipeline corre por delegación SDD, el brief D1 + el cuestionario de unicidad D1b los ejecuta el ORQUESTADOR con el usuario ANTES de lanzar el delegado de diseño; el delegado recibe las respuestas en su prompt y nunca las inventa.
+
 Tras D1, SIEMPRE preguntar por bloques. Adaptá la cantidad a la amplitud del proyecto;
 **mínimo 8 preguntas**. Nunca saltes un bloque sin respuesta.
 

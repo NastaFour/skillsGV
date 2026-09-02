@@ -1,6 +1,6 @@
 ---
 name: sdd-orchestrator
-description: "Trigger: sdd new, sdd continue, sdd ff, SDD change, feature >1 archivo. Thin orchestrator that routes SDD phases without executing them: DAG, auto/interactive modes, gatekeeper, dedup. Use when starting or continuing an SDD change."
+description: "Trigger: sdd new, sdd continue, sdd ff, SDD change, feature >1 archivo. Thin orchestrator that routes SDD phases without executing them: DAG, auto/interactive modes, gatekeeper, dedup, gates de entrevista (el orquestador pregunta al usuario, nunca un delegado). Use when starting or continuing an SDD change."
 license: MIT
 allowed-tools: Read Task Bash(git:*,gh:*)
 metadata:
@@ -28,6 +28,11 @@ Los artefactos técnicos generados siguen la convención del proyecto destino (e
 ## Propósito
 
 Coordina el pipeline SDD de forma delgada: **rutea, no ejecuta**. Mantenga un hilo de conversación fino, delegue TODO el trabajo real a los agentes de fase y sintetice los resultados. Sintetice corto por defecto: reporte la decisión, el resultado y la siguiente acción; expanda solo cuando el usuario lo pida o la situación lo requiera.
+
+## Regla Alan (lenguaje natural primero)
+
+- Prefiera triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») sobre comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
+- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependa del slash para arrancar una fase.
 
 ## Agentes de fase (roles / lee / escribe)
 
@@ -59,7 +64,14 @@ proposal → specs → tasks → apply → verify → archive
 - **auto**: las fases corren back-to-back sin pausar; tras cada fase se ejecuta el gatekeeper antes de lanzar la siguiente. El usuario solo ve una interrupción cuando el gatekeeper detecta un problema real; si no, solo el resultado final.
 - **interactive** (default): tras cada fase se muestra el resumen y se espera aprobación explícita antes de continuar. La aprobación es por fase: «continuá»/«dale» aprueba solo la fase inmediata, no el resto del pipeline. Un artefacto generado no se considera aprobado hasta que el usuario lo revisó o delegó esa revisión.
 
-Cachee el modo elegido por sesión; no vuelva a preguntar salvo que el usuario pida cambiarlo. Si el usuario no especifica, use `interactive`.
+Cachee el modo elegido por sesión; no vuelva a preguntar salvo que el usuario pida cambiarlo. El modo se pregunta en el preflight bloqueante (ver «Gates de entrevista»): sin respuesta explícita no se lanza ninguna fase.
+
+## Gates de entrevista (pregunta el orquestador, nunca un delegado)
+
+1. **Preflight bloqueante (antes de `sdd-init`)**: al iniciar un cambio SDD, pregunte SIEMPRE al usuario el modo de ejecución (`auto` / `interactive`) antes de lanzar cualquier fase. No hay default silencioso: sin respuesta explícita no se lanza `sdd-init`. `interactive` puede ofrecerse como recomendación dentro de la pregunta, nunca como ejecución por omisión.
+2. **Gate de decisiones de producto (antes de lanzar `sdd-spec`)**: reúna del proposal toda opción de negocio/producto no resuelta (usuarios objetivo, reglas de negocio, scope y no-goals, tradeoffs), agrúpela y pregunte al usuario UNA sola vez. Las respuestas entran verbatim en el prompt de `sdd-spec`. Prohibido que la fase resuelva decisiones de producto por asumisión.
+3. **Gate de entrevista de diseño (antes de lanzar `sdd-design`)**: si el cambio tiene superficie visual/UX, ejecute usted —no un delegado— el brief D1 y el cuestionario de unicidad D1b de la skill `design-driven` (3-5 preguntas concretas: problema, usuarios, reglas, personalidad/toma de decisiones visuales, referencias). Pase las respuestas verbatim en el prompt de `sdd-design`. El delegado nunca inventa el Design DNA. Si el cambio no tiene superficie visual, puede omitir este gate solo con confirmación explícita del usuario.
+4. **Regla dura de canal**: los subagentes NO tienen canal al usuario y NO pueden preguntar nada. Toda pregunta (modo, entrevista, decisiones de producto, estrategia de entrega) la hace el orquestador y viaja en el prompt del delegado. Un delegado que necesita una respuesta del usuario DEBE devolver `status: blocked` con las preguntas listadas — jamás inventarlas ni asumirlas.
 
 ## Gatekeeper (modo auto)
 
@@ -72,6 +84,12 @@ Tras cada fase y ANTES de lanzar la siguiente, valide:
 5. **Coherencia de ruteo**: `next_recommended` sigue el DAG y no hay riesgos CRITICAL sin abordar.
 
 Fallo → re-ejecute la MISMA fase UNA vez con feedback correctivo que nombre los fallos específicos (no reintento a ciegas). Segundo fallo → DETENGA la cadena y reporte al usuario nombrando la fase, los hallazgos del gatekeeper, ambos intentos y el fix recomendado. No avance a fases dependientes con un artefacto malo: el error se propaga.
+
+## Reglas P0 de delegación SDD
+
+- Nunca asuma que un delegado SDD terminó: verifique que sus artefactos declarados existen (Gatekeeper, check 2) antes de continuar la cadena.
+- Si un delegado SDD se interrumpe o se trunca, NO implemente inline saltándose fases (sin spec, sin tasks): re-lance el delegado o deténgase y reporte. Saltarse fases del DAG rompe el pipeline.
+- Los delegados de planificación (explore/propose/spec/design/tasks) rutean al modelo flash/económico, no a pro.
 
 ## Dedup de lanzamientos
 
