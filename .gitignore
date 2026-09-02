@@ -16,3 +16,5 @@ opencode.json
 
 # Insuums congelados de Judgment Day (proceso, no código)
 _jd-*.diff*
+# Local AI runtime state
+.atl/

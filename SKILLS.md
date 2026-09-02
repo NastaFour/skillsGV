@@ -70,6 +70,7 @@ Catálogo de **193 skills** compatible con [agentskills.io](https://agentskills.
 | review-resilience | [02-dev-roles/review-resilience/SKILL.md](02-dev-roles/review-resilience/SKILL.md) ← R4 ops/rollback lens |
 | review-refuter | [02-dev-roles/review-refuter/SKILL.md](02-dev-roles/review-refuter/SKILL.md) ← refutes BLOCKER/CRITICAL findings |
 | review-validator | [02-dev-roles/review-validator/SKILL.md](02-dev-roles/review-validator/SKILL.md) ← gate final: evidencia antes de "listo" |
+| rdd-defect-workflow | [02-dev-roles/rdd-defect-workflow/SKILL.md](02-dev-roles/rdd-defect-workflow/SKILL.md) ← RDD: recibos, corrección acotada, gates de entrega y kill switch |
 | decision-gate | [02-dev-roles/decision-gate/SKILL.md](02-dev-roles/decision-gate/SKILL.md) ← compress human's last-20% judgment to 3 min, traceable |
 | github-pr | [02-dev-roles/github-pr/SKILL.md](02-dev-roles/github-pr/SKILL.md) ← conventional commits, structured PR descriptions |
 | performance-refactor | [02-dev-roles/performance-refactor/SKILL.md](02-dev-roles/performance-refactor/SKILL.md) |
