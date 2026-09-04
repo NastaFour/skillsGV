@@ -1,6 +1,6 @@
 # skillsGV
 
-Catálogo multi-agente de **193 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`).
+Catálogo multi-agente de **195 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`).
 
 Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
 

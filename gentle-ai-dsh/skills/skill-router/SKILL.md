@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + SDD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 192 skills to 3-5.
+description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + SDD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 195 skills to 3-5.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex, DeepSeek. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
@@ -14,7 +14,7 @@ metadata:
 
 Replaces ~80% of stochastic "which skill do I load?" reasoning with **exact trigger matching**. The agent only decides for the ~20% of cases where the router returns low confidence.
 
-> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 192 skills × ~150 tokens.
+> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 195 skills × ~150 tokens.
 
 ## When to Use
 
@@ -91,8 +91,8 @@ Flags:
 ## Integration
 
 - [`sdd-orchestrator`](../sdd-orchestrator/SKILL.md) — invoke when `needsSDD=true` (`professional-planner` remains the reference methodology).
-- [`judgment-day`](../judgment-day/SKILL.md) — skip when `skipJudgmentDay=true`.
-- [`kill-switches`](../kill-switches/SKILL.md) — abort if router returns confidence 0 on a critical-area query.
+- [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) — skip when `skipJudgmentDay=true`.
+- [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — abort if router returns confidence 0 on a critical-area query.
 
 ## Keywords
 skill router, route skill, which skill, skill selection, trivial diff, needs sdd, pre-invoke
