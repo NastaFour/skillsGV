@@ -63,6 +63,16 @@ git commit -m "add user feature"
 
 ## Code Examples
 
+### Mandatory Pre-PR Clean-Tree Preflight (anti-residue)
+
+Before running `gh pr create`, run `git status --porcelain`. If it returns ANY line (untracked tests/scratches/logs/fixes, or modified files outside the staged set), you are FORBIDDEN to create the PR. Resolve in this order:
+
+1. Commit intended files in reviewable work units.
+2. Add legit local artifacts to `.gitignore`.
+3. Delete scratch files (ask the user if unsure).
+
+Only when the porcelain output is empty (or everything remaining is explicitly intended and explained) may the PR proceed. State the residue check output in the PR description's Testing section when applicable.
+
 ### Basic PR Creation
 
 ```bash

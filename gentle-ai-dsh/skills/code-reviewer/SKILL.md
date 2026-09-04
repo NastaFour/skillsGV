@@ -42,6 +42,8 @@ Run the four Rs in order. Every PR review should answer all four explicitly — 
 
 Rules: diagnose before prescribing (R1-R3 must be answered before R4); never combine review with implementation in the same context — R4 outputs a recommendation, the author writes the fix.
 
+**RDD note**: when the RDD workflow is enabled, the bounded correction budget is frozen by the binary at review START (`budget = min(200, ceil(original_changed_lines / 2))`). Follow `../rdd-defect-workflow/SKILL.md` as the operational guide — forecast before any corrective edit, one bounded correction transaction per candidate.
+
 ## 🪝 Pre-commit automation via GGA (Gentleman Guardian Angel)
 
 Automate this skill as a pre-commit hook with [`gga`](https://github.com/Gentleman-Programming/gentleman-guardian-angel) — provider-agnostic AI review. See [`references/pre-commit-gga.md`](references/pre-commit-gga.md) for setup.

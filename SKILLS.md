@@ -18,6 +18,7 @@ Catálogo de **193 skills** compatible con [agentskills.io](https://agentskills.
 | sdd-orchestrator | [00-meta-skills/sdd-orchestrator/SKILL.md](00-meta-skills/sdd-orchestrator/SKILL.md) ← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup |
 | sdd-init | [00-meta-skills/sdd-init/SKILL.md](00-meta-skills/sdd-init/SKILL.md) ← SDD init: stack/testing capabilities, registry and persistence |
 | sdd-explore | [00-meta-skills/sdd-explore/SKILL.md](00-meta-skills/sdd-explore/SKILL.md) ← SDD exploration before committing to a change |
+| sdd-research | [00-meta-skills/sdd-research/SKILL.md](00-meta-skills/sdd-research/SKILL.md) ← SDD research: source-backed evidence lanes before propose |
 | sdd-propose | [00-meta-skills/sdd-propose/SKILL.md](00-meta-skills/sdd-propose/SKILL.md) ← SDD change proposal: intent, scope, approach |
 | sdd-spec | [00-meta-skills/sdd-spec/SKILL.md](00-meta-skills/sdd-spec/SKILL.md) ← SDD delta specs with requirements and scenarios |
 | sdd-design | [00-meta-skills/sdd-design/SKILL.md](00-meta-skills/sdd-design/SKILL.md) ← SDD technical design and architecture approach |

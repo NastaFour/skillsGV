@@ -26,6 +26,15 @@ This skill guides public collaboration. It does not grant issue approval, label,
 - Require independent read-only candidate validation before publication. Validation cannot edit source or authority; findings require a new candidate.
 - Keep communication humane and evidence-based. Repository labels and workflow metadata are maintainer-owned, never evidence of contributor blame.
 
+## Bounded Correction Budget
+
+The bounded correction budget is FROZEN BY THE BINARY at review START: `budget = min(200, ceil(original_changed_lines / 2))`. The Markdown contract does NOT enforce it mechanically — it declares the contract and the agent duties:
+
+1. Before any corrective edit, run the positive correction forecast (native `capture-correction-plan` with `--correction-lines` > 0 when RDD is enabled).
+2. Never edit before the forecast is admitted.
+3. ONE bounded correction transaction per candidate — later observations are follow-ups, not another correction.
+4. If the fix exceeds budget, stop and request a new candidate/chain instead of overrunning.
+
 ## Decision Gates
 
 | Condition | Action |

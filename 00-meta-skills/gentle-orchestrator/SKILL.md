@@ -40,6 +40,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 | gentle-orchestrator | fuerte | esta | coordina (vos) |
 | sdd-init | flash | sdd-init | detecta stack/capabilities |
 | sdd-explore | flash | sdd-explore | mapea el área |
+| sdd-research | flash | sdd-research | evidencia externa por lane |
 | sdd-propose | flash | sdd-propose | propuesta (intent/scope/approach) |
 | sdd-spec | flash | sdd-spec | specs Given/When/Then |
 | sdd-design | flash | sdd-design | diseño técnico |

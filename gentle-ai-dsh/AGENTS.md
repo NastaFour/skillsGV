@@ -44,7 +44,7 @@ skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 
 **Entrevista real**: el orquestador te pregunta el modo al arrancar (auto/interactive) y, antes de lanzar spec/design, te hace las decisiones de producto y el brief + questionnaire de diseño (D1/D1b de **design-driven**). Los delegados no pueden preguntar: tus respuestas viajan dentro de su prompt.
 
-1. sdd-init → sdd-explore → sdd-propose  (delegá con **subagent** / flash)
+1. sdd-init → sdd-explore → (sdd-research si el usuario la elige) → sdd-propose  (delegá con **subagent** / flash)
 2. sdd-spec / sdd-design                  (**subagent** / flash)
 3. sdd-tasks (flash) → sdd-apply (**subagent_strong** / pro) → sdd-verify (flash)
 4. **judgment-day** (revisión dual adversarial, **subagent_strong** / pro — solo los 2 jueces)
@@ -65,6 +65,14 @@ vez + investigá el porqué** (leé el error, no asumas).
 skillsGV (`_shared/agent-roster/roster.json` + meta-skill **agent-roster**); el
 routing de este preset se sincroniza con
 `node 00-meta-skills/agent-roster/scripts/apply.mjs --runtime dsh`.
+
+**La Tríada + memoria (quién responde qué)**: SDD — «¿qué construyo?» → skills
+`sdd-*` (DAG + gates de entrevista); TDD — «¿cómo pruebo que funciona?» →
+`testing-patterns` + `sdd-apply`/`sdd-verify` (RED/GREEN); RDD — «¿es seguro
+entregar?» → binario `gentle-ai` (recibos/gates) + `rdd-defect-workflow` + lentes
+`review-*`; Engram — «¿qué aprendimos?» → `engram-integration`
+(`mem_save`/`mem_session_summary`). El catálogo aporta la gobernanza cognitiva;
+el binario, la mecánica determinista (congelamiento, recibos, presupuestos).
 
 ## 2 · De dónde salen las skills
 

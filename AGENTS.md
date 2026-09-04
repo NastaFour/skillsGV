@@ -17,7 +17,7 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Media & Graphics | `09-media-graphics/` | nano-banana, banana-claude |
 | MCP Hybrids | `11-mcp-hybrid/` | component-scrapper-mcp, oklch-theme-injector, motion-video-pipeline, ux-auditor-agent, asset-generator-mcp, figma-mcp, open-design |
 | SDD Planning | `professional-planner/` | professional-planner (Spec-Driven Development) |
-| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator, agent-roster |
+| Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-research, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator, agent-roster |
 | Matt Pocock | `12-matt-pocock/` | ask-matt, code-review, codebase-design, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs, grilling, handoff, implement, improve-codebase-architecture, migrate-to-shoehorn, prototype, research, resolving-merge-conflicts, scaffold-exercises, setup-pre-commit, tdd, teach, to-questionnaire, to-spec, to-tickets, triage, wait-what, wayfinder, wizard, writing-for-agents |
 
 ## 🚀 Regla de arranque (harness)
@@ -30,6 +30,17 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
    ```
 2. **Orquestador si >1 archivo**: si el trabajo toca 2+ archivos o 2+ dominios de negocio, invocar `sdd-orchestrator` (SDD) en lugar de ejecutar inline; el orquestador rutea las fases del DAG sin ejecutarlas.
 3. **Contrato por fase**: cada fase SDD devuelve `{ status, executive_summary, artifacts, next_recommended, risks, skill_resolution }`; los artefactos se persisten por topic key `sdd/{change}/{artifact}` en el almacén declarado en `openspec/config.yaml` (`artifact_store: hybrid`).
+
+## 🧭 La Tríada + memoria (matriz de responsabilidades)
+
+El catálogo aporta la gobernanza cognitiva; el binario aporta la mecánica determinista (congelamiento, recibos, presupuestos).
+
+| Pilar | Pregunta | Dónde vive |
+|---|---|---|
+| SDD | ¿Qué construyo? | `00-meta-skills/sdd-*` (DAG + gates de entrevista) |
+| TDD | ¿Cómo pruebo que funciona? | `07-testing/testing-patterns` + sdd-apply/sdd-verify (RED/GREEN) |
+| RDD | ¿Es seguro entregar? | binario `gentle-ai` (recibos/gates) + `02-dev-roles/rdd-defect-workflow` + lentes `review-*` |
+| Engram | ¿Qué aprendimos? | `01-planning-process/engram-integration` (mem_save/mem_session_summary) |
 
 ## 🔄 Ciclo de Desarrollo (9 Agentes con SDD)
 

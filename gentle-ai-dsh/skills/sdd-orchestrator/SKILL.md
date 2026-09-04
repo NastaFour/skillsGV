@@ -40,6 +40,7 @@ Coordina el pipeline SDD de forma delgada: **rutea, no ejecuta**. Mantenga un hi
 |---|---|---|---|
 | `sdd-init` | Detecta stack/capacidades de testing | — | `sdd-init/{project}` |
 | `sdd-explore` | Mapea el área, compara enfoques | — | `sdd/{change}/explore` |
+| `sdd-research` | Recolecta evidencia externa por lane | exploration (opcional) + lanes seleccionadas | `sdd/{change}/research` |
 | `sdd-propose` | Propuesta (intent, scope, approach) | explore (opcional) | `sdd/{change}/proposal` |
 | `sdd-spec` | Specs delta Given/When/Then | proposal (requerido) | `sdd/{change}/spec` |
 | `sdd-design` | Diseño técnico | proposal (requerido), spec (opcional) | `sdd/{change}/design` |
@@ -57,7 +58,7 @@ proposal → specs → tasks → apply → verify → archive
            design (ramifica de proposal, en paralelo con specs)
 ```
 
-`proposal` precede a `specs` y `design`; `specs` y `design` preceden a `tasks`; `tasks` precede a `apply`; `apply` precede a `verify`; `verify` precede a `archive`. `design` puede ramificar desde `proposal` en paralelo con `specs`. Nunca avance una fase sin su dependencia satisfecha: una fase con dependencia insatisfecha devuelve `status: blocked` y usted NO avanza a la fase dependiente.
+`proposal` precede a `specs` y `design`; `specs` y `design` preceden a `tasks`; `tasks` precede a `apply`; `apply` precede a `verify`; `verify` precede a `archive`. `design` puede ramificar desde `proposal` en paralelo con `specs`. `sdd-research` se ofrece tras `sdd-explore` y antes de `sdd-propose`: si el usuario la selecciona, completarla es obligatorio antes de `sdd-propose` (gate pre-propuesta); si no se selecciona, el DAG queda sin cambios. Nunca avance una fase sin su dependencia satisfecha: una fase con dependencia insatisfecha devuelve `status: blocked` y usted NO avanza a la fase dependiente.
 
 ## Modos de ejecución
 
@@ -89,7 +90,7 @@ Fallo → re-ejecute la MISMA fase UNA vez con feedback correctivo que nombre lo
 
 - Nunca asumas que un delegado SDD terminó: verificá que sus artefactos declarados existan (Gatekeeper, check 2) antes de seguir la cadena.
 - Si un delegado SDD se interrumpe o se trunca, NO implementes inline saltándote fases (sin spec, sin tasks): re-lanzalo o detenete y reportá. Saltarse fases del DAG rompe el pipeline.
-- Los delegados de planificación (explore/propose/spec/design/tasks) van al modelo flash/económico, no a pro.
+- Los delegados de planificación (explore/research/propose/spec/design/tasks) van al modelo flash/económico, no a pro.
 
 ## Dedup de lanzamientos
 
