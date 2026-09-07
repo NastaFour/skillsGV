@@ -1,7 +1,7 @@
 ---
 name: impeccable
 description: "Trigger: impeccable, /impeccable, paul bakaus, PRODUCT.md, DESIGN.md, critique UI, polish anti-slop. Design governance using 23 specialized commands to shape, craft, critique, audit, and polish UI without slop. Use when governing design with commands."
-license: MIT
+license: Apache-2.0
 compatibility: Requires Node 20+ and pnpm 9+. Works in any project with modern CSS or Tailwind.
 metadata:
   author: gentleman-programming
@@ -12,6 +12,8 @@ allowed-tools: Read Write Edit Bash(git:*,pnpm:*)
 ---
 
 # 🎨 impeccable — Gobernanza de Diseño por Comandos
+
+> **Atribución (contenido adaptado)**: adaptación catálogo-nativa del framework de diseño de [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Paul Bakaus), licencia Apache-2.0. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io, estructura references/). Fuente: AGENTS.md/CLAUDE.md de `pbakaus/impeccable`.
 
 Framework de control estético y gobernanza de interfaz basado en el vocabulario de 23 comandos especializados (adaptado de Paul Bakaus). Produce y mantiene `PRODUCT.md` (contexto durable) y `DESIGN.md` (tokens visuales formato Stitch).
 

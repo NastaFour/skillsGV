@@ -13,6 +13,8 @@ allowed-tools: Read Write Edit Bash(git:*,pnpm:*)
 
 # 👁️ taste-skill — Gobernanza Estética y Prevención de AI Slop
 
+> **Atribución (contenido adaptado)**: adaptación catálogo-nativa del framework [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (Leonxlnx), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io, estructura references/). Fuente: `skills/taste-skill/SKILL.md` de `Leonxlnx/taste-skill`.
+
 Framework de control de calidad visual y erradicación determinista de "AI slop". Audita interfaces mediante la declaración previa del Design Read, calibración triaxial de diales numéricos (1-10) y 10 Absolute Bans de fallo automático.
 
 ## 📋 Cuándo Usar

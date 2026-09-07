@@ -1,6 +1,6 @@
 # skillsGV
 
-Catálogo multi-agente de **197 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`).
+Catálogo multi-agente de **197 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers), [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0) y [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT).
 
 Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
 
@@ -21,6 +21,16 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs
 ```
 
 Requisito: Node.js 20 o superior. No hay `package.json`: los scripts `.mjs` no tienen dependencias externas.
+
+## 🎨 Sistema Anti-Slop de Diseño Frontend
+
+Gobernanza visual determinista y erradicación de sesgos genéricos de IA en interfaces web y móviles:
+
+- **impeccable** (`05-frontend/impeccable`): gobernanza por 23 comandos especializados (`shape`, `craft`, `critique`, `audit`, `polish`...), manteniendo `PRODUCT.md` (contexto durable) y `DESIGN.md` (tokens visuales en formato Google Stitch).
+- **taste-skill** (`05-frontend/taste-skill`): Design Read obligatorio previo a la implementación, diales triaxiales 1-10 (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), 10 Absolute Bans de fallo automático y preflight mecánico.
+- **design-driven D1b**: entrevista de unicidad en 5 bloques secuenciales (3 P's, diales, referencias reales, firma visual, anti-slop) que alimenta el Design DNA del producto.
+- **MCPs opcionales**: integración no bloqueante con Figma (vía `figma-implement`), 21st.dev y Fal.ai (FLUX Schnell).
+- *Nota*: el índice completo de las 52 fuentes vive en `05-frontend/taste-skill/references/full-guide.md`.
 
 ## Instalación
 
@@ -193,3 +203,14 @@ Documentación de referencia:
 - [`SKILLS.md`](SKILLS.md) — índice completo con paths por categoría.
 - [`.atl/skill-registry.md`](.atl/skill-registry.md) — registro generado automáticamente (índice, no fuente de verdad).
 - [`openspec/specs/`](openspec/specs/) — especificaciones de los cambios aplicados al catálogo.
+
+## 🙏 Créditos e Inspiración
+
+| Proyecto | Autor | Licencia | Qué se adaptó |
+|---|---|---|---|
+| [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Paul Bakaus | Apache-2.0 | Vocabulario de 23 comandos, PRODUCT.md / DESIGN.md |
+| [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Leonxlnx | MIT | Design Read, diales triaxiales, 10 Absolute Bans, preflight |
+| Claude Fable 5.1 | Anthropic | — | Las 6 claves estratégicas (guía de marca, 3 P's, anclaje de scroll, referencia real, componentes, móvil) |
+| Plataformas de referencia | — | — | Godly.design, Awwwards, 21st.dev, Fal.ai, Figma MCP (inspiración y tooling) |
+
+El índice completo de las 52 fuentes del notebook está en `05-frontend/taste-skill/references/full-guide.md`.
