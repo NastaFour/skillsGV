@@ -31,8 +31,8 @@ Coordina el pipeline SDD de forma delgada: **rutea, no ejecuta**. Mantenga un hi
 
 ## Regla Alan (lenguaje natural primero)
 
-- Preferí triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependas del slash para arrancar una fase.
+- Prefiera triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») sobre comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
+- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependa del slash para arrancar una fase.
 
 ## Agentes de fase (roles / lee / escribe)
 
@@ -69,9 +69,9 @@ Cachee el modo elegido por sesión; no vuelva a preguntar salvo que el usuario p
 
 ## Gates de entrevista (pregunta el orquestador, nunca un delegado)
 
-1. **Preflight bloqueante (antes de `sdd-init`)**: al arrancar un cambio SDD, preguntale SIEMPRE al usuario el modo de ejecución (`auto` / `interactive`) antes de lanzar cualquier fase. No hay default silencioso: sin respuesta explícita no se lanza `sdd-init`. `interactive` puede ofrecerse como recomendación dentro de la pregunta, nunca como ejecución por omisión.
-2. **Gate de decisiones de producto (antes de lanzar `sdd-spec`)**: reuní del proposal toda opción de negocio/producto no resuelta (usuarios objetivo, reglas de negocio, scope y no-goals, tradeoffs), agrupala y preguntale al usuario UNA sola vez. Las respuestas entran verbatim en el prompt de `sdd-spec`. Prohibido que la fase resuelva decisiones de producto por asumisión.
-3. **Gate de entrevista de diseño (antes de lanzar `sdd-design`)**: si el cambio tiene superficie visual/UX, ejecutá vos —no un delegado— el brief D1 y el cuestionario de unicidad D1b de la skill `design-driven` (3-5 preguntas concretas: problema, usuarios, reglas, personalidad/toma de decisiones visuales, referencias). Pasale las respuestas verbatim en el prompt de `sdd-design`. El delegado nunca inventa el Design DNA. Si el cambio no tiene superficie visual, podés omitir este gate solo con confirmación explícita del usuario.
+1. **Preflight bloqueante (antes de `sdd-init`)**: al iniciar un cambio SDD, pregunte SIEMPRE al usuario el modo de ejecución (`auto` / `interactive`) antes de lanzar cualquier fase. No hay default silencioso: sin respuesta explícita no se lanza `sdd-init`. `interactive` puede ofrecerse como recomendación dentro de la pregunta, nunca como ejecución por omisión.
+2. **Gate de decisiones de producto (antes de lanzar `sdd-spec`)**: reúna del proposal toda opción de negocio/producto no resuelta (usuarios objetivo, reglas de negocio, scope y no-goals, tradeoffs), agrúpela y pregunte al usuario UNA sola vez. Las respuestas entran verbatim en el prompt de `sdd-spec`. Prohibido que la fase resuelva decisiones de producto por asumisión.
+3. **Gate de entrevista de diseño (antes de lanzar `sdd-design`)**: si el cambio tiene superficie visual/UX, el ORQUESTADOR corre el brief D1 y el cuestionario de unicidad D1b de la skill `design-driven` en **5 bloques secuenciales (un bloque por turno)**. Consolide las respuestas en `design-artifacts/<project>/design-dna.md` y persista en Engram (`design/<proyecto>/dna`). Pase el Design DNA verbatim al prompt de `sdd-design`. El delegado NUNCA entrevista ni inventa el Design DNA. Si el usuario ya trajo el DNA completo en el mismo turno, no re-preguntar: confirmar 1 vez y seguir. Si el cambio no tiene superficie visual, puede omitir este gate solo con confirmación explícita del usuario.
 4. **Regla dura de canal**: los subagentes NO tienen canal al usuario y NO pueden preguntar nada. Toda pregunta (modo, entrevista, decisiones de producto, estrategia de entrega) la hace el orquestador y viaja en el prompt del delegado. Un delegado que necesita una respuesta del usuario DEBE devolver `status: blocked` con las preguntas listadas — jamás inventarlas ni asumirlas.
 
 ## Gatekeeper (modo auto)
@@ -88,9 +88,9 @@ Fallo → re-ejecute la MISMA fase UNA vez con feedback correctivo que nombre lo
 
 ## Reglas P0 de delegación SDD
 
-- Nunca asumas que un delegado SDD terminó: verificá que sus artefactos declarados existan (Gatekeeper, check 2) antes de seguir la cadena.
-- Si un delegado SDD se interrumpe o se trunca, NO implementes inline saltándote fases (sin spec, sin tasks): re-lanzalo o detenete y reportá. Saltarse fases del DAG rompe el pipeline.
-- Los delegados de planificación (explore/research/propose/spec/design/tasks) van al modelo flash/económico, no a pro.
+- Nunca asuma que un delegado SDD terminó: verifique que sus artefactos declarados existen (Gatekeeper, check 2) antes de continuar la cadena.
+- Si un delegado SDD se interrumpe o se trunca, NO implemente inline saltándose fases (sin spec, sin tasks): re-lance el delegado o deténgase y reporte. Saltarse fases del DAG rompe el pipeline.
+- Los delegados de planificación (explore/research/propose/spec/design/tasks) rutean al modelo flash/económico, no a pro.
 
 ## Dedup de lanzamientos
 
@@ -132,4 +132,4 @@ En cada fase, el agente devuelve: `status` (`success|partial|blocked`), `executi
 
 ## Referencias
 
-- [Protocolo común de fase SDD](../_shared/sdd-phase-common.md) — carga de skills, recuperación, persistencia, envelope y guard de 400 líneas.
+- [Protocolo común de fase SDD](../../_shared/sdd-phase-common.md) — carga de skills, recuperación, persistencia, envelope y guard de 400 líneas.

@@ -84,6 +84,27 @@
       "expectedPrimary": "three-js-web",
       "group": "three-js-web",
       "note": "Grupo unitario: primary esperado = three-js-web sin falsos primarios contra motion-framer/motion-gsap/visual-effects (CSS 3D ≠ WebGL)."
+    },
+    {
+      "id": "anti-slop-frontend-resolve",
+      "query": "pipeline de diseno con design driven taste skill anti slop e impeccable",
+      "expectedPrimary": "design-driven",
+      "group": "anti-slop-frontend",
+      "note": "La query dispara los miembros del grupo anti-slop; la matriz resuelve primary = design-driven (canónico)."
+    },
+    {
+      "id": "taste-skill-direct",
+      "query": "auditar diales DESIGN_VARIANCE y lila rule con taste-skill",
+      "expectedPrimary": "taste-skill",
+      "group": "anti-slop-frontend",
+      "note": "Solo puntúa taste-skill; se respeta el scoring normal sin forzar el canónico."
+    },
+    {
+      "id": "impeccable-direct",
+      "query": "ejecutar comando /impeccable polish y actualizar DESIGN.md con impeccable",
+      "expectedPrimary": "impeccable",
+      "group": "anti-slop-frontend",
+      "note": "Solo puntúa impeccable; se respeta el scoring normal sin forzar el canónico."
     }
   ]
 }

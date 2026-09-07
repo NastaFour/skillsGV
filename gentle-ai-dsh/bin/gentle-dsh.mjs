@@ -8,7 +8,7 @@
 //   pnpm dlx gentle-ai-dsh --uninstall     # remove what we installed
 //
 // What it does (install):
-//   1. copy the 206-skill bundle to ~/.agents/skills
+//   1. copy the 208-skill bundle to ~/.agents/skills
 //   2. copy the "gentle-ai" agent preset to ~/.dsh/.agent-presets/gentle-ai
 //   3. write the bootstrap AGENTS.md to ~/.dsh/AGENTS.md (backed up if it exists)
 //   4. optionally set agent-presets.default: gentle-ai

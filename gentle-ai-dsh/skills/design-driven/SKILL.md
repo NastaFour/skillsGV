@@ -7,6 +7,7 @@ metadata:
   author: gentleman-programming
   version: "2.0.0"
   delegate_only: true
+  trigger: ["design driven", "pipeline de diseno", "design-driven development", "disenar pantalla", "rediseno", "design system", "brief de diseno", "prototipo formal", "entrevista de diseno", "design dna"]
 ---
 
 # design-driven — Pipeline de Diseño formal (DDD)
@@ -27,50 +28,26 @@ Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
 | Fase | Nombre | Produce | Modelo | Apoyo |
 |---|---|---|---|---|
 | D1 | design-brief | Objetivo, audiencia, moodboard de referencias visuales (imágenes vía Antigravity/od), restricciones (tokens, stack, a11y) | strong | frontend-design, brainstorming |
-| **D1b** | **Cuestionario de Unicidad** | Design DNA (personalidad, referencias, firma, corazón, anti-slop) | strong | — (ver F1) |
+| **D1b** | **Cuestionario de Unicidad** | Design DNA (3 P's, diales, referencias, firma, anti-slop) | strong | taste-skill, impeccable (ver F1) |
 | D2 | design-explore | Auditoría visual de la UI actual + inventario de componentes + problemas | strong | interface-design, web-design-guidelines |
 | D3 | design-system | Tokens (HSL/OKLCH + dark, tipografía, 8pt, elevación, motion) + primitivas | strong | design-system-tokens, oklch-theme-injector, tailwind-4 |
 | D4 | design-prototype | Prototipo de 1-3 pantallas clave (HTML/React o **od**) | flash + od | open-design, interface-design, micro-interactions |
 | D5 | design-handoff | Spec visual TEXTUAL + assets exportados | strong | micro-interactions, motion-accessibility, technical-writer |
 | D6 | design-review | Judgment Day visual: 2 jueces ciegos contra el Design DNA | 2× strong | judgment-day, ux-auditor-agent |
 
-## F1 · Cuestionario de Unicidad (D1b — la fase MÁS importante, sin atajos)
+## F1 · Cuestionario de Unicidad (D1b — 5 bloques obligatorios secuenciales, sin atajos)
 
-> **Vía SDD**: si este pipeline corre por delegación SDD, el brief D1 + el cuestionario de unicidad D1b los ejecuta el ORQUESTADOR con el usuario ANTES de lanzar el delegado de diseño; el delegado recibe las respuestas en su prompt y nunca las inventa.
+> **Vía SDD**: si este pipeline corre por delegación SDD, el brief D1 + el cuestionario D1b los ejecuta el ORQUESTADOR con el usuario en **5 bloques secuenciales (un bloque por turno)** ANTES de lanzar `sdd-design`. El delegado recibe el Design DNA consolidado en su prompt y nunca lo inventa ni vuelve a entrevistar.
 
-Tras D1, SIEMPRE preguntar por bloques. Adaptá la cantidad a la amplitud del proyecto;
-**mínimo 8 preguntas**. Nunca saltes un bloque sin respuesta.
+Tras D1, el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales** (un bloque por turno, mínimo 8 preguntas). **Leer [references/d1b-questionnaire.md](references/d1b-questionnaire.md) ANTES de preguntar**.
 
-**1 · Personalidad de marca**
-- 3 adjetivos de la sensación (clínico-serio, cálido-cercano, tech-premium, artesanal…).
-- Si la marca fuera una persona: edad, cómo viste, cómo habla.
-- Qué TONO debe respirar (profesional / editorial / minimalista / lúdico / confianza médica).
+1. **Las 3 P's**: Persona (quién es, 3 adjetivos, tono), Dolor (problema que paga por resolver), Promesa (qué se lleva en 10s).
+2. **Diales y Vibe**: `DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY` (1-10, vía `taste-skill`) + anclaje de scroll.
+3. **Referencias Reales**: 3-5 URLs reales con qué se toma de cada una + 2-3 anti-referencias. Nunca «inspirado en Linear» sin URL.
+4. **Firma y Heartbeat**: Elemento inolvidable, 1 acento OKLCH (<80% sat), tipografía por contraste (no Inter default), hero clamp 6rem, pantalla corazón crítica.
+5. **Anti-slop y Restricciones**: 10 Absolute Bans de `taste-skill` + límites de dependencias (solo CSS vs aprobadas), a11y (WCAG AA), deadline.
 
-**2 · Referencias positivas (combustible de la unicidad)**
-- 3-5 referencias visuales que encantan + QUÉ exactamente de cada una (color, layout, tipografía, detalle).
-- 2-3 anti-referencias: qué NO gusta y por qué (para prohibirlas explícitamente).
-- Qué app/producto de uso diario le parece hermoso.
-
-**3 · Elementos de firma (signature)**
-- QUÉ un elemento debe ser icónico e inconfundible (color de acento, tipografía, forma, micro-interacción).
-- Qué debería recordar el usuario tras usarla UNA vez.
-- Contexto local/cultural a sentir (es-VE, formato de fechas, moneda, iconografía local).
-
-**4 · El corazón del producto**
-- Cuál es LA pantalla/dato que no puede fallar (el diseño se centra ahí).
-- Cómo se usa en la vida real (turnos nocturnos → dark default; una mano; alta repetición → densidad alta).
-
-**5 · Anti-slop negativo**
-- Qué diseños parecen "genéricos de IA" a evitar (gradientes morados, tarjetas con sombra exagerada, todo redondeado…).
-- Colores/fuentes/layouts que ODIÁ.
-
-**6 · Restricciones reales**
-- Hasta dónde se puede implementar (solo CSS/tokens vs nuevas deps aprobadas).
-- Accesibilidad, idioma, formato de entrega, deadline.
-
-**Regla dura:** si responde "lo que quieras / no sé" en un bloque, REFORMULÁ con 2 opciones
-concretas de ejemplo. El "no sé" no autoriza a inventar; autoriza a proponer para que elija.
-Nunca rellenes bloques vacíos con defaults.
+**Regla dura:** Si responde «lo que quieras / no sé», proponer 2 opciones de ejemplo y esperar. Prohibido asumir o rellenar con defaults.
 
 ## F2 · Confirmaciones intermedias (mínimo, sin abrumar)
 
@@ -80,7 +57,16 @@ Nunca rellenes bloques vacíos con defaults.
 
 ## F3 · El artefacto Design DNA
 
-- Cada respuesta se consolida en **design-artifacts/<project>/design-dna.md**: personalidad, referencias con qué se tomó de cada una, elemento de firma, anti-slop prohibidos, corazón del producto.
+- Cada respuesta se consolida en **design-artifacts/<project>/design-dna.md** con los campos:
+  - `persona` / `dolor` / `promesa`
+  - `dials`: `{variance, motion, density}`
+  - `references`: `[{url, takeaway}]`
+  - `anti_references`
+  - `signature`
+  - `accent_oklch`
+  - `type_pairing`
+  - `bans[]`
+  - `heartbeat_screen`
 - Se persiste en Engram con topic key **design/<project>/dna**.
 - **D6 evalúa contra el DNA**: ¿tiene la firma elegida? ¿evita TODOS los anti-slop? ¿parece un dashboard genérico? — respuesta textual con evidencia. Si falla → vuelve a D3/D4 (máx 2 rondas).
 

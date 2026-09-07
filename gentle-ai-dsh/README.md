@@ -1,7 +1,7 @@
 # gentle-ai-dsh
 
 **Gentle-AI ecosystem for DeepSeek Harness** — one command installs the full
-multi-agent stack: Spec-Driven Development (SDD) orchestrator, 206 skills,
+multi-agent stack: Spec-Driven Development (SDD) orchestrator, 208 skills,
 Engram + Context7 + OpenDesign over MCP.
 
 This is an **addon** (a per-session agent preset + a skills catalog + an
@@ -14,7 +14,7 @@ everything" possible.
 | Piece | What it is |
 |---|---|
 | **gentle-ai mode** | An agent preset (preset/agent.cordis.yml): orchestrator persona, SDD phase delegation (flash + strong subagents), Judgment Day, run_code (self-authoring is OPT-IN) |
-| **skillsGV catalog** | 206 skills vendored under skills/ (skillsGV + mattpocock + 20-agent roster: sdd-* phases, judgment-day, review-* lenses, design-driven, skill-harvest, ...) |
+| **skillsGV catalog** | 208 skills vendored under skills/ (skillsGV + mattpocock + 20-agent roster: sdd-* phases, judgment-day, review-* lenses, design-driven, skill-harvest, ...) |
 | **Engram + Context7 + OpenDesign** | Three MCP rows (dsh-mcp-client) wired into the mode: memory + docs + design |
 | **OpenDesign** | open-design skill + MCP tools (mcp__open-design__*); od CLI as fallback |
 
@@ -29,7 +29,7 @@ or without installing globally:
 
 The installer:
 
-1. copies the 206 skills to ~/.agents/skills
+1. copies the 208 skills to ~/.agents/skills
 2. copies the gentle-ai preset to ~/.dsh/.agent-presets/gentle-ai
 3. writes the bootstrap AGENTS.md to ~/.dsh/AGENTS.md
 4. (with --set-default) sets agent-presets.default: gentle-ai
@@ -118,7 +118,7 @@ Claude-Code-oriented swarms) and is not bundled.
     gentle-ai-dsh/
       bin/gentle-dsh.mjs    installer CLI
       preset/               the gentle-ai agent preset (the mode)
-      skills/               206 skills + _shared
+      skills/               208 skills + _shared
       AGENTS.md             bootstrap onboarding (installed to ~/.dsh/AGENTS.md)
       cordis.patch.yml      empty host-plane bundle hook (see note below)
       package.json          registry package + dsh.bundle.patch

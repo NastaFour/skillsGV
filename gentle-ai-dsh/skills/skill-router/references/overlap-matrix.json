@@ -48,6 +48,12 @@
       "canonical": "three-js-web",
       "members": ["three-js-web"],
       "note": "Grupo unitario de delimitación: three-js-web cubre 3D en tiempo real vía WebGL (three.js + react-three-fiber + drei como unidad; Spline documentado dentro como sección no-code). Se delimita contra motion-framer/motion-gsap (animación UI 2D) y visual-effects (CSS 3D transforms ≠ WebGL): una query 'css 3d transform' sigue siendo de visual-effects. Los términos cortos '3d'/'r3f' (<4 chars, MIN_TRIGGER_LENGTH) no pueden ser triggers y se cubren vía keywords de la description."
+    },
+    {
+      "id": "anti-slop-frontend",
+      "canonical": "design-driven",
+      "members": ["design-driven", "taste-skill", "impeccable"],
+      "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. Si las 3 puntúan, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
     }
   ]
 }
