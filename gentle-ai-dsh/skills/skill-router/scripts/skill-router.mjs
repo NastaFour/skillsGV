@@ -31,6 +31,7 @@ const CATALOG_ROOT = resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
 let query = null, diffLines = null, jsonOut = false;
 for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--") continue;
   if (args[i] === "--query") query = args[++i];
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--json") jsonOut = true;
@@ -44,12 +45,18 @@ if (!query) { console.error("Missing --query"); process.exit(2); }
 
 function statSafe(p) { try { return statSync(p); } catch { return null; } }
 
+// Directories that are never part of the skill catalog: gentle-ai-dsh is the
+// DeepSeek Harness addon that vendors a duplicate copy of the catalog under
+// gentle-ai-dsh/skills/; _shared holds shared resources, not skills. Walking
+// the bundle made every skill score twice and duplicated "secondary" entries.
+const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+
 function walkSkills(dir, out = []) {
   const stat = statSafe(dir); if (!stat) return out;
   if (stat.isFile() && basename(dir) === "SKILL.md") return [dir];
   if (!stat.isDirectory()) return out;
   for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === "node_modules" || e.name === ".git" || e.name.startsWith("copia-de-seguridad")) continue;
+    if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
     if (e.isDirectory()) walkSkills(join(dir, e.name), out);
     else if (e.isFile() && e.name === "SKILL.md") out.push(join(dir, e.name));
   }
@@ -66,8 +73,27 @@ function getField(fm, field) {
   const m = fm.match(re);
   return m ? m[1].trim() : null;
 }
+function getNestedField(front, parent, field) {
+  const startRe = new RegExp(`^${parent}:\\s*$`, "m");
+  const startMatch = front.match(startRe);
+  if (!startMatch) return null;
+  const startIdx = startMatch.index + startMatch[0].length;
+  const rest = front.slice(startIdx);
+  const lines = rest.split(/\r?\n/);
+  const blockLines = [];
+  for (const line of lines) {
+    if (line === "") { blockLines.push(line); continue; }
+    if (!/^\s/.test(line)) break;
+    blockLines.push(line);
+  }
+  const block = blockLines.join("\n");
+  const fieldRe = new RegExp(`^\\s+${field}:\\s*(.+?)(?:\\r?\\n\\s+[a-z_-]+:|\\r?\\n[\\S]|$)`, "ms");
+  const fmMatch = block.match(fieldRe);
+  if (!fmMatch) return null;
+  return fmMatch[1].trim();
+}
 function getTriggerArray(fm) {
-  const t = getField(fm, "trigger");
+  const t = getField(fm, "trigger") || getNestedField(fm, "metadata", "trigger");
   if (!t) return [];
   const inner = t.replace(/^\[/, "").replace(/\]$/, "").trim();
   if (!inner) return [];
@@ -80,18 +106,22 @@ function escapeRegex(s) {
 
 const MIN_TRIGGER_LENGTH = 4;
 
-// Build skill index
+// Build skill index (deduplicated by name: one skill may never appear twice)
 const files = walkSkills(CATALOG_ROOT);
 const index = [];
+const seenNames = new Set();
 for (const f of files) {
   const content = readFileSync(f, "utf8");
   const fm = parseFrontmatter(content);
   if (!fm) continue;
   const name = getField(fm, "name") || basename(dirname(f));
+  if (seenNames.has(name)) continue; // never score the same skill twice
+  seenNames.add(name);
   const desc = getField(fm, "description") || "";
   const triggers = getTriggerArray(fm);
-  const deprecated = getField(fm, "deprecated") === "true";
-  const redirect = getField(fm, "redirect");
+  const depRaw = (getField(fm, "deprecated") || getNestedField(fm, "metadata", "deprecated") || "").replace(/^["']|["']$/g, "").trim();
+  const deprecated = depRaw === "true";
+  const redirect = (getField(fm, "redirect") || getNestedField(fm, "metadata", "redirect") || "").replace(/^["']|["']$/g, "").trim() || null;
   const rel = f.replace(CATALOG_ROOT + "\\", "").replace(/\//g, "\\");
   const catMatch = rel.match(/^(\d{2}-[a-z-]+|professional-planner)\\/i);
   const category = catMatch ? catMatch[1] : "root";
@@ -190,7 +220,7 @@ if (scored.length > 0) {
   // Confidence=1.0 requires exact trigger match (not just keyword overlap)
   if (top.triggerScore < 1.0) confidence = Math.min(confidence, 0.5);
   if (confidence >= 0.6) primary = top.name;
-  secondary = scored.slice(1, 4).map((s) => s.name);
+  secondary = [...new Set(scored.slice(1, 4).map((s) => s.name))];
 } else {
   // Check if query mentions a deprecated skill name → redirect
   for (const s of index) {
@@ -214,7 +244,7 @@ const needsSDD = touchedCategories.size >= 2 && (diffLines === null || diffLines
 const trivial = diffLines !== null && diffLines < 20 && !CRITICAL_MARKERS.test(qLower);
 const skipJudgmentDay = diffLines !== null && diffLines < 100 && !CRITICAL_MARKERS.test(qLower);
 
-const tier1toLoad = primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3);
+const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))];
 
 const output = {
   primary,

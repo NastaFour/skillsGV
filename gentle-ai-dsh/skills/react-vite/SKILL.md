@@ -1,6 +1,6 @@
 ---
 name: react-vite
-description: Standards and guidelines for React and Vite development. Enforces Single Responsibility (SRP) for components, Vite configurations, and security guardrails for the [APP] Admin Panel. Use when developing or modifying React components, managing local/global state, or configuring Vite.
+description: Standards and guidelines for React and Vite development. Enforces Single Responsibility (SRP) for components, Vite configurations, and security guardrails for the Admin Panel. Use when developing or modifying React components, managing local/global state, or configuring Vite.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -12,7 +12,7 @@ metadata:
 
 # ⚡ React & Vite Development (2026 Standards)
 
-Use this skill when developing or modifying React components, managing local or global states, or configuring Vite projects, particularly the Web Admin Panel for the [APP].
+Use this skill when developing or modifying React components, managing local or global states, or configuring Vite projects, particularly the Web Admin Panel for the application.
 
 ---
 
@@ -50,7 +50,7 @@ To prevent bloated, convoluted UI code, strictly isolate responsibilities:
 
 ---
 
-## 🛒 [APP] Integration (Admin Web Panel)
+## 🛒 Application Integration (Admin Web Panel)
 
 - **Inventory Updates**: Ensure state updates (e.g. subtracting stock when an item is out) render immediately without lagging the browser.
 - **Order Tracking**: Use `useEffect` cleanup loops to safely receive live coordinates from deliveries via WebSockets.

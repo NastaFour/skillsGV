@@ -12,12 +12,12 @@ metadata:
 
 # 🏗️ Microservices Architecture Design
 
-Use this skill when decoupling features or designing distributed systems for the [APP] project.
+Use this skill when decoupling features or designing distributed systems for the application project.
 
 ## 🚨 Architectural Boundaries
 
 1. **Logical Separation of Domains**:
-   - Split core business domains into isolated services. In the [APP], boundaries include:
+   - Split core business domains into isolated services. In the application, boundaries include:
      - **Auth Service**: User logins, registrations, and token issuance.
      - **Catalog/Inventory Service**: Product stock, category updates, and low-stock triggers.
      - **Order/Checkout Service**: Shopping carts, checkout calculations, and order creation.

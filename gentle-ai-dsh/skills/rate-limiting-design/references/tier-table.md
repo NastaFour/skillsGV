@@ -36,7 +36,7 @@ export const sessionLimiter = rateLimit({
 
 ## Tier 3: api-standard
 
-**Applies to**: `/bookings`, `/barbers`, `/services`, `/reviews`
+**Applies to**: `/bookings`, `/providers`, `/services`, `/reviews`
 **Risk**: Abuse, scraping
 
 ```javascript

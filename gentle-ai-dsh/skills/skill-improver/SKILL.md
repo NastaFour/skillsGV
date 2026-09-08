@@ -1,11 +1,14 @@
 ---
 name: skill-improver
 description: "Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Edit Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "improve skills, audit skills, refactor skills, skill quality"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## Activation Contract

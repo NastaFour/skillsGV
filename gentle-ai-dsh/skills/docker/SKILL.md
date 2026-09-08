@@ -126,7 +126,7 @@ El proyecto soporta 3 opciones de despliegue:
 - Nunca ejecutes Node.js como usuario `root` en el contenedor/VPS.
 - Todas las migraciones en producción se ejecutan con `prisma migrate deploy` — nunca `prisma migrate dev`.
 - Los backups de PostgreSQL se deben automatizar con `pg_dump` vía cron, almacenados en un bucket externo (S3, Backblaze).
-- Consulta [PostgreSQL Skill](../postgresql/SKILL.md) para las reglas de backup y encriptación.
+- Consulta [PostgreSQL Skill](../../04-backend/postgresql/SKILL.md) para las reglas de backup y encriptación.
 
 ---
 

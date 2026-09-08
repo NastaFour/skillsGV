@@ -49,5 +49,5 @@ Run when the user asks to audit, review, or evaluate the user experience/usabili
 
 ## References
 
-- [`02-dev-roles/frontend-debugging-protocol`](../frontend-debugging-protocol/SKILL.md) — visual/rendered-state debugging.
-- [`05-frontend/web-design-guidelines`](../web-design-guidelines/SKILL.md) — interface guideline checklist to apply during the audit.
+- [`02-dev-roles/frontend-debugging-protocol`](../../02-dev-roles/frontend-debugging-protocol/SKILL.md) — visual/rendered-state debugging.
+- [`05-frontend/web-design-guidelines`](../../05-frontend/web-design-guidelines/SKILL.md) — interface guideline checklist to apply during the audit.

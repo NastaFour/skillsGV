@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 function walkSkills(dir) {
@@ -74,3 +74,20 @@ test('all skills declare allowed-tools', () => {
   }
   assert.deepEqual(violations, [], 'All skills must declare allowed-tools');
 });
+
+test('residual proyecto.txt does not exist in catalog', () => {
+  assert.equal(existsSync('01-planning-process/proyecto.txt'), false, 'proyecto.txt should be deleted');
+});
+
+test('zero [APP], barber, or supermarket contamination in gentle-ai-dsh/skills', () => {
+  const dshSkills = walkSkills('gentle-ai-dsh/skills');
+  const violations = [];
+  for (const s of dshSkills) {
+    const c = readFileSync(s, 'utf8');
+    if (/barber reassignment|\[APP\]|QuickOrder|supermercado|barbergo|mobile-barber/i.test(c)) {
+      violations.push(s);
+    }
+  }
+  assert.deepEqual(violations, [], 'gentle-ai-dsh/skills must have zero contamination');
+});
+

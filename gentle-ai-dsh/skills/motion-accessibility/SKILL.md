@@ -49,4 +49,4 @@ Ensures animations are accessible (respect reduced-motion) and performant (60fps
 - [Audit Checklist](references/audit-checklist.md) — MotionScore-style audit
 - [`motion-framer`](../motion-framer/SKILL.md) — useReducedMotion hook
 - [`motion-gsap`](../motion-gsap/SKILL.md) — matchMedia for reduced motion
-- [`micro-interactions`](../micro-interactions/SKILL.md) — motion-safe fallbacks
+- [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — motion-safe fallbacks

@@ -26,10 +26,10 @@ This skill transforms working code into elegant, high-performance code.
 
 3. **Optimization Targets**:
    - Refer to specific technology skills:
-     - For stylesheet cleanup and responsive layouts: see [Tailwind CSS](../tailwindcss/SKILL.md).
-     - For database query execution speeds: see [Prisma ORM](../prisma-orm/SKILL.md) and [PostgreSQL](../postgresql/SKILL.md).
-     - For mobile list and map rendering optimizations: see [React Native](../react-native/SKILL.md).
-     - For LLM model optimization and token caching: see [LLM Integration](../llm-integration/SKILL.md) and [AI/ML Scalability](../ai-scalability-mlops/SKILL.md).
+     - For stylesheet cleanup and responsive layouts: see [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md).
+     - For database query execution speeds: see [Prisma ORM](../../04-backend/prisma-orm/SKILL.md) and [PostgreSQL](../../04-backend/postgresql/SKILL.md).
+     - For mobile list and map rendering optimizations: see [React Native](../../05-frontend/react-native/SKILL.md).
+     - For LLM model optimization and token caching: see [LLM Integration](../../03-ai-ml/llm-integration/SKILL.md) and [AI/ML Scalability](../../03-ai-ml/ai-scalability-mlops/SKILL.md).
 
 4. **Data & Context Preservation**:
    - NEVER remove existing business-logic comments or alter database schema structures during a pure performance refactoring.

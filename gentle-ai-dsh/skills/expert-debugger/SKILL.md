@@ -26,17 +26,17 @@ When presented with a bug, YOU MUST follow this exact sequence:
 
 2. **Telemetry & Log Analysis**:
    - Trace the issue's `correlation-id` through the server log outputs (Pino/Winston) to map request steps.
-   - Verify telemetry metrics: check latency graphs or database locks indicators (see [MLOps & Scalability Skill](../ai-scalability-mlops/SKILL.md)).
+   - Verify telemetry metrics: check latency graphs or database locks indicators (see [MLOps & Scalability Skill](../../03-ai-ml/ai-scalability-mlops/SKILL.md)).
 
 3. **Line-by-Line Analysis**:
    - Examine the code context and point out the exact line(s) where execution fails or logic diverges.
 
 4. **Root Cause**:
    - Explicitly state the most probable cause, referencing standard technology skills:
-     - For websocket failures: see [Socket.io](../socketio/SKILL.md).
-     - For database locks or transactional conflicts: see [PostgreSQL](../postgresql/SKILL.md).
-     - For monorepo reference errors: see [pnpm Workspaces](../pnpm-workspaces/SKILL.md).
-     - For local mobile storage: see [Expo](../expo-production-auditor/SKILL.md).
+     - For websocket failures: see [Socket.io](../../04-backend/socketio/SKILL.md).
+     - For database locks or transactional conflicts: see [PostgreSQL](../../04-backend/postgresql/SKILL.md).
+     - For monorepo reference errors: see [pnpm Workspaces](../../06-code-quality/pnpm-workspaces/SKILL.md).
+     - For local mobile storage: see [Expo](../../05-frontend/expo-production-auditor/SKILL.md).
 
 5. **Resolution**:
    - Provide the corrected code. Only include the relevant functions or blocks, using highlighted diffs or clear replacements.

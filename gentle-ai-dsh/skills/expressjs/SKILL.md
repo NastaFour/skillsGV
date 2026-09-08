@@ -12,7 +12,7 @@ metadata:
 
 # 🚀 Express.js API Development
 
-Use this skill when defining HTTP routes, REST endpoints, middlewares, or error boundaries for the [APP] backend.
+Use this skill when defining HTTP routes, REST endpoints, middlewares, or error boundaries for the application backend.
 
 ## 🚨 API Implementation Standards
 
@@ -57,7 +57,7 @@ Use this skill when defining HTTP routes, REST endpoints, middlewares, or error 
    - Use `helmet` to set CSP and disable information leak headers like `X-Powered-By`.
    - Configure `cors` with an explicit whitelist of origins (e.g. your admin web app domain and client app URL). NEVER set `origin: '*'`.
 
-## 🛒 [APP] Endpoint Map
+## 🛒 the application Endpoint Map
 
 Isolate route controllers according to business areas:
 - `/api/auth`: Login, Register, token refresh.

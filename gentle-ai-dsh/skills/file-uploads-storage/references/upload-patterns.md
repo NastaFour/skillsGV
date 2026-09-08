@@ -33,7 +33,7 @@ router.post("/avatar", auth, avatarUpload.single("avatar"), async (req, res) => 
 });
 ```
 
-## Pattern 2: Multi-Gallery Upload (Barber)
+## Pattern 2: Multi-Gallery Upload (Provider)
 
 ```typescript
 const galleryUpload = multer({
@@ -46,7 +46,7 @@ const galleryUpload = multer({
   },
 });
 
-router.post("/gallery", auth, barberOnly, galleryUpload.array("gallery", 8), async (req, res) => {
+router.post("/gallery", auth, providerOnly, galleryUpload.array("gallery", 8), async (req, res) => {
   const files = req.files as Express.Multer.File[];
   if (!files || files.length === 0) {
     return res.status(400).json({ error: { code: "NO_FILES", message: "No files uploaded" } });
@@ -69,9 +69,9 @@ router.post("/gallery", auth, barberOnly, galleryUpload.array("gallery", 8), asy
       ]);
 
       // Save to DB
-      return prisma.barberGallery.create({
+      return prisma.mediaGallery.create({
         data: {
-          barberId: req.user.barberProfile.id,
+          providerId: req.user.entityProfile.id,
           imageUrl: `${process.env.S3_CDN_URL}/${fullKey}`,
           thumbnailUrl: `${process.env.S3_CDN_URL}/${thumbKey}`,
           caption: req.body.captions?.[index] || null,

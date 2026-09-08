@@ -1,11 +1,14 @@
 ---
 name: systemic-issue-triage
 description: "Trigger: new issue, bug report, triage, backlog, issue flood, community report, root cause, dead-end, blocked user. Attack issues by root class, never one-by-one; fixes must shrink the system, not grow it."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Glob Grep Bash(git:*,gh:*)
 license: Apache-2.0
 metadata:
+  trigger: "issue triage, bug report triage, backlog triage, issue flood, community report"
+  scope: "global, project"
   author: "Alan-TheGentleman"
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 # Systemic Issue Triage

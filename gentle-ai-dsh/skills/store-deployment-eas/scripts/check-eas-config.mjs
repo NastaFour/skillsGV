@@ -6,7 +6,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildResult, printResult, exitFromResult, exitFromResultGuarded, findProjectRoot } from "../../_shared/script-utils.mjs";
+import { buildResult, printResult, exitFromResult, exitFromResultGuarded, findProjectRoot } from "../../../_shared/script-utils.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const root = findProjectRoot(__dirname);
@@ -14,7 +14,7 @@ const issues = [];
 
 const appPaths = [
   root ? join(root, "apps", "mobile-client") : null,
-  root ? join(root, "apps", "mobile-barber") : null,
+  root ? join(root, "apps", "mobile-admin") : null,
 ].filter(Boolean);
 
 for (const appPath of appPaths) {

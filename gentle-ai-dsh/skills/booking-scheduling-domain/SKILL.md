@@ -1,6 +1,6 @@
 ---
 name: booking-scheduling-domain
-description: Core booking and scheduling logic for [APP] — slot availability, conflict detection with ACID transactions, no-show timeout protocol, and barber reassignment. Use when implementing createBooking, availability queries, slot management, or debugging double-booking race conditions.
+description: Core booking and scheduling logic for the application — slot availability, conflict detection with ACID transactions, no-show timeout protocol, and provider reassignment. Use when implementing createBooking, availability queries, slot management, or debugging double-booking race conditions.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
@@ -12,13 +12,13 @@ allowed-tools: Bash(node:*) Read
 
 # 📅 Booking & Scheduling Domain
 
-The heart of [APP]. Covers slot availability, conflict detection with ACID transactions, no-show timeout, and barber reassignment. Prevents the race condition where two clients book the same slot simultaneously.
+The heart of the application. Covers slot availability, conflict detection with ACID transactions, no-show timeout, and provider reassignment. Prevents the race condition where two clients book the same slot simultaneously.
 
 ## 📋 When to Use
 
 - Use when implementing `createBooking`, `getAvailability`, or slot management
 - Use when debugging double-booking or race conditions in booking creation
-- Use when implementing no-show auto-cancel or barber reassignment
+- Use when implementing no-show auto-cancel or provider reassignment
 - Do NOT use for the booking UI (use `react-native` or `react-vite`)
 
 ## 🚦 Hard Rules
@@ -27,7 +27,7 @@ The heart of [APP]. Covers slot availability, conflict detection with ACID trans
 - **Never** check availability and create booking in separate queries (race condition)
 - **Always** store all times in UTC in the database, convert to local for display
 - **Always** account for service duration + buffer when calculating slot availability
-- **Never** allow a booking that overlaps an existing active booking for the same barber
+- **Never** allow a booking that overlaps an existing active booking for the same provider
 
 ## 🛠️ Workflow
 

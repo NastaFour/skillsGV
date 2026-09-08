@@ -43,6 +43,6 @@ Run when the user wants to read, audit, or extract structured data from a Figma 
 
 ## References
 
-- [`05-frontend/figma-implement`](../figma-implement/SKILL.md) — canonical implementation workflow for the figma group.
-- [`04-backend/mcp-integration`](../mcp-integration/SKILL.md) — MCP server setup and security.
+- [`05-frontend/figma-implement`](../../05-frontend/figma-implement/SKILL.md) — canonical implementation workflow for the figma group.
+- [`04-backend/mcp-integration`](../../04-backend/mcp-integration/SKILL.md) — MCP server setup and security.
 - Fuente original (MIT): [southleft/figma-console-mcp-skills](https://github.com/southleft/figma-console-mcp-skills).

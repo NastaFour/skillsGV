@@ -64,7 +64,7 @@ Use this skill when defining models, API responses, websocket events, or helper 
 
 ---
 
-## 🛒 [APP] Core Type Definitions
+## 🛒 Core Type Definitions
 
 All components must import or adhere to these core structures:
 

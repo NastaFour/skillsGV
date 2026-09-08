@@ -1,10 +1,10 @@
 ---
 name: reports-exports
-description: Patterns for generating and exporting reports in [APP] — PDF receipts, CSV revenue reports, booking summaries, and barber performance metrics. Covers PDF generation (PDFKit/puppeteer), CSV streaming for large datasets, and scheduled report delivery. Use when implementing admin dashboard reports, financial exports, or PDF booking confirmations.
+description: Patterns for generating and exporting reports in the application — PDF receipts, CSV revenue reports, booking summaries, and staff performance metrics. Covers PDF generation (PDFKit/puppeteer), CSV streaming for large datasets, and scheduled report delivery. Use when implementing admin dashboard reports, financial exports, or PDF booking confirmations.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
-  trigger: ["reporte", "pdf export", "csv export", "ingresos report", "financial report", "booking summary", "barber performance", "pdf receipt", "export data", "report generation"]
+  trigger: ["reporte", "pdf export", "csv export", "ingresos report", "financial report", "booking summary", "staff performance", "pdf receipt", "export data", "report generation"]
   scope: [global, project]
   version: "1.0.0"
 allowed-tools: Bash(node:*) Read
@@ -12,7 +12,7 @@ allowed-tools: Bash(node:*) Read
 
 # 📊 Reports & Exports
 
-Generate and export reports: PDF receipts, CSV revenue reports, booking summaries, barber performance metrics.
+Generate and export reports: PDF receipts, CSV revenue reports, booking summaries, staff performance metrics.
 
 ## 📋 When to Use
 
@@ -39,7 +39,7 @@ Generate and export reports: PDF receipts, CSV revenue reports, booking summarie
 
 ## 📚 References
 
-- [Report Types](references/report-types.md) — PDF receipt, CSV revenue, barber metrics
+- [Report Types](references/report-types.md) — PDF receipt, CSV revenue, staff metrics
 - [Generation Patterns](references/generation-patterns.md) — PDFKit, CSV stream, background job
 - [`prisma-orm`](../prisma-orm/SKILL.md) — aggregate queries
 - [`postgresql`](../postgresql/SKILL.md) — indexing for report queries

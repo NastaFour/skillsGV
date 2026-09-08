@@ -1,11 +1,14 @@
 ---
 name: issue-creation
 description: "Create and triage GitHub issues from repository evidence. Trigger: issue creation, bug reports, feature requests, or issue approval."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(gh:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "issue creation, bug filing, filing an issue, feature request issue"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.2"
+  version: "1.2.0"
 ---
 
 # Issue Creation

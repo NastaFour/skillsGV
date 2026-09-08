@@ -11,7 +11,7 @@ import { z } from "zod";
 // Step 1: Service selection
 const step1Schema = z.object({
   serviceId: z.string().min(1, "Select a service"),
-  barberId: z.string().min(1, "Select a barber").optional(),
+  providerId: z.string().min(1, "Select a provider").optional(),
 });
 
 // Step 2: Date/time selection
@@ -66,7 +66,7 @@ export function BookingWizard() {
       {step === 0 && (
         <div>
           <h2>Step 1: Service</h2>
-          {/* service + barber selectors */}
+          {/* service + provider selectors */}
           <button type="button" onClick={nextStep}>Next</button>
         </div>
       )}

@@ -1,6 +1,6 @@
 ---
 name: agents
-description: Orchestration guide for a team of 9 specialized virtual agents in [APP]. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
+description: Orchestration guide for a team of 9 specialized virtual agents in the application. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,9 +10,9 @@ metadata:
   version: "1.0.0"
 ---
 
-# 👥 Manual y Registro de Agentes Especializados ([APP])
+# 👥 Manual y Registro de Agentes Especializados (Application)
 
-Este archivo actúa como el **Director de Orquestación** del equipo de desarrollo. Define cómo cooperan los 9 agentes virtuales especializados para construir, probar y desplegar la aplicación de supermercado, garantizando que el código final cumpla estrictamente con las reglas de ingeniería (SOLID, DRY) y seguridad establecidas.
+Este archivo actúa como el **Director de Orquestación** del equipo de desarrollo. Define cómo cooperan los 9 agentes virtuales especializados para construir, probar y desplegar la aplicación de producción, garantizando que el código final cumpla estrictamente con las reglas de ingeniería (SOLID, DRY) y seguridad establecidas.
 
 ---
 
@@ -22,15 +22,15 @@ Cuando un asistente de IA asume el desarrollo de este proyecto, puede invocar y 
 
 | Agente Virtual | Archivo de Directrices | Responsabilidad Principal |
 |---|---|---|
-| **Diseñador de Arquitectura** | [`architecture-designer`](../architecture-designer/SKILL.md) | Diseñar modelos de datos en Prisma, contratos de API REST, estructuras de carpetas en el monorepo y flujos de Socket.io. |
-| **Implementador de Características** | [`feature-implementer`](../feature-implementer/SKILL.md) | Escribir código modular en TypeScript, crear controladores Express, hooks de React Native y controladores de base de datos. |
-| **Diseñador de Interfaces (Frontend)** | [`frontend-designer`](../frontend-designer/SKILL.md) | Maquetar pantallas con estética premium, esquemas de color HSL, micro-animaciones fluidas en carritos de compra y layouts responsivos. |
-| **Probador de Calidad (QA)** | [`qa-tester`](../qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de pasarelas de pago. |
-| **Revisor de Código** | [`code-reviewer`](../code-reviewer/SKILL.md) | Auditar el código generado antes de confirmarlo, buscando violaciones de SOLID, código duplicado (DRY) y exceso de complejidad (KISS). |
-| **Verificador de Definición de Listo (DoD)** | [`dod-checker`](../dod-checker/SKILL.md) | Actuar como puerta de calidad definitiva, bloqueando o aprobando la finalización de fases en base a auditorías estrictas de cumplimiento. |
-| **Depurador Experto** | [`expert-debugger`](../expert-debugger/SKILL.md) | Rastrear y solventar bugs complejos, fugas de sockets, bloqueos transaccionales de PostgreSQL y cuellos de botella en APIs. |
-| **Refactorizador de Rendimiento** | [`performance-refactor`](../performance-refactor/SKILL.md) | Optimizar consultas Prisma, configurar índices en BD, reducir el peso de bundles móviles y configurar caches en memoria. |
-| **Escritor Técnico (Documentador)** | [`technical-writer`](../technical-writer/SKILL.md) | Generar la documentación de endpoints de API (Zod schemas), diagramas de arquitectura de base de datos y guías de despliegue Docker. |
+| **Diseñador de Arquitectura** | [`architecture-designer`](../../02-dev-roles/architecture-designer/SKILL.md) | Diseñar modelos de datos en Prisma, contratos de API REST, estructuras de carpetas en el monorepo y flujos de Socket.io. |
+| **Implementador de Características** | [`feature-implementer`](../../02-dev-roles/feature-implementer/SKILL.md) | Escribir código modular en TypeScript, crear controladores Express, hooks de React Native y controladores de base de datos. |
+| **Diseñador de Interfaces (Frontend)** | [`frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) | Maquetar pantallas con estética premium, esquemas de color HSL, micro-animaciones fluidas en carritos de compra y layouts responsivos. |
+| **Probador de Calidad (QA)** | [`qa-tester`](../../02-dev-roles/qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de pasarelas de pago. |
+| **Revisor de Código** | [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) | Auditar el código generado antes de confirmarlo, buscando violaciones de SOLID, código duplicado (DRY) y exceso de complejidad (KISS). |
+| **Verificador de Definición de Listo (DoD)** | [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) | Actuar como puerta de calidad definitiva, bloqueando o aprobando la finalización de fases en base a auditorías estrictas de cumplimiento. |
+| **Depurador Experto** | [`expert-debugger`](../../02-dev-roles/expert-debugger/SKILL.md) | Rastrear y solventar bugs complejos, fugas de sockets, bloqueos transaccionales de PostgreSQL y cuellos de botella en APIs. |
+| **Refactorizador de Rendimiento** | [`performance-refactor`](../../02-dev-roles/performance-refactor/SKILL.md) | Optimizar consultas Prisma, configurar índices en BD, reducir el peso de bundles móviles y configurar caches en memoria. |
+| **Escritor Técnico (Documentador)** | [`technical-writer`](../../02-dev-roles/technical-writer/SKILL.md) | Generar la documentación de endpoints de API (Zod schemas), diagramas de arquitectura de base de datos y guías de despliegue Docker. |
 
 ---
 
@@ -75,7 +75,7 @@ Gentle-AI keeps the parent/orchestrator thread thin. Once a task stops being sma
 | Long monolithic session with accumulating complexity | Pause and delegate, re-plan, or justify why not |
 | Adversarial review of diffs, conflicts, PR readiness, or incidents | Use fresh context when the agent platform supports it |
 
-The goal is **not ceremony**. The goal is to avoid accidental chaos while preserving **one responsible orchestrator and one writer thread**. Use [`kill-switches`](../kill-switches/SKILL.md) to abort when a loop exceeds budget.
+The goal is **not ceremony**. The goal is to avoid accidental chaos while preserving **one responsible orchestrator and one writer thread**. Use [`kill-switches`](../../08-devops/kill-switches/SKILL.md) to abort when a loop exceeds budget.
 
 ### When NOT to delegate
 - Single-file edit under ~40 lines with a clear spec → finish in-place, no delegation.
@@ -83,14 +83,14 @@ The goal is **not ceremony**. The goal is to avoid accidental chaos while preser
 - A task so small that delegation setup costs more than the task itself.
 
 ### Escalation path
-delegate → [`judgment-day`](../judgment-day/SKILL.md) (parallel adversarial review) → [`kill-switches`](../kill-switches/SKILL.md) (abort) when needed.
+delegate → [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) (parallel adversarial review) → [`kill-switches`](../../08-devops/kill-switches/SKILL.md) (abort) when needed.
 
 ---
 
 ## 💼 Valor Comercial para tu Propuesta (¿Para qué sirve al vender?)
 
-Al presentar esta propuesta a un supermercado, incluir la sección **"Agentes de Desarrollo de Software"** (o "Fábrica de Software Automatizada") aporta un valor diferencial gigante frente a programadores independientes o agencias tradicionales:
+al presentar esta propuesta a un cliente, incluir la sección **"Agentes de Desarrollo de Software"** (o "Fábrica de Software Automatizada") aporta un valor diferencial gigante frente a programadores independientes o agencias tradicionales:
 
 * **Ingeniería sin Errores Humanos:** Demuestra al cliente que el software no lo programa una sola mente que puede cometer omisiones. Se programa a través de una **factoría de 9 agentes virtuales especializados** donde cada línea de código es auditada de forma cruzada en cuanto a seguridad de pagos, robustez ante caídas y rendimiento de base de datos.
 * **Garantía de Calidad Permanente:** Puedes prometer que la aplicación nunca sufrirá de caídas por falta de stock mal procesada o fraudes de Pago Móvil, ya que el agente de QA y el DoD Checker prueban y bloquean cualquier regresión técnica automáticamente antes de subir la app a producción.
-* **Trazabilidad y Documentación de Nivel Corporativo:** El supermercado recibirá un manual de operaciones de su software completamente estructurado y actualizado en tiempo real por un agente documentador experto, facilitando futuras expansiones del negocio.
+* **Trazabilidad y Documentación de Nivel Corporativo:** El cliente recibirá un manual de operaciones de su software completamente estructurado y actualizado en tiempo real por un agente documentador experto, facilitando futuras expansiones del negocio.

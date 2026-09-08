@@ -1,6 +1,6 @@
 ---
 name: file-uploads-storage
-description: Patterns for file uploads (barber gallery, user avatars, service images) with Multer + S3/Cloudinary storage. Covers upload validation (type, size, magic bytes), image optimization (resize, WebP), and response envelope conventions. Use when implementing upload endpoints or debugging broken gallery images or [object Object] errors.
+description: Patterns for file uploads (media gallery, user avatars, service images) with Multer + S3/Cloudinary storage. Covers upload validation (type, size, magic bytes), image optimization (resize, WebP), and response envelope conventions. Use when implementing upload endpoints or debugging broken gallery images or [object Object] errors.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
@@ -12,7 +12,7 @@ allowed-tools: Bash(node:*) Read
 
 # 📁 File Uploads & Storage
 
-Patterns for uploading files (barber gallery, avatars, service images) with validation, storage, and optimization. Prevents the gallery bug (#6) where image objects were treated as strings.
+Patterns for uploading files (media gallery, avatars, service images) with validation, storage, and optimization. Prevents the gallery bug (#6) where image objects were treated as strings.
 
 ## 📋 When to Use
 

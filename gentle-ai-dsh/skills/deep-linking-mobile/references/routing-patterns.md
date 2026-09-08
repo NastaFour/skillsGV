@@ -5,7 +5,7 @@
 ```typescript
 const routeMap: Record<string, { screen: string; paramKey: string }> = {
   "booking": { screen: "BookingDetail", paramKey: "bookingId" },
-  "barber": { screen: "UserProfile", paramKey: "barberId" },
+  "provider": { screen: "UserProfile", paramKey: "providerId" },
   "service": { screen: "ServiceDetail", paramKey: "serviceId" },
   "payment/confirm": { screen: "PaymentConfirm", paramKey: "bookingId" },
   "review": { screen: "ReviewForm", paramKey: "bookingId" },

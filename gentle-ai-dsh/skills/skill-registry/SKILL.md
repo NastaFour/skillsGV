@@ -1,11 +1,14 @@
 ---
 name: skill-registry
 description: "Trigger: update skills, skill registry, actualizar skills, after skill changes. Index available skills by trigger and path."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(node:*) Glob Grep
 license: MIT
 metadata:
+  trigger: "update skills, skill registry, actualizar skills, after skill changes"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## Activation Contract

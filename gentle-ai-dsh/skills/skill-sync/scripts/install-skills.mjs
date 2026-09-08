@@ -216,7 +216,7 @@ Examples:
 
 function collectSkills(root) {
   const skills = [];
-  const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git"]);
+  const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git", "gentle-ai-dsh", "_shared"]);
   function isCategoryDir(relPath) {
     if (!onlyCategories) return true;
     const topFolder = relPath.split(sep)[0];
@@ -603,8 +603,8 @@ function fixSharedImports(skillDestDir) {
     const p = join(scriptsDir, e.name);
     const src = readFileSync(p, "utf8");
     const rewritten = src
-      .split('"../../_shared/').join('"../../_shared/')
-      .split("'../../_shared/").join("'../../_shared/");
+      .split('"../../../_shared/').join('"../../_shared/')
+      .split("'../../../_shared/").join("'../../_shared/");
     if (rewritten !== src) {
       writeFileSync(p, rewritten);
       changed++;

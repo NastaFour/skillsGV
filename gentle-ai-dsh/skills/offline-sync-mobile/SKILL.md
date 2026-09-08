@@ -1,6 +1,6 @@
 ---
 name: offline-sync-mobile
-description: Offline-first sync patterns for Expo mobile apps in [APP]. Covers local queue for booking creation when offline, conflict resolution when reconnecting, and optimistic UI updates with rollback. Use when the mobile client needs to work without network (bookings, profile edits) or when debugging sync conflicts.
+description: Offline-first sync patterns for Expo mobile apps in the application. Covers local queue for booking creation when offline, conflict resolution when reconnecting, and optimistic UI updates with rollback. Use when the mobile client needs to work without network (bookings, profile edits) or when debugging sync conflicts.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and Expo SDK 56."
 metadata:
@@ -41,5 +41,5 @@ Offline-first patterns for Expo mobile. Bookings created offline are queued and 
 - [Sync Patterns](references/sync-patterns.md) — local queue + background sync
 - [Conflict Resolution](references/conflict-resolution.md) — 409 handling + user choice
 - [`state-management`](../state-management/SKILL.md) — Zustand persist for offline store
-- [`booking-scheduling-domain`](../booking-scheduling-domain/SKILL.md) — server-side conflict check
-- [`background-jobs-queues`](../background-jobs-queues/SKILL.md) — retry strategy
+- [`booking-scheduling-domain`](../../04-backend/booking-scheduling-domain/SKILL.md) — server-side conflict check
+- [`background-jobs-queues`](../../04-backend/background-jobs-queues/SKILL.md) — retry strategy

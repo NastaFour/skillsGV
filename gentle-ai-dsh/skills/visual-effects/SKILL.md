@@ -48,4 +48,4 @@ The difference between "AI slop" and premium design. Covers glassmorphism (real 
 - [Shadow & Elevation](references/shadow-elevation.md) — elevation system, neumorphism, inner shadows
 - [`design-system-tokens`](../design-system-tokens/SKILL.md) — shadow tokens
 - [`tailwindcss`](../tailwindcss/SKILL.md) — Tailwind utility integration
-- [`micro-interactions`](../micro-interactions/SKILL.md) — hover lift uses shadow tokens
+- [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — hover lift uses shadow tokens

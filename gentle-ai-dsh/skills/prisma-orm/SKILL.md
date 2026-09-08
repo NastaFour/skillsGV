@@ -13,7 +13,7 @@ metadata:
 # 💎 Prisma ORM Integration (v5+ Standards)
 
 > [!IMPORTANT]
-> Consult [_shared/references/docs-cache/prisma-orm.md](../_shared/references/docs-cache/prisma-orm.md) before querying Context7
+> Consult [_shared/references/docs-cache/prisma-orm.md](../../_shared/references/docs-cache/prisma-orm.md) before querying Context7
 
 Use this skill when designing `schema.prisma`, running migrations, or writing prisma client queries.
 
@@ -36,7 +36,7 @@ Use this skill when designing `schema.prisma`, running migrations, or writing pr
    - Never edit generated SQL migration files manually unless performing advanced table splits.
    - Apply migrations in production using `prisma migrate deploy`. Never run `prisma migrate dev` on a production database.
 
-## 🛒 [APP] Prisma Model
+## 🛒 Prisma Model
 
 El schema Prisma completo está en [`references/schema-template.md`](references/schema-template.md). Cárgalo solo cuando necesites el modelo de datos completo.
 

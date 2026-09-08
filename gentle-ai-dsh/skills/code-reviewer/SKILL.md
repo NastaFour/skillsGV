@@ -67,17 +67,17 @@ You must evaluate the code across these 5 critical dimensions:
 
 1. **Security (2026 Standards)**:
    - Verify that **NO** `.env` keys, passwords, or tokens are hardcoded.
-   - Verify that JWT tokens are never stored in LocalStorage. Access tokens must be in-memory, and Refresh tokens must have `httpOnly: true, secure: true, sameSite: 'strict'` properties (see `../jwt-bcrypt/SKILL.md`).
-   - Verify that all Socket.io emissions and callbacks validate their payloads via Zod (see `../socketio/SKILL.md`).
+   - Verify that JWT tokens are never stored in LocalStorage. Access tokens must be in-memory, and Refresh tokens must have `httpOnly: true, secure: true, sameSite: 'strict'` properties (see `../../04-backend/jwt-bcrypt/SKILL.md`).
+   - Verify that all Socket.io emissions and callbacks validate their payloads via Zod (see `../../04-backend/socketio/SKILL.md`).
    - Check mobile data: verify that `expo-secure-store` is used for authentication credentials instead of AsyncStorage.
    - Ensure dynamic ports (`process.env.PORT`) are configured for Express.
-   - For full security audit, invoke `../security-audit/SKILL.md`.
+   - For full security audit, invoke `../../02-dev-roles/security-audit/SKILL.md`.
 
 2. **SOLID & Clean Code (DRY/KISS)**:
    - **SRP Audit**: Check if components are bloated with mixed responsibilities. Verify hooks separation.
    - **DRY Audit**: Scan for duplicate code blocks (schema types, helper algorithms).
    - **KISS Audit**: Flag unnecessary dependencies, complex state trackers, or functions exceeding 40 lines.
-   - Refer to `../solid-clean-code/SKILL.md`.
+   - Refer to `../../06-code-quality/solid-clean-code/SKILL.md`.
 
 3. **Performance**: Spot bottlenecks (missing query indexes, N+1 Prisma relations, uncleaned Socket.io listeners, unoptimized FlatLists).
 4. **Structure & Patterns**: Verify monorepo workspace conventions and SDD artifact consistency.
@@ -108,6 +108,6 @@ For each dimension, report:
 ## 📚 References
 
 - [ECC Verification Loops](https://github.com/affaan-m/ECC/blob/main/the-longform-guide.md)
-- `../solid-clean-code/SKILL.md` — SOLID/DRY/KISS deep dive
-- `../jwt-bcrypt/SKILL.md` — JWT security standards
-- `../security-audit/SKILL.md` — Full security checklist
+- `../../06-code-quality/solid-clean-code/SKILL.md` — SOLID/DRY/KISS deep dive
+- `../../04-backend/jwt-bcrypt/SKILL.md` — JWT security standards
+- `../../02-dev-roles/security-audit/SKILL.md` — Full security checklist

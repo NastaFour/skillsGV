@@ -43,5 +43,5 @@ Audits consistency between the auth store, App.tsx, the API, and cookies/tokens.
 ## 📚 References
 
 - [Audit Checklist](references/audit-checklist.md) — 10+ manual checks by category
-- [`jwt-bcrypt`](../jwt-bcrypt/SKILL.md) — token security standards
+- [`jwt-bcrypt`](../../04-backend/jwt-bcrypt/SKILL.md) — token security standards
 - [`frontend-debugging-protocol`](../frontend-debugging-protocol/SKILL.md) — redirect loop diagnosis

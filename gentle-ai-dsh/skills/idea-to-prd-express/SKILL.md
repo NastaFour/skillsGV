@@ -13,7 +13,7 @@ metadata:
 
 # Idea → PRD Express (20 min)
 
-Modo comprimido de [`professional-planner`](../professional-planner/SKILL.md) para **decisiones técnicas concretas** que no necesitan el SDD de 6 fases completo. Mueve el briefing, spec y PRD a una sola sesión tight.
+Modo comprimido de [`professional-planner`](../../professional-planner/SKILL.md) para **decisiones técnicas concretas** que no necesitan el SDD de 6 fases completo. Mueve el briefing, spec y PRD a una sola sesión tight.
 
 > **No reemplaza** `professional-planner`. Lo **complementa**: úsalo cuando el SDD full sea overkill (1 decisión, no una feature). Si la decisión se complica → escala a SDD completo.
 
@@ -161,9 +161,9 @@ Approve? (go / no go / change X)
 
 ## Integration
 
-- [`professional-planner`](../professional-planner/SKILL.md) — el SDD full del que este es un modo comprimido.
+- [`professional-planner`](../../professional-planner/SKILL.md) — el SDD full del que este es un modo comprimido.
 - [`tech-escalation-adr`](../tech-escalation-adr/SKILL.md) — cuando la decisión es arquitectónica mayor.
-- [`research-first`](../research-first/SKILL.md) — cuando necesitas investigar antes.
+- [`research-first`](../../03-ai-ml/research-first/SKILL.md) — cuando necesitas investigar antes.
 - [`engram-integration`](../engram-integration/SKILL.md) — buscar decisiones previas relacionadas.
 - [`session-notes`](../session-notes/SKILL.md) — guardar el PRD express en memoria.
 

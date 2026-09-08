@@ -1,11 +1,14 @@
 ---
 name: work-unit-commits
 description: "Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Bash(git:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "work unit commits, commit splitting, atomic commits, implementation commits"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## When to Use

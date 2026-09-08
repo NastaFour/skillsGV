@@ -35,5 +35,5 @@ Lista curada de las 10 referencias de animación web agrupadas por tópico, con 
 ## 📚 References
 
 - [Animation Sources](references/animation-sources.md) — las 10 referencias curadas agrupadas por tópico
-- [`micro-interactions`](../micro-interactions/SKILL.md) — implementación de microinteracciones
+- [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — implementación de microinteracciones
 - [`motion-framer`](../motion-framer/SKILL.md) — implementación de animaciones en React/mobile

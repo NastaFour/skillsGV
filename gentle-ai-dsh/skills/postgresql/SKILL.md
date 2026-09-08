@@ -23,7 +23,7 @@ Use this skill when defining SQL structures, indexing schemas, executing transac
 
 2. **Index Strategy**:
    - Create indexes on fields commonly used in filtering (`WHERE`), sorting (`ORDER BY`), and joining (`JOIN` keys).
-   - **[APP] Context**: Add indexes on:
+   - **Application Context**: Add indexes on:
      - `Order(buyerId)`
      - `Order(status)`
      - `Product(category)`
@@ -46,7 +46,7 @@ Use this skill when defining SQL structures, indexing schemas, executing transac
    - Store backups in an offsite location (e.g. secure S3 bucket) separate from the main DB container.
    - Encrypt the backups using GPG or OpenSSL. Do not write unencrypted raw dumps to disk.
 
-## 🛒 [APP] DB Schema Model
+## 🛒 Database Schema Model
 
 El schema SQL completo está en [`references/schema-reference.md`](references/schema-reference.md). Cárgalo solo cuando necesites crear o modificar tablas.
 ```

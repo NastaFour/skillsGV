@@ -24,7 +24,7 @@ When asked to evaluate if a phase or feature is finished, execute these rigorous
 - **DRY Verification**: Ensure data schemas, validation helpers, and TypeScript interfaces are shared inside packages. If duplicate logic is found across frontend and backend, trigger an immediate **FAIL**.
 - **SRP Verification**: Verify components do not contain mixed concerns (such as UI styling combined with socket binding). Ensure custom hooks are used for side effects.
 - **KISS Verification**: Ensure no bloated functions (shorter than 40 lines) or overly complex algorithms are deployed.
-- Refer to [SOLID and Clean Code Guidelines](../solid-clean-code/SKILL.md).
+- Refer to [SOLID and Clean Code Guidelines](../../06-code-quality/solid-clean-code/SKILL.md).
 
 ### 2. Functional Integrity (Zero Dead Ends)
 - **Dead Elements**: Scan the code for buttons, links, or forms that lack `onClick`, `href`, or `onSubmit` handlers.

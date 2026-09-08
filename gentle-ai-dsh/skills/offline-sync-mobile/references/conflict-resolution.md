@@ -52,5 +52,5 @@ async function executeOperation(op: PendingOperation) {
 |---|---|---|
 | Slot taken | 409 | Show suggested slots |
 | Booking cancelled | 410 | Remove from queue |
-| Barber unavailable | 409 | Suggest alternative barbers |
+| Provider unavailable | 409 | Suggest alternative providers |
 | Price changed | 409 | Show new price, confirm |

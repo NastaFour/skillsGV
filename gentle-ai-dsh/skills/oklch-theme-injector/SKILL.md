@@ -48,5 +48,5 @@ Run when the task involves perceptual color, OKLCH/OKHSL, generating accessible 
 
 ## References
 
-- [`05-frontend/design-system-tokens`](../design-system-tokens/SKILL.md) — token taxonomy this skill feeds into.
-- [`04-backend/mcp-integration`](../mcp-integration/SKILL.md) — MCP color tooling setup when used.
+- [`05-frontend/design-system-tokens`](../../05-frontend/design-system-tokens/SKILL.md) — token taxonomy this skill feeds into.
+- [`04-backend/mcp-integration`](../../04-backend/mcp-integration/SKILL.md) — MCP color tooling setup when used.

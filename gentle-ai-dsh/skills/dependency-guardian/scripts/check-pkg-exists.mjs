@@ -23,7 +23,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative, dirname, basename, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { walkFiles, readFileUtf8, buildResult, printResult, exitFromResultGuarded, runScriptGuarded, findProjectRoot } from "../../_shared/script-utils.mjs";
+import { walkFiles, readFileUtf8, buildResult, printResult, exitFromResultGuarded, runScriptGuarded, findProjectRoot } from "../../../_shared/script-utils.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

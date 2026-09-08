@@ -122,8 +122,8 @@ Only drivers with valid JWT in the socket handshake can emit locations. Verify `
 - [Expo Location](references/expo-location-permissions.md) — permissions, foreground/background modes
 - [react-native-maps](references/react-native-maps-config.md) — config plugin and provider keys
 - [Socket.io rooms](references/socket-room-pattern.md) — room naming for delivery tracking
-- [Socket.io skill](../socketio/SKILL.md) — server-side socket setup
-- [Socket.io skill](../socketio/SKILL.md) — Zod validation patterns for WebSocket payloads
+- [Socket.io skill](../../04-backend/socketio/SKILL.md) — server-side socket setup
+- [Socket.io skill](../../04-backend/socketio/SKILL.md) — Zod validation patterns for WebSocket payloads
 
 ## 🧪 Validation
 

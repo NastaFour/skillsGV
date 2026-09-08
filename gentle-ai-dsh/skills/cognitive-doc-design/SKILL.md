@@ -1,11 +1,14 @@
 ---
 name: cognitive-doc-design
 description: "Design docs that reduce cognitive load. Trigger: writing guides, READMEs, RFCs, onboarding, architecture, or review-facing docs."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Edit Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "writing guides, readmes, rfcs, onboarding docs, cognitive load"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## When to Use

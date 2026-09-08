@@ -18,15 +18,15 @@ El último 20% de un PRD o feature **no se puede eliminar** — requiere context
 Esta skill no decide por el humano. Le da **exactamente lo que necesita decidir rápido**, nada más, y registra la decisión para que la próxima sesión no re-litigue el mismo debate.
 
 > Posicionamiento:
-> - [`judgment-day`](../judgment-day/SKILL.md) produce el **diagnóstico** (dos jueces adversariales).
-> - [`idea-to-prd-express`](../idea-to-prd-express/SKILL.md) produce el **PRD one-pager**.
+> - [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) produce el **diagnóstico** (dos jueces adversariales).
+> - [`idea-to-prd-express`](../../01-planning-process/idea-to-prd-express/SKILL.md) produce el **PRD one-pager**.
 > - `decision-gate` (esta skill) cierra el **juicio humano** cuando uno de los dos deja una decisión abierta.
 
 ## When to Use
 
 - ✅ `judgment-day` devolvió SPLIT verdict y alguien debe decidir.
 - ✅ `idea-to-prd-express` listó "Open questions" que el humano debe resolver.
-- ✅ Un ADR ([`tech-escalation-adr`](../tech-escalation-adr/SKILL.md)) compite entre 2+ opciones y nadie tiene criterio.
+- ✅ Un ADR ([`tech-escalation-adr`](../../01-planning-process/tech-escalation-adr/SKILL.md)) compite entre 2+ opciones y nadie tiene criterio.
 - ✅ Antes de un merge que depende de una llamada de negocio (launch vs polish, scope cut, integración externa sí/no).
 - ❌ **Do NOT use** para decisions puramente técnicas con respuesta objetiva — esas las decide `code-reviewer` o `judgment-day`. Esta skill es para **decisiones con trade-offs subjetivos**.
 
@@ -172,11 +172,11 @@ Si Engram no disponible, append a `DECISIONS.md` del proyecto:
 
 | Necesidad | Skill |
 |---|---|
-| Diagnóstico adversarial antes de decisión | [`judgment-day`](../judgment-day/SKILL.md) |
-| PRD con open questions | [`idea-to-prd-express`](../idea-to-prd-express/SKILL.md) |
-| ADR arquitectónico | [`tech-escalation-adr`](../tech-escalation-adr/SKILL.md) |
-| Memoria previa / conflict surfacing | [`engram-integration`](../engram-integration/SKILL.md) (`engram search` + `memjudge`) |
-| Research si "need: <info>" | [`research-first`](../research-first/SKILL.md) |
+| Diagnóstico adversarial antes de decisión | [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) |
+| PRD con open questions | [`idea-to-prd-express`](../../01-planning-process/idea-to-prd-express/SKILL.md) |
+| ADR arquitectónico | [`tech-escalation-adr`](../../01-planning-process/tech-escalation-adr/SKILL.md) |
+| Memoria previa / conflict surfacing | [`engram-integration`](../../01-planning-process/engram-integration/SKILL.md) (`engram search` + `memjudge`) |
+| Research si "need: <info>" | [`research-first`](../../03-ai-ml/research-first/SKILL.md) |
 
 ## Example
 

@@ -49,6 +49,6 @@ The difference between "dead" UI and "alive" UI. A catalog of copy-paste micro-i
 - [Stagger Entrance](references/stagger-entrance.md) — Framer Motion variants + CSS
 - [Skeleton Shimmer](references/skeleton-shimmer.md) — gradient sweep + pulse
 - [Advanced Effects](references/advanced-effects.md) — magnetic cursor, count pulse, text reveal
-- [`design-system-tokens`](../design-system-tokens/SKILL.md) — motion tokens
-- [`motion-framer`](../motion-framer/SKILL.md) — animation library integration
-- [`motion-accessibility`](../motion-accessibility/SKILL.md) — reduced-motion fallbacks
+- [`design-system-tokens`](../../05-frontend/design-system-tokens/SKILL.md) — motion tokens
+- [`motion-framer`](../../05-frontend/motion-framer/SKILL.md) — animation library integration
+- [`motion-accessibility`](../../05-frontend/motion-accessibility/SKILL.md) — reduced-motion fallbacks

@@ -50,5 +50,5 @@ Run when the user wants to reuse an existing component or UI pattern from anothe
 
 ## References
 
-- [`04-backend/mcp-integration`](../mcp-integration/SKILL.md) — MCP server setup and security.
-- [`05-frontend/design-system-tokens`](../design-system-tokens/SKILL.md) — token mapping when normalizing scraped styles.
+- [`04-backend/mcp-integration`](../../04-backend/mcp-integration/SKILL.md) — MCP server setup and security.
+- [`05-frontend/design-system-tokens`](../../05-frontend/design-system-tokens/SKILL.md) — token mapping when normalizing scraped styles.

@@ -57,7 +57,7 @@ new Worker("reminders", async (job) => {
   // Idempotency: check booking still active
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    include: { service: true, barber: { include: { user: true } } },
+    include: { service: true, provider: { include: { user: true } } },
   });
 
   if (!booking) return; // booking deleted, skip
@@ -69,7 +69,7 @@ new Worker("reminders", async (job) => {
     data: {
       bookingId,
       serviceName: booking.service.name,
-      barberName: booking.barber.user.name,
+      providerName: booking.provider.user.name,
       startTime: booking.startTime,
     },
   });

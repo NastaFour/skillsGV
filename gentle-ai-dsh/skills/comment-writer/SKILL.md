@@ -1,11 +1,14 @@
 ---
 name: comment-writer
 description: "Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(gh:*)
 license: Apache-2.0
 metadata:
+  trigger: "pr feedback, issue replies, code review comments, comment writer"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## When to Use

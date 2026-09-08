@@ -49,8 +49,8 @@ Remember: Elegance comes from precision. Minimal tokens consumed, maximum contex
 - Validate all incoming websocket payloads with Zod before logic execution.
 - Maintain absolute type safety with TypeScript; `any` is strictly prohibited.
 - Never write credentials, database URLs, or security secrets into code or Git repositories.
-- Enforce **SOLID, DRY, and KISS** on every file. Functions must not exceed 40 lines. Refer to [SOLID & Clean Code](../solid-clean-code/SKILL.md).
-- All AI modules must include telemetry logging, data drift detection, and Zod input contracts. Refer to [AI/ML Scalability & MLOps](../ai-scalability-mlops/SKILL.md).
+- Enforce **SOLID, DRY, and KISS** on every file. Functions must not exceed 40 lines. Refer to [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
+- All AI modules must include telemetry logging, data drift detection, and Zod input contracts. Refer to [AI/ML Scalability & MLOps](../../03-ai-ml/ai-scalability-mlops/SKILL.md).
 
 ## 3. 🗺️ Roadmap & Phases
 

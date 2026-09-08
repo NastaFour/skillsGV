@@ -1,64 +1,6 @@
-# Tier 1 instructions for: "implementar endpoint de booking con prisma y validacion zod"
-# Primary: booking-scheduling-domain | Confidence: 1
-# Selected (3): booking-scheduling-domain, prisma-orm, api-design
-
-
-<!-- BEGIN booking-scheduling-domain -->
-
----
-name: booking-scheduling-domain
-description: Core booking and scheduling logic for [APP] — slot availability, conflict detection with ACID transactions, no-show timeout protocol, and barber reassignment. Use when implementing createBooking, availability queries, slot management, or debugging double-booking race conditions.
-license: MIT
-compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
-metadata:
-  trigger: ["booking", "reserva", "slot", "availability", "disponibilidad", "conflict", "race condition", "double booking", "no-show", "no show", "reasignacion", "scheduling"]
-  scope: [global, project]
-  version: "1.0.0"
-allowed-tools: Bash(node:*) Read
----
-
-# 📅 Booking & Scheduling Domain
-
-The heart of [APP]. Covers slot availability, conflict detection with ACID transactions, no-show timeout, and barber reassignment. Prevents the race condition where two clients book the same slot simultaneously.
-
-## 📋 When to Use
-
-- Use when implementing `createBooking`, `getAvailability`, or slot management
-- Use when debugging double-booking or race conditions in booking creation
-- Use when implementing no-show auto-cancel or barber reassignment
-- Do NOT use for the booking UI (use `react-native` or `react-vite`)
-
-## 🚦 Hard Rules
-
-- **Always** use `$transaction` with conflict check inline when creating a booking
-- **Never** check availability and create booking in separate queries (race condition)
-- **Always** store all times in UTC in the database, convert to local for display
-- **Always** account for service duration + buffer when calculating slot availability
-- **Never** allow a booking that overlaps an existing active booking for the same barber
-
-## 🛠️ Workflow
-
-1. Read the slot logic rules: [slot-logic.md](references/slot-logic.md)
-2. Read the conflict resolution pattern: [conflict-resolution.md](references/conflict-resolution.md)
-3. Read the no-show protocol: [no-show-protocol.md](references/no-show-protocol.md)
-4. Check type definitions: [types.md](references/types.md)
-5. Run the checker to verify booking queries use transactions:
-   ```bash
-   node ./.opencode/skills/booking-scheduling-domain/scripts/check-booking-queries.mjs
-   ```
-
-## 📚 References
-
-- [Slot Logic](references/slot-logic.md) — duration, buffer, horario laboral
-- [Conflict Resolution](references/conflict-resolution.md) — ACID transaction + race condition diagram
-- [No-Show Protocol](references/no-show-protocol.md) — timeout, auto-cancel, fee, reassignment
-- [Types](references/types.md) — BookingSlot, AvailabilityWindow, ConflictCheck
-- [`prisma-orm`](../prisma-orm/SKILL.md) — transaction patterns
-- [`socketio`](../socketio/SKILL.md) — booking event broadcasting
-- [`background-jobs-queues`](../background-jobs-queues/SKILL.md) — no-show timeout job
-
-
-<!-- END booking-scheduling-domain -->
+# Tier 1 instructions for: "crear endpoint prisma"
+# Primary: prisma-orm | Confidence: 1
+# Selected (3): prisma-orm, api-design, expressjs
 
 
 <!-- BEGIN prisma-orm -->
@@ -101,7 +43,7 @@ Use this skill when designing `schema.prisma`, running migrations, or writing pr
    - Never edit generated SQL migration files manually unless performing advanced table splits.
    - Apply migrations in production using `prisma migrate deploy`. Never run `prisma migrate dev` on a production database.
 
-## 🛒 [APP] Prisma Model
+## 🛒 Prisma Model
 
 El schema Prisma completo está en [`references/schema-template.md`](references/schema-template.md). Cárgalo solo cuando necesites el modelo de datos completo.
 
@@ -239,3 +181,76 @@ const ProductFilterSchema = z.object({
 
 
 <!-- END api-design -->
+
+
+<!-- BEGIN expressjs -->
+
+---
+name: expressjs
+description: Guidelines for Express.js API development. Enforces route modularization, Zod body validation, secure JWT middleware, rate-limiting, and error-handling structures. Use when creating or modifying HTTP routes, REST endpoints, middlewares, or error boundaries.
+license: MIT
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+allowed-tools: Bash(node:*) Read
+metadata:
+  trigger: ["express", "API REST", "middleware", "ruta", "endpoint"]
+  scope: [global, project]
+  version: "1.0.0"
+---
+
+# 🚀 Express.js API Development
+
+Use this skill when defining HTTP routes, REST endpoints, middlewares, or error boundaries for the application backend.
+
+## 🚨 API Implementation Standards
+
+1. **Express version 4.19+ / 5.0 Guidelines**:
+   - Do not use deprecated destructurings of `req.body`.
+   - Take advantage of Native Async Error Handling if using v5.0; otherwise, wrap async route handlers in a helper function (`asyncHandler`) to guarantee errors propagate to the global error middleware.
+
+2. **Zod Validation Middleware**:
+   - Every POST/PUT request body must be parsed and validated through a Zod schema before executing controllers:
+     ```javascript
+     export const validate = (schema) => (req, res, next) => {
+       try {
+         req.body = schema.parse(req.body);
+         next();
+       } catch (err) {
+         res.status(400).json({ error: 'Validation Failed', details: err.errors });
+       }
+     };
+     ```
+
+3. **Global Error Middleware**:
+   - Set up a single global catch-all middleware in `app.js` to log errors as JSON and return appropriate status codes:
+     ```javascript
+     app.use((err, req, res, next) => {
+       logger.error({ err, correlationId: req.headers['x-correlation-id'] });
+       res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
+     });
+     ```
+
+## 🔒 Security & Protection
+
+1. **Authentication Middleware**:
+   - Extract access tokens from request headers (Authorization Bearer) or cookies.
+   - For sensitive admin operations, authenticate the employee's ID and verify they have the required role (`EMPLOYEE`, `ADMIN`).
+
+2. **Rate Limiting**:
+   - Use `express-rate-limit` on critical endpoints:
+     - Authentication (`/api/auth/login`, `/api/auth/register`): 100 requests per 15 minutes.
+     - Authenticated routes (cart checkouts, updates): 1000 requests per 15 minutes (using `req.user.id` as key, falling back to `req.ip`).
+
+3. **Security Headers & CORS**:
+   - Use `helmet` to set CSP and disable information leak headers like `X-Powered-By`.
+   - Configure `cors` with an explicit whitelist of origins (e.g. your admin web app domain and client app URL). NEVER set `origin: '*'`.
+
+## 🛒 the application Endpoint Map
+
+Isolate route controllers according to business areas:
+- `/api/auth`: Login, Register, token refresh.
+- `/api/products`: Public catalogs, and admin inventory update routes (restricted to `EMPLOYEE`).
+- `/api/orders`: Order creation (restricted to `BUYER`), packer checklist fetch (restricted to `EMPLOYEE`), and order delivery status dispatch.
+- `/api/support`: Live support ticket opening and status resolver.
+
+
+<!-- END expressjs -->

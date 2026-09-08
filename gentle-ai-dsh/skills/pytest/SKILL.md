@@ -9,7 +9,7 @@ compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskill
 allowed-tools: Read
 metadata:
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
   category: 07-testing
   tags: [pytest, python, testing, fixtures, mocking, parametrize, async]
 ---

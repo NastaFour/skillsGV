@@ -6,7 +6,7 @@
  */
 import { resolve, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { walkFiles, readFileUtf8, buildResult, printResult, exitFromResult, exitFromResultGuarded, findProjectRoot } from "../../_shared/script-utils.mjs";
+import { walkFiles, readFileUtf8, buildResult, printResult, exitFromResult, exitFromResultGuarded, findProjectRoot } from "../../../_shared/script-utils.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const args = process.argv.slice(2);

@@ -1,11 +1,14 @@
 ---
 name: go-testing
 description: "Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Go 1.22+ and git."
 allowed-tools: Read Write Bash(go:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "go tests, go test coverage, bubbletea teatest, golden files, go unit test"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## Activation Contract

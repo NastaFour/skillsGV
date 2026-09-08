@@ -39,7 +39,7 @@ Use this skill when implementing user authentication, password storage, session 
      ```
    - Implement **Token Rotation**: revoke the old refresh token and issue a new pair whenever the client calls the refresh endpoint.
 
-## 🛒 [APP] Roles & Permissions
+## 🛒 the application Roles & Permissions
 
 Enforce permissions dynamically based on the decoded JWT payload contents:
 - `BUYER`: Access to `/orders` (own records), catalog viewing, and support creation.

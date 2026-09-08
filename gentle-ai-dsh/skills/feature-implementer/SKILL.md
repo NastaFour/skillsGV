@@ -20,12 +20,12 @@ When writing code, adhere strictly to these principles:
 
 ## Contextual Awareness
 Before coding, rely on existing context:
-- Sync with the [Project Tracker](../project-tracker/SKILL.md) for styling/framework conventions.
-- Map code logic to the specific [[APP] Business Workflow](../application-workflow/SKILL.md).
+- Sync with the [Project Tracker](../../01-planning-process/project-tracker/SKILL.md) for styling/framework conventions.
+- Map code logic to the specific [the application Business Workflow](../../01-planning-process/application-workflow/SKILL.md).
 - Prioritize technology guidelines:
-  - **Backend APIs**: Refer to [Node.js](../nodejs/SKILL.md), [Express.js](../expressjs/SKILL.md), [Prisma ORM](../prisma-orm/SKILL.md), [Socket.io](../socketio/SKILL.md), and [JWT/Bcrypt](../jwt-bcrypt/SKILL.md).
-  - **Admin Web Panel**: Refer to [React/Vite](../react-vite/SKILL.md) and [Tailwind CSS](../tailwindcss/SKILL.md).
-  - **Mobile Client**: Refer to [React Native](../react-native/SKILL.md) and [Expo](../expo-production-auditor/SKILL.md).
+  - **Backend APIs**: Refer to [Node.js](../../04-backend/nodejs/SKILL.md), [Express.js](../../04-backend/expressjs/SKILL.md), [Prisma ORM](../../04-backend/prisma-orm/SKILL.md), [Socket.io](../../04-backend/socketio/SKILL.md), and [JWT/Bcrypt](../../04-backend/jwt-bcrypt/SKILL.md).
+  - **Admin Web Panel**: Refer to [React/Vite](../../05-frontend/react-vite/SKILL.md) and [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md).
+  - **Mobile Client**: Refer to [React Native](../../05-frontend/react-native/SKILL.md) and [Expo](../../05-frontend/expo-production-auditor/SKILL.md).
 
 ## Delivery Format
 1. **Dependencies**: If new libraries are required, provide the installation command first (adhere to workspace locks).

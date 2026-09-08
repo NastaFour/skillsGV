@@ -49,5 +49,5 @@ Run when the deliverable is a video (not a live UI animation): animated intros/o
 
 ## References
 
-- [`05-frontend/motion-framer`](../motion-framer/SKILL.md) and [`05-frontend/motion-gsap`](../motion-gsap/SKILL.md) — live UI animation (not export).
-- [`04-backend/mcp-integration`](../mcp-integration/SKILL.md) — MCP asset/generation tooling when used.
+- [`05-frontend/motion-framer`](../../05-frontend/motion-framer/SKILL.md) and [`05-frontend/motion-gsap`](../../05-frontend/motion-gsap/SKILL.md) — live UI animation (not export).
+- [`04-backend/mcp-integration`](../../04-backend/mcp-integration/SKILL.md) — MCP asset/generation tooling when used.

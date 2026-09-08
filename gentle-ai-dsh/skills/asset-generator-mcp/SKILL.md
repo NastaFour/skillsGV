@@ -48,5 +48,5 @@ Run when the user wants generated image assets at scale with a coherent style (i
 
 ## References
 
-- [`05-frontend/design-system-tokens`](../design-system-tokens/SKILL.md) — palette and token alignment for generated assets.
-- [`02-dev-roles/frontend-designer`](../frontend-designer/SKILL.md) — hand-coded SVG when generation is not the right tool.
+- [`05-frontend/design-system-tokens`](../../05-frontend/design-system-tokens/SKILL.md) — palette and token alignment for generated assets.
+- [`02-dev-roles/frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) — hand-coded SVG when generation is not the right tool.

@@ -17,7 +17,7 @@ Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime
 Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains.
 
 ## agents
-Orchestration guide for a team of 9 specialized virtual agents in [APP]. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
+Orchestration guide for a team of 9 specialized virtual agents in the application. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
 
 ## idea-to-prd-express
 Compress Briefing→Spec→PRD into a 20-minute session for technical decisions that need fast turnaround. Use when the user has a concrete technical decision to make (not a full feature) and full 6-phase SDD is overkill.

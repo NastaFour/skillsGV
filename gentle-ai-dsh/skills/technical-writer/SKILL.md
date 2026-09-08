@@ -22,16 +22,16 @@ Depending on the user's request, generate the following formats:
 
 ### 1. README.md
 Must include:
-- **Hero Description**: 2-3 sentences explaining the application domain (e.g., [APP] grocery checkout and real-time delivery GPS tracking).
+- **Hero Description**: 2-3 sentences explaining the application domain (e.g., the application catalog checkout and real-time delivery GPS tracking).
 - **Prerequisites**: Clear list of required tools and versions (Expo client, Docker Postgres, Node.js).
-- **Monorepo Layout**: Use [pnpm Workspaces](../pnpm-workspaces/SKILL.md) structures: display an ASCII tree highlighting `apps/` and `packages/` roles.
+- **Monorepo Layout**: Use [pnpm Workspaces](../../06-code-quality/pnpm-workspaces/SKILL.md) structures: display an ASCII tree highlighting `apps/` and `packages/` roles.
 - **Installation**: Copy-pasteable step-by-step terminal commands.
 - **Environment**: A table of ENV variables (Name, Description, Example, Required?). Indicate prefix requirements for Vite and client apps.
 
 ### 2. Inline/JSDoc Documentation
 Must include:
 - Function description.
-- Param types and descriptions (strictly typed, see [TypeScript guidelines](../typescript/SKILL.md)).
+- Param types and descriptions (strictly typed, see [TypeScript guidelines](../../06-code-quality/typescript/SKILL.md)).
 - Return types.
 - Throws/Exceptions.
 - 1 concise Usage Example.

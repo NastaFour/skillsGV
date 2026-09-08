@@ -1,6 +1,6 @@
 # Job Catalog
 
-5+ job types for [APP] background processing.
+5+ job types for the application background processing.
 
 ## 1. Reminder 24h
 
@@ -24,7 +24,7 @@ await reminderQueue.add("reminder-24h", {
 
 **Trigger**: Booking created with `status: ACCEPTED`
 **Delay**: 1 hour before `booking.startTime`
-**Action**: Send reminder to both client and barber
+**Action**: Send reminder to both client and provider
 
 ```typescript
 await reminderQueue.add("reminder-1h", {
@@ -41,7 +41,7 @@ await reminderQueue.add("reminder-1h", {
 
 **Trigger**: Booking transitions to `ACCEPTED`
 **Delay**: `booking.startTime + 15 min tolerance`
-**Action**: Check if barber arrived. If not → mark `NO_SHOW`, refund, offer reassignment
+**Action**: Check if provider arrived. If not → mark `NO_SHOW`, refund, offer reassignment
 
 ```typescript
 await noShowQueue.add("no-show-check", {
@@ -72,14 +72,14 @@ await reviewQueue.add("review-request", {
 
 ## 5. AI Reassignment
 
-**Trigger**: Barber rejects booking OR no-show detected
+**Trigger**: Provider rejects booking OR no-show detected
 **Delay**: Immediate (no delay)
-**Action**: AI routing agent finds best alternative barber based on proximity, rating, services
+**Action**: AI routing agent finds best alternative provider based on proximity, rating, services
 
 ```typescript
 await aiReassignQueue.add("suggest-alternative", {
   bookingId: booking.id,
-  rejectedBarberId: booking.barberId,
+  rejectedProviderId: booking.providerId,
 }, {
   jobId: `reassign-${booking.id}`,
   attempts: 3,

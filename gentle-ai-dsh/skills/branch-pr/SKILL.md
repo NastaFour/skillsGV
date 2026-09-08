@@ -1,11 +1,14 @@
 ---
 name: branch-pr
 description: "Create Gentle AI pull requests with issue-first checks. Trigger: creating, opening, or preparing PRs for review."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(git:*,gh:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "creating pr, opening pr, preparing pr, branch pr, issue first"
+  scope: "global, project"
   author: gentleman-programming
-  version: "2.0"
+  version: "2.0.0"
 ---
 
 ## When to Use

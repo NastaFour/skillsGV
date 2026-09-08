@@ -1,6 +1,6 @@
 ---
 name: store-deployment-eas
-description: Deployment patterns for publishing [APP] Expo apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment management (dev/staging/prod), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates.
+description: Deployment patterns for publishing the application Expo apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment management (dev/staging/prod), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Expo SDK 56 and EAS CLI."
 metadata:
@@ -42,6 +42,6 @@ Deploy Expo apps to App Store and Play Store using EAS. Covers build, submit, OT
 
 - [EAS Setup](references/eas-setup.md) — eas.json, profiles, credentials
 - [Release Process](references/release-process.md) — version bump → build → submit → OTA
-- [`expo-production-auditor`](../expo-production-auditor/SKILL.md) — pre-build audit
+- [`expo-production-auditor`](../../05-frontend/expo-production-auditor/SKILL.md) — pre-build audit
 - [`ci-cd`](../ci-cd/SKILL.md) — CI/CD pipeline integration
-- [`env-management`](../env-management/SKILL.md) — environment variables per profile
+- [`env-management`](../../06-code-quality/env-management/SKILL.md) — environment variables per profile

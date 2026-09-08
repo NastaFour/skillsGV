@@ -14,7 +14,7 @@ metadata:
 
 Genera UI distintiva con herramientas de IA (Google Stitch, v0, Lovable, Claude Artifacts) en lugar de hand-codar desde cero. El punto no es "que la IA haga cualquiera" — es **dirigirl** para que el output no sea AI-slop genérico.
 
-> Companion: [`frontend-design`](../frontend-design/SKILL.md) define la **dirección visual** (paleta, tipografía, signature element). Esta skill define el **workflow de generación** con herramientas de IA. Úsalas juntas: `frontend-design` decide cómo se ve, `ai-ui-generation` lo produce rápido.
+> Companion: [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) define la **dirección visual** (paleta, tipografía, signature element). Esta skill define el **workflow de generación** con herramientas de IA. Úsalas juntas: `frontend-design` decide cómo se ve, `ai-ui-generation` lo produce rápido.
 
 ## When to Use
 
@@ -25,7 +25,7 @@ Genera UI distintiva con herramientas de IA (Google Stitch, v0, Lovable, Claude 
 
 ## The AI Slop Problem (y cómo evitarlo)
 
-Las herramientas de IA generativa de UI (Stitch, v0, Lovable) tienen los **mismos 3 defaults** que [`frontend-design`](../frontend-design/SKILL.md) documenta:
+Las herramientas de IA generativa de UI (Stitch, v0, Lovable) tienen los **mismos 3 defaults** que [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) documenta:
 
 1. **Cream `#F4F1EA` + serif display + terracotta** — el "look Notion".
 2. **Near-black + acid-green/vermilion accent** — el "look Linear".
@@ -34,7 +34,7 @@ Las herramientas de IA generativa de UI (Stitch, v0, Lovable) tienen los **mismo
 Todas son legítimas **si son una elección**, no un default. Para evitar slop:
 
 - **Antes de generar**: decide paleta, tipografía y signature element (sigue el brainstorm de `frontend-design`). Escríbelo en el prompt.
-- **En el prompt**: incluye el sujeto concreto, el audience, y el "single job" de la página. Nunca `"make a landing page for a startup"` — siempre `"make a landing page for a Venezuelan grocery delivery app targeting busy parents, single job is to get them to download the app"`.
+- **En el prompt**: incluye el sujeto concreto, el audience, y el "single job" de la página. Nunca `"make a landing page for a startup"` — siempre `"make a landing page for a modern on-demand delivery app targeting busy users, single job is to get them to download the app"`.
 - **Después de generar**: critique el output contra el brief. Si lee como templated → regenera con restricciones más tight, no aceptes el default.
 
 ## Workflow: Prompt → Checkpoint → Deploy
@@ -86,7 +86,7 @@ La variante elegida entra al codebase. Reglas:
 - **No pegar HTML crudo** si usas React/Vite/E — convierte a componentes siguiendo [`react-vite`](../react-vite/SKILL.md) o [`react-19`](../react-19/SKILL.md).
 - **Tailwind classes**: sigue [`tailwind-4`](../tailwind-4/SKILL.md) — sin `var()`/hex en className, usa `cn()` solo cuando hay condicionales.
 - **Design tokens**: si Stitch/v0 exportó tokens, integrarlos como CSS variables en el design system — ver [`design-system-tokens`](../design-system-tokens/SKILL.md) si existe, sino documentalos.
-- **No meter lógica de negocio** — la UI generada es presentacional. Auth, API calls, state van en container wrappers (SRP, ver [`solid-clean-code`](../solid-clean-code/SKILL.md)).
+- **No meter lógica de negocio** — la UI generada es presentacional. Auth, API calls, state van en container wrappers (SRP, ver [`solid-clean-code`](../../06-code-quality/solid-clean-code/SKILL.md)).
 
 ### Phase 5 — Deploy (5 min)
 
@@ -108,20 +108,20 @@ El deploy es parte del loop — si no deployas, no cerraste el ciclo. La demo en
 - ❌ Pegar HTML crudo en un proyecto React → rompe SRP y Tailwind JIT.
 - ❌ Meter auth/API en el componente generado → mezcla presentación con lógica.
 - ❌ Deployar sin checkpoint visual → deployas slop.
-- ❌ "Es solo una landing, no necesita SDD" — falso. Si toca el repo, pasa por [`dod-checker`](../dod-checker/SKILL.md) aunque sea lightweight.
+- ❌ "Es solo una landing, no necesita SDD" — falso. Si toca el repo, pasa por [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) aunque sea lightweight.
 
 ## Integration
 
 | Necesidad | Skill |
 |---|---|
-| Dirección visual/paleta/signature | [`frontend-design`](../frontend-design/SKILL.md) |
-| Implementación React premium | [`frontend-designer`](../frontend-designer/SKILL.md) |
+| Dirección visual/paleta/signature | [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) |
+| Implementación React premium | [`frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) |
 | React 19 (Compiler, use()) | [`react-19`](../react-19/SKILL.md) |
 | Tailwind 4 (cn, theme) | [`tailwind-4`](../tailwind-4/SKILL.md) |
 | Next.js 15 App Router | [`nextjs-15`](../nextjs-15/SKILL.md) |
 | Design tokens | [`design-system-tokens`](../design-system-tokens/SKILL.md) (si existe) |
-| Deploy a stores (mobile) | [`store-deployment-eas`](../store-deployment-eas/SKILL.md) |
-| Gate de calidad antes de merge | [`code-reviewer`](../code-reviewer/SKILL.md) + [`judgment-day`](../judgment-day/SKILL.md) |
+| Deploy a stores (mobile) | [`store-deployment-eas`](../../08-devops/store-deployment-eas/SKILL.md) |
+| Gate de calidad antes de merge | [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) + [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) |
 
 ## Tooling reference
 

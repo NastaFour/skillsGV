@@ -49,4 +49,4 @@ The foundation of any non-generic visual system. Without tokens, every component
 - [Motion Tokens](references/motion-tokens.md) — duration, easing, stagger scales
 - [`visual-effects`](../visual-effects/SKILL.md) — shadow tokens in practice
 - [`tailwindcss`](../tailwindcss/SKILL.md) — Tailwind theme config integration
-- [`micro-interactions`](../micro-interactions/SKILL.md) — motion tokens in interactions
+- [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — motion tokens in interactions

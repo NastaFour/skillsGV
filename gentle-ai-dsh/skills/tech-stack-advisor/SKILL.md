@@ -17,29 +17,29 @@ This skill acts as an architectural advisor. It guides the AI to propose, select
 The developer (Nasta) is highly proficient in the following domains. **ONLY** select technologies from this list when architecting solutions, unless the user explicitly asks to explore something completely new:
 
 ### 🎨 Frontend
-- **Frameworks**: [React / Vite](../react-vite/SKILL.md), [Next.js](../nextjs/SKILL.md)
-- **Languages**: [TypeScript](../typescript/SKILL.md)
-- **Styling**: [Tailwind CSS](../tailwindcss/SKILL.md) (or Vanilla CSS depending on instructions)
+- **Frameworks**: [React / Vite](../../05-frontend/react-vite/SKILL.md), [Next.js](../../05-frontend/nextjs/SKILL.md)
+- **Languages**: [TypeScript](../../06-code-quality/typescript/SKILL.md)
+- **Styling**: [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md) (or Vanilla CSS depending on instructions)
 
 ### ⚙️ Backend
-- **Core**: [Node.js](../nodejs/SKILL.md), [Express.js](../expressjs/SKILL.md)
-- **Database**: [PostgreSQL](../postgresql/SKILL.md)
-- **ORM/Data**: [Prisma ORM](../prisma-orm/SKILL.md)
+- **Core**: [Node.js](../../04-backend/nodejs/SKILL.md), [Express.js](../../04-backend/expressjs/SKILL.md)
+- **Database**: [PostgreSQL](../../04-backend/postgresql/SKILL.md)
+- **ORM/Data**: [Prisma ORM](../../04-backend/prisma-orm/SKILL.md)
 
 ### 🏗️ Arquitectura & DevOps
-- **Structure**: [Microservicios](../microservices/SKILL.md), [pnpm Workspaces](../pnpm-workspaces/SKILL.md)
-- **Real-Time**: [Socket.io](../socketio/SKILL.md)
-- **Security**: [JWT / bcryptjs](../jwt-bcrypt/SKILL.md)
+- **Structure**: [Microservicios](../../04-backend/microservices/SKILL.md), [pnpm Workspaces](../../06-code-quality/pnpm-workspaces/SKILL.md)
+- **Real-Time**: [Socket.io](../../04-backend/socketio/SKILL.md)
+- **Security**: [JWT / bcryptjs](../../04-backend/jwt-bcrypt/SKILL.md)
 
 ### 🧠 Inteligencia Artificial
-- **Capabilities**: [AI Orchestration](../ai-orchestration/SKILL.md), [LLM Integration](../llm-integration/SKILL.md)
-- **Optimization**: [Prompt Engineering](../prompt-engineering/SKILL.md)
-- **Infrastructure**: [API AI Billing](../api-ai-billing/SKILL.md)
+- **Capabilities**: [AI Orchestration](../../03-ai-ml/ai-orchestration/SKILL.md), [LLM Integration](../../03-ai-ml/llm-integration/SKILL.md)
+- **Optimization**: [Prompt Engineering](../../03-ai-ml/prompt-engineering/SKILL.md)
+- **Infrastructure**: [API AI Billing](../../03-ai-ml/api-ai-billing/SKILL.md)
 
 ### 📱 Apps Multiplataforma
-- **Mobile Native**: [React Native](../react-native/SKILL.md), [Expo](../expo-production-auditor/SKILL.md)
-- **Desktop**: [Electron.js](../electronjs/SKILL.md)
-- **Web App**: [PWA / Capacitor](../pwa-capacitor/SKILL.md)
+- **Mobile Native**: [React Native](../../05-frontend/react-native/SKILL.md), [Expo](../../05-frontend/expo-production-auditor/SKILL.md)
+- **Desktop**: [Electron.js](../../05-frontend/electronjs/SKILL.md)
+- **Web App**: [PWA / Capacitor](../../05-frontend/pwa-capacitor/SKILL.md)
 
 ## Tech Selection Guidelines
 

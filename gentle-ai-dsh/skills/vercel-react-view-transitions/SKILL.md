@@ -316,7 +316,7 @@ For Next.js setup (`experimental.viewTransition` flag, `transitionTypes` on `nex
 
 ## Accessibility
 
-Always add the reduced motion CSS from [references/css-recipes.md](../motion-accessibility/SKILL.md) to your global stylesheet.
+Always add the reduced motion CSS from [references/css-recipes.md](../../05-frontend/motion-accessibility/SKILL.md) to your global stylesheet.
 
 ---
 

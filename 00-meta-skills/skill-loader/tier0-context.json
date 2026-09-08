@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1788767782151,
+  "generatedAt": 1788890419818,
   "schemaVersion": 1,
   "skillCount": 14,
   "skills": [
@@ -29,7 +29,7 @@
     },
     {
       "name": "agents",
-      "description": "Orchestration guide for a team of 9 specialized virtual agents in [APP]. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place."
+      "description": "Orchestration guide for a team of 9 specialized virtual agents in the application. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place."
     },
     {
       "name": "idea-to-prd-express",

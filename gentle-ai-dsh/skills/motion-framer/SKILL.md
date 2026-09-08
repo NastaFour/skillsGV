@@ -49,7 +49,7 @@ The default animation library for React. Covers web (Motion/framer-motion) and m
 - [Variants & Stagger](references/variants-stagger.md) — orchestrated sequences
 - [Mobile (Reanimated)](references/mobile-reanimated.md) — Reanimated 3 for Expo
 - [`design-system-tokens`](../design-system-tokens/SKILL.md) — motion tokens
-- [`micro-interactions`](../micro-interactions/SKILL.md) — interaction patterns
+- [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — interaction patterns
 - [`scroll-animations`](../scroll-animations/SKILL.md) — scroll-linked motion
 - [`page-transitions`](../page-transitions/SKILL.md) — route transitions
 - [`motion-accessibility`](../motion-accessibility/SKILL.md) — reduced-motion

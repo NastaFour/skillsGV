@@ -44,5 +44,5 @@ Run when the user provides a Figma URL (`https://figma.com/design/:fileKey/:file
 
 ## References
 
-- [`11-mcp-hybrid/figma-mcp`](../figma-mcp/SKILL.md) — Figma MCP inspection surface (both stay routable; `figma-implement` is canonical for the figma group).
+- [`11-mcp-hybrid/figma-mcp`](../../11-mcp-hybrid/figma-mcp/SKILL.md) — Figma MCP inspection surface (both stay routable; `figma-implement` is canonical for the figma group).
 - Fuente original (Apache-2.0): [followba/figma-implement-design](https://github.com/followba/figma-implement-design).

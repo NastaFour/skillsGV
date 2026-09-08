@@ -43,4 +43,4 @@ Prevents bug #9 where `loadStripe()` was called at module level in `StripeChecko
 
 - [Lazy Patterns](references/lazy-patterns.md) — 3 patterns with Stripe/Leaflet/LLM examples
 - [`react-vite`](../react-vite/SKILL.md) — Vite code-splitting config
-- [`frontend-debugging-protocol`](../frontend-debugging-protocol/SKILL.md) — debugging module errors
+- [`frontend-debugging-protocol`](../../02-dev-roles/frontend-debugging-protocol/SKILL.md) — debugging module errors

@@ -47,7 +47,7 @@ Use this skill when implementing OpenAI/Gemini/Anthropic API calls, configuring 
 
 ---
 
-## 🛒 [APP] Integration Example (Support Assistant)
+## 🛒 Application Integration Example (Support Assistant)
 
 - When a customer submits an inquiry on the mobile app ("Mi pedido llegó incompleto"), the server calls the LLM with the user's order details.
 - **Context Injection**: Retrieve order and product tables via Prisma first, and inject them into the system prompt. Never let the LLM guess what the order contains.

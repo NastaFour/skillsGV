@@ -45,7 +45,7 @@ For bug fixes that don't touch native code:
 ```bash
 # 1. Fix the bug
 # 2. Push OTA update
-eas update --branch production --message "Fix booking crash on null barber"
+eas update --branch production --message "Fix booking crash on null provider"
 
 # 3. Users get the update on next app launch (no store review needed)
 ```

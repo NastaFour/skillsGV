@@ -40,7 +40,7 @@
  */
 import { existsSync } from "node:fs";
 import { resolve, fileURLToPath } from "node:url";
-import { runScriptGuarded } from "../../_shared/script-utils.mjs";
+import { runScriptGuarded } from "../../../_shared/script-utils.mjs";
 
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 

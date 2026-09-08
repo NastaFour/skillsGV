@@ -1,6 +1,6 @@
 ---
 name: i18n-localization
-description: Internationalization patterns for [APP] using i18next with Spanish (primary) and English (secondary) support. Covers web (react-i18next) and mobile (expo-localization + i18next) setup, translation file structure, and locale-aware formatting (dates, currencies). Use when adding multi-language support or localizing notification templates.
+description: Internationalization patterns for the application using i18next with Spanish (primary) and English (secondary) support. Covers web (react-i18next) and mobile (expo-localization + i18next) setup, translation file structure, and locale-aware formatting (dates, currencies). Use when adding multi-language support or localizing notification templates.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
@@ -12,7 +12,7 @@ allowed-tools: Bash(node:*) Read
 
 # 🌐 i18n & Localization
 
-Multi-language support for [APP] using i18next. Spanish is primary (Venezuela market), English secondary.
+Multi-language support for the application using i18next. Spanish is primary (Venezuela market), English secondary.
 
 ## 📋 When to Use
 
@@ -43,4 +43,4 @@ Multi-language support for [APP] using i18next. Spanish is primary (Venezuela ma
 - [Formatting](references/formatting.md) — dates, currency, numbers per locale
 - [`react-vite`](../react-vite/SKILL.md) — web i18n integration
 - [`react-native`](../react-native/SKILL.md) — mobile i18n integration
-- [`notifications-multichannel`](../notifications-multichannel/SKILL.md) — template localization
+- [`notifications-multichannel`](../../04-backend/notifications-multichannel/SKILL.md) — template localization

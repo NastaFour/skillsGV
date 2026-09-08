@@ -14,19 +14,19 @@ This skill forces the AI to act as a Principal Software Architect. It ensures so
 
 ## Architectural Context Validation
 Before designing, ensure you understand the project's constraints:
-- **Expected Users/Scale**: Are we designing for local grocery branches (hundreds) or city-wide scaling (thousands)?
+- **Expected Users/Scale**: Are we designing for local catalog branches (hundreds) or city-wide scaling (thousands)?
 - **Platform**: Mobile client (Expo Router), Admin web (Vite/Tailwind), and backend API (Express/Prisma).
-- **Monorepo Setup**: Refer to [pnpm Workspaces](../pnpm-workspaces/SKILL.md) for root structural layouts.
-- **Strict Constraints**: Confirm stack constraints from the [Project Tracker](../project-tracker/SKILL.md) and security guardrails from [JWT / Bcrypt](../jwt-bcrypt/SKILL.md) and [Socket.io](../socketio/SKILL.md).
-- **SOLID & Clean Code**: Proposed architecture must not create SRP violations (e.g., fat controllers mixing DB queries, business logic, and validation in one file). Refer to [SOLID & Clean Code](../solid-clean-code/SKILL.md).
-- **Scalability & MLOps**: If the design includes AI modules, confirm telemetry hooks, Zod data contracts, and stateless horizontal scaling are planned from the start. Refer to [AI/ML Scalability & MLOps](../ai-scalability-mlops/SKILL.md).
+- **Monorepo Setup**: Refer to [pnpm Workspaces](../../06-code-quality/pnpm-workspaces/SKILL.md) for root structural layouts.
+- **Strict Constraints**: Confirm stack constraints from the [Project Tracker](../../01-planning-process/project-tracker/SKILL.md) and security guardrails from [JWT / Bcrypt](../../04-backend/jwt-bcrypt/SKILL.md) and [Socket.io](../../04-backend/socketio/SKILL.md).
+- **SOLID & Clean Code**: Proposed architecture must not create SRP violations (e.g., fat controllers mixing DB queries, business logic, and validation in one file). Refer to [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
+- **Scalability & MLOps**: If the design includes AI modules, confirm telemetry hooks, Zod data contracts, and stateless horizontal scaling are planned from the start. Refer to [AI/ML Scalability & MLOps](../../03-ai-ml/ai-scalability-mlops/SKILL.md).
 
 ## Required Deliverables
 When designing architecture, you MUST provide:
 1. **Recommended Tech Stack**: Frontend, Backend, Database, and Sockets, referencing their specific skill files.
 2. **Initial Folder Structure**: Output a clean ASCII tree representing the monorepo workspaces skeleton.
-3. **Data Model**: Declare Prisma schema structures following [Prisma ORM Guidelines](../prisma-orm/SKILL.md).
-4. **Core User Flow**: Outline flows according to the [[APP] Workflow Orchestrator](../application-workflow/SKILL.md).
+3. **Data Model**: Declare Prisma schema structures following [Prisma ORM Guidelines](../../04-backend/prisma-orm/SKILL.md).
+4. **Core User Flow**: Outline flows according to the [Application Workflow Orchestrator](../../01-planning-process/application-workflow/SKILL.md).
 5. **SOLID Compliance Map**: Show how each layer (Controller → Repository → Service → Schema) has a single responsibility. Confirm DIP is enforced via interfaces, not direct class instantiation.
 6. **Architectural Decisions**: Explicitly list 3-5 major design decisions made and *why*.
 7. **Risk Analysis**: Identify 2-3 potential technical risks (e.g., socket memory leaks, inventory transactional conflicts) and concrete mitigation strategies.

@@ -1,11 +1,14 @@
 ---
 name: chained-pr
 description: "Trigger: PRs over 400 lines, stacked PRs, review slices. Split oversized changes into chained PRs that protect review focus."
+compatibility: compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(git:*,gh:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: "chained pr, stacked pr, split pr, large pr, pr over 400 lines, review slices"
+  scope: "global, project"
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
 ---
 
 ## Activation Contract

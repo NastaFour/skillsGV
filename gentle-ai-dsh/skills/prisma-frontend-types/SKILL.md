@@ -44,4 +44,4 @@ Maps Prisma models to frontend-safe TypeScript types. Prevents bug #6 where `Use
 - [Type Mapping Rules](references/type-mapping-rules.md) — Prisma → TS mapping table
 - [`prisma-orm`](../prisma-orm/SKILL.md) — backend Prisma usage
 - [`api-response-normalizer`](../api-response-normalizer/SKILL.md) — response envelope
-- [`typescript`](../typescript/SKILL.md) — strict TS guidelines
+- [`typescript`](../../06-code-quality/typescript/SKILL.md) — strict TS guidelines

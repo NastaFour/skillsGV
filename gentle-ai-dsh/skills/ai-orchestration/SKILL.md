@@ -41,7 +41,7 @@ Use this skill when designing systems where multiple LLM processes or backend wo
 
 ---
 
-## 🛒 [APP] Integration Example (Triage & Route Coordination)
+## 🛒 Application Integration Example (Triage & Route Coordination)
 
 ```
                        [Customer Inquiry]

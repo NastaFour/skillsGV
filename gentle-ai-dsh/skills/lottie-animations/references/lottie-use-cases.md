@@ -4,9 +4,9 @@
 
 ```tsx
 const onboardingSteps = [
-  { animation: "welcome.lottie", title: "Welcome", text: "Book a barber to your door" },
-  { animation: "book.lottie", title: "Easy Booking", text: "Choose service, barber, time" },
-  { animation: "track.lottie", title: "Live Tracking", text: "Watch your barber arrive" },
+  { animation: "welcome.lottie", title: "Welcome", text: "Book a provider to your door" },
+  { animation: "book.lottie", title: "Easy Booking", text: "Choose service, provider, time" },
+  { animation: "track.lottie", title: "Live Tracking", text: "Watch your provider arrive" },
   { animation: "enjoy.lottie", title: "Enjoy", text: "Premium service at home" },
 ];
 
@@ -46,8 +46,8 @@ function EmptyBookings() {
     <div className="flex flex-col items-center justify-center py-20">
       <DotLottieReact src="/animations/empty-calendar.lottie" loop autoplay className="w-40 h-40" />
       <h3 className="text-xl font-semibold mt-6">No bookings yet</h3>
-      <p className="text-white/50 mt-2">Book your first barber service</p>
-      <button className="mt-6 bg-primary px-6 py-2 rounded-lg">Browse barbers</button>
+      <p className="text-white/50 mt-2">Book your first provider service</p>
+      <button className="mt-6 bg-primary px-6 py-2 rounded-lg">Browse providers</button>
     </div>
   );
 }
@@ -68,7 +68,7 @@ function BookingSuccess({ onDismiss }) {
           onComplete={() => setTimeout(onDismiss, 500)}
         />
         <h2 className="text-2xl font-bold mt-4">Booking confirmed!</h2>
-        <p className="text-white/60 mt-2">Your barber is on the way</p>
+        <p className="text-white/60 mt-2">Your provider is on the way</p>
       </motion.div>
     </div>
   );

@@ -73,6 +73,14 @@ export function validateRouterOutput(output, ctx) {
     }
   }
 
+  // secondary and tier1toLoad must not repeat entries (router must dedupe)
+  if (Array.isArray(secondary) && new Set(secondary).size !== secondary.length) {
+    violations.push("secondary entries must be unique");
+  }
+  if (Array.isArray(tier1toLoad) && new Set(tier1toLoad).size !== tier1toLoad.length) {
+    violations.push("tier1toLoad entries must be unique");
+  }
+
   // Invariant 4: confidence=1.0 ⇒ triggeredExact=true
   if (confidence === 1.0 && triggeredExact !== true) {
     violations.push(`confidence=1.0 requires triggeredExact=true (got triggeredExact=${triggeredExact})`);

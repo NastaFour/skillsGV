@@ -34,8 +34,8 @@ model UserGallery {
   id        String   @id @default(cuid())
   imageUrl  String
   caption   String?
-  barber    UserProfile @relation(fields: [barberId], references: [id])
-  barberId  String
+  provider    UserProfile @relation(fields: [providerId], references: [id])
+  providerId  String
 }
 ```
 

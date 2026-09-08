@@ -42,5 +42,5 @@ Explains the evaluation order of ES module imports in Node.js. Prevents bug #8 w
 ## 📚 References
 
 - [ESM Evaluation Order](references/esm-evaluation-order.md) — diagram + anti-pattern + rule
-- [`env-management`](../env-management/SKILL.md) — env var management across environments
+- [`env-management`](../../06-code-quality/env-management/SKILL.md) — env var management across environments
 - [`nodejs`](../nodejs/SKILL.md) — backend Node.js guidelines

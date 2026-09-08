@@ -1,6 +1,6 @@
 ---
 name: application-workflow
-description: Ultimate business-logic orchestrator for the [APP]. Links the Expo mobile client, Admin Vite website, Node/Express server, Sockets, and AI modules into a unified workflow.
+description: Ultimate business-logic orchestrator for the application. Links the Expo mobile client, Admin Vite website, Node/Express server, Sockets, and AI modules into a unified workflow.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,9 +10,9 @@ metadata:
   version: "1.0.0"
 ---
 
-# 🛒 [APP] Workflow Orchestrator
+# 🛒 Application Workflow Orchestrator
 
-Use this skill to guide the integration and verification of business processes across the [APP] codebase. It ties the frontend client, admin panel, backend service database, real-time streams, and customer support desks together.
+Use this skill to guide the integration and verification of business processes across the application codebase. It ties the frontend client, admin panel, backend service database, real-time streams, and customer support desks together.
 
 ```mermaid
 flowchart TD

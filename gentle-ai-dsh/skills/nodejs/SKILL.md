@@ -12,7 +12,7 @@ metadata:
 
 # ⚙️ Node.js Backend Development (2026 Standards)
 
-Use this skill when developing the backend server or background workers for the [APP].
+Use this skill when developing the backend server or background workers for the application.
 
 ## 🚨 Backend Core Standards
 
@@ -47,6 +47,6 @@ Use this skill when developing the backend server or background workers for the 
    - Prohibit `console.log` in production.
    - Include a `correlation-id` in all log objects to trace a single request flow between Express APIs and WebSockets.
 
-## 🛒 [APP] Execution Context
+## 🛒 Application Execution Context
 - **Inventory Schedulers**: When running background tasks (e.g. checking out-of-stock items at midnight), handle operations gracefully to keep the server responsive to buyer checkouts.
 - **WebSocket Handshakes**: Log handshake details including the authorized user's details for auditing and tracing support requests.

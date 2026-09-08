@@ -20,13 +20,13 @@ Run `judgment-day` ONLY when:
 - staged diff is **≥ 100 lines** AND touches **critical markers** (auth, payments, migrations, sql, ssl, secret, jwt, bcrypt), OR
 - the user explicitly requests it on a non-trivial change.
 
-Else: use [`code-reviewer`](../code-reviewer/SKILL.md) only (1 reviewer, no parallel escalation). The `skill-router` sets `skipJudgmentDay=true` for diff <100 lines with no critical markers.
+Else: use [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) only (1 reviewer, no parallel escalation). The `skill-router` sets `skipJudgmentDay=true` for diff <100 lines with no critical markers.
 
 # Judgment Day — Parallel Adversarial Review
 
 Two independent judges review the same target from opposing stances. The goal is not consensus — it is **conflict surfacing**. Whatever both judges independently flag is almost certainly real; what only one flags is a hypothesis worth checking. Never run merge on a target that has not survived Judgment Day for non-trivial changes.
 
-`judgment-day` belongs to the SDD family (see [`professional-planner`](../professional-planner/SKILL.md)). It slots in **after** `sdd-apply` and **before** opening a PR: adversarial review of the code diff. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to. It MUST NOT be used to validate SDD planning steps (proposal/spec/design/tasks) — that validation belongs to the orchestrator gatekeeper and the phase result contract.
+`judgment-day` belongs to the SDD family (see [`professional-planner`](../../professional-planner/SKILL.md)). It slots in **after** `sdd-apply` and **before** opening a PR: adversarial review of the code diff. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to. It MUST NOT be used to validate SDD planning steps (proposal/spec/design/tasks) — that validation belongs to the orchestrator gatekeeper and the phase result contract.
 
 ## When to Use
 
@@ -92,11 +92,11 @@ After both verdicts are sealed:
 |---|---|---|
 | Go. | Block. Address before re-running Judgment Day. | The target is ambiguous. Rewrite the spec/design, not the review. |
 
-5. **Record the verdict** in `session-notes` / `engram-integration` (see [`engram-integration`](../engram-integration/SKILL.md)) so the next session knows what was challenged and what survived.
+5. **Record the verdict** in `session-notes` / `engram-integration` (see [`engram-integration`](../../01-planning-process/engram-integration/SKILL.md)) so the next session knows what was challenged and what survived.
 
 ## Rules
 
-- **Independence is the entire point.** Collapsing to one judge gives you `code-reviewer` (see [`code-reviewer`](../code-reviewer/SKILL.md)) — that is fine, but it is not Judgment Day.
+- **Independence is the entire point.** Collapsing to one judge gives you `code-reviewer` (see [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md)) — that is fine, but it is not Judgment Day.
 - **No fix proposals from judges.** Diagnosis only. Fixes are authored by the orchestrator in a fresh context after synthesis.
 - **Same material, same prompt.** If you give judge 2 more context than judge 1, you have wasted the run.
 - **Two is the minimum, not the maximum.** For high-stakes changes (auth, payments, migrations) use three judges: red, blue, and a **grey** judge who reads only the diff and asks "what is this even for?" — the dumb-question judge catches the obvious.
@@ -105,11 +105,11 @@ After both verdicts are sealed:
 
 ## Relationship to other skills
 
-- [`code-reviewer`](../code-reviewer/SKILL.md) — single-reviewer quality gate. Judgment Day is the two-reviewer escalation.
-- [`dod-checker`](../dod-checker/SKILL.md) — the strict gatekeeper. Judgment Day feeds it evidence.
-- [`parallelization`](../parallelization/SKILL.md) — the mechanics of running two agent sessions in parallel.
-- [`kill-switches`](../kill-switches/SKILL.md) — if both judges say kill, the kill switch trips.
-- [`professional-planner`](../professional-planner/SKILL.md) — Judgment Day is a phase gate inside SDD.
+- [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) — single-reviewer quality gate. Judgment Day is the two-reviewer escalation.
+- [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) — the strict gatekeeper. Judgment Day feeds it evidence.
+- [`parallelization`](../../01-planning-process/parallelization/SKILL.md) — the mechanics of running two agent sessions in parallel.
+- [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — if both judges say kill, the kill switch trips.
+- [`professional-planner`](../../professional-planner/SKILL.md) — Judgment Day is a phase gate inside SDD.
 
 ## Example: judging a payment change
 

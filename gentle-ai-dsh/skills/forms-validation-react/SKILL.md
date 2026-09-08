@@ -46,4 +46,4 @@ Patterns for form validation with React Hook Form + Zod. Uses shared schemas fro
 - [Shared Schemas](references/shared-schemas.md) — schema convention in shared-types
 - [`react-vite`](../react-vite/SKILL.md) — web form components
 - [`react-native`](../react-native/SKILL.md) — mobile form components
-- [`prisma-frontend-types`](../prisma-frontend-types/SKILL.md) — field type mapping
+- [`prisma-frontend-types`](../../04-backend/prisma-frontend-types/SKILL.md) — field type mapping

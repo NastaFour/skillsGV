@@ -40,7 +40,7 @@ A systematic decision tree for diagnosing frontend visual bugs where the symptom
 ## 📚 References
 
 - [Diagnostic Decision Tree](references/diagnostic-tree.md) — full tree by symptom
-- [`build-config-validator`](../build-config-validator/SKILL.md) — for CSS-related symptoms
-- [`api-response-normalizer`](../api-response-normalizer/SKILL.md) — for data shape mismatch symptoms
+- [`build-config-validator`](../../06-code-quality/build-config-validator/SKILL.md) — for CSS-related symptoms
+- [`api-response-normalizer`](../../04-backend/api-response-normalizer/SKILL.md) — for data shape mismatch symptoms
 - [`auth-flow-audit`](../auth-flow-audit/SKILL.md) — for redirect loop symptoms
 - [`expert-debugger`](../expert-debugger/SKILL.md) — if root cause is deeper

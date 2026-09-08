@@ -21,7 +21,7 @@ if (supported) {
 ```
 
 4. Cliente confirma y paga Cuota Inicial en app Cashea
-5. Cashea envía Webhook al servidor del supermercado
+5. Cashea envía Webhook al servidor de la aplicación
 
 ## Webhook de Cashea
 

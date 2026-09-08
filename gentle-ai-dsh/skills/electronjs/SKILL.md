@@ -12,7 +12,7 @@ metadata:
 
 # 💻 Electron.js Desktop Development (Secure Shells)
 
-Use this skill when developing desktop wrappers, cash register interfaces, or regional manager software for the [APP] system.
+Use this skill when developing desktop wrappers, cash register interfaces, or regional manager software for the application system.
 
 ## 🚨 Security & IPC Hardening (2026 Guardrails)
 
@@ -46,7 +46,7 @@ Use this skill when developing desktop wrappers, cash register interfaces, or re
 3. **Remote Navigation Control**:
    - Block unexpected navigations to unauthorized URLs. Enforce CSP headers in the renderer window context.
 
-## 🛒 [APP] Desktop Shell (Regional Managers / Cash Registers)
+## 🛒 Desktop Shell (Regional Managers / Cash Registers)
 
 - **Offline Cash Register Mode**: If the local cash register loses internet access, write checkout transactions to a local SQLite database file (`better-sqlite3` in the main process).
 - **Auto-Sync daemon**: In the background (Electron main process), run a daemon that polls the local DB and uploads transactions to the main Postgres server as soon as connection is restored.
