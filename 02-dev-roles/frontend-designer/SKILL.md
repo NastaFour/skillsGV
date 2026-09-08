@@ -30,4 +30,4 @@ Focus on:
 - **Component Isolation**: Separate presentational components from the live data stream. Socket feeds or API calls must be handled in container wrappers to keep visual components easily reusable. This enforces the **Single Responsibility Principle** — see [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
 - **Sanitización de Datos**: Escapar cualquier string dinámico o JSON proveniente de WebSockets o APIs antes de renderizarlo en tablas, utilizando [React/Vite DOMPurify rules](../../05-frontend/react-vite/SKILL.md).
 
-NEVER use generic AI-generated templates. Vary layouts, maintain high spacing values (generous padding/margins), and design layouts specific to the [APP] workflow.
+NEVER use generic AI-generated templates. Vary layouts, maintain high spacing values (generous padding/margins), and design layouts specific to the application workflow.

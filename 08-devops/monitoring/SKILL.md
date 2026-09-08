@@ -1,6 +1,6 @@
 ---
 name: monitoring
-description: Logging, healthchecks, and telemetry standards for [APP]. Covers Pino/Winston setup, healthcheck endpoints, correlation-ID tracing, and alerts. Use when configuring observability for the backend. Do not use for CI/CD pipelines or infrastructure setup.
+description: Logging, healthchecks, and telemetry standards for the application. Covers Pino/Winston setup, healthcheck endpoints, correlation-ID tracing, and alerts. Use when configuring observability for the backend. Do not use for CI/CD pipelines or infrastructure setup.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -12,7 +12,7 @@ metadata:
 
 # 📊 Monitoring — Logging, Healthchecks & Telemetría
 
-Usa este skill al configurar sistemas de observabilidad para el backend de [APP].
+Usa este skill al configurar sistemas de observabilidad para el backend de the application.
 
 ---
 

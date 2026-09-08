@@ -1,6 +1,6 @@
 ---
 name: payments
-description: Checkout and payment flows for the Venezuela ecosystem in [APP]. Covers BCV USD/VES conversion, Pago Móvil (C2P or manual reference), Cashea BNPL, and ACID Prisma transactions. Use when implementing checkout, Pago Móvil, Cashea, or Venezuelan payment integrations. Do not use for international gateways (Stripe, PayPal).
+description: Checkout and payment flows for the Venezuela ecosystem in the application. Covers BCV USD/VES conversion, Pago Móvil (C2P or manual reference), Cashea BNPL, and ACID Prisma transactions. Use when implementing checkout, Pago Móvil, Cashea, or Venezuelan payment integrations. Do not use for international gateways (Stripe, PayPal).
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -12,7 +12,7 @@ metadata:
 
 # 🇻🇪 Pagos, Checkout y Multi-Moneda
 
-Pipeline A del [[APP] Workflow](../../01-planning-process/application-workflow/SKILL.md). Implementa creación de órdenes, procesamiento de pagos venezolanos, e integraciones financieras.
+Pipeline A del [Application Workflow](../../01-planning-process/application-workflow/SKILL.md). Implementa creación de órdenes, procesamiento de pagos venezolanos, e integraciones financieras.
 
 ---
 

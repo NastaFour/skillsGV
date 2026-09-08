@@ -1,4 +1,4 @@
-# [APP] Prisma Schema
+# the application Prisma Schema
 
 ```prisma
 datasource db {

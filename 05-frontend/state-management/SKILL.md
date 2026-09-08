@@ -4,9 +4,9 @@ description: DEPRECATED. Use zustand-5 instead. Legacy conceptual state-manageme
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
-deprecated: true
-redirect: zustand-5
 metadata:
+  deprecated: "true"
+  redirect: "zustand-5"
   trigger: ["state management legacy", "conceptual store deprecated"]
   scope: [global, project]
   version: "1.0.0"

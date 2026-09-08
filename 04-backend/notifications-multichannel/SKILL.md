@@ -1,6 +1,6 @@
 ---
 name: notifications-multichannel
-description: Unified notification service for [APP] covering push (Expo), email (Resend), and SMS (Twilio) channels with user preference resolution and provider fallback. Use when sending booking confirmations, reminders, no-show alerts, or any notification that should respect user channel preferences and fall back across channels.
+description: Unified notification service for the application covering push (Expo), email (Resend), and SMS (Twilio) channels with user preference resolution and provider fallback. Use when sending booking confirmations, reminders, no-show alerts, or any notification that should respect user channel preferences and fall back across channels.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:

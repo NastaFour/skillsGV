@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **209 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -8,6 +8,9 @@ Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| find-skills | [00-meta-skills/find-skills/SKILL.md](00-meta-skills/find-skills/SKILL.md) ← descubrimiento e instalación de skills del ecosistema abierto |
+| skill-improver | [00-meta-skills/skill-improver/SKILL.md](00-meta-skills/skill-improver/SKILL.md) ← auditoría, evaluación y refactorización de calidad de skills |
+| skill-registry | [00-meta-skills/skill-registry/SKILL.md](00-meta-skills/skill-registry/SKILL.md) ← sincronización y actualización del registro tras cambios en skills |
 | agent-roster | [00-meta-skills/agent-roster/SKILL.md](00-meta-skills/agent-roster/SKILL.md) ← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models) |
 | catalog-usage | [00-meta-skills/catalog-usage/SKILL.md](00-meta-skills/catalog-usage/SKILL.md) ← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento |
 | skill-creator | [00-meta-skills/skill-creator/SKILL.md](00-meta-skills/skill-creator/SKILL.md) |
@@ -34,6 +37,7 @@ Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| cognitive-doc-design | [01-planning-process/cognitive-doc-design/SKILL.md](01-planning-process/cognitive-doc-design/SKILL.md) ← diseño de documentación técnica y guías reduciendo carga cognitiva |
 | project-tracker | [01-planning-process/project-tracker/SKILL.md](01-planning-process/project-tracker/SKILL.md) |
 | tech-stack-advisor | [01-planning-process/tech-stack-advisor/SKILL.md](01-planning-process/tech-stack-advisor/SKILL.md) |
 | application-workflow | [01-planning-process/application-workflow/SKILL.md](01-planning-process/application-workflow/SKILL.md) |
@@ -179,6 +183,12 @@ Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| branch-pr | [06-code-quality/branch-pr/SKILL.md](06-code-quality/branch-pr/SKILL.md) ← creación de pull requests con validación issue-first |
+| chained-pr | [06-code-quality/chained-pr/SKILL.md](06-code-quality/chained-pr/SKILL.md) ← división de PRs grandes (>400 líneas) en slices apilados para revisión |
+| comment-writer | [06-code-quality/comment-writer/SKILL.md](06-code-quality/comment-writer/SKILL.md) ← redacción colaborativa y directa en comentarios de PRs y code reviews |
+| issue-creation | [06-code-quality/issue-creation/SKILL.md](06-code-quality/issue-creation/SKILL.md) ← creación y triage estructurado de issues en GitHub con evidencia técnica |
+| systemic-issue-triage | [06-code-quality/systemic-issue-triage/SKILL.md](06-code-quality/systemic-issue-triage/SKILL.md) ← triage masivo de reportes de bugs, issues y backlog |
+| work-unit-commits | [06-code-quality/work-unit-commits/SKILL.md](06-code-quality/work-unit-commits/SKILL.md) ← commits atómicos estructurados por unidad de trabajo revisable |
 | pnpm-workspaces | [06-code-quality/pnpm-workspaces/SKILL.md](06-code-quality/pnpm-workspaces/SKILL.md) |
 | turborepo | [06-code-quality/turborepo/SKILL.md](06-code-quality/turborepo/SKILL.md) |
 | biome | [06-code-quality/biome/SKILL.md](06-code-quality/biome/SKILL.md) |
@@ -195,6 +205,7 @@ Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| go-testing | [07-testing/go-testing/SKILL.md](07-testing/go-testing/SKILL.md) ← patrones de prueba para Go: unit tests, cobertura, Bubbletea teatest y golden files |
 | testing-patterns | [07-testing/testing-patterns/SKILL.md](07-testing/testing-patterns/SKILL.md) |
 | playwright | [07-testing/playwright/SKILL.md](07-testing/playwright/SKILL.md) ← E2E, MCP-first exploration, Page Object Model |
 | pytest | [07-testing/pytest/SKILL.md](07-testing/pytest/SKILL.md) ← fixtures, mocking, parametrize, markers, async, conftest |
@@ -220,6 +231,7 @@ Catálogo de **197 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
+| gentle-ai-bench | [11-mcp-hybrid/gentle-ai-bench/SKILL.md](11-mcp-hybrid/gentle-ai-bench/SKILL.md) ← benchmarking y evaluación de agentes mediante corpus de journeys |
 | component-scrapper-mcp | [11-mcp-hybrid/component-scrapper-mcp/SKILL.md](11-mcp-hybrid/component-scrapper-mcp/SKILL.md) ← scrapea componentes de sitios en vivo vía MCP y los reutiliza como código project-ready |
 | oklch-theme-injector | [11-mcp-hybrid/oklch-theme-injector/SKILL.md](11-mcp-hybrid/oklch-theme-injector/SKILL.md) ← temas de color perceptivo OKLCH/OKHSL sobre la taxonomía de tokens HSL |
 | motion-video-pipeline | [11-mcp-hybrid/motion-video-pipeline/SKILL.md](11-mcp-hybrid/motion-video-pipeline/SKILL.md) ← pipeline motion-to-video: render de frames y ensamblaje con timing determinístico |

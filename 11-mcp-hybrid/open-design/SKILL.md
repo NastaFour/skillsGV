@@ -5,7 +5,7 @@ license: Apache-2.0
 allowed-tools: Read Bash(pwsh:*)
 metadata:
   author: nexu-io
-  version: "1.1"
+  version: "1.1.0"
 ---
 
 ## Activation Contract

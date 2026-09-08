@@ -1,18 +1,18 @@
 # Booking Domain Types
 
 ```typescript
-/** A bookable time slot for a barber */
+/** A bookable time slot for a provider */
 interface BookingSlot {
   startTime: string; // ISO 8601 UTC
   endTime: string;   // ISO 8601 UTC
-  barberId: string;
+  providerId: string;
   available: boolean;
   conflictReason?: string; // if not available, why
 }
 
-/** A barber's working window for a specific day */
+/** A provider's working window for a specific day */
 interface AvailabilityWindow {
-  barberId: string;
+  providerId: string;
   date: string; // YYYY-MM-DD
   start: string; // ISO 8601 UTC
   end: string;   // ISO 8601 UTC
@@ -28,7 +28,7 @@ interface ConflictCheck {
 
 /** Input for creating a booking */
 interface BookingInput {
-  barberId: string;
+  providerId: string;
   clientId: string;
   serviceId: string;
   startTime: string; // ISO 8601 UTC
@@ -40,7 +40,7 @@ interface BookingInput {
   };
 }
 
-/** Working hours for a barber per day of week */
+/** Working hours for a provider per day of week */
 interface WorkingHours {
   monday:    { start: string; end: string } | null;
   tuesday:   { start: string; end: string } | null;
@@ -52,8 +52,8 @@ interface WorkingHours {
 }
 
 /** Temporary unavailability (sick, vacation, etc.) */
-interface BarberUnavailability {
-  barberId: string;
+interface ProviderUnavailability {
+  providerId: string;
   start: string; // ISO 8601 UTC
   end: string;   // ISO 8601 UTC
   reason: string;

@@ -1,6 +1,6 @@
 ---
 name: ci-cd
-description: CI/CD pipeline configuration for the [APP] monorepo. Covers GitHub Actions workflows, deploys to Railway/Render/VPS, and environment promotion. Use when setting up continuous integration, automatic deployment, or environment promotion.
+description: CI/CD pipeline configuration for the application monorepo. Covers GitHub Actions workflows, deploys to Railway/Render/VPS, and environment promotion. Use when setting up continuous integration, automatic deployment, or environment promotion.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -12,7 +12,7 @@ metadata:
 
 # 🚀 CI/CD — Pipelines de Despliegue
 
-Usa este skill al configurar integración continua, despliegue automático, o promoción entre entornos para [APP].
+Usa este skill al configurar integración continua, despliegue automático, o promoción entre entornos para la aplicación.
 
 ---
 

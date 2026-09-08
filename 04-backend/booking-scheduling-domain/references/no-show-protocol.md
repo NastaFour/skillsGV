@@ -2,12 +2,12 @@
 
 ## 1. No-Show Detection
 
-A booking is marked `NO_SHOW` when the barber doesn't arrive within the tolerance window after the scheduled start time.
+A booking is marked `NO_SHOW` when the provider doesn't arrive within the tolerance window after the scheduled start time.
 
 ```
 Scheduled start: 10:00 AM
 Tolerance: 15 minutes
-If barber hasn't marked ARRIVED by 10:15 AM → NO_SHOW triggered
+If provider hasn't marked ARRIVED by 10:15 AM → NO_SHOW triggered
 ```
 
 ## 2. Timeout Job (Background Job)
@@ -37,7 +37,7 @@ async function handleNoShow(bookingId: string) {
   // Idempotency: if booking already completed or cancelled, skip
   if (booking.status === "COMPLETED" || booking.status === "CANCELLED") return;
 
-  // If barber already arrived, skip
+  // If provider already arrived, skip
   if (booking.status === "ARRIVED" || booking.status === "EN_RUTA") return;
 
   // Mark as no-show
@@ -49,7 +49,7 @@ async function handleNoShow(bookingId: string) {
   // Notify client
   await notificationService.send(booking.clientId, {
     template: "no-show",
-    data: { bookingId, barberName: booking.barber.user.name },
+    data: { bookingId, providerName: booking.provider.user.name },
   });
 
   // Offer reassignment or refund
@@ -57,7 +57,7 @@ async function handleNoShow(bookingId: string) {
     await processRefund(booking);
   }
 
-  // Trigger AI reassignment if client wants another barber
+  // Trigger AI reassignment if client wants another provider
   await aiReassignQueue.add("suggest-alternative", { bookingId });
 }
 ```
@@ -67,14 +67,14 @@ async function handleNoShow(bookingId: string) {
 | Scenario | Fee |
 |---|---|
 | Client no-show (didn't answer door) | Client charged cancellation fee if prepaid |
-| Barber no-show (didn't arrive) | Full refund to client, barber penalized (rating impact) |
+| Provider no-show (didn't arrive) | Full refund to client, provider penalized (rating impact) |
 | Client cancels >2h before | No fee |
 | Client cancels <2h before | 50% fee if prepaid |
-| Barber cancels after accepting | Full refund, barber penalized |
+| Provider cancels after accepting | Full refund, provider penalized |
 
-## 5. Barber Penalty System
+## 5. Provider Penalty System
 
-Repeated no-shows by a barber:
+Repeated no-shows by a provider:
 
 - **1st no-show**: Warning + rating impact
 - **3 no-shows in 30 days**: Suspension (7 days)

@@ -10,9 +10,9 @@ metadata:
   version: "1.0.0"
 ---
 
-# 🧪 Testing Patterns — [APP]
+# 🧪 Testing Patterns — Application
 
-Usa este skill al escribir cualquier tipo de test automatizado para el monorepo del supermercado. Sigue los patrones establecidos para mantener consistencia entre backend, admin panel, y app móvil.
+Usa este skill al escribir cualquier tipo de test automatizado para el monorepo de la aplicación. Sigue los patrones establecidos para mantener consistencia entre backend, admin panel, y app móvil.
 
 ---
 
@@ -33,14 +33,14 @@ Usa este skill al escribir cualquier tipo de test automatizado para el monorepo 
 apps/backend/__tests__/
 ├── unit/
 │   ├── services/
-│   │   └── bcv.service.test.ts
+│   │   └── pricing.service.test.ts
 │   └── middleware/
 │       └── auth.test.ts
 ├── integration/
 │   ├── routes/
 │   │   └── orders.test.ts
 │   └── socket/
-│       └── delivery.test.ts
+│       └── notifications.test.ts
 └── fixtures/
     ├── users.ts
     └── products.ts

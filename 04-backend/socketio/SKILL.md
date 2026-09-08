@@ -47,7 +47,7 @@ Use this skill when implementing real-time feeds, client chat, GPS dispatch trac
      });
      ```
 
-## 🛒 [APP] Real-Time Rooms & Events
+## 🛒 Real-Time Rooms & Events
 
 Isolate events by creating virtual **Rooms**:
 

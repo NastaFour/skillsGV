@@ -271,8 +271,9 @@ function validate(file, catalogNames) {
   // min_diff_lines (metadata.min_diff_lines) must be a positive integer.
   const minDiffLines = getNestedField(front, "metadata", "min_diff_lines");
   if (minDiffLines !== null) {
-    const n = parseInt(minDiffLines, 10);
-    if (!Number.isFinite(n) || String(n) !== String(minDiffLines).trim() || n <= 0) {
+    const raw = String(minDiffLines).replace(/^["']|["']$/g, "").trim();
+    const n = parseInt(raw, 10);
+    if (!Number.isFinite(n) || String(n) !== raw || n <= 0) {
       issues.push({ severity: "error", check: "min-diff-lines-int", msg: `metadata.min_diff_lines "${minDiffLines}" must be a positive integer` });
     }
   }
@@ -280,8 +281,9 @@ function validate(file, catalogNames) {
   // time_budget_sec (metadata.time_budget_sec) must be a positive integer.
   const timeBudget = getNestedField(front, "metadata", "time_budget_sec");
   if (timeBudget !== null) {
-    const n = parseInt(timeBudget, 10);
-    if (!Number.isFinite(n) || String(n) !== String(timeBudget).trim() || n <= 0) {
+    const raw = String(timeBudget).replace(/^["']|["']$/g, "").trim();
+    const n = parseInt(raw, 10);
+    if (!Number.isFinite(n) || String(n) !== raw || n <= 0) {
       issues.push({ severity: "error", check: "time-budget-sec-int", msg: `metadata.time_budget_sec "${timeBudget}" must be a positive integer` });
     }
   }
@@ -303,10 +305,10 @@ function validate(file, catalogNames) {
     }
   }
 
-  // deprecated: true requires redirect: pointing to a known skill.
-  const deprecatedFlag = getField(front, "deprecated");
+  // deprecated: true requires redirect: pointing to a known skill (supported top-level or inside metadata).
+  const deprecatedFlag = getField(front, "deprecated") || getNestedField(front, "metadata", "deprecated");
   if (deprecatedFlag === "true") {
-    const redirectTarget = getField(front, "redirect");
+    const redirectTarget = getField(front, "redirect") || getNestedField(front, "metadata", "redirect");
     if (!redirectTarget) {
       issues.push({ severity: "error", check: "deprecated-redirect-required", msg: "deprecated: true requires a non-empty redirect: field" });
     } else if (catalogNames && !catalogNames.has(redirectTarget)) {

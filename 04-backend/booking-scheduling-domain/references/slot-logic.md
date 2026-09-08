@@ -2,10 +2,10 @@
 
 ## 1. Slot Calculation
 
-A slot is the smallest unit of bookable time for a barber. Slots are calculated based on:
+A slot is the smallest unit of bookable time for a provider. Slots are calculated based on:
 
 - **Service duration**: Each `Service` has `durationMinutes` (e.g., 30, 60, 90 min)
-- **Buffer**: Time between services for cleanup/travel. Default 15 min, configurable per barber.
+- **Buffer**: Time between services for cleanup/travel. Default 15 min, configurable per provider.
 - **Working hours**: `UserProfile.workingHours` — JSON with start/end per day of week
 
 ```typescript
@@ -19,7 +19,7 @@ interface WorkingHours {
 ## 2. Slot Generation Algorithm
 
 ```
-For a given barber + date:
+For a given provider + date:
 1. Get working hours for that day of week
 2. If null (day off), return empty slots
 3. Start from workingHours.start
@@ -52,9 +52,9 @@ function hasConflict(
 
 Slots should be excluded if:
 
-- **Day off**: Barber marked unavailable for that day (`BarberUnavailability`)
+- **Day off**: Provider marked unavailable for that day (`ProviderUnavailability`)
 - **Holiday**: National holidays configured in system
-- **Sick leave**: Barber marked sick (temporary unavailability)
+- **Sick leave**: Provider marked sick (temporary unavailability)
 - **Already booked**: Existing active booking overlaps
 - **Too soon**: Slot is less than 1 hour from now (can't book same-hour)
 

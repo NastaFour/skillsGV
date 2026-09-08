@@ -12,7 +12,7 @@ metadata:
 
 # 📱 React Native Development (Mobile Client)
 
-Use this skill when developing or modifying views, navigation layouts, catalogs, or native flows for the [APP] mobile client app.
+Use this skill when developing or modifying views, navigation layouts, catalogs, or native flows for the application mobile client app.
 
 ---
 
@@ -21,7 +21,7 @@ Use this skill when developing or modifying views, navigation layouts, catalogs,
 To maintain readability and prevent technical debt:
 
 1. **Decouple Layout from State**:
-   - Extract raw UI elements (grocery catalog card designs, user profile layouts) into presenter components that only consume structured props.
+   - Extract raw UI elements (product catalog card designs, user profile layouts) into presenter components that only consume structured props.
    - Do not perform asynchronous checkout calls, API calls, or socket subscriptions inside layout rendering files.
    - Separate state operations into custom hooks (e.g. `useCartState()`, `useDeliveryRoute(orderId)`).
 
@@ -57,9 +57,9 @@ To maintain readability and prevent technical debt:
 
 ---
 
-## 🛒 [APP] Mobile Features
+## 🛒 Application Mobile Features
 
-- **Product Detail Overlay**: Use fluid layouts to slide detailed descriptions up when tapping a grocery item card.
+- **Product Detail Overlay**: Use fluid layouts to slide detailed descriptions up when tapping a product item card.
 - **Cart Summary Panel**: Display a bottom sheet showing active item totals, tax calculations, and delivery address fields.
 - **Real-Time GPS Map**: Integrate `react-native-maps` with clean custom markers representing the the storefront node and the courier's location. Prevent rapid state updates from freezing the map thread (interpolate changes or throttle location updates).
 - **Offline Mode Indicators**: Show a warning toast if the device connection drops (`NetInfo`), and disable order placements.

@@ -1,6 +1,6 @@
 ---
 name: push-notifications
-description: Guía para implementar push notifications en la app móvil Expo del proyecto [APP]. Cubre alertas de estado del pedido (PENDING → PACKED → SHIPPED → DELIVERED), sustituciones de stock, y envío desde el servidor Node.js.
+description: Guía para implementar push notifications en la app móvil Expo del proyecto. Cubre alertas de estado del pedido (PENDING → PACKED → SHIPPED → DELIVERED), sustituciones de stock, y envío desde el servidor Node.js.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -77,7 +77,7 @@ export class NotificationService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         to: pushToken,
-        title: '[APP]',
+        title: 'My Application',
         body: STATUS_MESSAGES[status],
         data: { orderId, status },
         sound: 'default',

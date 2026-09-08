@@ -1,6 +1,6 @@
 ---
 name: agents
-description: Orchestration guide for a team of 9 specialized virtual agents in [APP]. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
+description: Orchestration guide for a team of 9 specialized virtual agents in the application. Defines roles, responsibilities, collaboration protocols, and delegation triggers. Use when planning multi-agent work or deciding when to delegate vs. work in place.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,9 +10,9 @@ metadata:
   version: "1.0.0"
 ---
 
-# 👥 Manual y Registro de Agentes Especializados ([APP])
+# 👥 Manual y Registro de Agentes Especializados (Application)
 
-Este archivo actúa como el **Director de Orquestación** del equipo de desarrollo. Define cómo cooperan los 9 agentes virtuales especializados para construir, probar y desplegar la aplicación de supermercado, garantizando que el código final cumpla estrictamente con las reglas de ingeniería (SOLID, DRY) y seguridad establecidas.
+Este archivo actúa como el **Director de Orquestación** del equipo de desarrollo. Define cómo cooperan los 9 agentes virtuales especializados para construir, probar y desplegar la aplicación de producción, garantizando que el código final cumpla estrictamente con las reglas de ingeniería (SOLID, DRY) y seguridad establecidas.
 
 ---
 
@@ -89,8 +89,8 @@ delegate → [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) (paralle
 
 ## 💼 Valor Comercial para tu Propuesta (¿Para qué sirve al vender?)
 
-Al presentar esta propuesta a un supermercado, incluir la sección **"Agentes de Desarrollo de Software"** (o "Fábrica de Software Automatizada") aporta un valor diferencial gigante frente a programadores independientes o agencias tradicionales:
+al presentar esta propuesta a un cliente, incluir la sección **"Agentes de Desarrollo de Software"** (o "Fábrica de Software Automatizada") aporta un valor diferencial gigante frente a programadores independientes o agencias tradicionales:
 
 * **Ingeniería sin Errores Humanos:** Demuestra al cliente que el software no lo programa una sola mente que puede cometer omisiones. Se programa a través de una **factoría de 9 agentes virtuales especializados** donde cada línea de código es auditada de forma cruzada en cuanto a seguridad de pagos, robustez ante caídas y rendimiento de base de datos.
 * **Garantía de Calidad Permanente:** Puedes prometer que la aplicación nunca sufrirá de caídas por falta de stock mal procesada o fraudes de Pago Móvil, ya que el agente de QA y el DoD Checker prueban y bloquean cualquier regresión técnica automáticamente antes de subir la app a producción.
-* **Trazabilidad y Documentación de Nivel Corporativo:** El supermercado recibirá un manual de operaciones de su software completamente estructurado y actualizado en tiempo real por un agente documentador experto, facilitando futuras expansiones del negocio.
+* **Trazabilidad y Documentación de Nivel Corporativo:** El cliente recibirá un manual de operaciones de su software completamente estructurado y actualizado en tiempo real por un agente documentador experto, facilitando futuras expansiones del negocio.

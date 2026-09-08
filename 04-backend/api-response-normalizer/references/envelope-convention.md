@@ -23,7 +23,7 @@ interface ApiResponse<T> {
 
 ```json
 {
-  "data": { "id": "abc", "name": "Carlos Barber" },
+  "data": { "id": "abc", "name": "Jane Developer" },
   "meta": { "page": 1, "total": 42 }
 }
 ```
@@ -32,22 +32,22 @@ interface ApiResponse<T> {
 
 ```json
 {
-  "error": { "code": "BARBER_NOT_FOUND", "message": "Barber with id abc not found" }
+  "error": { "code": "ENTITY_NOT_FOUND", "message": "Provider with id abc not found" }
 }
 ```
 
 ## 2. ID Consistency Rules
 
-**Rule**: An endpoint `GET /barbers/:id` must filter by `where: { id: req.params.id }`, NOT by `where: { userId: req.params.id }`.
+**Rule**: An endpoint `GET /providers/:id` must filter by `where: { id: req.params.id }`, NOT by `where: { userId: req.params.id }`.
 
-### Bug #5 Example (Barber ID mismatch)
+### Bug #5 Example (Provider ID mismatch)
 
 **Wrong** (caused bug #5):
 ```typescript
-// Frontend sends barber.id (UserProfile ID)
-// Backend filters by userId (User ID) → "Barber not found"
+// Frontend sends entity.id (UserProfile ID)
+// Backend filters by userId (User ID) → "entity not found"
 router.get("/:id", (req, res) => {
-  const barber = await prisma.barberProfile.findFirst({
+  const provider = await prisma.entityProfile.findFirst({
     where: { userId: req.params.id } // WRONG: req.params.id is UserProfile ID
   });
 });
@@ -56,7 +56,7 @@ router.get("/:id", (req, res) => {
 **Correct**:
 ```typescript
 router.get("/:id", (req, res) => {
-  const barber = await prisma.barberProfile.findUnique({
+  const provider = await prisma.entityProfile.findUnique({
     where: { id: req.params.id } // CORRECT: filter by the same ID from URL
   });
 });
@@ -66,20 +66,20 @@ router.get("/:id", (req, res) => {
 
 | Endpoint | URL Param | `where` field |
 |---|---|---|
-| `GET /barbers/:id` | `:id` = UserProfile ID | `id: req.params.id` |
+| `GET /providers/:id` | `:id` = UserProfile ID | `id: req.params.id` |
 | `GET /users/:id` | `:id` = User ID | `id: req.params.id` |
-| `GET /barbers/:id/reviews` | `:id` = UserProfile ID | `barberId: req.params.id` (or join) |
+| `GET /providers/:id/reviews` | `:id` = UserProfile ID | `providerId: req.params.id` (or join) |
 
 **Never** mix: if URL says `:id`, filter by `id`. If URL says `:userId`, filter by `userId`.
 
 ## 3. Helper Functions for Nested/Flat Fields
 
-Bug #4: Frontend accessed `barber.profile?.rating` but API returned flat UserProfile with `user` nested. Helpers handle both shapes:
+Bug #4: Frontend accessed `entity.profile?.rating` but API returned flat UserProfile with `user` nested. Helpers handle both shapes:
 
 ```typescript
 import type { UserProfile, User } from "@scope/shared-types";
 
-type MaybeBarber = {
+type MaybeProfile = {
   id?: string;
   user?: Partial<User>;
   userId?: string;
@@ -91,24 +91,24 @@ type MaybeBarber = {
   profile?: { rating?: number; lat?: number; lng?: number };
 };
 
-export function getBarberName(barber: MaybeBarber): string {
-  return barber.user?.name ?? barber.name ?? "Unknown";
+export function getProfileName(provider: MaybeProfile): string {
+  return provider.user?.name ?? provider.name ?? "Unknown";
 }
 
-export function getBarberAvatar(barber: MaybeBarber): string {
-  return barber.user?.avatar ?? barber.avatar ?? "";
+export function getProfileAvatar(provider: MaybeProfile): string {
+  return provider.user?.avatar ?? provider.avatar ?? "";
 }
 
-export function getBarberRating(barber: MaybeBarber): number {
-  return barber.profile?.rating ?? barber.rating ?? 0;
+export function getProfileRating(provider: MaybeProfile): number {
+  return entity.profile?.rating ?? provider.rating ?? 0;
 }
 
-export function getBarberLat(barber: MaybeBarber): number {
-  return barber.profile?.lat ?? barber.lat ?? 0;
+export function getProfileLat(provider: MaybeProfile): number {
+  return entity.profile?.lat ?? provider.lat ?? 0;
 }
 
-export function getBarberLng(barber: MaybeBarber): number {
-  return barber.profile?.lng ?? barber.lng ?? 0;
+export function getProfileLng(provider: MaybeProfile): number {
+  return entity.profile?.lng ?? provider.lng ?? 0;
 }
 ```
 
@@ -131,17 +131,17 @@ gallery.map((img: UserGallery) => <img src={img.imageUrl} alt={img.caption} />)
 **Backend should shape relations**:
 ```typescript
 // In the service/controller, map to a clean shape
-const barber = await prisma.barberProfile.findUnique({
+const provider = await prisma.entityProfile.findUnique({
   where: { id },
   include: { user: true, gallery: true }
 });
 
 return {
   data: {
-    id: barber.id,
-    name: barber.user.name,
-    avatar: barber.user.avatar,
-    gallery: barber.gallery.map(g => ({ id: g.id, imageUrl: g.imageUrl, caption: g.caption })),
+    id: entity.id,
+    name: provider.user.name,
+    avatar: provider.user.avatar,
+    gallery: provider.gallery.map(g => ({ id: g.id, imageUrl: g.imageUrl, caption: g.caption })),
   }
 };
 ```

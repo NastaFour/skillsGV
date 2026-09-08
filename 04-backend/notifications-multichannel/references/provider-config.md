@@ -50,7 +50,7 @@ export async function sendEmail(
   html: string
 ) {
   const result = await resend.emails.send({
-    from: process.env.EMAIL_FROM ?? "[APP] <noreply@app.example.com>",
+    from: process.env.EMAIL_FROM ?? "the application <noreply@app.example.com>",
     to,
     subject,
     html,

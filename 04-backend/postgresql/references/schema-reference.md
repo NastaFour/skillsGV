@@ -1,4 +1,4 @@
-# [APP] DB Schema (SQL)
+# the application DB Schema (SQL)
 
 ```sql
 CREATE TABLE "User" (

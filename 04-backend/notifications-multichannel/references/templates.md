@@ -9,10 +9,10 @@
 
 ```
 Push: "✅ Tu reserva está confirmada"
-      "{{barberName}} ha aceptado tu reserva para {{serviceName}} el {{date}} a las {{time}}."
+      "{{providerName}} ha aceptado tu reserva para {{serviceName}} el {{date}} a las {{time}}."
 
-Email Subject: "Reserva confirmada - [APP]"
-Email Body: "Hola {{clientName}}, tu reserva con {{barberName}} para {{serviceName}} está confirmada..."
+Email Subject: "Reserva confirmada - the application"
+Email Body: "Hola {{clientName}}, tu reserva con {{providerName}} para {{serviceName}} está confirmada..."
 ```
 
 ### 2. Reminder 24h
@@ -22,9 +22,9 @@ Email Body: "Hola {{clientName}}, tu reserva con {{barberName}} para {{serviceNa
 
 ```
 Push: "⏰ Recordatorio: reserva mañana"
-      "Tienes una reserva con {{barberName}} mañana a las {{time}}."
+      "Tienes una reserva con {{providerName}} mañana a las {{time}}."
 
-SMS: "[APP]: Recuerda tu reserva con {{barberName}} mañana {{date}} a las {{time}}. Responde STOP para desuscribir."
+SMS: "the application: Recuerda tu reserva con {{providerName}} mañana {{date}} a las {{time}}. Responde STOP para desuscribir."
 
 Email Subject: "Recordatorio: Tu reserva es mañana"
 ```
@@ -35,32 +35,32 @@ Email Subject: "Recordatorio: Tu reserva es mañana"
 **Channels**: push, SMS
 
 ```
-Push: "🚗 Tu barbero llega en 1 hora"
-      "{{barberName}} llegará a {{address}} en aproximadamente 1 hora."
+Push: "🚗 Tu especialista llega en 1 hora"
+      "{{providerName}} llegará a {{address}} en aproximadamente 1 hora."
 
-SMS: "[APP]: {{barberName}} llega en 1 hora a {{address}}."
+SMS: "the application: {{providerName}} llega en 1 hora a {{address}}."
 ```
 
-### 4. Barber En Route
+### 4. Provider En Route
 
 **Trigger**: Booking transitions to `EN_RUTA`
 **Channels**: push
 
 ```
-Push: "🛵 {{barberName}} está en camino"
-      "Tu barbero ha comenzado a desplazarse. ETA: {{eta}} minutos."
+Push: "🛵 {{providerName}} está en camino"
+      "Tu especialista ha comenzado a desplazarse. ETA: {{eta}} minutos."
 ```
 
-### 5. Barber Arrived
+### 5. Provider Arrived
 
 **Trigger**: Booking transitions to `ARRIVED`
 **Channels**: push, SMS
 
 ```
-Push: "📍 Tu barbero ha llegado"
-      "{{barberName}} está esperando en {{address}}."
+Push: "📍 Tu especialista ha llegado"
+      "{{providerName}} está esperando en {{address}}."
 
-SMS: "[APP]: {{barberName}} ha llegado a {{address}}."
+SMS: "the application: {{providerName}} ha llegado a {{address}}."
 ```
 
 ### 6. Booking Completed - Review Request
@@ -70,7 +70,7 @@ SMS: "[APP]: {{barberName}} ha llegado a {{address}}."
 
 ```
 Push: "⭐ ¿Cómo estuvo tu servicio?"
-      "Califica tu experiencia con {{barberName}}."
+      "Califica tu experiencia con {{providerName}}."
 
 Email Subject: "¿Cómo estuvo tu corte? Califica tu experiencia"
 ```
@@ -81,10 +81,10 @@ Email Subject: "¿Cómo estuvo tu corte? Califica tu experiencia"
 **Channels**: push, SMS, email
 
 ```
-Push: "⚠️ Tu barbero no pudo llegar"
-      "Tu reserva no pudo completarse. ¿Quieres reprogramar con otro barbero?"
+Push: "⚠️ Tu especialista no pudo llegar"
+      "Tu reserva no pudo completarse. ¿Quieres reprogramar con otro especialista?"
 
-SMS: "[APP]: Tu barbero no pudo llegar a tu reserva. Reagenda en la app."
+SMS: "the application: Tu especialista no pudo llegar a tu reserva. Reagenda en la app."
 Email Subject: "Tu reserva no pudo completarse"
 ```
 
@@ -94,8 +94,8 @@ Email Subject: "Tu reserva no pudo completarse"
 **Channels**: email
 
 ```
-Email Subject: "¡Bienvenido a [APP]!"
-Email Body: "Hola {{name}}, gracias por registrarte en [APP]..."
+Email Subject: "¡Bienvenido a the application!"
+Email Body: "Hola {{name}}, gracias por registrarte en the application..."
 ```
 
 ## Template Variables
@@ -105,7 +105,7 @@ All templates support these variables:
 | Variable | Type | Example |
 |---|---|---|
 | `{{clientName}}` | string | "Carlos" |
-| `{{barberName}}` | string | "José" |
+| `{{providerName}}` | string | "José" |
 | `{{serviceName}}` | string | "Corte de cabello" |
 | `{{date}}` | string | "17 de junio" |
 | `{{time}}` | string | "10:00 AM" |

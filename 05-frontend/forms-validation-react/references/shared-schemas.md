@@ -25,7 +25,7 @@ import { z } from "zod";
 
 export const createBookingSchema = z.object({
   serviceId: z.string().cuid(),
-  barberId: z.string().cuid().optional(), // optional: "any barber"
+  providerId: z.string().cuid().optional(), // optional: "any provider"
   startTime: z.string().datetime(),
   endTime: z.string().datetime(),
   location: z.object({

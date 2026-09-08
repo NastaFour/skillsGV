@@ -9,7 +9,7 @@ compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskill
 allowed-tools: Read
 metadata:
   author: gentleman-programming
-  version: "1.0"
+  version: "1.0.0"
   category: 01-planning-process
   tags: [jira, epic, planning, project-management, tasks, acceptance-criteria]
 ---

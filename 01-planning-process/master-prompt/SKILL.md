@@ -1,6 +1,6 @@
 ---
 name: master-prompt
-description: Master prompt to generate the Expo Go mobile demo app for the [APP] project. Use when you need a functional offline demo for a sales pitch. Do not use for real production feature development.
+description: Master prompt to generate the Expo Go mobile demo app for the application project. Use when you need a functional offline demo for a sales pitch. Do not use for real production feature development.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,7 +10,7 @@ metadata:
   version: "1.0.0"
 ---
 
-# 📱 Master Prompt: Expo Go Mobile Demo ([APP])
+# 📱 Master Prompt: Expo Go Mobile Demo (Application)
 
 Este archivo contiene el prompt maestro para generar la aplicación móvil de demostración en **Expo Go** utilizando un asistente de inteligencia artificial en una nueva conversación.
 
@@ -19,7 +19,7 @@ Copie y pegue las instrucciones del bloque inferior para iniciar el desarrollo a
 ---
 
 ```markdown
-Actúa como un desarrollador experto en React Native, Expo Go y TypeScript. Tu objetivo es generar una aplicación móvil de demostración funcional de alta fidelidad para presentar una propuesta comercial de supermercado ([APP]). 
+Actúa como un desarrollador experto en React Native, Expo Go y TypeScript. Tu objetivo es generar una aplicación móvil de demostración funcional de alta fidelidad para presentar una propuesta comercial de aplicación móvil de producción. 
 
 Como es una demo de preventa para ejecutar directamente en un teléfono real mediante Expo Go, la aplicación debe ser COMPLETAMENTE AUTÓNOMA: simulará internamente (en memoria y estado local de React) la base de datos PostgreSQL, las notificaciones push, la lógica del servidor Express, y la mensajería en tiempo real. No requiere ningún backend externo activo para funcionar.
 

@@ -1,6 +1,6 @@
 ---
 name: deep-linking-mobile
-description: Deep linking patterns for Expo mobile apps in [APP]. Covers URL scheme configuration (app://), universal links (https://app.example.com), and deep link routing for shared bookings, barber profiles, and payment confirmations. Use when implementing share-to-app, push notification deep links, or web-to-mobile navigation.
+description: Deep linking patterns for Expo mobile apps in the application. Covers URL scheme configuration (app://), universal links (https://app.example.com), and deep link routing for shared bookings, provider profiles, and payment confirmations. Use when implementing share-to-app, push notification deep links, or web-to-mobile navigation.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Expo SDK 56."
 metadata:
@@ -12,7 +12,7 @@ allowed-tools: Bash(node:*) Read
 
 # 🔗 Deep Linking (Mobile)
 
-Deep linking for Expo. Enables sharing booking links, opening specific barber profiles from web, and navigating from push notifications to specific screens.
+Deep linking for Expo. Enables sharing booking links, opening specific provider profiles from web, and navigating from push notifications to specific screens.
 
 ## 📋 When to Use
 

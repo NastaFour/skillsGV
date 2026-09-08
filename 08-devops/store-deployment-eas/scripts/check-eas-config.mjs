@@ -14,7 +14,7 @@ const issues = [];
 
 const appPaths = [
   root ? join(root, "apps", "mobile-client") : null,
-  root ? join(root, "apps", "mobile-barber") : null,
+  root ? join(root, "apps", "mobile-admin") : null,
 ].filter(Boolean);
 
 for (const appPath of appPaths) {

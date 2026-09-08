@@ -27,7 +27,7 @@
 | URL | Screen | Auth Required |
 |---|---|---|
 | `app://booking/:id` | BookingDetail | Yes |
-| `app://barber/:id` | UserProfile | No |
+| `app://provider/:id` | UserProfile | No |
 | `app://service/:id` | ServiceDetail | No |
 | `app://payment/confirm/:id` | PaymentConfirm | Yes |
 | `https://app.example.com/booking/:id` | BookingDetail (universal) | Yes |
@@ -69,8 +69,8 @@ function useDeepLinks() {
       case "booking":
         navigation.navigate("BookingDetail", { bookingId: queryParams.id });
         break;
-      case "barber":
-        navigation.navigate("UserProfile", { barberId: queryParams.id });
+      case "provider":
+        navigation.navigate("UserProfile", { providerId: queryParams.id });
         break;
       case "payment/confirm":
         navigation.navigate("PaymentConfirm", { bookingId: queryParams.id });
@@ -93,7 +93,7 @@ Requires `apple-app-site-association` file at `https://app.example.com/.well-kno
         "appIDs": ["TEAMID.com.example.app"],
         "components": [
           { "/": "/booking/*" },
-          { "/": "/barber/*" }
+          { "/": "/provider/*" }
         ]
       }
     ]
@@ -115,7 +115,7 @@ Notifications.addNotificationResponseReceivedListener((response) => {
 {
   "to": pushToken,
   "title": "Reserva confirmada",
-  "body": "Tu barbero llega en 1 hora",
+  "body": "Tu especialista llega en 1 hora",
   "data": { "deepLink": "app://booking/abc123" }
 }
 ```

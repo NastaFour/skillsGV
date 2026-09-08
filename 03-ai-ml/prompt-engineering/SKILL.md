@@ -12,7 +12,7 @@ metadata:
 
 # 📝 Prompt Engineering Standards
 
-Use this skill when designing system instructions, prompt templates, or user-query wrappers for the [APP] assistant.
+Use this skill when designing system instructions, prompt templates, or user-query wrappers for the application assistant.
 
 ---
 
@@ -46,11 +46,11 @@ Use this skill when designing system instructions, prompt templates, or user-que
 
 ---
 
-## 🛒 [APP] Prompt Template (SOLID / CoT Edition)
+## 🛒 the application Prompt Template (SOLID / CoT Edition)
 
 ```markdown
 <instructions>
-You are the AI Assistant for a grocery supermarket. Classify the customer's problem and propose a resolution.
+You are the AI Assistant for a catalog supermarket. Classify the customer's problem and propose a resolution.
 
 Follow this Chain of Thought reasoning:
 1. Identify what item is missing or damaged in the order.

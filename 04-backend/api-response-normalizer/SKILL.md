@@ -1,10 +1,10 @@
 ---
 name: api-response-normalizer
-description: Patterns to unify API response shapes across different endpoints (raw SQL vs Prisma, nested vs flat IDs). Defines the { data, meta, error } envelope convention, ID consistency rules, and helper function patterns for accessing fields that may be nested or flat. Use when designing endpoints, debugging "barber not found" errors, or fixing data shape mismatches between frontend and backend.
+description: Patterns to unify API response shapes across different endpoints (raw SQL vs Prisma, nested vs flat IDs). Defines the { data, meta, error } envelope convention, ID consistency rules, and helper function patterns for accessing fields that may be nested or flat. Use when designing endpoints, debugging "entity not found" errors, or fixing data shape mismatches between frontend and backend.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
-  trigger: ["data shape mismatch", "barber not found", "id mismatch", "response envelope", "api normalization", "barber.profile", "object object", "data shape", "response shape", "ID consistency"]
+  trigger: ["data shape mismatch", "entity not found", "id mismatch", "response envelope", "api normalization", "entity.profile", "object object", "data shape", "response shape", "ID consistency"]
   scope: [global, project]
   version: "1.0.0"
 allowed-tools: Bash(node:*) Read
@@ -12,12 +12,12 @@ allowed-tools: Bash(node:*) Read
 
 # 📐 API Response Normalizer
 
-Unifies data shapes across API endpoints. Prevents bugs where the frontend accesses `barber.profile?.rating` but the API returns a flat UserProfile with `user` nested, or where `barber.id` (UserProfile ID) is sent but the backend filters by `userId` (User ID).
+Unifies data shapes across API endpoints. Prevents bugs where the frontend accesses `entity.profile?.rating` but the API returns a flat UserProfile with `user` nested, or where `entity.id` (UserProfile ID) is sent but the backend filters by `userId` (User ID).
 
 ## 📋 When to Use
 
 - Use when designing a new endpoint that returns entity data
-- Use when frontend shows "barber not found" after clicking a list item
+- Use when frontend shows "entity not found" after clicking a list item
 - Use when data appears but fields are empty/undefined (shape mismatch)
 - Use when images show `[object Object]` (string[] vs object[] mismatch)
 - Do NOT use for auth token handling (use `auth-flow-audit`)

@@ -42,9 +42,9 @@ Componentes sin data
 │   │              FIX: Corregir endpoint o backend
 │   └── SÍ (200 con data) ↓
 ├── Data shape del frontend coincide con API?
-│   ├── NO → CAUSA: Frontend accede barber.profile?.rating pero API devuelve UserProfile plano
+│   ├── NO → CAUSA: Frontend accede entity.profile?.rating pero API devuelve UserProfile plano
 │   │        VERIFICAR: Comparar JSON response con tipos del frontend
-│   │        FIX: Helper functions getBarberName/Avatar/Rating que manejen ambas formas
+│   │        FIX: Helper functions getProfileName/Avatar/Rating que manejen ambas formas
 │   │        SKILL: api-response-normalizer
 │   └── SÍ ↓
 ├── TanStack Query está cacheando data vieja?
@@ -66,9 +66,9 @@ Mapa sin markers
 │   │        FIX: Verificar flujo de data (ver Symptom 2)
 │   └── SÍ ↓
 ├── Lat/Lng son números válidos (no undefined)?
-│   ├── NO → CAUSA: Frontend accede barber.lat pero API devuelve barber.profile.lat
+│   ├── NO → CAUSA: Frontend accede provider.lat pero API devuelve entity.profile.lat
 │   │        VERIFICAR: console.log(marker.lat, marker.lng) → NaN?
-│   │        FIX: Helper getBarberLat/Lng que maneje shapes anidadas
+│   │        FIX: Helper getProfileLat/Lng que maneje shapes anidadas
 │   │        SKILL: api-response-normalizer
 │   └── SÍ ↓
 ├── Leaflet cargó correctamente?

@@ -4,9 +4,9 @@ description: DEPRECATED. Use nextjs-15 instead. Legacy Next.js guidelines kept f
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
-deprecated: true
-redirect: nextjs-15
 metadata:
+  deprecated: "true"
+  redirect: "nextjs-15"
   trigger: ["nextjs legacy", "next.js deprecated"]
   scope: [global, project]
   version: "1.0.0"
@@ -38,8 +38,8 @@ Use this skill when building client-facing web applications or customer-support 
      import { Metadata } from 'next';
      
      export const metadata: Metadata = {
-       title: '[APP] QuickOrder - Fresh Groceries Delivered',
-       description: 'Order your fresh groceries in minutes and track your delivery in real-time.',
+       title: 'My Application - Modern Web App',
+       description: 'Manage operations efficiently and track updates in real-time.',
      };
      ```
 
@@ -48,8 +48,8 @@ Use this skill when building client-facing web applications or customer-support 
    - All interactive elements must have unique, descriptive IDs for validation testing.
 
 3. **Optimized Assets**:
-   - Never use the raw HTML `<img>` tag. Use `next/image` to automatically resize, optimize formats, and lazy-load grocery images.
+   - Never use the raw HTML `<img>` tag. Use `next/image` to automatically resize, optimize formats, and lazy-load media images.
 
-## 🛒 [APP] Context
-- **SEO Landing Pages**: Prioritize fast SSR load times for landing pages showcasing daily grocery deals.
+## 🛒 Application Context
+- **SEO Landing Pages**: Prioritize fast SSR load times for landing pages showcasing featured products.
 - **Support Form Route**: The client form should be a Client Component (`'use client'`) importing form schemas and sending submissions to the backend server via validated actions or APIs.

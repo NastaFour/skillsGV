@@ -1,6 +1,6 @@
 ---
 name: store-deployment-eas
-description: Deployment patterns for publishing [APP] Expo apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment management (dev/staging/prod), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates.
+description: Deployment patterns for publishing the application Expo apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment management (dev/staging/prod), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Expo SDK 56 and EAS CLI."
 metadata:

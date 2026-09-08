@@ -31,6 +31,7 @@ const CATALOG_ROOT = resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
 let query = null, diffLines = null, jsonOut = false;
 for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--") continue;
   if (args[i] === "--query") query = args[++i];
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--json") jsonOut = true;
@@ -72,8 +73,27 @@ function getField(fm, field) {
   const m = fm.match(re);
   return m ? m[1].trim() : null;
 }
+function getNestedField(front, parent, field) {
+  const startRe = new RegExp(`^${parent}:\\s*$`, "m");
+  const startMatch = front.match(startRe);
+  if (!startMatch) return null;
+  const startIdx = startMatch.index + startMatch[0].length;
+  const rest = front.slice(startIdx);
+  const lines = rest.split(/\r?\n/);
+  const blockLines = [];
+  for (const line of lines) {
+    if (line === "") { blockLines.push(line); continue; }
+    if (!/^\s/.test(line)) break;
+    blockLines.push(line);
+  }
+  const block = blockLines.join("\n");
+  const fieldRe = new RegExp(`^\\s+${field}:\\s*(.+?)(?:\\r?\\n\\s+[a-z_-]+:|\\r?\\n[\\S]|$)`, "ms");
+  const fmMatch = block.match(fieldRe);
+  if (!fmMatch) return null;
+  return fmMatch[1].trim();
+}
 function getTriggerArray(fm) {
-  const t = getField(fm, "trigger");
+  const t = getField(fm, "trigger") || getNestedField(fm, "metadata", "trigger");
   if (!t) return [];
   const inner = t.replace(/^\[/, "").replace(/\]$/, "").trim();
   if (!inner) return [];
@@ -99,8 +119,9 @@ for (const f of files) {
   seenNames.add(name);
   const desc = getField(fm, "description") || "";
   const triggers = getTriggerArray(fm);
-  const deprecated = getField(fm, "deprecated") === "true";
-  const redirect = getField(fm, "redirect");
+  const depRaw = (getField(fm, "deprecated") || getNestedField(fm, "metadata", "deprecated") || "").replace(/^["']|["']$/g, "").trim();
+  const deprecated = depRaw === "true";
+  const redirect = (getField(fm, "redirect") || getNestedField(fm, "metadata", "redirect") || "").replace(/^["']|["']$/g, "").trim() || null;
   const rel = f.replace(CATALOG_ROOT + "\\", "").replace(/\//g, "\\");
   const catMatch = rel.match(/^(\d{2}-[a-z-]+|professional-planner)\\/i);
   const category = catMatch ? catMatch[1] : "root";

@@ -17,7 +17,7 @@ async function createBooking(input: BookingInput): Promise<Booking> {
     // 1. Check for conflicts INSIDE the transaction
     const conflicting = await tx.booking.findFirst({
       where: {
-        barberId: input.barberId,
+        providerId: input.providerId,
         status: { in: ["PENDING", "ACCEPTED", "EN_RUTA", "ARRIVED"] },
         AND: [
           { startTime: { lt: input.endTime } },
@@ -36,7 +36,7 @@ async function createBooking(input: BookingInput): Promise<Booking> {
     // 2. Create the booking (within same transaction)
     const booking = await tx.booking.create({
       data: {
-        barberId: input.barberId,
+        providerId: input.providerId,
         clientId: input.clientId,
         serviceId: input.serviceId,
         startTime: input.startTime,
@@ -76,7 +76,7 @@ If `Serializable` is too expensive (lock contention), use `SELECT FOR UPDATE`:
 ```typescript
 const conflicting = await tx.$queryRaw`
   SELECT * FROM "Booking"
-  WHERE "barberId" = ${input.barberId}
+  WHERE "providerId" = ${input.providerId}
     AND status IN ('PENDING', 'ACCEPTED', 'EN_RUTA', 'ARRIVED')
     AND "startTime" < ${input.endTime}
     AND "endTime" > ${input.startTime}

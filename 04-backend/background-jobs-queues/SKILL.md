@@ -1,6 +1,6 @@
 ---
 name: background-jobs-queues
-description: Patterns for background jobs and queues using BullMQ + Redis in [APP]. Covers delayed jobs (reminders 24h/1h before booking), no-show timeout, auto-cancel, review requests, and AI reassignment triggers. Use when implementing scheduled tasks, timeouts, or any logic that should run asynchronously after a delay.
+description: Patterns for background jobs and queues using BullMQ + Redis in the application. Covers delayed jobs (reminders 24h/1h before booking), no-show timeout, auto-cancel, review requests, and AI reassignment triggers. Use when implementing scheduled tasks, timeouts, or any logic that should run asynchronously after a delay.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and Redis."
 metadata:

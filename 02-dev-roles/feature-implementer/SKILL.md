@@ -21,7 +21,7 @@ When writing code, adhere strictly to these principles:
 ## Contextual Awareness
 Before coding, rely on existing context:
 - Sync with the [Project Tracker](../../01-planning-process/project-tracker/SKILL.md) for styling/framework conventions.
-- Map code logic to the specific [[APP] Business Workflow](../../01-planning-process/application-workflow/SKILL.md).
+- Map code logic to the specific [the application Business Workflow](../../01-planning-process/application-workflow/SKILL.md).
 - Prioritize technology guidelines:
   - **Backend APIs**: Refer to [Node.js](../../04-backend/nodejs/SKILL.md), [Express.js](../../04-backend/expressjs/SKILL.md), [Prisma ORM](../../04-backend/prisma-orm/SKILL.md), [Socket.io](../../04-backend/socketio/SKILL.md), and [JWT/Bcrypt](../../04-backend/jwt-bcrypt/SKILL.md).
   - **Admin Web Panel**: Refer to [React/Vite](../../05-frontend/react-vite/SKILL.md) and [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md).

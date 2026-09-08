@@ -38,7 +38,7 @@ Use this skill when styling React, Next.js, or React Native (via Tailwind/Native
    - Use Tailwind's screen breakpoints (`sm:`, `md:`, `lg:`, `xl:`) systematically.
    - Design with mobile-first layout systems (e.g. mobile app has a simple vertical catalog layout, while admin dashboard has a multi-column grid layout).
 
-## 🛒 [APP] Dashboard Layouts (Admin Web UI)
+## 🛒 Dashboard Layouts (Admin Web UI)
 
 - **Grid Skeletons**: The layout must structure dashboards with:
   ```html

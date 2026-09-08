@@ -13,12 +13,12 @@ async function generateReceiptPdf(data: ReceiptData): Promise<Buffer> {
     doc.on("data", (chunk) => chunks.push(chunk));
     doc.on("end", () => resolve(Buffer.concat(chunks)));
 
-    doc.fontSize(20).text("[APP]", { align: "center" });
+    doc.fontSize(20).text("the application", { align: "center" });
     doc.fontSize(12).text("Recibo de Servicio", { align: "center" });
     doc.moveDown();
     doc.fontSize(10)
       .text(`Cliente: ${data.clientName}`)
-      .text(`Barbero: ${data.barberName}`)
+      .text(`Especialista: ${data.providerName}`)
       .text(`Servicio: ${data.serviceName}`)
       .text(`Fecha: ${data.date}`)
       .moveDown()
@@ -45,18 +45,18 @@ async function exportRevenueCsv(startDate: Date, endDate: Date, res: Response) {
 
   const cursor = prisma.booking.findMany({
     where: { status: "COMPLETED", createdAt: { gte: startDate, lte: endDate } },
-    select: { id: true, clientId: true, barberId: true, serviceId: true, priceUsd: true, priceVes: true, paymentMethod: true },
+    select: { id: true, clientId: true, providerId: true, serviceId: true, priceUsd: true, priceVes: true, paymentMethod: true },
     cursor: { id: undefined },
     take: 1000,
     skip: 0,
   });
 
-  const stringifier = stringify({ header: true, columns: ["date", "booking_id", "client", "barber", "service", "amount_usd", "amount_ves", "payment_method", "status"] });
+  const stringifier = stringify({ header: true, columns: ["date", "booking_id", "client", "provider", "service", "amount_usd", "amount_ves", "payment_method", "status"] });
 
   // Stream rows
   for await (const batch of cursor) {
     for (const row of batch) {
-      stringifier.write([row.createdAt, row.id, row.clientId, row.barberId, row.serviceId, row.priceUsd, row.priceVes, row.paymentMethod, "COMPLETED"]);
+      stringifier.write([row.createdAt, row.id, row.clientId, row.providerId, row.serviceId, row.priceUsd, row.priceVes, row.paymentMethod, "COMPLETED"]);
     }
   }
   stringifier.end();
@@ -101,9 +101,9 @@ const revenue = await prisma.booking.groupBy({
   orderBy: { createdAt: "asc" },
 });
 
-// Barber performance
+// staff performance
 const performance = await prisma.booking.groupBy({
-  by: ["barberId"],
+  by: ["providerId"],
   where: { status: "COMPLETED", createdAt: { gte: startDate, lte: endDate } },
   _sum: { priceUsd: true },
   _count: true,

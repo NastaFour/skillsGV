@@ -21,7 +21,7 @@ Use this skill when compiling the web client as a Progressive Web App (PWA) or p
    - Cache products catalog responses locally using `IndexedDB` or `localStorage` as backup caches.
 
 2. **Offline Data Syncing**:
-   - If the user compiles a grocery cart while offline, store the item selections in local indexed storage.
+   - If the user compiles a shopping cart while offline, store the item selections in local indexed storage.
    - Run a sync task using the service worker or Capacitor's Background Runner to push order checks to the Express server once network availability returns.
 
 3. **Capacitor Plugins Security**:
@@ -38,7 +38,7 @@ Use this skill when compiling the web client as a Progressive Web App (PWA) or p
      };
      ```
 
-## 🛒 [APP] Integration
+## 🛒 Application Integration
 - **Hybrid Delivery App Option**: In case delivery drivers prefer running the app in a mobile browser, provide PWA prompts to "Add to Home Screen".
-- **Asset Optimization**: Cache grocery category icons so that categories render instantly when the driver opens the order list.
+- **Asset Optimization**: Cache category icons so that categories render instantly when the driver opens the order list.
 - **Offline Inventory Checks**: Store local catalog prices in memory, but show a badge indicating "Prices may not be up to date - Offline Mode".

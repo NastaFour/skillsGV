@@ -14,7 +14,7 @@ const issues = [];
 
 const appJsonPaths = [
   root ? join(root, "apps", "mobile-client", "app.json") : null,
-  root ? join(root, "apps", "mobile-barber", "app.json") : null,
+  root ? join(root, "apps", "mobile-admin", "app.json") : null,
 ].filter(Boolean);
 
 for (const p of appJsonPaths) {
@@ -26,7 +26,7 @@ for (const p of appJsonPaths) {
   try {
     const json = JSON.parse(content);
     if (!json.expo?.scheme) {
-      issues.push({ severity: "error", check: "no-scheme", msg: `app.json at ${p} has no expo.scheme. Deep links won't work. Add "scheme": "barbergo".` });
+      issues.push({ severity: "error", check: "no-scheme", msg: `app.json at ${p} has no expo.scheme. Deep links won't work. Add "scheme": "myapp".` });
     }
     if (!json.expo?.ios?.associatedDomains) {
       issues.push({ severity: "warning", check: "no-universal-links", msg: `No iOS associatedDomains in ${p}. Universal links won't work.` });

@@ -18,7 +18,7 @@ export const registerSchema = z.object({
   email: z.string().email("Invalid email"),
   phone: z.string().regex(/^\+?[\d\s-]+$/, "Invalid phone"),
   password: z.string().min(8, "Min 8 characters"),
-  role: z.enum(["CLIENT", "BARBER"]),
+  role: z.enum(["CLIENT", "PROVIDER"]),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

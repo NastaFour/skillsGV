@@ -29,7 +29,7 @@ Use this skill when implementing features that track token costs, enforce user A
      - **Basic (Free)**: Limit to 10 AI queries per day. Use cheaper models (e.g., `gemini-1.5-flash`).
      - **VIP (Paid)**: Limit to 200 AI queries per day. Access to advanced models (e.g., `gemini-1.5-pro` or `claude-3.5-sonnet`).
 
-## 🛒 [APP] Integration Example
+## 🛒 Application Integration Example
 
 - **User Billing Schema**: Add quota fields to the user table:
   ```prisma

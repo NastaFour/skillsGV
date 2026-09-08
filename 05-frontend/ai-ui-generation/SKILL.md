@@ -34,7 +34,7 @@ Las herramientas de IA generativa de UI (Stitch, v0, Lovable) tienen los **mismo
 Todas son legítimas **si son una elección**, no un default. Para evitar slop:
 
 - **Antes de generar**: decide paleta, tipografía y signature element (sigue el brainstorm de `frontend-design`). Escríbelo en el prompt.
-- **En el prompt**: incluye el sujeto concreto, el audience, y el "single job" de la página. Nunca `"make a landing page for a startup"` — siempre `"make a landing page for a Venezuelan grocery delivery app targeting busy parents, single job is to get them to download the app"`.
+- **En el prompt**: incluye el sujeto concreto, el audience, y el "single job" de la página. Nunca `"make a landing page for a startup"` — siempre `"make a landing page for a modern on-demand delivery app targeting busy users, single job is to get them to download the app"`.
 - **Después de generar**: critique el output contra el brief. Si lee como templated → regenera con restricciones más tight, no aceptes el default.
 
 ## Workflow: Prompt → Checkpoint → Deploy
