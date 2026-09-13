@@ -2,6 +2,7 @@
 name: sdd-apply
 description: "Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
 license: MIT
+allows-script-exec: "apply-journal.test.mjs spawns the journal CLI inside temp fixtures"
 allowed-tools: Read Write Edit Bash(node:*)
 metadata:
   author: gentleman-programming

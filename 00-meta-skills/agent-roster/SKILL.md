@@ -2,6 +2,7 @@
 name: agent-roster
 description: "Trigger: cambiar proveedor/modelo de los agentes, roster de agentes, routing por agente, configurar modelos de sub-agentes, perfiles de modelo, set-models, aplicar roster. Sistema declarativo portable: 20 agentes (tier, effort, delegate_only) en una sola fuente de verdad, generador de configuración por runtime y switcher de proveedor con un comando. Use when changing the model/provider of all agents at once, syncing the agent roster across runtimes, or adding a new runtime adapter."
 license: MIT
+allows-script-exec: "set-models/apply spawn the runtime CLI to project and patch agent configs"
 compatibility: Requiere Node 20+. Windows-first: scripts Node puro sin dependencias externas.
 metadata:
   trigger: ["cambiar proveedor agentes", "cambiar modelo agentes", "roster de agentes", "agent roster", "set-models", "routing por agente"]

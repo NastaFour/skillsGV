@@ -2,6 +2,8 @@
 name: skill-validator
 description: Validates that all SKILL.md files in the catalog comply with the agentskills.io specification. Checks name constraints, description length, frontmatter structure, and folder-name matching. Exits non-zero on any failure. Use in pre-commit hooks, CI pipelines, or before publishing a skill catalog.
 license: MIT
+allows-curl: "validate-skills.mjs pattern-matches curl in other skills' scripts (audit implementation; never executed)"
+allows-script-exec: "validate-skills.mjs pattern-matches eval/Function/child_process in other skills' scripts (audit implementation; never executed)"
 compatibility: Requires Node 20+ and pnpm 9+. No external dependencies.
 metadata:
   trigger: ["validar skills", "validate skills", "check spec", "skill lint", "spec compliance"]

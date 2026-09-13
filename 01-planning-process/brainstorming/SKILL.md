@@ -3,6 +3,7 @@ name: brainstorming
 description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
 allowed-tools: Bash(node:*) Read
 license: MIT
+allows-script-exec: "local brainstorm server launches the URL opener via exec/execFile"
 metadata:
   trigger: ["brainstorming", "ideas", "specs", "requirements discovery"]
   scope: [global, project]

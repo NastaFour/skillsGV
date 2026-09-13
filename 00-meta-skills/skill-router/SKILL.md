@@ -2,6 +2,7 @@
 name: skill-router
 description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + SDD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 197 skills to 3-5.
 license: MIT
+allows-script-exec: "router-replay.mjs spawns the router CLI for deterministic replay"
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex, DeepSeek. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
 metadata:

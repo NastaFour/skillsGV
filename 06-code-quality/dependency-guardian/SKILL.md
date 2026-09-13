@@ -2,6 +2,7 @@
 name: dependency-guardian
 description: Garantiza el uso de versiones estables, seguras y actualizadas de todas las dependencias. Protege el monorepo de "Dependency Drift" y vulnerabilidades.
 license: MIT
+allows-script-exec: "check-pkg-exists.mjs shells out to pnpm to verify packages"
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
