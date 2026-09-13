@@ -52,6 +52,22 @@ const DSH_PRESET_PATH = join(CATALOG_ROOT, "gentle-ai-dsh", "preset", "agent.cor
 // Helpers: Tier normalization
 // ---------------------------------------------------------------------------
 
+// Known credential shapes that also satisfy the env-var NAME regex. Rejected
+// explicitly so a pasted key can never be persisted as if it were a variable
+// name (the key itself is never accepted nor stored).
+const SECRET_SHAPE_PATTERNS = [
+  /^gh[pousr]_/, // GitHub tokens (classic)
+  /^github_pat_/, // GitHub fine-grained PAT
+  /^AKIA[0-9A-Z]{8,}$/, // AWS access key id
+  /^ASIA[0-9A-Z]{8,}$/, // AWS temporary access key id
+  /^sk_live_|^sk_test_/, // Stripe secret keys
+  /^xox[baprs]-/, // Slack tokens
+  /^ya29\./, // Google OAuth access token
+  /^AIza[0-9A-Za-z_-]{10,}$/, // Google API key
+  /^eyJ[A-Za-z0-9_-]{10,}\./, // JWT
+];
+const looksLikeSecret = (value) => SECRET_SHAPE_PATTERNS.some((re) => re.test(value));
+
 export function normalizeTier(tier) {
   if (!tier) return "cheap";
   const t = String(tier).toLowerCase().trim();
@@ -145,7 +161,7 @@ function parseArgs(argv) {
       console.error(`--base-url must be an http(s) URL (got "${opts.baseUrl}")`);
       process.exit(2);
     }
-    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(opts.apiKeyEnv)) {
+    if (looksLikeSecret(opts.apiKeyEnv) || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(opts.apiKeyEnv)) {
       console.error(
         `--api-key-env expects the environment variable NAME (e.g. OPENCODE_GO_API_KEY), never the key itself (got "${opts.apiKeyEnv}")`
       );
@@ -468,7 +484,7 @@ function main() {
       }
     }
     const resolved = resolveModels(opts, profiles);
-    const syncArgs = buildSyncArgs(roster, resolved, profiles.current);
+    const syncArgs = buildSyncArgs(roster, resolved, resolved.baseName);
     console.log(`\nNative sync args (gentle-ai sync --profile / --profile-phase):`);
     console.log(`  gentle-ai sync ${syncArgs.map((a) => (a.includes(" ") ? `"${a}"` : a)).join(" ")}`);
     const res = spawnSync(process.execPath, [APPLY_PATH, "--runtime", "list"], { stdio: "inherit" });

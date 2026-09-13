@@ -3,12 +3,23 @@
   "current": "deepseek",
   "profiles": {
     "deepseek": {
+      "sdd-strong": "opencode-go/deepseek-v4-pro",
+      "sdd-mid": "opencode-go/deepseek-v4-flash",
+      "sdd-cheap": "opencode-go/deepseek-v4-flash",
       "strong": "opencode-go/deepseek-v4-pro",
+      "mid": "opencode-go/deepseek-v4-flash",
+      "cheap": "opencode-go/deepseek-v4-flash",
       "flash": "opencode-go/deepseek-v4-flash"
     },
     "glm": {
+      "sdd-strong": "opencode-go/glm-5.3",
+      "sdd-mid": "opencode-go/glm-5.2",
+      "sdd-cheap": "opencode-go/glm-5.2",
       "strong": "opencode-go/glm-5.3",
+      "mid": "opencode-go/glm-5.2",
+      "cheap": "opencode-go/glm-5.2",
       "flash": "opencode-go/glm-5.2"
     }
-  }
+  },
+  "providers": {}
 }

@@ -6,6 +6,8 @@ allowed-tools: Read Bash(pwsh:*)
 metadata:
   author: nexu-io
   version: "1.1.0"
+  requires-mcp: ["mcp-open-design"]
+  mcp-fallback: "Servidor mcp-open-design ausente → caer al CLI od (o pnpm add -g open-design) con el mismo brief → límite: sin herramientas MCP nativas de export; el pipeline no falla"
 ---
 
 ## Activation Contract

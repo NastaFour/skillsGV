@@ -1,11 +1,105 @@
 {
   "version": 1,
+  "tiers": {
+    "sdd-strong": {
+      "alias": "strong",
+      "description": "High-capability reasoning model for orchestration, research, and adversarial review",
+      "reasoning_effort": "high",
+      "effort": "high"
+    },
+    "sdd-mid": {
+      "alias": "mid",
+      "description": "Balanced model for code implementation, surgical fixes, and spec writing",
+      "reasoning_effort": "medium",
+      "effort": "medium"
+    },
+    "sdd-cheap": {
+      "alias": "cheap",
+      "description": "Fast economic model for mechanical exploration, validation, and tasks",
+      "reasoning_effort": "low",
+      "effort": "low"
+    }
+  },
+  "phases": {
+    "init": {
+      "tier": "sdd-cheap",
+      "reasoning_effort": "low",
+      "effort": "low",
+      "description": "SDD bootstrap: stack detection, testing capabilities, persistence"
+    },
+    "explore": {
+      "tier": "sdd-cheap",
+      "reasoning_effort": "low",
+      "effort": "low",
+      "description": "SDD exploration before committing to a change"
+    },
+    "research": {
+      "tier": "sdd-strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "SDD external evidence: collect source-backed findings for selected research lanes"
+    },
+    "propose": {
+      "tier": "sdd-strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "SDD change proposal: intent, scope, approach"
+    },
+    "spec": {
+      "tier": "sdd-mid",
+      "reasoning_effort": "medium",
+      "effort": "medium",
+      "description": "SDD delta specs with requirements and scenarios"
+    },
+    "design": {
+      "tier": "sdd-strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "SDD technical design and architecture approach"
+    },
+    "tasks": {
+      "tier": "sdd-cheap",
+      "reasoning_effort": "low",
+      "effort": "low",
+      "description": "SDD task breakdown with review workload forecast"
+    },
+    "apply": {
+      "tier": "sdd-mid",
+      "reasoning_effort": "medium",
+      "effort": "medium",
+      "description": "SDD implementation by task batches"
+    },
+    "verify": {
+      "tier": "sdd-mid",
+      "reasoning_effort": "medium",
+      "effort": "medium",
+      "description": "SDD verification against specs with compliance evidence"
+    },
+    "archive": {
+      "tier": "sdd-cheap",
+      "reasoning_effort": "low",
+      "effort": "low",
+      "description": "SDD close: sync delta specs and archive the change"
+    },
+    "judgment-day": {
+      "tier": "sdd-strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "Judgment Day blind judges: read-only adversarial review"
+    },
+    "fix-agent": {
+      "tier": "sdd-mid",
+      "reasoning_effort": "medium",
+      "effort": "medium",
+      "description": "Surgical fix agent for confirmed findings"
+    }
+  },
   "agents": [
     {
       "name": "gentle-orchestrator",
       "group": "coordinator",
       "role": "SDD orchestrator: coordinates sub-agents, never does the work inline",
-      "tier": "strong",
+      "tier": "sdd-strong",
       "effort": "max",
       "delegate_only": false
     },
@@ -13,7 +107,7 @@
       "name": "jd-judge-a",
       "group": "judgment-day",
       "role": "Judgment Day blind judge A (read-only adversarial review)",
-      "tier": "strong",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -21,7 +115,7 @@
       "name": "jd-judge-b",
       "group": "judgment-day",
       "role": "Judgment Day blind judge B (read-only adversarial review)",
-      "tier": "strong",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -29,7 +123,7 @@
       "name": "sdd-apply",
       "group": "sdd",
       "role": "SDD implementation by task batches (apply-progress merge)",
-      "tier": "strong",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
@@ -37,7 +131,7 @@
       "name": "jd-fix-agent",
       "group": "review",
       "role": "Surgical fix agent for confirmed judgment-day findings",
-      "tier": "flash",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
@@ -45,7 +139,7 @@
       "name": "review-risk",
       "group": "review",
       "role": "R1 risk lens (security, permissions, data exposure, dependencies)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -53,7 +147,7 @@
       "name": "review-readability",
       "group": "review",
       "role": "R2 readability lens (naming, structure, maintainability)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -61,7 +155,7 @@
       "name": "review-reliability",
       "group": "review",
       "role": "R3 reliability lens (tests, contracts, determinism, regressions)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -69,7 +163,7 @@
       "name": "review-resilience",
       "group": "review",
       "role": "R4 resilience lens (fallbacks, retry, rollback, observability)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -77,7 +171,7 @@
       "name": "review-refuter",
       "group": "review",
       "role": "Adversarial refuter of severe review findings (read-only)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -85,7 +179,7 @@
       "name": "review-validator",
       "group": "review",
       "role": "Final read-only validation gate before any done claim",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -93,7 +187,7 @@
       "name": "sdd-init",
       "group": "sdd",
       "role": "SDD bootstrap: stack detection, testing capabilities, persistence",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -101,7 +195,15 @@
       "name": "sdd-explore",
       "group": "sdd",
       "role": "SDD exploration before committing to a change",
-      "tier": "flash",
+      "tier": "sdd-cheap",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "sdd-research",
+      "group": "sdd",
+      "role": "SDD external evidence: collect source-backed findings for selected research lanes",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -109,7 +211,7 @@
       "name": "sdd-propose",
       "group": "sdd",
       "role": "SDD change proposal: intent, scope, approach",
-      "tier": "flash",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -117,7 +219,7 @@
       "name": "sdd-spec",
       "group": "sdd",
       "role": "SDD delta specs with requirements and scenarios",
-      "tier": "flash",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
@@ -125,7 +227,7 @@
       "name": "sdd-design",
       "group": "sdd",
       "role": "SDD technical design and architecture approach",
-      "tier": "flash",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -133,7 +235,7 @@
       "name": "sdd-tasks",
       "group": "sdd",
       "role": "SDD task breakdown with review workload forecast",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -141,7 +243,7 @@
       "name": "sdd-verify",
       "group": "sdd",
       "role": "SDD verification against specs with compliance evidence",
-      "tier": "flash",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
@@ -149,7 +251,7 @@
       "name": "sdd-archive",
       "group": "sdd",
       "role": "SDD close: sync delta specs and archive the change",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": true
     },
@@ -157,7 +259,7 @@
       "name": "sdd-onboard",
       "group": "sdd",
       "role": "Interactive SDD walkthrough on the real codebase (runs inline, not delegated)",
-      "tier": "flash",
+      "tier": "sdd-cheap",
       "effort": "high",
       "delegate_only": false
     }
