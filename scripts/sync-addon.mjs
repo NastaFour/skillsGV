@@ -10,11 +10,13 @@
  *   missing skill, or orphan skill in the mirror. Coverage is explicit:
  *   1. every canonical skill exists in the mirror with byte-identical files;
  *   2. skill-like orphan directories (dirs with SKILL.md absent from the catalog) fail;
- *   3. `_shared/**` intersection: files present in BOTH trees must be byte-identical;
- *      mirror-only `_shared` files are allowed (curated addon extras).
+ *   3. `_shared/**` union: every canonical `_shared` file exists in the mirror
+ *      with byte-identical content; mirror-only `_shared` files are allowed
+ *      (curated addon extras) and are never removed.
  * - --write: mechanically synchronizes all 210 canonical skills to gentle-ai-dsh/skills/,
- *   removing extra/orphan files and skill-like orphan directories, and syncing the
- *   `_shared` intersection, achieving byte parity. Mirror-only `_shared` files are kept.
+ *   removing extra/orphan files and skill-like orphan directories, and copies every
+ *   canonical `_shared` file to the mirror (union), achieving byte parity. Mirror-only
+ *   `_shared` files are kept.
  * - Safety: the mirror root MUST live under the catalog root; the catalog root itself,
  *   its ancestors and any outside path are rejected (exit 2) before any mutation.
  *   Orphan directories are purged only when they look like mirror skills (SKILL.md).
@@ -139,25 +141,43 @@ export function getMirrorSkills(mirrorRoot) {
 }
 
 /**
- * `_shared/**` intersection between the canonical catalog and the mirror.
- * Returns the relative paths of files present in BOTH trees (the only ones
- * under parity discipline); mirror-only files are allowed addon extras and
- * canonical-only files are not the mirror's concern.
+ * `_shared/**` union between the canonical catalog and the mirror.
+ * Every canonical file under `_shared/**` MUST exist in the mirror with
+ * byte-identical content (the mirror ships scripts that import these modules).
+ * Mirror-only files are allowed addon extras; they are reported and preserved.
+ * Returns {
+ *   canonicalFiles, mirrorFiles,
+ *   missing:    canonical rel paths absent from the mirror,
+ *   divergent:  canonical rel paths present in both with different bytes,
+ *   mirrorOnly: mirror rel paths with no canonical counterpart,
+ *   entries:    [{ rel, canonicalFull, mirrorFull|null }] for every canonical file,
+ * }
  */
-export function sharedIntersection(catalogRoot, mirrorRoot) {
+export function sharedUnion(catalogRoot, mirrorRoot) {
   const canonicalFiles = walkFilesRecursive(join(catalogRoot, "_shared"));
   const mirrorFiles = walkFilesRecursive(join(mirrorRoot, "_shared"));
   const mirrorMap = new Map(mirrorFiles.map((f) => [f.rel, f.full]));
-  const common = [];
+  const entries = [];
+  const missing = [];
+  const divergent = [];
   for (const f of canonicalFiles) {
-    if (mirrorMap.has(f.rel)) {
-      common.push({ rel: f.rel, canonicalFull: f.full, mirrorFull: mirrorMap.get(f.rel) });
+    const mirrorFull = mirrorMap.get(f.rel) || null;
+    entries.push({ rel: f.rel, canonicalFull: f.full, mirrorFull });
+    if (!mirrorFull) {
+      missing.push(f.rel);
+    } else if (Buffer.compare(readFileSync(f.full), readFileSync(mirrorFull)) !== 0) {
+      divergent.push(f.rel);
     }
   }
+  const canonicalRels = new Set(canonicalFiles.map((f) => f.rel));
+  const mirrorOnly = mirrorFiles.filter((f) => !canonicalRels.has(f.rel)).map((f) => f.rel);
   return {
     canonicalFiles: canonicalFiles.length,
     mirrorFiles: mirrorFiles.length,
-    common,
+    missing,
+    divergent,
+    mirrorOnly,
+    entries,
   };
 }
 
@@ -232,30 +252,27 @@ export function checkMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEF
     }
   }
 
-  const shared = sharedIntersection(catalogRoot, mirrorRoot);
-  const sharedDivergences = [];
-  for (const f of shared.common) {
-    if (Buffer.compare(readFileSync(f.canonicalFull), readFileSync(f.mirrorFull)) !== 0) {
-      sharedDivergences.push(f.rel);
-    }
-  }
+  const shared = sharedUnion(catalogRoot, mirrorRoot);
 
   const pass =
     missingSkills.length === 0 &&
     orphanSkills.length === 0 &&
     skillDivergences.length === 0 &&
-    sharedDivergences.length === 0;
+    shared.missing.length === 0 &&
+    shared.divergent.length === 0;
 
   return {
     pass,
     missingSkills,
     orphanSkills,
     skillDivergences,
-    sharedIntersection: {
+    sharedUnion: {
       canonicalFiles: shared.canonicalFiles,
       mirrorFiles: shared.mirrorFiles,
-      filesChecked: shared.common.length,
-      divergences: sharedDivergences,
+      filesChecked: shared.canonicalFiles,
+      missing: shared.missing,
+      divergences: shared.divergent,
+      mirrorOnly: shared.mirrorOnly,
     },
     totalCanonicalSkills: canonicalMap.size,
     totalMirrorSkills: mirrorMap.size,
@@ -355,17 +372,19 @@ export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFA
     }
   }
 
-  // 3. Sync the `_shared` intersection: files present in BOTH trees are
-  //    byte-identical after --write; mirror-only files are kept untouched.
-  const shared = sharedIntersection(catalogRoot, mirrorRoot);
-  let sharedFilesSynced = 0;
-  for (const f of shared.common) {
-    const srcBuf = readFileSync(f.canonicalFull);
-    const dstBuf = readFileSync(f.mirrorFull);
-    if (Buffer.compare(srcBuf, dstBuf) !== 0) {
-      copyFileSync(f.canonicalFull, f.mirrorFull);
-      sharedFilesSynced++;
+  // 3. Sync `_shared/**` as a union: every canonical file is copied to the
+  //    mirror (byte-identical after --write), including canonical-only modules
+  //    the mirror scripts import; mirror-only files are kept untouched.
+  const shared = sharedUnion(catalogRoot, mirrorRoot);
+  let sharedFilesCopied = 0;
+  for (const f of shared.entries) {
+    if (f.mirrorFull && Buffer.compare(readFileSync(f.canonicalFull), readFileSync(f.mirrorFull)) === 0) {
+      continue;
     }
+    const dest = join(mirrorRoot, "_shared", f.rel);
+    mkdirSync(dirname(dest), { recursive: true });
+    copyFileSync(f.canonicalFull, dest);
+    sharedFilesCopied++;
   }
 
   return {
@@ -374,8 +393,9 @@ export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFA
     deletedFiles,
     createdSkills,
     removedOrphanSkills,
-    sharedFilesChecked: shared.common.length,
-    sharedFilesSynced,
+    sharedFilesChecked: shared.canonicalFiles,
+    sharedFilesCopied,
+    sharedMirrorOnly: shared.mirrorOnly.length,
   };
 }
 
@@ -391,11 +411,12 @@ Options:
   --check            Read-only check comparing canonical catalog against the mirror.
                      Coverage: (1) every canonical skill present and byte-identical;
                      (2) skill-like orphan dirs (containing SKILL.md) fail;
-                     (3) _shared/** files present in BOTH trees must be byte-identical
-                     (mirror-only _shared files are allowed).
+                     (3) _shared/** union: every canonical _shared file MUST be present
+                     and byte-identical in the mirror (mirror-only _shared files are
+                     allowed extras and reported).
                      Exits with code 1 if divergences are found, 0 if in sync.
-  --write            Mechanically synchronizes canonical skills to the mirror and syncs
-                     the _shared intersection; mirror-only _shared files are kept.
+  --write            Mechanically synchronizes canonical skills to the mirror and copies
+                     every canonical _shared file (union); mirror-only _shared files are kept.
   --catalog <path>   Override canonical catalog root (defaults to parent of scripts/).
   --mirror <path>    Override addon mirror root (defaults to gentle-ai-dsh/skills/). The
                      mirror MUST live under the catalog root; the catalog root itself, its
@@ -446,8 +467,8 @@ export function runCli(argv = process.argv.slice(2)) {
     const res = checkMirror(catalogRoot, mirrorRoot);
     const coverage =
       `${res.totalCanonicalSkills} canonical skills (byte parity) · ` +
-      `_shared/** intersection: ${res.sharedIntersection.filesChecked} file(s) checked ` +
-      `(${res.sharedIntersection.canonicalFiles} canonical / ${res.sharedIntersection.mirrorFiles} mirror; mirror-only allowed)`;
+      `_shared/** union: ${res.sharedUnion.filesChecked} canonical file(s) checked ` +
+      `(presence + byte-parity required; ${res.sharedUnion.mirrorOnly.length} mirror-only file(s) allowed)`;
     if (jsonOut) {
       console.log(JSON.stringify(res, null, 2));
     } else {
@@ -478,9 +499,13 @@ export function runCli(argv = process.argv.slice(2)) {
             for (const f of d.extraInMirror) console.error(`        extra in mirror: ${f}`);
           }
         }
-        if (res.sharedIntersection.divergences.length > 0) {
-          console.error(`  _shared divergences (${res.sharedIntersection.divergences.length} file(s) present in both trees):`);
-          for (const f of res.sharedIntersection.divergences) console.error(`    - _shared/${f}`);
+        if (res.sharedUnion.missing.length > 0) {
+          console.error(`  _shared missing in mirror (${res.sharedUnion.missing.length} canonical file(s)):`);
+          for (const f of res.sharedUnion.missing) console.error(`    - _shared/${f}`);
+        }
+        if (res.sharedUnion.divergences.length > 0) {
+          console.error(`  _shared divergences (${res.sharedUnion.divergences.length} canonical file(s) with drifted bytes):`);
+          for (const f of res.sharedUnion.divergences) console.error(`    - _shared/${f}`);
         }
         console.error("\nAction required: Run 'node scripts/sync-addon.mjs --write' to regenerate mirror from canonical.");
       }
@@ -498,7 +523,7 @@ export function runCli(argv = process.argv.slice(2)) {
       console.log(`  Files deleted:           ${stats.deletedFiles}`);
       console.log(`  New skills created:      ${stats.createdSkills}`);
       console.log(`  Orphan skills removed:   ${stats.removedOrphanSkills}`);
-      console.log(`[sync-addon] Coverage: ${stats.canonicalCount} canonical skills · _shared/** intersection: ${stats.sharedFilesChecked} file(s) checked, ${stats.sharedFilesSynced} updated (mirror-only files kept).`);
+      console.log(`[sync-addon] Coverage: ${stats.canonicalCount} canonical skills · _shared/** union: ${stats.sharedFilesChecked} canonical file(s) checked, ${stats.sharedFilesCopied} copied/updated, ${stats.sharedMirrorOnly} mirror-only file(s) preserved.`);
       console.log(`[sync-addon] PASS: Mirror regenerated successfully.`);
     }
     return 0;

@@ -17,7 +17,7 @@ import {
  *   <root>/canonical/
  *     00-meta/skill-a/{SKILL.md, scripts/run.mjs}
  *     01-dev/skill-b/{SKILL.md, references/guide.md}
- *     _shared/{roster.json, eval-harness.mjs (canonical-only)}
+ *     _shared/{roster.json, eval-harness.mjs (canonical-only, union-required)}
  *     gentle-ai-dsh/skills/            <- mirror
  *       skill-a/{SKILL.md (divergent), scripts/run.mjs, extra.txt}
  *       skill-c/SKILL.md               <- orphan skill
@@ -84,15 +84,18 @@ test("checkMirror detects missing skills, orphan skills, file and _shared diverg
     assert.deepEqual(divA.extraInMirror, ["extra.txt"]);
     assert.deepEqual(divA.missingInMirror, []);
 
-    // _shared intersection: only the file present in BOTH trees is checked.
-    assert.equal(res.sharedIntersection.filesChecked, 1);
-    assert.deepEqual(res.sharedIntersection.divergences, ["roster.json"]);
+    // _shared union: every canonical file is required in the mirror; the
+    // canonical-only module is missing and roster.json has drifted bytes.
+    assert.equal(res.sharedUnion.filesChecked, 2);
+    assert.deepEqual(res.sharedUnion.missing, ["eval-harness.mjs"]);
+    assert.deepEqual(res.sharedUnion.divergences, ["roster.json"]);
+    assert.deepEqual(res.sharedUnion.mirrorOnly, ["mirror-extra.md"]);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
 
-test("syncMirror synchronizes skills, purges skill-like orphans, and syncs the _shared intersection", () => {
+test("syncMirror synchronizes skills, purges skill-like orphans, and syncs the _shared union", () => {
   const { root, cat, mir } = makeFixture();
   try {
     const stats = syncMirror(cat, mir);
@@ -101,8 +104,9 @@ test("syncMirror synchronizes skills, purges skill-like orphans, and syncs the _
     assert.equal(stats.removedOrphanSkills, 1); // skill-c removed
     assert.ok(stats.copiedFiles >= 3); // skill-a SKILL.md, skill-b SKILL.md + references/guide.md
     assert.equal(stats.deletedFiles, 1); // extra.txt deleted
-    assert.equal(stats.sharedFilesChecked, 1); // roster.json in both trees
-    assert.equal(stats.sharedFilesSynced, 1); // stale mirror copy refreshed
+    assert.equal(stats.sharedFilesChecked, 2); // roster.json + eval-harness.mjs (canonical)
+    assert.equal(stats.sharedFilesCopied, 2); // stale mirror copy refreshed + canonical-only copied
+    assert.equal(stats.sharedMirrorOnly, 1); // mirror-extra.md preserved
 
     // Orphan skill-c must be gone; the non-skill docs dir must remain.
     assert.equal(existsSync(join(mir, "skill-c")), false);
@@ -115,10 +119,11 @@ test("syncMirror synchronizes skills, purges skill-like orphans, and syncs the _
     assert.ok(existsSync(join(mir, "skill-b", "SKILL.md")));
     assert.ok(existsSync(join(mir, "skill-b", "references", "guide.md")));
 
-    // _shared: intersection corrected, mirror-only extras kept, canonical-only untouched.
+    // _shared union: every canonical file is byte-identical in the mirror,
+    // mirror-only extras are kept, and nothing canonical-only stays behind.
     assert.equal(readFileSync(join(mir, "_shared", "roster.json"), "utf8"), readFileSync(join(cat, "_shared", "roster.json"), "utf8"));
+    assert.equal(readFileSync(join(mir, "_shared", "eval-harness.mjs"), "utf8"), readFileSync(join(cat, "_shared", "eval-harness.mjs"), "utf8"), "canonical-only _shared files are copied by the union sync");
     assert.equal(readFileSync(join(mir, "_shared", "mirror-extra.md"), "utf8"), "curated addon extra\n");
-    assert.equal(existsSync(join(mir, "_shared", "eval-harness.mjs")), false, "canonical-only _shared files are not copied by intersection sync");
 
     // Parity check must now pass 100%
     const checkRes = checkMirror(cat, mir);
@@ -126,7 +131,32 @@ test("syncMirror synchronizes skills, purges skill-like orphans, and syncs the _
     assert.deepEqual(checkRes.missingSkills, []);
     assert.deepEqual(checkRes.orphanSkills, []);
     assert.deepEqual(checkRes.skillDivergences, []);
-    assert.deepEqual(checkRes.sharedIntersection.divergences, []);
+    assert.deepEqual(checkRes.sharedUnion.missing, []);
+    assert.deepEqual(checkRes.sharedUnion.divergences, []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("_shared union: --check fails when a canonical file is absent from the mirror", () => {
+  const { root, cat, mir } = makeFixture();
+  try {
+    // Bring the mirror to full parity first.
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--write"]), 0);
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--check"]), 0);
+
+    // Drop a canonical-only module from the mirror: the union gate must fail
+    // even though every skill still matches byte-for-byte.
+    rmSync(join(mir, "_shared", "eval-harness.mjs"));
+    const res = checkMirror(cat, mir);
+    assert.equal(res.pass, false);
+    assert.deepEqual(res.sharedUnion.missing, ["eval-harness.mjs"]);
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--check"]), 1);
+
+    // --write restores it and the gate passes again.
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--write"]), 0);
+    assert.equal(existsSync(join(mir, "_shared", "eval-harness.mjs")), true);
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--check"]), 0);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
