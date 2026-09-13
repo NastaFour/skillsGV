@@ -34,12 +34,12 @@ Hay 14 skills "tier 0" siempre-activas, definidas en
 skill-validator, skill-sync, professional-planner, sdd-orchestrator, ...).
 
 Regla dura: **antes de cada turno que pueda cargar otra skill, corré
-skill-router** para bajar 208 → 3-5 candidatas. No leas el cuerpo de una skill
+skill-router** para bajar 209 → 3-5 candidatas. No leas el cuerpo de una skill
 fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
 
-Seguí Spec-Driven Development. Arrancá con lenguaje natural («hacé un SDD para X», «SDD change»); si preferís slash, en gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`). **Regla Alan**: el NL siempre funciona; el slash es un alias opcional, no un requisito. Cargá la
+Seguí Spec-Driven Development. Arrancá con lenguaje natural («hacé un SDD para X», «SDD change»); si preferís slash, el alias depende de lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`, p. ej. `/sdd-new`). **Regla Alan**: el NL siempre funciona; el slash es un alias opcional, no un requisito. Cargá la
 skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 
 **Entrevista real**: el orquestador te pregunta el modo al arrancar (auto/interactive) y, antes de lanzar spec/design, te hace las decisiones de producto y el brief + questionnaire de diseño (D1/D1b de **design-driven**). Los delegados no pueden preguntar: tus respuestas viajan dentro de su prompt.
@@ -47,8 +47,8 @@ skill **sdd-orchestrator** y DELEGÁ las fases (nunca las ejecutes inline):
 1. sdd-init → sdd-explore → (sdd-research si el usuario la elige) → sdd-propose  (delegá con **subagent** / flash)
 2. sdd-spec / sdd-design                  (**subagent** / flash)
 3. sdd-tasks (flash) → sdd-apply (**subagent_strong** / pro) → sdd-verify (flash)
-4. **judgment-day** (revisión dual adversarial, **subagent_strong** / pro — solo los 2 jueces)
-5. **code-reviewer** / **verification-before-completion** antes de dar por terminado
+
+Fuera del pipeline SDD (review de código, post-apply/pre-PR): **judgment-day** (revisión dual adversarial del diff, **subagent_strong** / pro — solo los 2 jueces) y **code-reviewer** / **verification-before-completion** antes de dar por terminado. Judgment Day NO valida pasos de planning (proposal/spec/design/tasks).
 
 Herramientas de delegación: **subagent** y **subagent_fork** corren en el modelo
 flash; **subagent_strong** conserva el modelo fuerte. Vos planificás y sintetizás
@@ -59,7 +59,8 @@ la implementación se delega a flash salvo `sdd-apply` y los jueces críticos.
 **Delegación (regla dura)**: fix pequeño y mecánico (1 archivo) → inline; todo lo
 demás → delegar. Cargá **gentle-orchestrator** para el protocolo completo + el
 roster de 20 agentes. **Si un subagente falla o devuelve vacío → RE-LANZALO una
-vez + investigá el porqué** (leé el error, no asumas).
+vez + investigá el porqué** (leé el error, no asumas). Un SEGUNDO fallo detiene
+la cadena: reportá y pará — sin tercer intento automático.
 
 **Roster de agentes (20)**: la fuente de verdad declarativa vive en el catálogo
 skillsGV (`_shared/agent-roster/roster.json` + meta-skill **agent-roster**); el
@@ -76,9 +77,9 @@ el binario, la mecánica determinista (congelamiento, recibos, presupuestos).
 
 ## 2 · De dónde salen las skills
 
-El catálogo (208 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
+El catálogo (209 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
 nombre con la herramienta **skill**. Antes de cualquier turno que pueda cargar
-otra skill, usá **skill-router** para reducir 208 → 3-5 candidatas. El catálogo
+otra skill, usá **skill-router** para reducir 209 → 3-5 candidatas. El catálogo
 es la fuente de verdad; no lo edites desde la sesión salvo que te lo pidan.
 
 ## 3 · Memoria y documentación
@@ -133,6 +134,12 @@ está) y avisá al usuario.
   modelo flash; el orquestador fuerte sintetiza y decide.
 - **Guard de contexto** (~800k tokens): preferí una sesión o un delegado fresco
   antes del techo — el overflow fatal de la sesión 1 fue previsible a los 772k.
+- **Corte al segundo fallo**: si un delegado o gate falla dos veces, se detiene
+  la cadena y se escala el reporte; prohibido un tercer intento automático.
+- **Presupuesto de review (400/800)**: default 400 líneas cambiadas por PR
+  (adiciones+deleciones; generados/goldens fuera del conteo de riesgo); al
+  excederlo, consultá al usuario con `ask-on-risk` (cadena/apilado vs
+  `size:exception`); el preflight del usuario puede fijar 800 como techo.
 
 ## 7 · codegraph-first
 

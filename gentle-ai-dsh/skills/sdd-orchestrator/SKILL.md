@@ -32,7 +32,7 @@ Coordina el pipeline SDD de forma delgada: **rutea, no ejecuta**. Mantenga un hi
 ## Regla Alan (lenguaje natural primero)
 
 - Prefiera triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») sobre comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependa del slash para arrancar una fase.
+- El alias slash depende de lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`, p. ej. `/sdd-new`, `/sdd-continue`). No dependa del slash para arrancar una fase: el NL es la vía primaria.
 
 ## Agentes de fase (roles / lee / escribe)
 
@@ -84,7 +84,7 @@ Tras cada fase y ANTES de lanzar la siguiente, valide:
 4. **Sin deriva**: la salida es consistente con las entradas de la fase (spec dentro del alcance de la propuesta, design responde a la propuesta, tasks cubren spec y design, apply implementa tasks).
 5. **Coherencia de ruteo**: `next_recommended` sigue el DAG y no hay riesgos CRITICAL sin abordar.
 
-Fallo → re-ejecute la MISMA fase UNA vez con feedback correctivo que nombre los fallos específicos (no reintento a ciegas). Segundo fallo → DETENGA la cadena y reporte al usuario nombrando la fase, los hallazgos del gatekeeper, ambos intentos y el fix recomendado. No avance a fases dependientes con un artefacto malo: el error se propaga.
+Fallo → re-ejecute la MISMA fase UNA vez con feedback correctivo que nombre los fallos específicos (no reintento a ciegas). Un SEGUNDO fallo DETIENE la cadena y escala el reporte al usuario nombrando la fase, los hallazgos del gatekeeper, ambos intentos y el fix recomendado; **prohibido un tercer reintento automático**. No avance a fases dependientes con un artefacto malo: el error se propaga.
 
 ## Reglas P0 de delegación SDD
 

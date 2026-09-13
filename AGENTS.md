@@ -28,8 +28,9 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
    ```bash
    node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <staged-lines>] [--json]
    ```
-2. **Orquestador si >1 archivo**: si el trabajo toca 2+ archivos o 2+ dominios de negocio, invocar `sdd-orchestrator` (SDD) en lugar de ejecutar inline; el orquestador rutea las fases del DAG sin ejecutarlas.
+2. **Orquestador si >1 archivo**: si el trabajo toca 2+ archivos o 2+ dominios de negocio, invocar `sdd-orchestrator` (SDD) en lugar de ejecutar inline; el orquestador rutea las fases del DAG sin ejecutarlas. En modo `auto`, su gatekeeper valida cada fase antes de la siguiente: un fallo re-ejecuta la MISMA fase UNA vez y un SEGUNDO fallo detiene la cadena y escala — no existe un tercer intento automático.
 3. **Contrato por fase**: cada fase SDD devuelve `{ status, executive_summary, artifacts, next_recommended, risks, skill_resolution }`; los artefactos se persisten por topic key `sdd/{change}/{artifact}` en el almacén declarado en `openspec/config.yaml` (`artifact_store: hybrid`).
+4. **Superficie NL-primero**: pedir un cambio SDD en lenguaje natural es la vía primaria; los slash son alias opcionales según lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`), nunca un requisito.
 
 ## 🧭 La Tríada + memoria (matriz de responsabilidades)
 
@@ -80,6 +81,7 @@ flowchart TD
 - **Siempre** guardar decisiones, bugs y descubrimientos en Engram al vuelo (`mem_save`, topic keys `<proyecto>/…`, `design/<proyecto>`); al cerrar sesión `mem_session_summary`; ante conflictos `mem_judge`. "Guardado en memoria" NO es "respondido al usuario": confirmá en el chat.
 - **Siempre** al cierre de cada proyecto (después de TODOS los fixes): correr el protocolo `skill-harvest` (buscar en Engram lo aprendido → 1-3 patrones repetibles → TXT en `_inbox`). Nunca crear la skill automáticamente — recomendarla.
 - **Traductor visual**: si el usuario manda capturas/imágenes y el modelo no ve imágenes, no improvisar — redirigir a Antigravity (u `od`) y exigir spec textual.
+- **Presupuesto de review (400/800)**: por defecto 400 líneas cambiadas por PR (`additions + deletions`; generados/goldens fuera del conteo de riesgo); al excederlo, consultar la estrategia de entrega con `ask-on-risk` (cadena/apilado vs `size:exception`). El techo de preflight por usuario es 800 líneas.
 
 ## 🤖 Auto-Invoke List (root)
 

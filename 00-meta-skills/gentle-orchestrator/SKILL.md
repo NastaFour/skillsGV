@@ -15,7 +15,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 ## Regla Alan (lenguaje natural primero)
 
 - Preferí triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- En gentle-ai 2.5.0 los comandos SDD se renombraron a `/gentle-sdd-*` (p. ej. `/gentle-sdd-new`, `/gentle-sdd-continue`). No dependas del slash para arrancar una fase.
+- El alias slash depende de lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`, p. ej. `/sdd-new`, `/sdd-continue`). No dependas del slash para arrancar una fase: el NL es la vía primaria.
 
 ## Reglas de delegación (inline vs delegar)
 
@@ -65,7 +65,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 
 - Si un sub-agente falla, devuelve vacío, o resultado inválido → **RE-LANZALO una vez** con más contexto: qué falló, qué se esperaba, el error.
 - **Investigá el porqué** antes de re-lanzar: leé el error/resultado del sub-agente; no asumas ni inventes.
-- Si falla 2 veces → reportá al usuario el motivo concreto y pará (nunca loops infinitos).
+- Si falla 2 veces → reportá al usuario el motivo concreto y pará: **2 fallos detienen la cadena; sin tercer intento automático** (nunca loops infinitos).
 - Review: máximo 2 rondas de fix; lo que quede abierto tras la 2ª se reporta, no se extiende.
 
 ## Skill Resolution

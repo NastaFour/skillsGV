@@ -109,7 +109,7 @@ After both verdicts are sealed:
 - [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) — the strict gatekeeper. Judgment Day feeds it evidence.
 - [`parallelization`](../../01-planning-process/parallelization/SKILL.md) — the mechanics of running two agent sessions in parallel.
 - [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — if both judges say kill, the kill switch trips.
-- [`professional-planner`](../../professional-planner/SKILL.md) — Judgment Day is a phase gate inside SDD.
+- [`professional-planner`](../../professional-planner/SKILL.md) — planning methodology reference only: Judgment Day is adversarial review of the code diff post-apply / pre-PR and does NOT validate SDD planning steps (proposal, spec, design, tasks).
 
 ## Example: judging a payment change
 

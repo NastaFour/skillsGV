@@ -215,7 +215,7 @@ explore → propose → spec → design → tasks → apply → verify → archi
 Tweaks pequeños? Solo código. Features, APIs, decisiones de arquitectura? SDD primero.
 
 **Próximos pasos**:
-- Probá /gentle-sdd-new para tu próxima feature real
+- Probá pedir tu próxima feature en lenguaje natural («hacé un SDD para X»); alias slash según runtime (2.7.0 verificado: `/sdd-new`)
 - Revisá openspec/specs/ — es tu fuente de verdad creciente
 - ¿Preguntas? El orquestador siempre está disponible
 ```

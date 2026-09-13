@@ -59,7 +59,7 @@ Sustituir `<agente>` según corresponda. Después, seguir la convención de `eng
    ```
 2. Tier 0 (14 skills base, ~2K tokens) ya está siempre cargado; leer únicamente los cuerpos de las skills listadas en `tier1toLoad`.
 3. Trabajo chico (1 archivo, sin dominios críticos) va directo. Features de 2+ archivos o dominios van por `sdd-orchestrator`, que rutea las fases `proposal -> specs -> design -> tasks -> apply -> verify -> archive` en modo automático o interactivo.
-4. Antes de cerrar trabajo serio, correr `judgment-day` (dos jueces ciegos independientes sobre el mismo objetivo).
+4. Antes de cerrar trabajo serio, correr `judgment-day` — review adversarial del diff de código post-apply/pre-PR (dos jueces ciegos independientes); no valida pasos de planning SDD (proposal/spec/design/tasks).
 
 ## Mantenimiento
 

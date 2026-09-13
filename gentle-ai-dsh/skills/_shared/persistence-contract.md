@@ -4,7 +4,7 @@
 
 The orchestrator passes `artifact_store.mode` with one of: `engram | openspec | hybrid | none`.
 
-The orchestrator ASKs the user which mode they want when `/gentle-sdd-new`, `/gentle-sdd-ff`, or `/gentle-sdd-continue` is invoked for the first time in a session. The choice is cached for the session. (Natural-language triggers always work too — the slash commands are an optional alias, not a requirement.)
+The orchestrator ASKs the user which mode they want when an SDD meta-command is invoked for the first time in a session (natural language is the primary surface; the slash alias depends on the runtime — 2.7.0 verified: `/sdd-new`, `/sdd-ff`, `/sdd-continue`). The choice is cached for the session. (The slash commands are an optional alias, not a requirement.)
 
 Default (if user doesn't specify): if Engram is available → `engram`. Otherwise → `none`.
 
