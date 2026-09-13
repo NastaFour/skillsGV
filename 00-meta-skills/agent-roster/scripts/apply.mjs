@@ -145,6 +145,15 @@ function backupStamp() {
 // Roster / profile resolution
 // ---------------------------------------------------------------------------
 
+export function normalizeTier(tier) {
+  if (!tier) return "cheap";
+  const t = String(tier).toLowerCase().trim();
+  if (t === "sdd-strong" || t === "strong") return "strong";
+  if (t === "sdd-mid" || t === "mid") return "mid";
+  if (t === "sdd-cheap" || t === "cheap" || t === "flash") return "cheap";
+  return t;
+}
+
 function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
   if (override) {
     let o = null;
@@ -154,26 +163,59 @@ function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
       console.error(`--override is not valid JSON: ${override}`);
       process.exit(2);
     }
-    if (!o || typeof o.strong !== "string" || typeof o.flash !== "string") {
-      console.error("--override must be {\"strong\":\"...\",\"flash\":\"...\"}");
+    const strong = o["sdd-strong"] || o.strong;
+    const flash = o.flash || o["sdd-cheap"] || o.cheap;
+    const mid = o["sdd-mid"] || o.mid || flash;
+    const cheap = o["sdd-cheap"] || o.cheap || flash;
+    if (typeof strong !== "string" || (typeof flash !== "string" && typeof cheap !== "string")) {
+      console.error("--override must include strong and flash/mid/cheap models");
       process.exit(2);
     }
-    return { name: "(override)", strong: o.strong, flash: o.flash };
+    return {
+      name: "(override)",
+      strong,
+      mid,
+      cheap: cheap || flash,
+      flash: flash || cheap,
+      "sdd-strong": strong,
+      "sdd-mid": mid,
+      "sdd-cheap": cheap || flash,
+    };
   }
   if (!profiles || !profiles.profiles || typeof profiles.current !== "string") {
     console.error(`profiles.json is malformed or missing: ${profilesPath}`);
     process.exit(2);
   }
   const current = profiles.profiles[profiles.current];
-  if (!current || typeof current.strong !== "string" || typeof current.flash !== "string") {
+  if (!current) {
     console.error(`profiles.json: profile "${profiles.current}" is missing or malformed`);
     process.exit(2);
   }
-  return { name: profiles.current, strong: current.strong, flash: current.flash };
+  const strong = current["sdd-strong"] || current.strong;
+  const flash = current.flash || current["sdd-cheap"] || current.cheap;
+  const mid = current["sdd-mid"] || current.mid || flash;
+  const cheap = current["sdd-cheap"] || current.cheap || flash;
+  if (typeof strong !== "string" || (typeof flash !== "string" && typeof cheap !== "string")) {
+    console.error(`profiles.json: profile "${profiles.current}" is missing or malformed`);
+    process.exit(2);
+  }
+  return {
+    name: profiles.current,
+    strong,
+    mid,
+    cheap: cheap || flash,
+    flash: flash || cheap,
+    "sdd-strong": strong,
+    "sdd-mid": mid,
+    "sdd-cheap": cheap || flash,
+  };
 }
 
 function desiredModelFor(agent, profile) {
-  return agent.tier === "strong" ? profile.strong : profile.flash;
+  const norm = normalizeTier(agent.tier);
+  if (norm === "strong") return profile["sdd-strong"] || profile.strong;
+  if (norm === "mid") return profile["sdd-mid"] || profile.mid || profile["sdd-cheap"] || profile.flash || profile.cheap;
+  return profile["sdd-cheap"] || profile.cheap || profile.flash || profile["sdd-mid"] || profile.mid;
 }
 
 function splitProviderModel(full) {
@@ -535,7 +577,7 @@ function runOpenCode(opts, roster, profile, providers) {
   console.log(`Target:   ${target}`);
   console.log(`Profile:  ${profile.name} (strong=${profile.strong}, flash=${profile.flash})`);
   console.log(`Mode:     ${opts.apply ? "apply" : "dry-run"}\n`);
-  console.log("Agents (20):");
+  console.log(`Agents (${roster.agents.length}):`);
   for (const l of lines) {
     if (l.status === "changed") {
       console.log(`  [CHANGED] ${l.agent}: ${l.current} -> ${l.desired}`);
@@ -587,7 +629,7 @@ function runOpenCode(opts, roster, profile, providers) {
 function dshRoutingFor(agent) {
   let tool = "main";
   if (agent.delegate_only) {
-    tool = agent.tier === "strong" ? "subagent_strong" : "subagent";
+    tool = normalizeTier(agent.tier) === "strong" ? "subagent_strong" : "subagent";
   }
   return {
     tier: agent.tier,
@@ -621,7 +663,7 @@ function extractFallback(text, varName) {
 
 function computeDshPresetChanges(text, profile) {
   const strong = splitProviderModel(profile.strong);
-  const flash = splitProviderModel(profile.flash);
+  const flash = splitProviderModel(profile.cheap || profile.flash);
   const current = {
     strongProvider: extractFallback(text, "STRONG_PROVIDER"),
     strongModel: extractFallback(text, "STRONG_MODEL"),
@@ -722,7 +764,7 @@ function runDsh(opts, roster, profile, providers) {
   if (routingState === "in-sync") {
     console.log(`  [OK] already in sync with roster.json (no write needed)`);
   } else {
-    console.log(`  [${routingState === "missing" ? "CREATE" : "OVERWRITE"}] agent → tier/effort/tool for the 20 agents`);
+    console.log(`  [${routingState === "missing" ? "CREATE" : "OVERWRITE"}] agent → tier/effort/tool for the ${roster.agents.length} agents`);
   }
 
   console.log("\nPreset fallback defaults (trivially-safe literal updates only):");
@@ -831,8 +873,8 @@ function runList(opts, roster, profile) {
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   const roster = loadJson(ROSTER_PATH);
-  if (!roster || !Array.isArray(roster.agents) || roster.agents.length !== 20) {
-    console.error(`❌ roster.json is missing or does not declare exactly 20 agents: ${ROSTER_PATH}`);
+  if (!roster || !Array.isArray(roster.agents) || roster.agents.length !== 21) {
+    console.error(`❌ roster.json is missing or does not declare exactly 21 agents: ${ROSTER_PATH}`);
     process.exit(1);
   }
   const profilesPath = opts.profilesPath || PROFILES_PATH;
@@ -845,4 +887,6 @@ function main() {
   else runList(opts, roster, profile);
 }
 
-main();
+if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+  main();
+}

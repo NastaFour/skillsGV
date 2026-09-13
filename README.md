@@ -77,14 +77,14 @@ Si una instalación sale mal: `--rollback` revierte la última generación compl
 
 ## Configuración de agentes (agent-roster)
 
-Una fuente de verdad declarativa para los **20 agentes** del ecosistema (tier `strong`/`flash`, effort `max`/`high`, `delegate_only`), con generador por runtime y switcher de proveedor con un comando:
+Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier `sdd-strong`/`sdd-mid`/`sdd-cheap`, effort `max`/`high`/`medium`/`low`, `delegate_only`), con generador por runtime y switcher de proveedor con un comando:
 
 | Archivo | Rol |
 |---|---|
-| `_shared/agent-roster/roster.json` | **Fuente de verdad**: nombre, grupo, tier, effort y delegate_only de los 20 agentes. |
+| `_shared/agent-roster/roster.json` | **Fuente de verdad**: nombre, grupo, tier, effort y delegate_only de los 21 agentes, más tiers y fases. |
 | `_shared/agent-roster/profiles.json` | Perfiles de proveedor con nombre (`deepseek`, `glm`) y perfil activo (`current`). |
 | `00-meta-skills/agent-roster/scripts/apply.mjs` | Generador por runtime (`opencode`, `dsh`, `list`). `--dry-run` por defecto; nunca escribe sin `--apply`; backup timestamped antes de escribir. |
-| `00-meta-skills/agent-roster/scripts/set-models.mjs` (+ `set-models.cmd`) | Cambia el proveedor/modelo de TODOS los agentes de una vez y delega en `apply.mjs` para cada runtime detectado. |
+| `00-meta-skills/agent-roster/scripts/set-models.mjs` (+ `set-models.cmd`) | Cambia el proveedor/modelo de TODOS los agentes de una vez, emite args de sync nativos y delega en `apply.mjs` para cada runtime detectado. |
 
 Ejemplos (PowerShell; el wrapper `set-models.cmd` acepta los mismos flags):
 
@@ -95,12 +95,16 @@ node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --dry-run
 # Cambiar todos los agentes al perfil GLM
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --apply
 
-# Un único modelo para ambos tiers
+# Un único modelo para todos los tiers
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --all opencode-go/deepseek-v4-pro --apply
 
 # Ajustar un solo tier
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --strong opencode-go/glm-5.3 --apply
-node 00-meta-skills/agent-roster/scripts/set-models.mjs --flash opencode-go/glm-5.2 --apply
+node 00-meta-skills/agent-roster/scripts/set-models.mjs --mid opencode-go/glm-5.2 --apply
+node 00-meta-skills/agent-roster/scripts/set-models.mjs --cheap opencode-go/glm-5.2 --apply
+
+# Emitir argumentos exactos para gentle-ai sync
+node 00-meta-skills/agent-roster/scripts/set-models.mjs --emit-sync-args
 
 # Guardar la combinación actual como perfil nuevo
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --save-profile mi-perfil --apply
@@ -109,7 +113,7 @@ node 00-meta-skills/agent-roster/scripts/set-models.mjs --save-profile mi-perfil
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --list
 ```
 
-**Promesa de portabilidad**: un runtime nuevo es un adaptador más en `apply.mjs` (detección + plan + escritura con backup); `roster.json` no cambia nunca. El merge en OpenCode es quirúrgico (solo `agent.<name>.model` de los 20 agentes, todo lo demás queda byte a byte). Regla de prueba: nunca aplicar `--apply` sobre el `opencode.json` global real en tests — usar una copia temporal con `apply.mjs --config <copia>`.
+**Promesa de portabilidad**: un runtime nuevo es un adaptador más en `apply.mjs` (detección + plan + escritura con backup); `roster.json` no cambia nunca. El merge en OpenCode es quirúrgico (solo `agent.<name>.model` de los 21 agentes, todo lo demás queda byte a byte). Regla de prueba: nunca aplicar `--apply` sobre el `opencode.json` global real en tests — usar una copia temporal con `apply.mjs --config <copia>`.
 
 ## Categorías
 
