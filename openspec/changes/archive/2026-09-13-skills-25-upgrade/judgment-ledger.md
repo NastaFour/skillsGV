@@ -86,3 +86,48 @@ prosa, registry, espejo y gates). Se descarta la dirección B (exclusión consis
 | `pnpm doctor` | 6/6 checks (exit 0) |
 | `check-install-state.mjs --strict` | 11 runtimes · missing 0 · unregistered 0 (exit 0) |
 | `pnpm registry:sync` + `validate --strict` | registry regenerado (197 indexadas por exclusión) y validate sin rotura (exit 0) |
+
+---
+
+# Ronda 2 (re-run) — 2026-09-13
+
+**Rango re-auditado**: `ae5735b..b2bb73c` (7 commits del fix de ronda 1, sin push)
+**Veredicto**: **SIN bloqueantes** — la re-corrida adversarial dual no emitió bloqueos; produjo overlaps (confirmados por ambos jueces o por evidencia determinista) que este mini-fix convierte en correcciones.
+**Fix**: `jd-fix-agent` (ronda 2, contexto fresco), un solo escritor.
+
+## 7. Hallazgos de la ronda 2 y resolución
+
+| ID | Origen | Tipo | Hallazgo | Estado |
+|---|---|---|---|---|
+| MF1 | RED-001 = BLUE-001 | introducida | `apply.mjs`: el replace quirúrgico del entry de provider perdía la indentación del entry (`findNamedObjectAtDepth` devolvía `{open, close}` sin `nameIdx` → `lineIndentAt(text, undefined)`); JSON válido pero mal formateado en configs pretty-printed. | ✅ Arreglado |
+| MF2 | RED-002 | introducida | `agent-roster/SKILL.md` seguía documentando la tabla vieja (`sdd-propose/spec/design/verify` como `sdd-cheap`; strong=4/mid=2/cheap=15) contra el `roster.json` real (`propose/design`=strong, `spec/verify`=mid, 6/4/11); `evals.json` también declaraba conteos viejos. | ✅ Arreglado |
+| MF3 | RED-005 | introducida | `apply.mjs`: el root del JSON se descubría con `text.indexOf("{")`; un `{` en un comentario inicial JSONC rompía (desbalanceado → exit 1; balanceado → root falso → inyección dentro del comentario → JSON inválido). | ✅ Arreglado |
+| MF4 | RED-003 = BLUE-002 | pre-existente | `set-models.mjs`: `SECRET_SHAPE_PATTERNS` no cubría shapes de clave reales que pasan el regex de nombre (`hf_`, `npm_`, `dop_v1_`). | ✅ Arreglado |
+| MF5 | RED-004 = BLUE-003 | pre-existente | `sync-addon.mjs`: la intersección-only dejaba módulos canónicos fuera del espejo (`catalog-manifest.mjs`, `eval-harness.mjs`) mientras `--check` reportaba "full parity"; scripts del espejo los importan. | ✅ Arreglado (unión) |
+
+## 8. Resumen del mini-fix (ronda 2)
+
+- **MF1** — `findNamedObjectAtDepth` devuelve `{ nameIdx, open, close }`; el replace del entry conserva la indentación de su key. Test: config pretty-printed con entry gestionado desactualizado → FORMATO exacto asertado (no solo `JSON.parse`).
+- **MF2** — tabla de tiers alineada al roster real (strong=6: `gentle-orchestrator`, 2 jueces, `sdd-research`, `sdd-propose`, `sdd-design`; mid=4: `sdd-apply`, `sdd-spec`, `sdd-verify`, `jd-fix-agent`; cheap=11: 6 lentes + `sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive`, `sdd-onboard`); `evals.json` con 21 agentes y tiers 6/4/11 (expectations offline siguen verdes).
+- **MF3** — nuevo `findRootObjectOpen` brace-aware (salta strings y comentarios de línea/bloque) para encontrar el objeto ROOT; sin root válido → rechazo explícito (`exit 1`, nunca inyección a ciegas). Tests: comentario inicial con `{}` + provider → inyección correcta; archivo sin root → rechazo limpio sin mutación.
+- **MF4** — denylist ampliada: `hf_`, `npm_`, `dop_v1_`, `shpat_`, `figd_`; tests de rechazo por cada shape nueva.
+- **MF5** — `sync-addon.mjs` con política de **UNIÓN**: `--write` copia TODOS los canónicos de `_shared/**` al espejo (mirror-only preservados; 2 módulos nuevos: `catalog-manifest.mjs`, `eval-harness.mjs`); `--check` exige presencia + byte-parity de los 13 canónicos y declara la cobertura con verdad. Tests: hueco/divergencia de `_shared` fallan el gate aun con skills 100% en paridad; `--write` restaura. Smoke: `import('gentle-ai-dsh/skills/_shared/catalog-manifest.mjs')` → `IMPORT-OK`.
+
+## 9. Evidencia de cierre (ronda 2)
+
+| Gate | Resultado |
+|---|---|
+| `validate-skills.mjs --strict` | **210 pass · 0 with issues · 0 errors · 0 warnings · 214 info** (exit 0) |
+| `generate-indexes.mjs --check` | 210 skills · 13 categorías consistentes (exit 0) |
+| `pnpm test` | **86/86 pass** (exit 0) |
+| `pnpm test:addon` | 3/3 pass (exit 0) |
+| `sync-addon.mjs --check` | 210 skills en paridad + `_shared/**` unión: 13 canónicos verificados (presencia + byte-parity), 6 mirror-only permitidos (exit 0) |
+| `pnpm doctor` | 6/6 checks (exit 0) |
+| `check-install-state.mjs --strict` | 11 runtimes · expected 210 · observed 210 · missing 0 · unregistered 0 (exit 0) |
+| `pnpm registry:sync` + `validate --strict` | registry regenerado (197 indexadas por exclusión) y validate sin rotura (exit 0) |
+
+## 10. Limitaciones residuales de la ronda 2 (documentadas, fuera del alcance del mini-fix)
+
+1. **Profundidad de los imports `_shared` en el espejo plano**: los scripts del espejo preservan el import canónico `../../../_shared/...`; con el layout plano (`gentle-ai-dsh/skills/<skill>/scripts/`) esa ruta resuelve un nivel arriba del mirror root (`gentle-ai-dsh/_shared/`). La unión garantiza presencia + byte-parity de los módulos en `gentle-ai-dsh/skills/_shared/**` (hallazgo RED-004/BLUE-003); la normalización de profundidad al copiar a un layout plano es responsabilidad del instalador — `skill-sync` ya reescribe `../../../_shared` → `../../_shared` (`fixSharedImports`) en copias, mientras el instalador del addon copia el espejo tal cual. Follow-up sugerido (fuera de este fix): aplicar la misma normalización en el pipeline del addon. No fue parte de los hallazgos de la ronda 2; se observó durante la verificación del fix.
+2. **`catalog-doctor` como self-check del flujo de instalación** y **`doctor --root` parcial**: siguen vigentes las limitaciones residuales de la ronda 1 (§5, ítems 1–2).
+
