@@ -73,7 +73,7 @@ Asimismo, se verificó la estricta higiene del repositorio: ningún commit conti
 - **Scenario Doctor PASS**: Comprobado exit 0 (`test/catalog-doctor.test.mjs` test 3 y corrida en árbol real).
 - **Scenario Doctor FAIL accionable**: Comprobado (`test/catalog-doctor.test.mjs` tests 4 y 5 simulan fallos de consistencia y paridad MCP arrojando causa detallada y exit ≠ 0).
 - **Requirement: Doctor read-only**: Cumplido. Comprobado en `test/catalog-doctor.test.mjs` (test 6: ningún archivo ni manifiesto sufre mutación durante el diagnóstico).
-- **Requirement: Doctor como self-check de instalación**: Cumplido. Integrado con el flujo de instalación y verificado en `test:addon`.
+- **Requirement: Doctor como self-check de instalación**: NO cumplido (diferido, ver `judgment-ledger.md`). `catalog-doctor` NO está cableado al flujo de instalación del addon: `pnpm test:addon` ejercita el doctor propio del addon (`bin/gentle-dsh.mjs doctor`) sobre una instalación temporal, no `catalog-doctor`. La verificación real de `catalog-doctor` es `test/catalog-doctor.test.mjs` + `pnpm doctor` (6/6).
 
 ### 2. `catalog-manifest`
 - **Requirement: Manifiesto único de skills**: Cumplido. `catalog.json` generado en la raíz conteniendo exactamente 209 skills y 13 categorías (`totals.skills === 209`).
