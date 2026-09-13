@@ -65,6 +65,11 @@ const SECRET_SHAPE_PATTERNS = [
   /^ya29\./, // Google OAuth access token
   /^AIza[0-9A-Za-z_-]{10,}$/, // Google API key
   /^eyJ[A-Za-z0-9_-]{10,}\./, // JWT
+  /^hf_/, // Hugging Face user access tokens
+  /^npm_/, // npm automation/publish tokens
+  /^dop_v1_/, // DigitalOcean personal access tokens
+  /^shpat_/, // Shopify admin API access tokens
+  /^figd_/, // Figma personal access tokens
 ];
 const looksLikeSecret = (value) => SECRET_SHAPE_PATTERNS.some((re) => re.test(value));
 
