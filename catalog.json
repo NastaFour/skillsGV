@@ -1,0 +1,1747 @@
+{
+  "version": 1,
+  "totals": {
+    "skills": 209
+  },
+  "categories": [
+    {
+      "id": "00-meta-skills",
+      "title": "Meta-Skills",
+      "count": 24
+    },
+    {
+      "id": "01-planning-process",
+      "title": "Planning & Process",
+      "count": 15
+    },
+    {
+      "id": "02-dev-roles",
+      "title": "Dev Roles (SDD)",
+      "count": 30
+    },
+    {
+      "id": "03-ai-ml",
+      "title": "AI / ML",
+      "count": 7
+    },
+    {
+      "id": "04-backend",
+      "title": "Backend",
+      "count": 24
+    },
+    {
+      "id": "05-frontend",
+      "title": "Frontend",
+      "count": 45
+    },
+    {
+      "id": "06-code-quality",
+      "title": "Code Quality",
+      "count": 17
+    },
+    {
+      "id": "07-testing",
+      "title": "Testing",
+      "count": 4
+    },
+    {
+      "id": "08-devops",
+      "title": "DevOps",
+      "count": 5
+    },
+    {
+      "id": "09-media-graphics",
+      "title": "Media & Graphics",
+      "count": 2
+    },
+    {
+      "id": "11-mcp-hybrid",
+      "title": "MCP Hybrids",
+      "count": 8
+    },
+    {
+      "id": "12-matt-pocock",
+      "title": "Matt Pocock",
+      "count": 27
+    },
+    {
+      "id": "professional-planner",
+      "title": "SDD Planning",
+      "count": 1
+    }
+  ],
+  "skills": [
+    {
+      "name": "agent-roster",
+      "path": "00-meta-skills/agent-roster/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models)",
+      "autoInvoke": true
+    },
+    {
+      "name": "catalog-usage",
+      "path": "00-meta-skills/catalog-usage/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento",
+      "autoInvoke": true
+    },
+    {
+      "name": "find-skills",
+      "path": "00-meta-skills/find-skills/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← descubrimiento e instalación de skills del ecosistema abierto",
+      "autoInvoke": false
+    },
+    {
+      "name": "gentle-orchestrator",
+      "path": "00-meta-skills/gentle-orchestrator/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← coordinator: delegation rules + 20-agent roster + retry-on-failure",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-apply",
+      "path": "00-meta-skills/sdd-apply/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD implementation with apply-progress merge",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-archive",
+      "path": "00-meta-skills/sdd-archive/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD archive: sync delta specs and close the change",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-design",
+      "path": "00-meta-skills/sdd-design/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD technical design and architecture approach",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-explore",
+      "path": "00-meta-skills/sdd-explore/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD exploration before committing to a change",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-init",
+      "path": "00-meta-skills/sdd-init/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD init: stack/testing capabilities, registry and persistence",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-onboard",
+      "path": "00-meta-skills/sdd-onboard/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD walkthrough onboarding on the real codebase",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-orchestrator",
+      "path": "00-meta-skills/sdd-orchestrator/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup",
+      "autoInvoke": true
+    },
+    {
+      "name": "sdd-propose",
+      "path": "00-meta-skills/sdd-propose/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD change proposal: intent, scope, approach",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-research",
+      "path": "00-meta-skills/sdd-research/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD research: source-backed evidence lanes before propose",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-spec",
+      "path": "00-meta-skills/sdd-spec/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD delta specs with requirements and scenarios",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-tasks",
+      "path": "00-meta-skills/sdd-tasks/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD task breakdown with review workload forecast",
+      "autoInvoke": false
+    },
+    {
+      "name": "sdd-verify",
+      "path": "00-meta-skills/sdd-verify/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← SDD verification against specs with compliance matrix",
+      "autoInvoke": false
+    },
+    {
+      "name": "skill-creator",
+      "path": "00-meta-skills/skill-creator/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "skill-harvest",
+      "path": "00-meta-skills/skill-harvest/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← post-project: draft new-skill proposals into _inbox from Engram, never auto-create",
+      "autoInvoke": true
+    },
+    {
+      "name": "skill-improver",
+      "path": "00-meta-skills/skill-improver/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← auditoría, evaluación y refactorización de calidad de skills",
+      "autoInvoke": false
+    },
+    {
+      "name": "skill-loader",
+      "path": "00-meta-skills/skill-loader/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": true,
+      "note": "← two-tier loading, session telemetry, route-first enforcement",
+      "autoInvoke": true
+    },
+    {
+      "name": "skill-registry",
+      "path": "00-meta-skills/skill-registry/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": "← sincronización y actualización del registro tras cambios en skills",
+      "autoInvoke": false
+    },
+    {
+      "name": "skill-router",
+      "path": "00-meta-skills/skill-router/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": true,
+      "note": "← deterministic routing, replaces ~80% of LLM skill selection",
+      "autoInvoke": true
+    },
+    {
+      "name": "skill-sync",
+      "path": "00-meta-skills/skill-sync/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "skill-validator",
+      "path": "00-meta-skills/skill-validator/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "agents",
+      "path": "01-planning-process/agents/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "application-workflow",
+      "path": "01-planning-process/application-workflow/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "brainstorming",
+      "path": "01-planning-process/brainstorming/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": "← explores user intent, requirements, design & specs before implementation (Superpowers)",
+      "autoInvoke": true
+    },
+    {
+      "name": "cognitive-doc-design",
+      "path": "01-planning-process/cognitive-doc-design/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": "← diseño de documentación técnica y guías reduciendo carga cognitiva",
+      "autoInvoke": false
+    },
+    {
+      "name": "engram-integration",
+      "path": "01-planning-process/engram-integration/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "idea-to-prd-express",
+      "path": "01-planning-process/idea-to-prd-express/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": true,
+      "note": "← 20-min compressed SDD for technical decisions",
+      "autoInvoke": true
+    },
+    {
+      "name": "jira-epic",
+      "path": "01-planning-process/jira-epic/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": "← Epic structure, child task breakdown, Jira MCP integration",
+      "autoInvoke": true
+    },
+    {
+      "name": "jira-task",
+      "path": "01-planning-process/jira-task/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": "← Bug/feature task templates, title conventions, MCP fields",
+      "autoInvoke": true
+    },
+    {
+      "name": "master-prompt",
+      "path": "01-planning-process/master-prompt/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "parallelization",
+      "path": "01-planning-process/parallelization/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "project-tracker",
+      "path": "01-planning-process/project-tracker/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "session-notes",
+      "path": "01-planning-process/session-notes/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "speckit-integration",
+      "path": "01-planning-process/speckit-integration/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "tech-escalation-adr",
+      "path": "01-planning-process/tech-escalation-adr/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "tech-stack-advisor",
+      "path": "01-planning-process/tech-stack-advisor/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "architecture-designer",
+      "path": "02-dev-roles/architecture-designer/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "auth-flow-audit",
+      "path": "02-dev-roles/auth-flow-audit/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← `references/audit-checklist.md`, `scripts/audit-auth.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "code-reviewer",
+      "path": "02-dev-roles/code-reviewer/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "decision-gate",
+      "path": "02-dev-roles/decision-gate/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": true,
+      "note": "← compress human's last-20% judgment to 3 min, traceable",
+      "autoInvoke": true
+    },
+    {
+      "name": "dod-checker",
+      "path": "02-dev-roles/dod-checker/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "expert-debugger",
+      "path": "02-dev-roles/expert-debugger/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "feature-implementer",
+      "path": "02-dev-roles/feature-implementer/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "frontend-debugging-protocol",
+      "path": "02-dev-roles/frontend-debugging-protocol/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← `references/diagnostic-tree.md`",
+      "autoInvoke": true
+    },
+    {
+      "name": "frontend-design",
+      "path": "02-dev-roles/frontend-design/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← Anthropic methodology, anti-AI-slop, signature element",
+      "autoInvoke": true
+    },
+    {
+      "name": "frontend-designer",
+      "path": "02-dev-roles/frontend-designer/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "github-pr",
+      "path": "02-dev-roles/github-pr/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← conventional commits, structured PR descriptions",
+      "autoInvoke": true
+    },
+    {
+      "name": "hexagonal-architecture-layers-java",
+      "path": "02-dev-roles/hexagonal-architecture-layers-java/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← domain/application/infrastructure layers, ports & adapters, Java",
+      "autoInvoke": true
+    },
+    {
+      "name": "jd-fix-agent",
+      "path": "02-dev-roles/jd-fix-agent/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← surgical fix agent for judgment-day",
+      "autoInvoke": false
+    },
+    {
+      "name": "jd-judge-a",
+      "path": "02-dev-roles/jd-judge-a/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← blind Judge A (adversarial reviewer)",
+      "autoInvoke": false
+    },
+    {
+      "name": "jd-judge-b",
+      "path": "02-dev-roles/jd-judge-b/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← blind Judge B (adversarial reviewer)",
+      "autoInvoke": false
+    },
+    {
+      "name": "judgment-day",
+      "path": "02-dev-roles/judgment-day/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← parallel adversarial review (red + blue)",
+      "autoInvoke": true
+    },
+    {
+      "name": "micro-interactions",
+      "path": "02-dev-roles/micro-interactions/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← hover, press, stagger, shimmer copy-paste catalog",
+      "autoInvoke": true
+    },
+    {
+      "name": "performance-refactor",
+      "path": "02-dev-roles/performance-refactor/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "qa-tester",
+      "path": "02-dev-roles/qa-tester/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "rdd-defect-workflow",
+      "path": "02-dev-roles/rdd-defect-workflow/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← RDD: recibos, corrección acotada, gates de entrega y kill switch",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-readability",
+      "path": "02-dev-roles/review-readability/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← R2 clarity lens",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-refuter",
+      "path": "02-dev-roles/review-refuter/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← refutes BLOCKER/CRITICAL findings",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-reliability",
+      "path": "02-dev-roles/review-reliability/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← R3 tests/contracts lens",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-resilience",
+      "path": "02-dev-roles/review-resilience/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← R4 ops/rollback lens",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-risk",
+      "path": "02-dev-roles/review-risk/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← R1 security lens",
+      "autoInvoke": false
+    },
+    {
+      "name": "review-validator",
+      "path": "02-dev-roles/review-validator/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← gate final: evidencia antes de \"listo\"",
+      "autoInvoke": true
+    },
+    {
+      "name": "security-audit",
+      "path": "02-dev-roles/security-audit/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "systematic-debugging",
+      "path": "02-dev-roles/systematic-debugging/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers)",
+      "autoInvoke": true
+    },
+    {
+      "name": "technical-writer",
+      "path": "02-dev-roles/technical-writer/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "verification-before-completion",
+      "path": "02-dev-roles/verification-before-completion/SKILL.md",
+      "category": "02-dev-roles",
+      "tier0": false,
+      "note": "← evidence before assertions, pre-commit/PR proof check (Superpowers)",
+      "autoInvoke": true
+    },
+    {
+      "name": "ai-orchestration",
+      "path": "03-ai-ml/ai-orchestration/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "ai-scalability-mlops",
+      "path": "03-ai-ml/ai-scalability-mlops/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "ai-sdk-5",
+      "path": "03-ai-ml/ai-sdk-5/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": "← Vercel AI SDK 5, useChat/UIMessage/streaming",
+      "autoInvoke": true
+    },
+    {
+      "name": "api-ai-billing",
+      "path": "03-ai-ml/api-ai-billing/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "llm-integration",
+      "path": "03-ai-ml/llm-integration/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "prompt-engineering",
+      "path": "03-ai-ml/prompt-engineering/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "research-first",
+      "path": "03-ai-ml/research-first/SKILL.md",
+      "category": "03-ai-ml",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "api-design",
+      "path": "04-backend/api-design/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "api-response-normalizer",
+      "path": "04-backend/api-response-normalizer/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/envelope-convention.md`, `scripts/check-id-consistency.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "background-jobs-queues",
+      "path": "04-backend/background-jobs-queues/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/job-catalog.md`, `references/bullmq-setup.md`, `scripts/check-jobs.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "booking-scheduling-domain",
+      "path": "04-backend/booking-scheduling-domain/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/slot-logic.md`, `references/conflict-resolution.md`, `references/no-show-protocol.md`, `scripts/check-booking-queries.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "django-drf",
+      "path": "04-backend/django-drf/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← Django REST Framework: serializers, viewsets, permissions, JWT",
+      "autoInvoke": true
+    },
+    {
+      "name": "docker",
+      "path": "04-backend/docker/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "error-handling",
+      "path": "04-backend/error-handling/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "expressjs",
+      "path": "04-backend/expressjs/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "file-uploads-storage",
+      "path": "04-backend/file-uploads-storage/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/upload-patterns.md`, `references/validation-rules.md`, `scripts/check-uploads.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "java-21",
+      "path": "04-backend/java-21/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← records, sealed classes, pattern matching, virtual threads (Loom)",
+      "autoInvoke": true
+    },
+    {
+      "name": "jwt-bcrypt",
+      "path": "04-backend/jwt-bcrypt/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "mcp-integration",
+      "path": "04-backend/mcp-integration/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "microservices",
+      "path": "04-backend/microservices/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "nodejs-module-loading",
+      "path": "04-backend/nodejs-module-loading/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/esm-evaluation-order.md`, `scripts/check-env-loading.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "nodejs",
+      "path": "04-backend/nodejs/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "notifications-multichannel",
+      "path": "04-backend/notifications-multichannel/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/channel-priority.md`, `references/templates.md`, `scripts/check-notifications.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "payments",
+      "path": "04-backend/payments/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/bcv-integration.md`, `pago-movil-flows.md`, `cashea-bnpl.md`",
+      "autoInvoke": false
+    },
+    {
+      "name": "postgresql",
+      "path": "04-backend/postgresql/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/schema-reference.md`",
+      "autoInvoke": false
+    },
+    {
+      "name": "prisma-frontend-types",
+      "path": "04-backend/prisma-frontend-types/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/type-mapping-rules.md`, `scripts/generate-frontend-types.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "prisma-orm",
+      "path": "04-backend/prisma-orm/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/schema-template.md`",
+      "autoInvoke": true
+    },
+    {
+      "name": "rate-limiting-design",
+      "path": "04-backend/rate-limiting-design/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/tier-table.md`, `scripts/check-limiters.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "reports-exports",
+      "path": "04-backend/reports-exports/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← `references/report-types.md`, `scripts/check-reports.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "socketio",
+      "path": "04-backend/socketio/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "spring-boot-3",
+      "path": "04-backend/spring-boot-3/SKILL.md",
+      "category": "04-backend",
+      "tier0": false,
+      "note": "← constructor injection, @ConfigurationProperties, @Transactional",
+      "autoInvoke": true
+    },
+    {
+      "name": "ai-ui-generation",
+      "path": "05-frontend/ai-ui-generation/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Google Stitch/v0/Lovable, anti-slop, prompt→deploy",
+      "autoInvoke": true
+    },
+    {
+      "name": "angular-architecture",
+      "path": "05-frontend/angular-architecture/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Scope Rule, file naming",
+      "autoInvoke": true
+    },
+    {
+      "name": "angular-core",
+      "path": "05-frontend/angular-core/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← signals, zoneless, inject(), no lifecycle hooks",
+      "autoInvoke": true
+    },
+    {
+      "name": "angular-forms",
+      "path": "05-frontend/angular-forms/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Signal Forms (v21) + Reactive Forms",
+      "autoInvoke": true
+    },
+    {
+      "name": "angular-performance",
+      "path": "05-frontend/angular-performance/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← NgOptimizedImage, @defer, SSR",
+      "autoInvoke": true
+    },
+    {
+      "name": "deep-linking-mobile",
+      "path": "05-frontend/deep-linking-mobile/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/setup-guide.md`, `scripts/check-deep-links.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "design-driven",
+      "path": "05-frontend/design-driven/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop",
+      "autoInvoke": true
+    },
+    {
+      "name": "design-system-tokens",
+      "path": "05-frontend/design-system-tokens/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/token-taxonomy.md`, `references/color-scales.md`, `scripts/check-tokens.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "electron",
+      "path": "05-frontend/electron/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← security patterns: contextBridge, sandbox, IPC validation (gentleman-skills)",
+      "autoInvoke": true
+    },
+    {
+      "name": "electronjs",
+      "path": "05-frontend/electronjs/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "expo-production-auditor",
+      "path": "05-frontend/expo-production-auditor/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/troubleshooting.md`",
+      "autoInvoke": true
+    },
+    {
+      "name": "figma-implement",
+      "path": "05-frontend/figma-implement/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← plegado Capa 1: Figma → código 1:1 (canónico del grupo figma), design context + screenshots vía MCP",
+      "autoInvoke": true
+    },
+    {
+      "name": "forms-validation-react",
+      "path": "05-frontend/forms-validation-react/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/rhf-zod-pattern.md`, `references/multi-step-forms.md`, `scripts/check-forms.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "i18n-localization",
+      "path": "05-frontend/i18n-localization/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/setup-guide.md`, `scripts/check-hardcoded-strings.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "impeccable",
+      "path": "05-frontend/impeccable/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Comandos Bakaus, PRODUCT.md/DESIGN.md, references/commands.md",
+      "autoInvoke": true
+    },
+    {
+      "name": "interface-design",
+      "path": "05-frontend/interface-design/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← craft-first UI for dashboards, SaaS apps, admin panels, tokens (Linear/Stripe standard)",
+      "autoInvoke": true
+    },
+    {
+      "name": "lazy-loading-patterns",
+      "path": "05-frontend/lazy-loading-patterns/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/lazy-patterns.md`, `scripts/check-module-level-loads.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "lottie-animations",
+      "path": "05-frontend/lottie-animations/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/lottie-integration.md`, `scripts/check-lottie.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "maps-gps",
+      "path": "05-frontend/maps-gps/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "motion-accessibility",
+      "path": "05-frontend/motion-accessibility/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/reduced-motion.md`, `references/performance.md`, `scripts/check-motion-a11y.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "motion-framer",
+      "path": "05-frontend/motion-framer/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/spring-layout.md`, `references/animate-presence.md`, `scripts/check-motion.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "motion-gsap",
+      "path": "05-frontend/motion-gsap/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/timelines.md`, `references/svg-text.md`, `scripts/check-gsap.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "nextjs-15",
+      "path": "05-frontend/nextjs-15/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Next.js 15 App Router, Server Actions",
+      "autoInvoke": true
+    },
+    {
+      "name": "nextjs",
+      "path": "05-frontend/nextjs/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "offline-sync-mobile",
+      "path": "05-frontend/offline-sync-mobile/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/sync-patterns.md`, `scripts/check-offline-sync.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "page-transitions",
+      "path": "05-frontend/page-transitions/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/web-transitions.md`, `scripts/check-transitions.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "push-notifications",
+      "path": "05-frontend/push-notifications/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "pwa-capacitor",
+      "path": "05-frontend/pwa-capacitor/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "react-19",
+      "path": "05-frontend/react-19/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← React 19 with React Compiler, no manual memoization",
+      "autoInvoke": true
+    },
+    {
+      "name": "react-native",
+      "path": "05-frontend/react-native/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "react-vite",
+      "path": "05-frontend/react-vite/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "scroll-animations",
+      "path": "05-frontend/scroll-animations/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/scroll-reveal.md`, `references/parallax.md`, `scripts/check-scroll.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "state-management",
+      "path": "05-frontend/state-management/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "tailwind-4",
+      "path": "05-frontend/tailwind-4/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Tailwind 4, cn() utility, theme classes",
+      "autoInvoke": true
+    },
+    {
+      "name": "tailwindcss",
+      "path": "05-frontend/tailwindcss/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "taste-skill",
+      "path": "05-frontend/taste-skill/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Design Read, diales, 10 bans, references/full-guide.md",
+      "autoInvoke": true
+    },
+    {
+      "name": "three-js-web",
+      "path": "05-frontend/three-js-web/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/core-threejs.md`, `references/r3f-patterns.md`, `references/drei-helpers.md`, `references/performance-webgl.md`, `references/spline-no-code.md`",
+      "autoInvoke": true
+    },
+    {
+      "name": "vercel-composition-patterns",
+      "path": "05-frontend/vercel-composition-patterns/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← scalable React composition, compound components, React 19 API",
+      "autoInvoke": true
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "path": "05-frontend/vercel-react-best-practices/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Vercel Engineering: React & Next.js performance rules, server components, bundle optimization",
+      "autoInvoke": true
+    },
+    {
+      "name": "vercel-react-view-transitions",
+      "path": "05-frontend/vercel-react-view-transitions/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← native ViewTransition animations, shared elements, CSS pseudo-elements",
+      "autoInvoke": true
+    },
+    {
+      "name": "visual-effects",
+      "path": "05-frontend/visual-effects/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/glassmorphism.md`, `references/gradients-blends.md`, `scripts/check-effects.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "web-animation-sources",
+      "path": "05-frontend/web-animation-sources/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← `references/animation-sources.md` (10 referencias curadas por tópico)",
+      "autoInvoke": true
+    },
+    {
+      "name": "web-design-guidelines",
+      "path": "05-frontend/web-design-guidelines/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← review UI code for Web Interface Guidelines compliance, accessibility, UX audit",
+      "autoInvoke": true
+    },
+    {
+      "name": "zod-4",
+      "path": "05-frontend/zod-4/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Zod 4 breaking changes from v3",
+      "autoInvoke": true
+    },
+    {
+      "name": "zustand-5",
+      "path": "05-frontend/zustand-5/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": "← Zustand 5 with useShallow selectors",
+      "autoInvoke": true
+    },
+    {
+      "name": "biome",
+      "path": "06-code-quality/biome/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "branch-pr",
+      "path": "06-code-quality/branch-pr/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← creación de pull requests con validación issue-first",
+      "autoInvoke": false
+    },
+    {
+      "name": "build-config-validator",
+      "path": "06-code-quality/build-config-validator/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← `scripts/validate-build-config.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "chained-pr",
+      "path": "06-code-quality/chained-pr/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← división de PRs grandes (>400 líneas) en slices apilados para revisión",
+      "autoInvoke": false
+    },
+    {
+      "name": "changelog-generator",
+      "path": "06-code-quality/changelog-generator/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← automatic user-facing changelogs & release notes from git commits",
+      "autoInvoke": true
+    },
+    {
+      "name": "changesets",
+      "path": "06-code-quality/changesets/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "comment-writer",
+      "path": "06-code-quality/comment-writer/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← redacción colaborativa y directa en comentarios de PRs y code reviews",
+      "autoInvoke": false
+    },
+    {
+      "name": "dependency-guardian",
+      "path": "06-code-quality/dependency-guardian/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "elixir-antipatterns",
+      "path": "06-code-quality/elixir-antipatterns/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← Agent misuse, nested case, bare spawn, GenServer bottleneck",
+      "autoInvoke": true
+    },
+    {
+      "name": "env-management",
+      "path": "06-code-quality/env-management/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "issue-creation",
+      "path": "06-code-quality/issue-creation/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← creación y triage estructurado de issues en GitHub con evidencia técnica",
+      "autoInvoke": false
+    },
+    {
+      "name": "pnpm-workspaces",
+      "path": "06-code-quality/pnpm-workspaces/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "solid-clean-code",
+      "path": "06-code-quality/solid-clean-code/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "systemic-issue-triage",
+      "path": "06-code-quality/systemic-issue-triage/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← triage masivo de reportes de bugs, issues y backlog",
+      "autoInvoke": false
+    },
+    {
+      "name": "turborepo",
+      "path": "06-code-quality/turborepo/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "typescript",
+      "path": "06-code-quality/typescript/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "work-unit-commits",
+      "path": "06-code-quality/work-unit-commits/SKILL.md",
+      "category": "06-code-quality",
+      "tier0": false,
+      "note": "← commits atómicos estructurados por unidad de trabajo revisable",
+      "autoInvoke": false
+    },
+    {
+      "name": "go-testing",
+      "path": "07-testing/go-testing/SKILL.md",
+      "category": "07-testing",
+      "tier0": false,
+      "note": "← patrones de prueba para Go: unit tests, cobertura, Bubbletea teatest y golden files",
+      "autoInvoke": false
+    },
+    {
+      "name": "playwright",
+      "path": "07-testing/playwright/SKILL.md",
+      "category": "07-testing",
+      "tier0": false,
+      "note": "← E2E, MCP-first exploration, Page Object Model",
+      "autoInvoke": true
+    },
+    {
+      "name": "pytest",
+      "path": "07-testing/pytest/SKILL.md",
+      "category": "07-testing",
+      "tier0": false,
+      "note": "← fixtures, mocking, parametrize, markers, async, conftest",
+      "autoInvoke": true
+    },
+    {
+      "name": "testing-patterns",
+      "path": "07-testing/testing-patterns/SKILL.md",
+      "category": "07-testing",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "ci-cd",
+      "path": "08-devops/ci-cd/SKILL.md",
+      "category": "08-devops",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "kill-switches",
+      "path": "08-devops/kill-switches/SKILL.md",
+      "category": "08-devops",
+      "tier0": true,
+      "note": null,
+      "autoInvoke": true
+    },
+    {
+      "name": "monitoring",
+      "path": "08-devops/monitoring/SKILL.md",
+      "category": "08-devops",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "observability",
+      "path": "08-devops/observability/SKILL.md",
+      "category": "08-devops",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "store-deployment-eas",
+      "path": "08-devops/store-deployment-eas/SKILL.md",
+      "category": "08-devops",
+      "tier0": false,
+      "note": "← `references/eas-setup.md`, `scripts/check-eas-config.mjs`",
+      "autoInvoke": true
+    },
+    {
+      "name": "banana-claude",
+      "path": "09-media-graphics/banana-claude/SKILL.md",
+      "category": "09-media-graphics",
+      "tier0": false,
+      "note": "← Creative Director: prompt engineering, modos de dominio y control de aspecto para imágenes profesionales",
+      "autoInvoke": true
+    },
+    {
+      "name": "nano-banana",
+      "path": "09-media-graphics/nano-banana/SKILL.md",
+      "category": "09-media-graphics",
+      "tier0": false,
+      "note": "← canónico del grupo banana-image-gen: generación/edición de imágenes con Nano Banana (Gemini CLI nanobanana)",
+      "autoInvoke": true
+    },
+    {
+      "name": "asset-generator-mcp",
+      "path": "11-mcp-hybrid/asset-generator-mcp/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo",
+      "autoInvoke": true
+    },
+    {
+      "name": "component-scrapper-mcp",
+      "path": "11-mcp-hybrid/component-scrapper-mcp/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← scrapea componentes de sitios en vivo vía MCP y los reutiliza como código project-ready",
+      "autoInvoke": true
+    },
+    {
+      "name": "figma-mcp",
+      "path": "11-mcp-hybrid/figma-mcp/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP",
+      "autoInvoke": true
+    },
+    {
+      "name": "gentle-ai-bench",
+      "path": "11-mcp-hybrid/gentle-ai-bench/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← benchmarking y evaluación de agentes mediante corpus de journeys",
+      "autoInvoke": false
+    },
+    {
+      "name": "motion-video-pipeline",
+      "path": "11-mcp-hybrid/motion-video-pipeline/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← pipeline motion-to-video: render de frames y ensamblaje con timing determinístico",
+      "autoInvoke": true
+    },
+    {
+      "name": "oklch-theme-injector",
+      "path": "11-mcp-hybrid/oklch-theme-injector/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← temas de color perceptivo OKLCH/OKHSL sobre la taxonomía de tokens HSL",
+      "autoInvoke": true
+    },
+    {
+      "name": "open-design",
+      "path": "11-mcp-hybrid/open-design/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo",
+      "autoInvoke": true
+    },
+    {
+      "name": "ux-auditor-agent",
+      "path": "11-mcp-hybrid/ux-auditor-agent/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": "← auditoría UX/usabilidad/accesibilidad con hallazgos priorizados y evidencia",
+      "autoInvoke": true
+    },
+    {
+      "name": "ask-matt",
+      "path": "12-matt-pocock/ask-matt/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "code-review",
+      "path": "12-matt-pocock/code-review/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "codebase-design",
+      "path": "12-matt-pocock/codebase-design/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "diagnosing-bugs",
+      "path": "12-matt-pocock/diagnosing-bugs/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "domain-modeling",
+      "path": "12-matt-pocock/domain-modeling/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "grill-me",
+      "path": "12-matt-pocock/grill-me/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "grill-with-docs",
+      "path": "12-matt-pocock/grill-with-docs/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "grilling",
+      "path": "12-matt-pocock/grilling/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "handoff",
+      "path": "12-matt-pocock/handoff/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "implement",
+      "path": "12-matt-pocock/implement/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "path": "12-matt-pocock/improve-codebase-architecture/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "migrate-to-shoehorn",
+      "path": "12-matt-pocock/migrate-to-shoehorn/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "prototype",
+      "path": "12-matt-pocock/prototype/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "research",
+      "path": "12-matt-pocock/research/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "resolving-merge-conflicts",
+      "path": "12-matt-pocock/resolving-merge-conflicts/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "scaffold-exercises",
+      "path": "12-matt-pocock/scaffold-exercises/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "setup-pre-commit",
+      "path": "12-matt-pocock/setup-pre-commit/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "tdd",
+      "path": "12-matt-pocock/tdd/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "teach",
+      "path": "12-matt-pocock/teach/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "to-questionnaire",
+      "path": "12-matt-pocock/to-questionnaire/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "to-spec",
+      "path": "12-matt-pocock/to-spec/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "to-tickets",
+      "path": "12-matt-pocock/to-tickets/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "triage",
+      "path": "12-matt-pocock/triage/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "wait-what",
+      "path": "12-matt-pocock/wait-what/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "wayfinder",
+      "path": "12-matt-pocock/wayfinder/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "wizard",
+      "path": "12-matt-pocock/wizard/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "writing-for-agents",
+      "path": "12-matt-pocock/writing-for-agents/SKILL.md",
+      "category": "12-matt-pocock",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "professional-planner",
+      "path": "professional-planner/SKILL.md",
+      "category": "professional-planner",
+      "tier0": true,
+      "note": "← `references/sdd-methodology.md`, `references/templates.md`",
+      "autoInvoke": true
+    }
+  ]
+}
