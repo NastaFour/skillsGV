@@ -6,6 +6,7 @@
   "packageManager": "pnpm@11.9.0",
   "scripts": {
     "test": "node --test test/**/*.test.mjs",
+    "test:addon": "node --test gentle-ai-dsh/test/**/*.test.mjs",
     "validate": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs",
     "validate:strict": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict",
     "router": "node 00-meta-skills/skill-router/scripts/skill-router.mjs",
