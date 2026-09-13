@@ -22,7 +22,9 @@
  *
  * The catalog root defaults to this script's own location resolved upward
  * (00-meta-skills/skill-registry/scripts/ -> catalog root), NEVER to cwd.
- * --root is an explicit override for tests and tooling.
+ * --root is an explicit override for tests and tooling. This script is strictly
+ * scoped to catalog roots; external skill subdirectories/repos must be validated
+ * using validate-skills.mjs instead.
  *
  * Exit codes: 0 = ok; 1 = issues found; 2 = usage error.
  */
@@ -60,7 +62,8 @@ Usage:
   node generate-indexes.mjs --write [--root <dir>] [--json]   regenerate catalog.json + indexes
   node generate-indexes.mjs --check [--root <dir>] [--json]   read-only consistency gate
 
-  --root <dir>   Catalog root (default: resolved from this script's location, never cwd).
+  --root <dir>   Catalog root directory only (default: resolved from this script's location, never cwd).
+                 External skill folders/repos without catalog.json must be checked with validate-skills.mjs.
   --json         Machine-readable result.
   --help         Show this help.
 

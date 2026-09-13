@@ -47,6 +47,7 @@
 - [x] 3a.3 `manifest-*` delega en `checkCatalog` de la lib compartida (árbol↔`catalog.json`, huérfanas, tablas `SKILLS.md`/`AGENTS.md`, Auto-Invoke) + conteos en prosa de 8 docs (SKILLS.md, AGENTS.md, README.md, config.yaml, harness-map.md y los 3 docs del addon) con umbral ≥50 (14 “Tier 0”/olas no son totales); `script-audit` solo `<skill>/scripts|bin/**` por extensión (docs excluidos); `requires-mcp-*` (top-level → error; sin fallback → error; paridad bidireccional con `mcp-manifest.json`, que nace en WU5b).
 - [x] 3a.4 `--check-deps`: `metadata.requires` (`bin:`/`env:`/`node:`, y `pnpm:` best-effort) con fallback a `compatibility` (`Node N+`, `pnpm N+`); reporta skill/dependencia/causa; exit 1 si hay no satisfechas; fuera del flag no corre.
 - [x] 3a.5 GREEN + cierre: suite nueva 10/10; `--strict` 209/209 (0 errores, 0 warnings, 213 info, exit 0); `generate-indexes --check` exit 0; `pnpm test` 38/38; commit `ddb7e66` (9 archivos, +696/−22).
+- [x] 3a.6 Remediación post-archivo (Judgment Day 2026-09-13): Scoping de targets externos en `validate-skills.mjs` (`resolve(target) === REPO_ROOT` + flag `--catalog-root` + `SKILLS_CATALOG_OVERRIDE` para tests); omite checks de manifiesto en targets externos (`return []`) sin falsos positivos, preservando fail-closed estricto en la raíz del catálogo (cero fail-open); suite `validator-gates.test.mjs` ampliada a 11/11 verde; sync de addon mirror regenerado con paridad de bytes.
 
 ### WU2 — RDD activo (implementación)
 

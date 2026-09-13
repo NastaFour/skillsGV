@@ -131,3 +131,15 @@ prosa, registry, espejo y gates). Se descarta la dirección B (exclusión consis
 1. **Profundidad de los imports `_shared` en el espejo plano**: los scripts del espejo preservan el import canónico `../../../_shared/...`; con el layout plano (`gentle-ai-dsh/skills/<skill>/scripts/`) esa ruta resuelve un nivel arriba del mirror root (`gentle-ai-dsh/_shared/`). La unión garantiza presencia + byte-parity de los módulos en `gentle-ai-dsh/skills/_shared/**` (hallazgo RED-004/BLUE-003); la normalización de profundidad al copiar a un layout plano es responsabilidad del instalador — `skill-sync` ya reescribe `../../../_shared` → `../../_shared` (`fixSharedImports`) en copias, mientras el instalador del addon copia el espejo tal cual. Follow-up sugerido (fuera de este fix): aplicar la misma normalización en el pipeline del addon. No fue parte de los hallazgos de la ronda 2; se observó durante la verificación del fix.
 2. **`catalog-doctor` como self-check del flujo de instalación** y **`doctor --root` parcial**: siguen vigentes las limitaciones residuales de la ronda 1 (§5, ítems 1–2).
 
+## 11. Desviación y remediación post-archivo: Scoping de targets externos en el validador (WU3a)
+
+- **Origen**: Judgment Day inter-proyecto (2026-09-13) detectó que `validate-skills.mjs` (WU3a, `ddb7e66`) ejecutaba `runManifestChecks(target)` incondicionalmente, disparando 3 falsos positivos permanentes sobre carpetas de dominio externas (`manifest-missing`, `manifest-tier0-source-missing`, `manifest-index-orphan-section`).
+- **Resolución**:
+  - Scoping estricto por identidad de raíz: `resolve(target) === REPO_ROOT` con flag de override `--catalog-root` y variable `SKILLS_CATALOG_OVERRIDE` para fixtures de prueba.
+  - Fail-closed preservado en la raíz del catálogo: si falta `catalog.json` en `REPO_ROOT`, sigue fallando con `manifest-missing` (cero fail-open).
+  - Targets externos retornan `[]` sin contaminar conteos ni emitir `manifest-skipped`.
+  - `generate-indexes.mjs` documentado explícitamente como herramienta de uso exclusivo con raíces de catálogo.
+  - Tests en `test/validator-gates.test.mjs` actualizados con `--catalog-root` y nuevo test para target externo (11/11 pass).
+  - Paridad de `gentle-ai-dsh` regenerada con `sync-addon.mjs --write` (210 skills en byte parity).
+
+

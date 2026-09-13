@@ -256,12 +256,12 @@ function manifestFixture(t) {
 test("manifest-*: consistent catalog is clean; tree drift and unknown Auto-Invoke fail", (t) => {
   const root = manifestFixture(t);
 
-  const clean = runValidator(root, []);
+  const clean = runValidator(root, ["--catalog-root"]);
   const manifestIssues = issuesOf(clean.json).filter((i) => i.check.startsWith("manifest-"));
   assert.deepEqual(manifestIssues.map((i) => i.check), [], "consistent fixture must not raise manifest-* issues");
 
   skillFixture(root, { dir: "01-beta", name: "skill-c" });
-  const drift = runValidator(root, []);
+  const drift = runValidator(root, ["--catalog-root"]);
   assert.equal(drift.code, 1, drift.stdout);
   const missing = findIssue(drift.json, "manifest-skill-missing");
   assert.ok(missing, "tree skill missing from the manifest must fail");
@@ -269,7 +269,7 @@ test("manifest-*: consistent catalog is clean; tree drift and unknown Auto-Invok
 
   const autoRoot = manifestFixture(t);
   write(join(autoRoot, "AGENTS.md"), agentsIndexMd().replace("| Algo de alpha | `00-alpha/skill-a` |", "| Algo de alpha | `00-alpha/skill-a` + `00-alpha/skill-zzz` |"));
-  const auto = runValidator(autoRoot, []);
+  const auto = runValidator(autoRoot, ["--catalog-root"]);
   assert.equal(auto.code, 1, auto.stdout);
   const unknown = findIssue(auto.json, "manifest-auto-invoke-unknown");
   assert.ok(unknown, "Auto-Invoke reference outside the manifest must fail");
@@ -282,9 +282,23 @@ test("manifest-prose-count: docs declaring a divergent total fail naming doc, de
   write(join(root, "README.md"), "Catálogo de **150 skills** conforme a la especificación.\n");
   write(join(root, "openspec", "config.yaml"), "context: |\n  Proyecto: fixture (catálogo de 151 skills)\n");
 
-  const r = runValidator(root, []);
+  const r = runValidator(root, ["--catalog-root"]);
   assert.equal(r.code, 1, r.stdout);
   const hits = findIssues(r.json, "manifest-prose-count");
   assert.ok(hits.some((h) => /README\.md/.test(h.msg) && /150/.test(h.msg) && /has 1\b/.test(h.msg)), "README drift must name doc, declared and real counts");
   assert.ok(hits.some((h) => /config\.yaml/.test(h.msg) && /151/.test(h.msg)));
 });
+
+test("external-target: external skill directory without catalog root skips manifest-* checks and passes --strict", (t) => {
+  const root = makeRoot(t);
+  skillFixture(root, { dir: "my-domain", name: "domain-skill" });
+  write(join(root, "SKILLS.md"), "# SKILLS\n\n| Skill | Path |\n|---|---|\n| domain-skill | [my-domain/domain-skill/SKILL.md](my-domain/domain-skill/SKILL.md) |\n");
+  write(join(root, "AGENTS.md"), "# AGENTS\n\n| Categoría | Path | Skills |\n|---|---|---|\n| Domain | `my-domain/` | domain-skill |\n");
+  write(join(root, ".atl", "skill-registry.md"), "# Registry\n\n| `domain-skill` | Fixture | `root-only` | `my-domain/domain-skill/SKILL.md` |\n");
+
+  const r = runValidator(root, ["--strict"]);
+  assert.equal(r.code, 0, r.stdout);
+  const manifestIssues = issuesOf(r.json).filter((i) => i.check.startsWith("manifest-"));
+  assert.equal(manifestIssues.length, 0, "external target must not trigger manifest-* errors");
+});
+

@@ -57,6 +57,12 @@ node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs --json
 
 # Strict mode (warnings become errors)
 node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict
+
+# Validate external skills repository or subdirectory (skips catalog manifest checks automatically)
+node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs path/to/external-skills --strict
+
+# Enforce catalog manifest checks on a fixture or directory outside REPO_ROOT
+node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs path/to/catalog --catalog-root
 ```
 
 ## 📊 Exit Codes

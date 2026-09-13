@@ -48,3 +48,20 @@ Los conteos de skills declarados en documentación (`AGENTS.md`, `README.md`, `o
 - GIVEN un doc que declara 197 skills y un manifiesto con 209
 - WHEN corre el gate
 - THEN falla indicando doc, valor declarado y valor real
+
+### Requirement: Scoping de targets en validación de manifiesto
+
+`checkCatalog` y los checks `manifest-*` MUST ejecutarse únicamente sobre la raíz del catálogo (`REPO_ROOT` o explícitamente forzado vía `--catalog-root`/`SKILLS_CATALOG_OVERRIDE`). Sobre targets externos (directorios de skills fuera de `REPO_ROOT`), los checks `manifest-*` MUST omitirse retornando cero incidencias para evitar falsos positivos (`manifest-missing`, `manifest-tier0-source-missing`, `manifest-index-orphan-section`). La raíz del catálogo MUST mantener fail-closed estricto ante un `catalog.json` faltante (`manifest-missing`).
+
+#### Scenario: Validación de target externo sin marcadores de catálogo
+
+- GIVEN un directorio de skills externo fuera de `REPO_ROOT` (ej. `skills-roblox`)
+- WHEN se ejecuta el validador con `--strict`
+- THEN no se ejecutan los checks `manifest-*` y el resultado no contiene errores `manifest-*`
+
+#### Scenario: Validación de la raíz del catálogo sin fail-open
+
+- GIVEN la raíz del catálogo (`REPO_ROOT`) donde falta `catalog.json`
+- WHEN se ejecuta el validador
+- THEN falla obligatoriamente con `manifest-missing`
+

@@ -16,7 +16,7 @@
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, basename, relative, resolve, sep, dirname, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkCatalog, readTier0Set, walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
+import { REPO_ROOT, checkCatalog, readTier0Set, walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -25,6 +25,7 @@ let jsonOutput = false;
 let strictMode = false;
 let skipIndexSync = false;
 let checkDeps = false;
+let forceCatalogRoot = false;
 let targetPath = process.cwd();
 
 for (const arg of args) {
@@ -32,12 +33,24 @@ for (const arg of args) {
   else if (arg === "--strict") strictMode = true;
   else if (arg === "--skip-index-sync") skipIndexSync = true;
   else if (arg === "--check-deps") checkDeps = true;
+  else if (arg === "--catalog-root") forceCatalogRoot = true;
   else if (arg === "--help" || arg === "-h") {
     printHelp();
     process.exit(0);
   } else if (!arg.startsWith("-")) {
     targetPath = resolve(arg);
   }
+}
+
+const samePath = (a, b) =>
+  process.platform === "win32" ? a.toLowerCase() === b.toLowerCase() : a === b;
+
+function isCatalogTarget(target) {
+  return (
+    samePath(resolve(target), REPO_ROOT) ||
+    forceCatalogRoot ||
+    process.env.SKILLS_CATALOG_OVERRIDE === "1"
+  );
 }
 
 if (!statSafe(targetPath)) {
@@ -582,6 +595,9 @@ const mapManifestCheck = (code) => MANIFEST_CHECK_NAMES[code] ?? (code.startsWit
 
 /** manifest-*: tree<->catalog.json, generated indexes, Auto-Invoke, prose totals. */
 function runManifestChecks(root) {
+  if (!isCatalogTarget(root)) {
+    return [];
+  }
   const issues = [];
   const result = checkCatalog(root);
   for (const issue of result.issues) {
@@ -665,7 +681,7 @@ function printHelp() {
   console.log(`Skill Validator — agentskills.io compliance checker
 
 Usage:
-  node validate-skills.mjs [path] [--json] [--strict] [--skip-index-sync] [--check-deps]
+  node validate-skills.mjs [path] [--json] [--strict] [--skip-index-sync] [--check-deps] [--catalog-root]
 
 Options:
   path                 Directory to scan (default: cwd)
@@ -673,6 +689,7 @@ Options:
   --strict             Treat warnings as errors
   --skip-index-sync    Skip catalog checks against SKILLS.md, AGENTS.md, catalog.json, prose docs and the registry
   --check-deps         Resolve metadata.requires (bin:/env:/node:) with a compatibility fallback; exit 1 on unsatisfied deps
+  --catalog-root       Enforce catalog manifest and index checks on the target directory (default: auto-detected if target is REPO_ROOT)
   --help               Show this help
 
 Quality gates (change skills-25-upgrade):
@@ -683,7 +700,7 @@ Quality gates (change skills-25-upgrade):
   script-audit         curl / eval / Function / child_process in <skill>/scripts|bin/** -> error
                        unless justified via frontmatter allows-curl / allows-script-exec
   requires-mcp-*       metadata.requires-mcp rules + mcp-manifest.json parity -> error
-  manifest-*           catalog.json <-> tree/indexes/prose totals -> error (skipped with --skip-index-sync)
+  manifest-*           catalog.json <-> tree/indexes/prose totals -> error (catalog root only; skipped on external targets or with --skip-index-sync)
 
 Scope:
   Directories named gentle-ai-dsh (vendored addon bundle) and _shared (shared
