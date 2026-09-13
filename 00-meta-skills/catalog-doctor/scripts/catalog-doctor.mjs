@@ -29,6 +29,14 @@ const __dirname = dirname(__filename);
 export const REPO_ROOT = resolve(__dirname, "../../..");
 
 /**
+ * Root scope per check:
+ * - `target`: the check honors `--root` (the root is forwarded as an argument).
+ * - `catalog`: the underlying script resolves the catalog from its own
+ *   location, so `--root` cannot relocate it (documented limitation).
+ */
+export const ROOT_SCOPE = Object.freeze({ TARGET: "target", CATALOG: "catalog" });
+
+/**
  * Constant command table defining all diagnostic health checks.
  * Every command runs in strictly read-only inspection mode.
  */
@@ -36,6 +44,7 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "validator-strict",
     name: "Skill validation (strict mode)",
+    rootScope: ROOT_SCOPE.TARGET,
     relScript: "00-meta-skills/skill-validator/scripts/validate-skills.mjs",
     buildArgs: (script, root) => [script, root, "--strict", "--json"],
     parseResult: (stdout, code) => {
@@ -62,6 +71,8 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "installer-dryrun",
     name: "Installer simulation (dry-run)",
+    rootScope: ROOT_SCOPE.CATALOG,
+    rootNote: "install-skills.mjs resolves the catalog from its own location; --root does not relocate this check (documented limitation)",
     relScript: "00-meta-skills/skill-sync/scripts/install-skills.mjs",
     buildArgs: (script, _root) => [script, "--dry-run", "--all-tools"],
     parseResult: (stdout, code) => {
@@ -74,6 +85,8 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "loader-status",
     name: "Tier 0 loader status and cache health",
+    rootScope: ROOT_SCOPE.CATALOG,
+    rootNote: "skills-loader.mjs resolves the catalog from its own location; --root does not relocate this check (documented limitation)",
     relScript: "00-meta-skills/skill-loader/scripts/skills-loader.mjs",
     buildArgs: (script, _root) => [script, "--status"],
     parseResult: (stdout, code) => {
@@ -86,6 +99,7 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "manifest-consistency",
     name: "Catalog manifest & index consistency",
+    rootScope: ROOT_SCOPE.TARGET,
     relScript: "00-meta-skills/skill-registry/scripts/generate-indexes.mjs",
     buildArgs: (script, root) => [script, "--check", "--root", root, "--json"],
     parseResult: (stdout, code) => {
@@ -108,6 +122,7 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "dependency-check",
     name: "Environment and skill dependencies",
+    rootScope: ROOT_SCOPE.TARGET,
     relScript: "00-meta-skills/skill-validator/scripts/validate-skills.mjs",
     buildArgs: (script, root) => [script, root, "--check-deps", "--json"],
     parseResult: (stdout, code) => {
@@ -126,6 +141,7 @@ export const DOCTOR_COMMAND_TABLE = [
   {
     id: "mcp-parity",
     name: "MCP manifest and frontmatter parity",
+    rootScope: ROOT_SCOPE.TARGET,
     relScript: null, // executed in-process
     buildArgs: null,
     run: (root) => checkMcpParity(root),
@@ -284,13 +300,21 @@ export function runDoctorSuite(root = REPO_ROOT, options = {}) {
     ? DOCTOR_COMMAND_TABLE.filter((c) => c.id === filterId)
     : DOCTOR_COMMAND_TABLE;
 
+  /** Common result fields, including the explicit root scope of each check. */
+  const entryBase = (check) => ({
+    id: check.id,
+    name: check.name,
+    rootScope: check.rootScope ?? ROOT_SCOPE.TARGET,
+    ...(check.rootNote ? { rootNote: check.rootNote } : {}),
+  });
+
   if (filterId && checksToRun.length === 0) {
     return {
       ok: false,
       totalChecks: 0,
       passed: 0,
       failed: 1,
-      checks: [{ id: filterId, name: filterId, pass: false, cause: `Unknown check ID: "${filterId}"` }],
+      checks: [{ id: filterId, name: filterId, rootScope: ROOT_SCOPE.TARGET, pass: false, cause: `Unknown check ID: "${filterId}"` }],
     };
   }
 
@@ -304,10 +328,10 @@ export function runDoctorSuite(root = REPO_ROOT, options = {}) {
       const res = check.run(root);
       if (res.pass) {
         totalPassed++;
-        results.push({ id: check.id, name: check.name, pass: true, summary: res.summary });
+        results.push({ ...entryBase(check), pass: true, summary: res.summary });
       } else {
         totalFailed++;
-        results.push({ id: check.id, name: check.name, pass: false, cause: res.cause });
+        results.push({ ...entryBase(check), pass: false, cause: res.cause });
       }
       continue;
     }
@@ -338,10 +362,10 @@ export function runDoctorSuite(root = REPO_ROOT, options = {}) {
     const evaluated = check.parseResult(stdout, code, stderr);
     if (evaluated.pass) {
       totalPassed++;
-      results.push({ id: check.id, name: check.name, pass: true, summary: evaluated.summary });
+      results.push({ ...entryBase(check), pass: true, summary: evaluated.summary });
     } else {
       totalFailed++;
-      results.push({ id: check.id, name: check.name, pass: false, cause: evaluated.cause });
+      results.push({ ...entryBase(check), pass: false, cause: evaluated.cause });
     }
   }
 
@@ -374,6 +398,12 @@ Checks:
   manifest-consistency  Verify catalog.json, SKILLS.md, and AGENTS.md consistency
   dependency-check      Check declared dependencies (bin, env, node)
   mcp-parity            Verify bidirectional parity between mcp-manifest.json and skills
+
+Root scope:
+  --root is forwarded to validator-strict, manifest-consistency,
+  dependency-check and mcp-parity.
+  installer-dryrun and loader-status run the catalog resolved from THIS
+  script's location; --root does not relocate them (documented limitation).
 
 Exit codes:
   0 = All diagnostic checks passed
@@ -410,10 +440,11 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(__filename)) {
   } else {
     console.log("\n🩺 Catalog Doctor — Unified Health Check\n");
     for (const c of result.checks) {
+      const scope = c.rootScope === ROOT_SCOPE.CATALOG ? " · root: catalog-fixed" : "";
       if (c.pass) {
-        console.log(`  ✅ [${c.id}] ${c.name} — ${c.summary || "PASS"}`);
+        console.log(`  ✅ [${c.id}] ${c.name} — ${c.summary || "PASS"}${scope}`);
       } else {
-        console.log(`  ❌ [${c.id}] ${c.name} — ${c.cause || "FAIL"}`);
+        console.log(`  ❌ [${c.id}] ${c.name} — ${c.cause || "FAIL"}${scope}`);
       }
     }
     console.log(`\n📊 Summary: ${result.passed}/${result.totalChecks} checks passed · ${result.failed} failed\n`);

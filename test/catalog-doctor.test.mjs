@@ -21,6 +21,7 @@ import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
+import { DOCTOR_COMMAND_TABLE, ROOT_SCOPE } from "../00-meta-skills/catalog-doctor/scripts/catalog-doctor.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(__dirname, "..");
@@ -142,6 +143,20 @@ test("catalog-doctor CLI: exposes --help and reports options", () => {
   assert.match(res.stdout, /--root/);
   assert.match(res.stdout, /--json/);
   assert.match(res.stdout, /--check/);
+  // Root scope is documented explicitly, including the catalog-fixed checks.
+  assert.match(res.stdout, /Root scope/);
+  assert.match(res.stdout, /--root does not relocate/);
+});
+
+test("catalog-doctor: every check declares its root scope; catalog-fixed ones carry an explicit note", () => {
+  const byId = new Map(DOCTOR_COMMAND_TABLE.map((c) => [c.id, c]));
+  for (const id of ["validator-strict", "manifest-consistency", "dependency-check", "mcp-parity"]) {
+    assert.equal(byId.get(id).rootScope, ROOT_SCOPE.TARGET, `${id} must honor --root`);
+  }
+  for (const id of ["installer-dryrun", "loader-status"]) {
+    assert.equal(byId.get(id).rootScope, ROOT_SCOPE.CATALOG, `${id} is catalog-fixed`);
+    assert.match(byId.get(id).rootNote, /--root does not relocate/, `${id} must document the limitation`);
+  }
 });
 
 test("catalog-doctor: executes 6 checks and outputs structured results", () => {
@@ -161,6 +176,13 @@ test("catalog-doctor: executes 6 checks and outputs structured results", () => {
     "dependency-check",
     "mcp-parity",
   ]);
+  // Each result carries the root scope; catalog-fixed checks explain themselves.
+  for (const check of res.json.checks) {
+    assert.ok(check.rootScope, `${check.id} must report rootScope`);
+  }
+  for (const id of ["installer-dryrun", "loader-status"]) {
+    assert.match(res.json.checks.find((c) => c.id === id).rootNote, /--root does not relocate/);
+  }
 });
 
 test("catalog-doctor: PASS exit 0 when all checks pass on catalog root", () => {
