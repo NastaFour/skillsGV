@@ -12,19 +12,30 @@ metadata:
 
 Load when the frontmatter trigger terms apply to a defect workflow.
 
+RDD is opt-in and user-owned: it is enabled only through the native command `gentle-ai review mode enable --scope global` (`status` and `disable` accept scope `global|clone`). The catalog never enables or disables it. When disabled, no receipt is required, the pipeline does not fail by its absence, and you report `disabled/unmanaged` under ordinary policy.
+
 This skill guides public collaboration. It does not grant issue approval, label, review, exception, or merge authority.
 
 ## Hard Rules
 
-- Check the user-owned RDD kill switch first. When disabled, do not start receipt reviews or fabricate approval; follow ordinary policy and report `disabled/unmanaged`.
+- Check the user-owned RDD kill switch first (`gentle-ai review mode status`; activation is only `gentle-ai review mode enable --scope global`). When disabled, do not start receipt reviews or fabricate approval; follow ordinary policy and report `disabled/unmanaged`.
 - Require an approved issue (`status:approved`) and clean current `main` reproduction before implementation. Audit existing PRs for supersession or conflict; stop or narrow stale claims.
 - Group by causal authority invariant. Use one issue and one PR or explicit chain per independent invariant and rollback boundary. Split independent causes; never merge a superseded or conflicting authority line.
 - Inventory every operator flow claimed by the issue or PR, including entry, mode, environment, expectation, and negative controls. Require one truthful black-box bench journey per CLI or lifecycle flow, or actual runtime E2E proof when the core bench cannot represent it. Synthetic proxy coverage never proves another runtime.
 - Use CodeGraph-first impact mapping, a dedicated worktree, and behavior-first tests. Run source-mutating normalization before candidate freeze.
 - Forecast authored changes before edits. The hard limit is 400 additions plus deletions; above it, STOP for a chain or explicit maintainer-approved exception.
-- Only when RDD is enabled, bind receipts, lineage, correction, recovery, and delivery gates to the exact candidate. Keep bounded review defects in one correction transaction.
+- Only when RDD is enabled, bind receipts, lineage, correction, recovery, and delivery gates to the exact candidate: resolve receipt state with `gentle-ai review status` before continuing, reuse a valid receipt without relaunching review, and never open a new review budget outside a native action. Keep bounded review defects in one correction transaction.
 - Require independent read-only candidate validation before publication. Validation cannot edit source or authority; findings require a new candidate.
 - Keep communication humane and evidence-based. Repository labels and workflow metadata are maintainer-owned, never evidence of contributor blame.
+
+## SDD Integration Points (native receipt)
+
+The catalog integrates with the native receipt at two active positions; the full receipt contract is `_shared/review-ledger-contract.md` (orchestrator and native CLI only), and the catalog-side contract lives in `_shared/sdd-phase-common.md` section G:
+
+1. **Post-apply, per work unit**: at the close of each `apply` WU, the harness checks receipt existence with `gentle-ai review validate --gate post-apply --cwd <repo>`; when no receipt exists, follow the native gate action (`review start` when native policy says so) and never open a new review budget.
+2. **Pre-archive**: the pipeline is `sdd-verify → receipt gate → sdd-archive`; the gate validates the candidate receipt with the native commands and never runs lenses.
+
+Native delivery gates: `post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release` — all validate the same receipt and never launch reviewers or create a budget.
 
 ## Bounded Correction Budget
 
@@ -61,4 +72,8 @@ Identify approved and superseded/conflicting authority lines; every flow, negati
 
 ## References
 
-No supporting files. Current repository policy remains authoritative.
+- `_shared/review-ledger-contract.md` — full native receipt contract (orchestrator and native CLI only).
+- `_shared/sdd-phase-common.md` (section G) — catalog-side RDD integration contract across SDD phases.
+- `00-meta-skills/harness-map.md` — harness extension points (RDD active positions and lens mapping).
+
+Current repository policy remains authoritative.

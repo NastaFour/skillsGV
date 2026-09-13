@@ -83,15 +83,15 @@ This document maps the **209 skills** in this catalog to the **20 Agent Harnesse
 - **Perfiles opt-in**: los perfiles de arquitectura de review (p. ej. conjuntos adicionales de lentes) SOLO aplican cuando se declaran explícitamente en la configuración del cambio; **sin declaración → política base única** (causalidad + reporte aparte). Un perfil declarado agrega reglas pero nunca relaja la causalidad como criterio de bloqueo.
 - **Consistencia con RDD**: esta disposición es la misma que aplica el punto de extensión RDD (sección siguiente): una revisión con recibo clasifica hallazgos bajo este mismo criterio causal.
 
-## 🔌 Punto de extensión RDD (integrado en gentle-ai 2.5.0)
+## 🔌 Punto de extensión RDD (integrado y activo)
 
-> El mecanismo RDD EXISTE en gentle-ai 2.5.0 (verificado en runtime): es opt-in y está APAGADO por defecto (`gentle-ai review mode enable|disable|status`). El punto de extensión del catálogo delega al mecanismo nativo; el catálogo no lo re-implementa.
+> El mecanismo RDD EXISTE en el runtime nativo y el punto de extensión del catálogo está integrado y activo. Es opt-in y de propiedad del usuario: se enciende con el comando nativo (`gentle-ai review mode enable --scope global`; `status`/`disable` aceptan scope `global|clone`). El catálogo no lo activa ni desactiva por sí mismo: delega en él y no lo re-implementa. Contrato del recibo: `_shared/review-ledger-contract.md`.
 
-- **Inserción**: entre `sdd-verify` y `sdd-archive` en el pipeline SDD del harness:
-  `sdd-verify → gate de review (extensión RDD) → sdd-archive`.
-- **Mecanismo nativo**: `gentle-ai review start` (congela candidato, riesgo, lentes y presupuesto de corrección) → lentes seleccionadas → `gentle-ai review finalize` (recibo/receipt) → `gentle-ai review validate --gate <gate>` en los gates de entrega (pre-commit/pre-push/pre-pr/release). En Slice 1 no había mecanismo; desde gentle-ai 2.5.0 el punto de extensión del catálogo delega a él.
+- **Posiciones activas (dos)**: (1) chequeo de existencia del recibo al cerrar el `apply` de cada unidad de trabajo (post-apply) y (2) validación del recibo en el gate previo a `sdd-archive`:
+  `sdd-verify → gate de recibo (extensión RDD) → sdd-archive`. Sin recibo, se sigue la acción del gate nativo; nunca se abre un presupuesto de review nuevo.
+- **Mecanismo nativo**: `gentle-ai review status` resuelve el estado/lineage del recibo → `gentle-ai review start` (congela candidato, riesgo, lentes y presupuesto de corrección) → lentes seleccionadas por la capa nativa → `gentle-ai review finalize` (recibo/receipt) → `gentle-ai review validate --gate <gate>` en los gates de entrega (post-apply/pre-commit/pre-push/pre-pr/release). Un recibo vigente se reutiliza sin relanzar review (retoma de sesión).
 - **Política causal (se mantiene)**: solo bloquean los hallazgos introducidos o empeorados por el cambio bajo revisión; lo preexistente se reporta como follow-up documentado.
-- **Mapeo de lentes existentes (informativo)**: los lentes de review de gentle-ai se corresponden con skills ya presentes en el catálogo — `02-dev-roles/code-reviewer` (lentes 4R: readability, reliability, resilience, risk) y `02-dev-roles/judgment-day` (doble juez adversarial). El mapeo es informativo: no activa ningún mecanismo por sí solo.
+- **Mapeo de lentes existentes (informativo)**: los lentes de review nativos se corresponden con skills ya presentes en el catálogo — `02-dev-roles/code-reviewer` (lentes 4R: readability, reliability, resilience, risk) y `02-dev-roles/judgment-day` (doble juez adversarial). La ejecución de lentes la decide la capa nativa: el catálogo no ejecuta lentes propios.
 
 ## 🔬 Punto de extensión AHE (diseño doc-only, Slice 2)
 
