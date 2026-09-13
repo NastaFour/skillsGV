@@ -7,9 +7,17 @@
  * - Reads canonical skills using catalog-manifest walkSkillPaths (excludes _shared, gentle-ai-dsh).
  * - Flat mirror structure: gentle-ai-dsh/skills/<skill-name>/...
  * - --check: read-only parity check; fails (exit 1) if there is any content divergence,
- *   missing skill, or orphan skill in the mirror. Emits actionable report.
- * - --write: mechanically synchronizes all 209 canonical skills to gentle-ai-dsh/skills/,
- *   removing extra/orphan files and directories, achieving byte parity.
+ *   missing skill, or orphan skill in the mirror. Coverage is explicit:
+ *   1. every canonical skill exists in the mirror with byte-identical files;
+ *   2. skill-like orphan directories (dirs with SKILL.md absent from the catalog) fail;
+ *   3. `_shared/**` intersection: files present in BOTH trees must be byte-identical;
+ *      mirror-only `_shared` files are allowed (curated addon extras).
+ * - --write: mechanically synchronizes all 210 canonical skills to gentle-ai-dsh/skills/,
+ *   removing extra/orphan files and skill-like orphan directories, and syncing the
+ *   `_shared` intersection, achieving byte parity. Mirror-only `_shared` files are kept.
+ * - Safety: the mirror root MUST live under the catalog root; the catalog root itself,
+ *   its ancestors and any outside path are rejected (exit 2) before any mutation.
+ *   Orphan directories are purged only when they look like mirror skills (SKILL.md).
  *
  * Usage:
  *   node scripts/sync-addon.mjs --check [--json]
@@ -19,7 +27,7 @@
  * Exit codes:
  *   0 = pass (--check in sync, or --write successful)
  *   1 = divergence found in --check
- *   2 = invalid arguments
+ *   2 = invalid arguments / unsafe mirror root
  */
 
 import {
@@ -31,7 +39,7 @@ import {
   rmSync,
   rmdirSync,
 } from "node:fs";
-import { dirname, join, resolve, basename } from "node:path";
+import { dirname, join, resolve, basename, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { walkSkillPaths } from "../_shared/catalog-manifest.mjs";
 
@@ -40,6 +48,35 @@ const __dirname = dirname(__filename);
 
 export const DEFAULT_CATALOG_ROOT = resolve(__dirname, "..");
 export const DEFAULT_MIRROR_ROOT = resolve(DEFAULT_CATALOG_ROOT, "gentle-ai-dsh", "skills");
+
+/** Case-tolerant comparison on Windows; exact elsewhere. */
+const samePath = (a, b) =>
+  process.platform === "win32" ? a.toLowerCase() === b.toLowerCase() : a === b;
+const underPath = (child, parent) =>
+  process.platform === "win32"
+    ? child.toLowerCase().startsWith((parent + sep).toLowerCase())
+    : child.startsWith(parent + sep);
+
+/**
+ * Safety gate for the mirror root: it MUST live strictly under the catalog
+ * root. The catalog root itself, its ancestors, and any path outside the
+ * catalog (repo root, home, filesystem root) are rejected before any mutation.
+ * Returns the resolved roots or throws an Error with the reason.
+ */
+export function assertSafeMirrorRoot(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFAULT_MIRROR_ROOT) {
+  const cat = resolve(catalogRoot);
+  const mir = resolve(mirrorRoot);
+  if (samePath(mir, cat)) {
+    throw new Error(`unsafe mirror root "${mir}": it is the catalog root itself`);
+  }
+  if (underPath(cat, mir)) {
+    throw new Error(`unsafe mirror root "${mir}": it contains the catalog root "${cat}"`);
+  }
+  if (!underPath(mir, cat)) {
+    throw new Error(`unsafe mirror root "${mir}": it is outside the catalog root "${cat}"`);
+  }
+  return { catalogRoot: cat, mirrorRoot: mir };
+}
 
 /**
  * Recursively walks a directory and returns an array of { rel, full } for all files.
@@ -83,8 +120,10 @@ export function getCanonicalSkills(catalogRoot) {
 }
 
 /**
- * Discovers all skills currently present in the mirror directory.
- * Ignores _shared (support folder) and dot-directories.
+ * Discovers the skill directories currently present in the mirror directory.
+ * Ignores _shared (support folder) and dot-directories. Only directories that
+ * contain a SKILL.md are considered mirror skills, so purges never touch
+ * non-skill directories (docs, caches, user extras).
  * Returns a Map<skillName, mirrorDir>
  */
 export function getMirrorSkills(mirrorRoot) {
@@ -92,11 +131,34 @@ export function getMirrorSkills(mirrorRoot) {
   if (!existsSync(mirrorRoot)) return skills;
   const entries = readdirSync(mirrorRoot, { withFileTypes: true });
   for (const e of entries) {
-    if (e.isDirectory() && e.name !== "_shared" && !e.name.startsWith(".")) {
-      skills.set(e.name, join(mirrorRoot, e.name));
-    }
+    if (!e.isDirectory() || e.name === "_shared" || e.name.startsWith(".")) continue;
+    if (!existsSync(join(mirrorRoot, e.name, "SKILL.md"))) continue;
+    skills.set(e.name, join(mirrorRoot, e.name));
   }
   return skills;
+}
+
+/**
+ * `_shared/**` intersection between the canonical catalog and the mirror.
+ * Returns the relative paths of files present in BOTH trees (the only ones
+ * under parity discipline); mirror-only files are allowed addon extras and
+ * canonical-only files are not the mirror's concern.
+ */
+export function sharedIntersection(catalogRoot, mirrorRoot) {
+  const canonicalFiles = walkFilesRecursive(join(catalogRoot, "_shared"));
+  const mirrorFiles = walkFilesRecursive(join(mirrorRoot, "_shared"));
+  const mirrorMap = new Map(mirrorFiles.map((f) => [f.rel, f.full]));
+  const common = [];
+  for (const f of canonicalFiles) {
+    if (mirrorMap.has(f.rel)) {
+      common.push({ rel: f.rel, canonicalFull: f.full, mirrorFull: mirrorMap.get(f.rel) });
+    }
+  }
+  return {
+    canonicalFiles: canonicalFiles.length,
+    mirrorFiles: mirrorFiles.length,
+    common,
+  };
 }
 
 /**
@@ -104,6 +166,7 @@ export function getMirrorSkills(mirrorRoot) {
  * Returns { pass, missingSkills, orphanSkills, skillDivergences, totalCanonicalSkills, totalMirrorSkills }
  */
 export function checkMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFAULT_MIRROR_ROOT) {
+  assertSafeMirrorRoot(catalogRoot, mirrorRoot);
   const canonicalMap = getCanonicalSkills(catalogRoot);
   const mirrorMap = getMirrorSkills(mirrorRoot);
 
@@ -169,16 +232,31 @@ export function checkMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEF
     }
   }
 
+  const shared = sharedIntersection(catalogRoot, mirrorRoot);
+  const sharedDivergences = [];
+  for (const f of shared.common) {
+    if (Buffer.compare(readFileSync(f.canonicalFull), readFileSync(f.mirrorFull)) !== 0) {
+      sharedDivergences.push(f.rel);
+    }
+  }
+
   const pass =
     missingSkills.length === 0 &&
     orphanSkills.length === 0 &&
-    skillDivergences.length === 0;
+    skillDivergences.length === 0 &&
+    sharedDivergences.length === 0;
 
   return {
     pass,
     missingSkills,
     orphanSkills,
     skillDivergences,
+    sharedIntersection: {
+      canonicalFiles: shared.canonicalFiles,
+      mirrorFiles: shared.mirrorFiles,
+      filesChecked: shared.common.length,
+      divergences: sharedDivergences,
+    },
     totalCanonicalSkills: canonicalMap.size,
     totalMirrorSkills: mirrorMap.size,
   };
@@ -209,6 +287,7 @@ function cleanupEmptyDirs(dir) {
  * Returns stats on files copied, deleted, skills created, and orphans removed.
  */
 export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFAULT_MIRROR_ROOT) {
+  assertSafeMirrorRoot(catalogRoot, mirrorRoot);
   const canonicalMap = getCanonicalSkills(catalogRoot);
   const mirrorMap = getMirrorSkills(mirrorRoot);
 
@@ -267,11 +346,25 @@ export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFA
     cleanupEmptyDirs(mirrorDir);
   }
 
-  // 2. Remove orphan skill directories from mirror (excluding _shared)
+  // 2. Remove orphan skill directories from mirror (skill-like dirs only,
+  //    excluding _shared and non-skill directories)
   for (const [orphanName, orphanDir] of mirrorMap.entries()) {
     if (!canonicalMap.has(orphanName)) {
       rmSync(orphanDir, { recursive: true, force: true });
       removedOrphanSkills++;
+    }
+  }
+
+  // 3. Sync the `_shared` intersection: files present in BOTH trees are
+  //    byte-identical after --write; mirror-only files are kept untouched.
+  const shared = sharedIntersection(catalogRoot, mirrorRoot);
+  let sharedFilesSynced = 0;
+  for (const f of shared.common) {
+    const srcBuf = readFileSync(f.canonicalFull);
+    const dstBuf = readFileSync(f.mirrorFull);
+    if (Buffer.compare(srcBuf, dstBuf) !== 0) {
+      copyFileSync(f.canonicalFull, f.mirrorFull);
+      sharedFilesSynced++;
     }
   }
 
@@ -281,6 +374,8 @@ export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFA
     deletedFiles,
     createdSkills,
     removedOrphanSkills,
+    sharedFilesChecked: shared.common.length,
+    sharedFilesSynced,
   };
 }
 
@@ -293,11 +388,18 @@ Usage:
   node scripts/sync-addon.mjs [--catalog <path>] [--mirror <path>] (--check|--write)
 
 Options:
-  --check            Read-only check comparing canonical catalog against gentle-ai-dsh/skills/.
+  --check            Read-only check comparing canonical catalog against the mirror.
+                     Coverage: (1) every canonical skill present and byte-identical;
+                     (2) skill-like orphan dirs (containing SKILL.md) fail;
+                     (3) _shared/** files present in BOTH trees must be byte-identical
+                     (mirror-only _shared files are allowed).
                      Exits with code 1 if divergences are found, 0 if in sync.
-  --write            Mechanically synchronizes canonical skills to gentle-ai-dsh/skills/.
+  --write            Mechanically synchronizes canonical skills to the mirror and syncs
+                     the _shared intersection; mirror-only _shared files are kept.
   --catalog <path>   Override canonical catalog root (defaults to parent of scripts/).
-  --mirror <path>    Override addon mirror root (defaults to gentle-ai-dsh/skills/).
+  --mirror <path>    Override addon mirror root (defaults to gentle-ai-dsh/skills/). The
+                     mirror MUST live under the catalog root; the catalog root itself, its
+                     ancestors and any path outside it are rejected (exit 2).
   --json             Output results as machine-readable JSON.
   --help, -h         Show this help message.
 `);
@@ -332,8 +434,20 @@ export function runCli(argv = process.argv.slice(2)) {
     return 2;
   }
 
+  // Fail closed before any read/write when the mirror root is unsafe.
+  try {
+    assertSafeMirrorRoot(catalogRoot, mirrorRoot);
+  } catch (err) {
+    console.error(`[sync-addon] ERROR: ${err.message}`);
+    return 2;
+  }
+
   if (mode === "check") {
     const res = checkMirror(catalogRoot, mirrorRoot);
+    const coverage =
+      `${res.totalCanonicalSkills} canonical skills (byte parity) · ` +
+      `_shared/** intersection: ${res.sharedIntersection.filesChecked} file(s) checked ` +
+      `(${res.sharedIntersection.canonicalFiles} canonical / ${res.sharedIntersection.mirrorFiles} mirror; mirror-only allowed)`;
     if (jsonOut) {
       console.log(JSON.stringify(res, null, 2));
     } else {
@@ -341,10 +455,12 @@ export function runCli(argv = process.argv.slice(2)) {
         console.log(
           `[sync-addon] PASS: ${res.totalCanonicalSkills} skills in full parity between canonical catalog and addon mirror.`
         );
+        console.log(`[sync-addon] Coverage: ${coverage}`);
       } else {
         console.error(
           `[sync-addon] FAIL: Divergence detected between canonical catalog (${res.totalCanonicalSkills} skills) and addon mirror (${res.totalMirrorSkills} skills):`
         );
+        console.error(`[sync-addon] Coverage: ${coverage}`);
         if (res.missingSkills.length > 0) {
           console.error(`  Missing skills in mirror (${res.missingSkills.length}):`);
           for (const s of res.missingSkills) console.error(`    - ${s}`);
@@ -362,6 +478,10 @@ export function runCli(argv = process.argv.slice(2)) {
             for (const f of d.extraInMirror) console.error(`        extra in mirror: ${f}`);
           }
         }
+        if (res.sharedIntersection.divergences.length > 0) {
+          console.error(`  _shared divergences (${res.sharedIntersection.divergences.length} file(s) present in both trees):`);
+          for (const f of res.sharedIntersection.divergences) console.error(`    - _shared/${f}`);
+        }
         console.error("\nAction required: Run 'node scripts/sync-addon.mjs --write' to regenerate mirror from canonical.");
       }
     }
@@ -378,6 +498,7 @@ export function runCli(argv = process.argv.slice(2)) {
       console.log(`  Files deleted:           ${stats.deletedFiles}`);
       console.log(`  New skills created:      ${stats.createdSkills}`);
       console.log(`  Orphan skills removed:   ${stats.removedOrphanSkills}`);
+      console.log(`[sync-addon] Coverage: ${stats.canonicalCount} canonical skills · _shared/** intersection: ${stats.sharedFilesChecked} file(s) checked, ${stats.sharedFilesSynced} updated (mirror-only files kept).`);
       console.log(`[sync-addon] PASS: Mirror regenerated successfully.`);
     }
     return 0;
