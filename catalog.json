@@ -1,13 +1,13 @@
 {
   "version": 1,
   "totals": {
-    "skills": 209
+    "skills": 210
   },
   "categories": [
     {
       "id": "00-meta-skills",
       "title": "Meta-Skills",
-      "count": 24
+      "count": 25
     },
     {
       "id": "01-planning-process",
@@ -78,6 +78,14 @@
       "tier0": false,
       "note": "← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models)",
       "autoInvoke": true
+    },
+    {
+      "name": "catalog-doctor",
+      "path": "00-meta-skills/catalog-doctor/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "catalog-usage",

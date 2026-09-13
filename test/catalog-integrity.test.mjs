@@ -7,7 +7,7 @@ function walkSkills(dir) {
   let out = [];
   const entries = readdirSync(dir, { withFileTypes: true });
   for (const e of entries) {
-    if (['node_modules', '.git', 'gentle-ai-dsh', '_shared', 'catalog-doctor'].includes(e.name)) continue;
+    if (['node_modules', '.git', 'gentle-ai-dsh', '_shared'].includes(e.name)) continue;
     const full = join(dir, e.name);
     if (e.isDirectory()) out.push(...walkSkills(full));
     else if (e.isFile() && e.name === 'SKILL.md') out.push(full);
@@ -17,8 +17,8 @@ function walkSkills(dir) {
 
 const skills = walkSkills('.');
 
-test('catalog has exactly 209 active skills', () => {
-  assert.equal(skills.length, 209, 'Total skills count should be exactly 209');
+test('catalog has exactly 210 active skills', () => {
+  assert.equal(skills.length, 210, 'Total skills count should be exactly 210');
 });
 
 test('zero [APP] placeholder in all skills', () => {

@@ -34,7 +34,7 @@ Hay 14 skills "tier 0" siempre-activas, definidas en
 skill-validator, skill-sync, professional-planner, sdd-orchestrator, ...).
 
 Regla dura: **antes de cada turno que pueda cargar otra skill, corré
-skill-router** para bajar 209 → 3-5 candidatas. No leas el cuerpo de una skill
+skill-router** para bajar 210 → 3-5 candidatas. No leas el cuerpo de una skill
 fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
@@ -77,9 +77,9 @@ el binario, la mecánica determinista (congelamiento, recibos, presupuestos).
 
 ## 2 · De dónde salen las skills
 
-El catálogo (209 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
+El catálogo (210 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
 nombre con la herramienta **skill**. Antes de cualquier turno que pueda cargar
-otra skill, usá **skill-router** para reducir 209 → 3-5 candidatas. El catálogo
+otra skill, usá **skill-router** para reducir 210 → 3-5 candidatas. El catálogo
 es la fuente de verdad; no lo edites desde la sesión salvo que te lo pidan.
 
 ## 3 · Memoria y documentación

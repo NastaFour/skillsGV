@@ -1,6 +1,6 @@
 # Issues pendientes — gentle-ai-dsh
 
-Estado del plan DSH (fase 2). Cerrados: A1-A5, B, C, F, G5, G6, E4, fix del YAML tag, E2 (tests del installer en gentle-ai-dsh/test/installer.test.mjs, gate pnpm test:addon), sync-addon (regeneración mecánica y paridad 209 skills desde canónico).
+Estado del plan DSH (fase 2). Cerrados: A1-A5, B, C, F, G5, G6, E4, fix del YAML tag, E2 (tests del installer en gentle-ai-dsh/test/installer.test.mjs, gate pnpm test:addon), sync-addon (regeneración mecánica y paridad 210 skills desde canónico).
 Pendientes (para abrir como issues en GitHub):
 
 ## E2 · Tests del installer (node:test) [CERRADO]
