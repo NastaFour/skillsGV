@@ -7,6 +7,8 @@ metadata:
   trigger: ["figma implement", "implementar figma", "figma url", "node id", "design to code", "pixel perfect figma", "traducir diseno", "implement design"]
   scope: [global, project]
   version: "1.0.0"
+  requires-mcp: ["figma"]
+  mcp-fallback: "Servidor Figma MCP ausente → solicitar export estático de Figma (capturas + tokens) e implementar desde la spec textual → límite: sin get_design_context/get_screenshot en vivo; el pipeline no falla"
 ---
 
 # Figma Implement — 1:1 Design-to-Code

@@ -6,7 +6,15 @@
       "install": "figma --url https://mcp.figma.com/mcp",
       "spec": "https://mcp.figma.com/mcp",
       "requiredBy": [
-        "figma-mcp"
+        "figma-mcp",
+        "figma-implement"
+      ]
+    },
+    "mcp-open-design": {
+      "purpose": "Drive OpenDesign prototypes, landing pages, dashboards, slides, images and video as real files (HTML/PDF/PPTX/MP4)",
+      "install": "Wired in the gentle-ai preset as the MCP server \"mcp-open-design\" (tools appear as mcp__open-design__*); od CLI is the documented fallback",
+      "requiredBy": [
+        "open-design"
       ]
     }
   }
