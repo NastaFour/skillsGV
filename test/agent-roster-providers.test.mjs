@@ -104,7 +104,16 @@ test("--save-provider persists baseURL/apiKeyEnv/models and never a cleartext ke
   assert.match(badEnv.stdout, /never the key itself/i);
 
   // Real-key shapes that satisfy the env-name regex must still be rejected.
-  for (const keyish of ["ghp_a1b2c3d4e5f6", "AKIAIOSFODNN7EXAMPLE", "sk_live_51abcdef"]) {
+  for (const keyish of [
+    "ghp_a1b2c3d4e5f6",
+    "AKIAIOSFODNN7EXAMPLE",
+    "sk_live_51abcdef",
+    "hf_FIXTURE0000NOTREAL",
+    "npm_FIXTURE0000NOTREAL",
+    "dop_v1_FIXTURE0000NOTREAL",
+    "shpat_FIXTURE0000NOTREAL",
+    "figd_FIXTURE0000NOTREAL",
+  ]) {
     const shaped = run(SET_MODELS, ["--save-provider", "acme2", "--base-url", ACME.baseURL, "--api-key-env", keyish, "--models", "m", "--profiles", prof]);
     assert.equal(shaped.code, 2, `${keyish} must be rejected: ${shaped.stdout}`);
     assert.match(shaped.stdout, /never the key itself/i);
@@ -254,6 +263,79 @@ test("a nested provider block is never mistaken for the root provider section", 
   assert.equal(applied.provider.acme.options.apiKey, "{env:ACME_API_KEY}");
   // ...while the agent's nested provider object stays byte-identical in shape.
   assert.deepEqual(applied.agent["gentle-orchestrator"].provider, nested);
+});
+
+test("pretty-printed config: a replaced managed entry keeps its original indentation", (t) => {
+  const dir = makeDir(t);
+  const prof = profilesFixture(dir, { providers: { acme: ACME } });
+  const doc = {
+    $schema: "https://opencode.ai/config.json",
+    agent: { "gentle-orchestrator": { model: "opencode-go/deepseek-v4-pro" } },
+    provider: {
+      humain: DEFAULT_PROVIDER.humain,
+      acme: { options: { baseURL: "https://stale.example/v0" }, models: { legacy: {} } },
+    },
+  };
+  const cfg = join(dir, "opencode.json");
+  writeFileSync(cfg, JSON.stringify(doc, null, 2) + "\n", "utf8");
+
+  const r = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--apply"]);
+  assert.equal(r.code, 0, r.stdout);
+
+  // Exact format: the replacement keeps the indentation of the entry it
+  // replaces (key-line indent), not a zero-indent flat serialization.
+  const applied = readFileSync(cfg, "utf8");
+  const expectedEntry = [
+    `    "acme": {`,
+    `      "options": {`,
+    `        "baseURL": "${ACME.baseURL}",`,
+    `        "apiKey": "{env:ACME_API_KEY}"`,
+    `      },`,
+    `      "models": {`,
+    `        "acme-fast": {},`,
+    `        "acme-pro": {}`,
+    `      }`,
+    `    }`,
+  ].join("\n");
+  assert.ok(applied.includes(expectedEntry), `replaced entry lost its indentation:\n${applied}`);
+  assert.deepEqual(readJson(cfg).provider.acme, {
+    options: { baseURL: ACME.baseURL, apiKey: "{env:ACME_API_KEY}" },
+    models: { "acme-fast": {}, "acme-pro": {} },
+  });
+});
+
+test("a leading JSONC comment with braces: the provider block lands in the root object", (t) => {
+  const dir = makeDir(t);
+  const beta = { baseURL: "https://api.beta.example/v2", apiKeyEnv: "BETA_TOKEN", models: ["beta-1"] };
+  const prof = profilesFixture(dir, { providers: { acme: ACME, beta } });
+  const doc = {
+    $schema: "https://opencode.ai/config.json",
+    agent: { "gentle-orchestrator": { model: "opencode-go/deepseek-v4-pro" } },
+  };
+  const cfg = join(dir, "opencode.json");
+  writeFileSync(cfg, `// opencode config — empty {} defaults are fine\n${JSON.stringify(doc, null, 2)}\n`, "utf8");
+
+  const r = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--apply"]);
+  assert.equal(r.code, 0, r.stdout);
+  const applied = readFileSync(cfg, "utf8");
+  assert.ok(applied.startsWith("// opencode config"), "the leading comment is preserved");
+  const parsed = JSON.parse(applied.slice(applied.indexOf("\n") + 1));
+  assert.equal(parsed.provider.acme.options.baseURL, ACME.baseURL);
+  assert.equal(parsed.provider.beta.options.apiKey, "{env:BETA_TOKEN}");
+  assert.deepEqual(parsed.agent, doc.agent, "the rest of the root object is untouched");
+});
+
+test("a config without a JSON object root is rejected instead of injecting blindly", (t) => {
+  const dir = makeDir(t);
+  const prof = profilesFixture(dir, { providers: { acme: ACME } });
+  const cfg = join(dir, "opencode.json");
+  const original = `// note: { } here\n"agent": { "gentle-orchestrator": { "model": "opencode-go/deepseek-v4-pro" } }\n`;
+  writeFileSync(cfg, original, "utf8");
+
+  const r = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof]);
+  assert.equal(r.code, 1, r.stdout);
+  assert.match(r.stdout, /Cannot locate the root JSON object/);
+  assert.equal(readFileSync(cfg, "utf8"), original, "a rejected config is never modified");
 });
 
 test("apply refuses a malformed provider entry without touching the config", (t) => {

@@ -272,10 +272,40 @@ function lineIndentAt(text, index) {
 }
 
 /**
+ * Index of the root object's opening brace, skipping leading whitespace and
+ * JSONC comments (line and block comments). Returns -1 when the first
+ * significant character is not `{` — never guess: a brace inside a leading
+ * comment used to be mistaken for the root and the provider block was then
+ * injected into the comment.
+ */
+function findRootObjectOpen(text) {
+  let i = 0;
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
+      i++;
+    } else if (ch === "/" && text[i + 1] === "/") {
+      const nl = text.indexOf("\n", i + 2);
+      if (nl === -1) return -1;
+      i = nl + 1;
+    } else if (ch === "/" && text[i + 1] === "*") {
+      const end = text.indexOf("*/", i + 2);
+      if (end === -1) return -1;
+      i = end + 2;
+    } else {
+      return ch === "{" ? i : -1;
+    }
+  }
+  return -1;
+}
+
+/**
  * Return the object range of `"name": { ... }` at depth 1 inside the object
  * bounded by (sectionOpen, sectionClose). Keys nested deeper (e.g. an agent's
  * own `"provider"` block) are ignored, so merges stay anchored to the section
- * they intend to edit.
+ * they intend to edit. `nameIdx` is the position of the key's opening quote,
+ * so callers can recover the entry's original line indentation.
+ * Returns { nameIdx, open, close } or null.
  */
 function findNamedObjectAtDepth(text, sectionOpen, sectionClose, name) {
   const keyRe = new RegExp(`"${escapeRe(name)}"\\s*:\\s*\\{`, "y");
@@ -297,7 +327,9 @@ function findNamedObjectAtDepth(text, sectionOpen, sectionClose, name) {
         if (m) {
           const open = i + m[0].length - 1; // position of `{`
           const range = findObjectRange(text, open);
-          if (range && range.close <= sectionClose) return range;
+          if (range && range.close <= sectionClose) {
+            return { nameIdx: i, open: range.open, close: range.close };
+          }
         }
       }
       inStr = true;
@@ -486,8 +518,10 @@ function computeProviderPlan(text, providers) {
   let sectionOpen = -1;
   let sectionClose = -1;
   // Root-anchored lookup: a nested `"provider"` object (e.g. inside an agent
-  // block) is never mistaken for the config's top-level provider section.
-  const rootOpen = text.indexOf("{");
+  // block) is never mistaken for the config's top-level provider section, and
+  // the root scan is JSONC-aware (braces inside leading comments/strings are
+  // skipped, so a `{` in a comment is never taken for the root object).
+  const rootOpen = findRootObjectOpen(text);
   const rootRange = rootOpen === -1 ? null : findObjectRange(text, rootOpen);
   const providerRange = rootRange
     ? findNamedObjectAtDepth(text, rootRange.open, rootRange.close, "provider")
