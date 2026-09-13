@@ -7,13 +7,21 @@
  * anything without --apply; the default is a dry-run plan.
  *
  * Usage:
- *   node apply.mjs --runtime opencode [--config <path>] [--dry-run|--apply] [--json]
- *   node apply.mjs --runtime dsh      [--dry-run|--apply] [--json]
+ *   node apply.mjs --runtime opencode [--config <path>] [--profiles <path>] [--dry-run|--apply] [--json]
+ *   node apply.mjs --runtime dsh      [--profiles <path>] [--dry-run|--apply] [--json]
  *   node apply.mjs --runtime list
  *   node apply.mjs --runtime opencode --apply --config "<temp-copy>"   # test-only rule
  *
+ * Custom providers (declared in profiles.json under "providers"): the opencode
+ * adapter merges a surgical `"<id>": { options: { baseURL, apiKey: "{env:VAR}" },
+ * models: {…} }` entry into the config's `"provider"` block (creating the
+ * section when absent, timestamped backup first, no write when in sync). The
+ * key NEVER appears in clear text: the config stores the `{env:VAR}` literal.
+ * dsh has no provider block: it reports the limitation without failing.
+ *
  * Overrides (internal, used by set-models.mjs):
  *   --override '{"strong":"provider/model","flash":"provider/model"}'
+ *   --profiles <path>   profiles.json override for tests/fixtures
  *
  * Exit codes: 0 = ok, 2 = invalid arguments.
  */
@@ -52,6 +60,7 @@ function parseArgs(argv) {
   const opts = {
     runtime: "list",
     config: null,
+    profilesPath: null,
     dryRun: false,
     apply: false,
     json: false,
@@ -61,6 +70,7 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === "--runtime") opts.runtime = argv[++i];
     else if (a === "--config") opts.config = resolve(argv[++i]);
+    else if (a === "--profiles") opts.profilesPath = resolve(argv[++i]);
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--apply") opts.apply = true;
     else if (a === "--json") opts.json = true;
@@ -90,13 +100,16 @@ Usage:
 Options:
   --runtime <id>   opencode | dsh | list (default: list)
   --config <path>  Target opencode config file (default: %USERPROFILE%\\.config\\opencode\\opencode.json)
+  --profiles <p>   profiles.json override (custom providers live there)
   --dry-run        Print the plan without writing (DEFAULT)
   --apply          Write changes (timestamped backup first)
-  --json           Emit the computed patch as JSON (openmode/dsh)
+  --json           Emit the computed patch as JSON (opencode/dsh)
   --override <j>   Internal: inline {"strong","flash"} resolution for set-models.mjs
 
 Rules:
   - Never writes without --apply; dry-run is the default.
+  - Custom providers store only the "{env:VAR}" literal in the config; the key
+    is never persisted in clear text.
   - Test-only rule: do NOT --apply against the real global opencode.json;
     functional tests must use a temp copy via --config.
 `);
@@ -132,7 +145,16 @@ function backupStamp() {
 // Roster / profile resolution
 // ---------------------------------------------------------------------------
 
-function resolveProfile(profiles, override) {
+export function normalizeTier(tier) {
+  if (!tier) return "cheap";
+  const t = String(tier).toLowerCase().trim();
+  if (t === "sdd-strong" || t === "strong") return "strong";
+  if (t === "sdd-mid" || t === "mid") return "mid";
+  if (t === "sdd-cheap" || t === "cheap" || t === "flash") return "cheap";
+  return t;
+}
+
+function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
   if (override) {
     let o = null;
     try {
@@ -141,26 +163,59 @@ function resolveProfile(profiles, override) {
       console.error(`--override is not valid JSON: ${override}`);
       process.exit(2);
     }
-    if (!o || typeof o.strong !== "string" || typeof o.flash !== "string") {
-      console.error("--override must be {\"strong\":\"...\",\"flash\":\"...\"}");
+    const strong = o["sdd-strong"] || o.strong;
+    const flash = o.flash || o["sdd-cheap"] || o.cheap;
+    const mid = o["sdd-mid"] || o.mid || flash;
+    const cheap = o["sdd-cheap"] || o.cheap || flash;
+    if (typeof strong !== "string" || (typeof flash !== "string" && typeof cheap !== "string")) {
+      console.error("--override must include strong and flash/mid/cheap models");
       process.exit(2);
     }
-    return { name: "(override)", strong: o.strong, flash: o.flash };
+    return {
+      name: "(override)",
+      strong,
+      mid,
+      cheap: cheap || flash,
+      flash: flash || cheap,
+      "sdd-strong": strong,
+      "sdd-mid": mid,
+      "sdd-cheap": cheap || flash,
+    };
   }
   if (!profiles || !profiles.profiles || typeof profiles.current !== "string") {
-    console.error(`profiles.json is malformed or missing: ${PROFILES_PATH}`);
+    console.error(`profiles.json is malformed or missing: ${profilesPath}`);
     process.exit(2);
   }
   const current = profiles.profiles[profiles.current];
-  if (!current || typeof current.strong !== "string" || typeof current.flash !== "string") {
+  if (!current) {
     console.error(`profiles.json: profile "${profiles.current}" is missing or malformed`);
     process.exit(2);
   }
-  return { name: profiles.current, strong: current.strong, flash: current.flash };
+  const strong = current["sdd-strong"] || current.strong;
+  const flash = current.flash || current["sdd-cheap"] || current.cheap;
+  const mid = current["sdd-mid"] || current.mid || flash;
+  const cheap = current["sdd-cheap"] || current.cheap || flash;
+  if (typeof strong !== "string" || (typeof flash !== "string" && typeof cheap !== "string")) {
+    console.error(`profiles.json: profile "${profiles.current}" is missing or malformed`);
+    process.exit(2);
+  }
+  return {
+    name: profiles.current,
+    strong,
+    mid,
+    cheap: cheap || flash,
+    flash: flash || cheap,
+    "sdd-strong": strong,
+    "sdd-mid": mid,
+    "sdd-cheap": cheap || flash,
+  };
 }
 
 function desiredModelFor(agent, profile) {
-  return agent.tier === "strong" ? profile.strong : profile.flash;
+  const norm = normalizeTier(agent.tier);
+  if (norm === "strong") return profile["sdd-strong"] || profile.strong;
+  if (norm === "mid") return profile["sdd-mid"] || profile.mid || profile["sdd-cheap"] || profile.flash || profile.cheap;
+  return profile["sdd-cheap"] || profile.cheap || profile.flash || profile["sdd-mid"] || profile.mid;
 }
 
 function splitProviderModel(full) {
@@ -309,6 +364,160 @@ function computeOpenCodePlan(text, roster, profile) {
   return { sectionFound: true, changes };
 }
 
+// ---------------------------------------------------------------------------
+// Custom providers (declared in profiles.json "providers"; key by env-var name)
+// ---------------------------------------------------------------------------
+
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  if (a && b && typeof a === "object" && typeof b === "object") {
+    const ka = Object.keys(a);
+    const kb = Object.keys(b);
+    if (ka.length !== kb.length) return false;
+    return ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && deepEqual(a[k], b[k]));
+  }
+  return false;
+}
+
+function loadProviders(profiles) {
+  const raw = profiles ? profiles.providers : undefined;
+  if (raw === undefined) return {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    console.error('❌ profiles.json: "providers" must be an object keyed by provider id');
+    process.exit(2);
+  }
+  for (const [id, entry] of Object.entries(raw)) {
+    const ok =
+      entry &&
+      typeof entry === "object" &&
+      typeof entry.baseURL === "string" &&
+      entry.baseURL.length > 0 &&
+      typeof entry.apiKeyEnv === "string" &&
+      entry.apiKeyEnv.length > 0 &&
+      Array.isArray(entry.models) &&
+      entry.models.length > 0 &&
+      entry.models.every((m) => typeof m === "string" && m.length > 0);
+    if (!ok) {
+      console.error(`❌ profiles.json: provider "${id}" is malformed (expected baseURL, apiKeyEnv, models[])`);
+      process.exit(2);
+    }
+  }
+  return raw;
+}
+
+/** Desired opencode entry: the apiKey is the documented "{env:VAR}" literal. */
+function desiredProviderEntry(entry) {
+  return {
+    options: { baseURL: entry.baseURL, apiKey: `{env:${entry.apiKeyEnv}}` },
+    models: Object.fromEntries(entry.models.map((m) => [m, {}])),
+  };
+}
+
+function serializeEntry(desired, indent, eol = "\n") {
+  return JSON.stringify(desired, null, 2)
+    .split("\n")
+    .map((line, i) => (i === 0 ? line : indent + line))
+    .join(eol);
+}
+
+/**
+ * Compute the surgical plan for the config's top-level "provider" block.
+ * Returns { changes: [{id, kind: none|replace|insert, desired}], segments }.
+ * Segments apply to the original text (brace-matching, same as "agent").
+ */
+function computeProviderPlan(text, providers) {
+  const ids = Object.keys(providers);
+  const changes = [];
+  const segments = [];
+  if (ids.length === 0) return { changes, segments };
+  const eol = text.includes("\r\n") ? "\r\n" : "\n";
+
+  let sectionOpen = -1;
+  let sectionClose = -1;
+  const sectionMatch = /"provider"\s*:\s*\{/.exec(text);
+  if (sectionMatch) {
+    const range = findObjectRange(text, text.indexOf("{", sectionMatch.index));
+    if (range) {
+      sectionOpen = range.open;
+      sectionClose = range.close;
+    }
+  }
+
+  const missing = [];
+  for (const id of ids) {
+    const desired = desiredProviderEntry(providers[id]);
+    if (sectionOpen === -1) {
+      missing.push({ id, desired });
+      continue;
+    }
+    const block = findNamedObject(text, sectionOpen, sectionClose, id);
+    if (!block) {
+      missing.push({ id, desired });
+      continue;
+    }
+    let existing = null;
+    try {
+      existing = JSON.parse(text.slice(block.open, block.close + 1));
+    } catch {
+      existing = null;
+    }
+    if (existing && deepEqual(existing, desired)) {
+      changes.push({ id, kind: "none", desired });
+      continue;
+    }
+    const lineStart = text.lastIndexOf("\n", block.nameIdx - 1) + 1;
+    const indent = text.slice(lineStart, block.nameIdx);
+    segments.push({ start: block.open, end: block.close + 1, text: serializeEntry(desired, indent, eol) });
+    changes.push({ id, kind: "replace", desired });
+  }
+
+  if (missing.length === 0) return { changes, segments };
+
+  if (sectionOpen !== -1) {
+    // Append the missing entries to the existing section (comma-aware).
+    const content = text.slice(sectionOpen + 1, sectionClose);
+    const closeLineStart = text.lastIndexOf("\n", sectionClose - 1) + 1;
+    const closeIndent = (text.slice(closeLineStart, sectionClose).match(/^[ \t]*/) || [""])[0];
+    const entryIndent = closeIndent + "  ";
+    const joined = missing
+      .map(({ id, desired }) => `"${id}": ${serializeEntry(desired, entryIndent, eol)}`)
+      .join(`,${eol}${entryIndent}`);
+    if (content.trim() === "") {
+      segments.push({ start: sectionOpen + 1, end: sectionClose, text: `${eol}${entryIndent}${joined}${eol}${closeIndent}` });
+    } else {
+      let insertAt = sectionClose - 1;
+      while (insertAt > sectionOpen && /\s/.test(text[insertAt])) insertAt--;
+      segments.push({ start: insertAt + 1, end: insertAt + 1, text: `,${eol}${entryIndent}${joined}` });
+    }
+  } else {
+    // No provider section yet: create it at the top level of the root object.
+    const rootOpen = text.search(/\{/);
+    const rootRange = rootOpen === -1 ? null : findObjectRange(text, rootOpen);
+    if (!rootRange) {
+      console.error("❌ Cannot locate the root JSON object; the provider block was not injected.");
+      process.exit(1);
+    }
+    const sectionIndent = "  ";
+    const entryIndent = "    ";
+    const joined = missing
+      .map(({ id, desired }) => `"${id}": ${serializeEntry(desired, entryIndent, eol)}`)
+      .join(`,${eol}${entryIndent}`);
+    const sectionText = `"provider": {${eol}${entryIndent}${joined}${eol}${sectionIndent}}`;
+    const rootContent = text.slice(rootOpen + 1, rootRange.close);
+    if (rootContent.trim() === "") {
+      segments.push({ start: rootOpen + 1, end: rootRange.close, text: `${eol}${sectionIndent}${sectionText}${eol}` });
+    } else {
+      segments.push({ start: rootOpen + 1, end: rootOpen + 1, text: `${eol}${sectionIndent}${sectionText},` });
+    }
+  }
+  for (const { id, desired } of missing) changes.push({ id, kind: "insert", desired });
+  return { changes, segments };
+}
+
 function backupAndWrite(target, content) {
   const backup = `${target}.roster.bak-${backupStamp()}`;
   copyFileSync(target, backup);
@@ -316,7 +525,7 @@ function backupAndWrite(target, content) {
   return backup;
 }
 
-function runOpenCode(opts, roster, profile) {
+function runOpenCode(opts, roster, profile, providers) {
   const target = opts.config || DEFAULT_OPENCODE_CONFIG;
   if (!existsSync(target)) {
     console.error(`❌ OpenCode config not found: ${target}`);
@@ -328,8 +537,10 @@ function runOpenCode(opts, roster, profile) {
     console.error(`❌ No "agent" section found in ${target}; nothing to patch.`);
     process.exit(1);
   }
+  const providerPlan = computeProviderPlan(text, providers);
 
   const patch = {};
+  const providerPatch = {};
   const segments = [];
   const lines = [];
   for (const c of plan.changes) {
@@ -345,11 +556,16 @@ function runOpenCode(opts, roster, profile) {
     patch[c.agent] = { model: c.desired };
     segments.push({ start: c.edit.start, end: c.edit.end, text: c.edit.text });
   }
+  for (const c of providerPlan.changes) {
+    if (c.kind !== "none") providerPatch[c.id] = c.desired;
+  }
+  segments.push(...providerPlan.segments);
+  const providerChanged = providerPlan.changes.filter((c) => c.kind !== "none").length;
 
   if (opts.json) {
     console.log(
       JSON.stringify(
-        { runtime: "opencode", config: target, profile: profile.name, patch: { agent: patch } },
+        { runtime: "opencode", config: target, profile: profile.name, patch: { agent: patch, provider: providerPatch } },
         null,
         2
       )
@@ -361,7 +577,7 @@ function runOpenCode(opts, roster, profile) {
   console.log(`Target:   ${target}`);
   console.log(`Profile:  ${profile.name} (strong=${profile.strong}, flash=${profile.flash})`);
   console.log(`Mode:     ${opts.apply ? "apply" : "dry-run"}\n`);
-  console.log("Agents (20):");
+  console.log(`Agents (${roster.agents.length}):`);
   for (const l of lines) {
     if (l.status === "changed") {
       console.log(`  [CHANGED] ${l.agent}: ${l.current} -> ${l.desired}`);
@@ -378,10 +594,26 @@ function runOpenCode(opts, roster, profile) {
     `\n${changedCount} agent model(s) would change${missingCount ? `, ${missingCount} agent block(s) missing` : ""}.`
   );
 
-  if (opts.apply && changedCount > 0) {
+  if (providerPlan.changes.length > 0) {
+    console.log(`\nCustom providers (${providerPlan.changes.length} declared in profiles.json):`);
+    for (const c of providerPlan.changes) {
+      if (c.kind === "none") {
+        console.log(`  [OK] ${c.id}: in sync`);
+      } else if (c.kind === "replace") {
+        console.log(`  [CHANGED] ${c.id}: options/models merged surgically`);
+      } else {
+        console.log(`  [INSERT] ${c.id}: added to the "provider" block`);
+      }
+    }
+    console.log(`\n${providerChanged} provider entr${providerChanged === 1 ? "y" : "ies"} would change.`);
+  }
+
+  const totalChanged = changedCount + providerChanged;
+
+  if (opts.apply && totalChanged > 0) {
     const newText = applySegments(text, segments);
     const backup = backupAndWrite(target, newText);
-    console.log(`✅ Applied ${changedCount} change(s) to ${target}`);
+    console.log(`✅ Applied ${totalChanged} change(s) to ${target}`);
     console.log(`💾 Backup created: ${backup}`);
   } else if (opts.apply) {
     console.log("✅ Already in sync — nothing written, no backup created.");
@@ -397,7 +629,7 @@ function runOpenCode(opts, roster, profile) {
 function dshRoutingFor(agent) {
   let tool = "main";
   if (agent.delegate_only) {
-    tool = agent.tier === "strong" ? "subagent_strong" : "subagent";
+    tool = normalizeTier(agent.tier) === "strong" ? "subagent_strong" : "subagent";
   }
   return {
     tier: agent.tier,
@@ -431,7 +663,7 @@ function extractFallback(text, varName) {
 
 function computeDshPresetChanges(text, profile) {
   const strong = splitProviderModel(profile.strong);
-  const flash = splitProviderModel(profile.flash);
+  const flash = splitProviderModel(profile.cheap || profile.flash);
   const current = {
     strongProvider: extractFallback(text, "STRONG_PROVIDER"),
     strongModel: extractFallback(text, "STRONG_MODEL"),
@@ -466,7 +698,7 @@ function patchPresetFallbacks(text, changes) {
   return out;
 }
 
-function runDsh(opts, roster, profile) {
+function runDsh(opts, roster, profile, providers) {
   if (!existsSync(DSH_PRESET_PATH)) {
     console.error(`❌ dsh preset not found: ${DSH_PRESET_PATH}`);
     process.exit(1);
@@ -474,6 +706,11 @@ function runDsh(opts, roster, profile) {
   const presetText = readUtf8(DSH_PRESET_PATH);
   const routing = buildRoutingJson(roster);
   const presetPlan = computeDshPresetChanges(presetText, profile);
+  const providerLimitations = Object.keys(providers).map((id) => ({
+    id,
+    reason:
+      "dsh has no provider block; model routing flows through DSH_* env literals in the preset, so baseURL/apiKeyEnv are not injected (limitation reported, pipeline continues)",
+  }));
 
   // Sync state of an existing routing file.
   let routingState = "missing";
@@ -509,6 +746,7 @@ function runDsh(opts, roster, profile) {
           profile: profile.name,
           routingState,
           presetChanges: presetPlan.changes,
+          providerLimitations,
         },
         null,
         2
@@ -526,7 +764,7 @@ function runDsh(opts, roster, profile) {
   if (routingState === "in-sync") {
     console.log(`  [OK] already in sync with roster.json (no write needed)`);
   } else {
-    console.log(`  [${routingState === "missing" ? "CREATE" : "OVERWRITE"}] agent → tier/effort/tool for the 20 agents`);
+    console.log(`  [${routingState === "missing" ? "CREATE" : "OVERWRITE"}] agent → tier/effort/tool for the ${roster.agents.length} agents`);
   }
 
   console.log("\nPreset fallback defaults (trivially-safe literal updates only):");
@@ -539,6 +777,13 @@ function runDsh(opts, roster, profile) {
       console.log(`  [WARN] ${c.label}: ${c.note}`);
     } else {
       console.log(`  [CHANGED] ${c.label}: '${c.current}' -> '${c.desired}'`);
+    }
+  }
+
+  if (providerLimitations.length > 0) {
+    console.log("\nCustom providers (unsupported on dsh — limitation reported, not fatal):");
+    for (const l of providerLimitations) {
+      console.log(`  [LIMITATION] "${l.id}": ${l.reason}`);
     }
   }
 
@@ -628,16 +873,20 @@ function runList(opts, roster, profile) {
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   const roster = loadJson(ROSTER_PATH);
-  if (!roster || !Array.isArray(roster.agents) || roster.agents.length !== 20) {
-    console.error(`❌ roster.json is missing or does not declare exactly 20 agents: ${ROSTER_PATH}`);
+  if (!roster || !Array.isArray(roster.agents) || roster.agents.length !== 21) {
+    console.error(`❌ roster.json is missing or does not declare exactly 21 agents: ${ROSTER_PATH}`);
     process.exit(1);
   }
-  const profiles = loadJson(PROFILES_PATH);
-  const profile = resolveProfile(profiles, opts.override);
+  const profilesPath = opts.profilesPath || PROFILES_PATH;
+  const profiles = loadJson(profilesPath);
+  const profile = resolveProfile(profiles, opts.override, profilesPath);
+  const providers = loadProviders(profiles);
 
-  if (opts.runtime === "opencode") runOpenCode(opts, roster, profile);
-  else if (opts.runtime === "dsh") runDsh(opts, roster, profile);
+  if (opts.runtime === "opencode") runOpenCode(opts, roster, profile, providers);
+  else if (opts.runtime === "dsh") runDsh(opts, roster, profile, providers);
   else runList(opts, roster, profile);
 }
 
-main();
+if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
+  main();
+}

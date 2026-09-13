@@ -1,0 +1,31 @@
+{
+  "evals": [
+    {
+      "id": "judgment-day-dual-review-of-staged-diff",
+      "prompt": "two judges: adversarial review of the staged diff",
+      "files": [],
+      "expected_output": "Judgment Day for the staged diff — two independent judges, sealed verdicts, same target material:\n- Judge Red (challenger): how does this break? Failure modes, edge cases, race conditions, security holes.\n- Judge Blue (advocate): how does this fail to deliver? Missing requirements, undersized scope, ambiguity that causes rework.\nBoth answer the same template under four headings: 1) Blocking issues 2) Likely issues 3) Blind spots 4) Verdict (SHIP / FIX / KILL).\nSynthesis: overlap -> near-certain defects (blocking until proven otherwise); single-judge flags -> hypotheses to verify against the code; split verdict -> rewrite the spec/design, not the review.\nScope: post-apply / pre-PR review of the code diff; the goal is conflict surfacing.",
+      "expectations": [
+        "routes-to:judgment-day",
+        "contains:Judge Red",
+        "contains:Judge Blue",
+        "contains:SHIP / FIX / KILL",
+        "regex:sealed verdicts",
+        "not-contains:consensus"
+      ]
+    },
+    {
+      "id": "judgment-day-precondition-guard-before-merge",
+      "prompt": "judgment day on the merge gate before the PR",
+      "files": [],
+      "expected_output": "Judgment Day pre-condition guard: run only when the staged diff is >= 100 lines AND touches critical markers (auth, payments, migrations, sql, ssl, secret, jwt, bcrypt), or when the user explicitly requests it on a non-trivial change.\nBelow that threshold: code-reviewer only — the skill-router sets skipJudgmentDay=true for diff < 100 lines with no critical markers.\nMerge gate rule: no non-trivial change merges without surviving Judgment Day (both verdicts sealed before synthesis).\nPlanning steps (proposal/spec/design/tasks) belong to the orchestrator gatekeeper and the phase result contract — not to the judges.",
+      "expectations": [
+        "routes-to:judgment-day",
+        "contains:code-reviewer",
+        "contains:skipJudgmentDay=true",
+        "regex:100 lines",
+        "contains:critical markers"
+      ]
+    }
+  ]
+}

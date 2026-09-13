@@ -1,0 +1,32 @@
+{
+  "evals": [
+    {
+      "id": "orchestrator-starts-change-with-mode-preflight",
+      "prompt": "sdd new: catalog eval harness",
+      "files": [],
+      "expected_output": "Entering SDD orchestration for the change: \"catalog eval harness\".\n\nPreflight (blocking, before sdd-init): ask the user the execution mode — auto or interactive. No silent default; no phase is launched without an explicit answer.\nDAG: proposal -> specs/design -> tasks -> apply -> verify -> archive (design branches from proposal).\nPlan: sdd-init (stack + testing capabilities) -> sdd-explore -> (sdd-research if chosen) -> sdd-propose -> sdd-spec + sdd-design -> sdd-tasks -> sdd-apply -> sdd-verify -> sdd-archive.\nDelegation: every phase runs in a fresh sub-agent; this orchestrator routes and synthesizes — it does not run the phases inline.\nGatekeeper (auto): one corrective re-run of the SAME phase; a SECOND failure stops the chain and escalates both attempts — automatic retries stop at two.",
+      "expectations": [
+        "routes-to:sdd-orchestrator",
+        "contains:Preflight",
+        "contains:sdd-init",
+        "regex:auto\\s+or\\s+interactive",
+        "regex:SECOND failure stops the chain",
+        "not-contains:runs the phases inline"
+      ]
+    },
+    {
+      "id": "orchestrator-continues-next-dependency-ready-phase",
+      "prompt": "sdd continue with the next phase of the change",
+      "files": [],
+      "expected_output": "Continuing the active SDD change: resolve the next dependency-ready phase from the DAG (proposal -> specs/design -> tasks -> apply -> verify -> archive) and launch exactly that phase in a fresh sub-agent.\n\nInteractive mode: show the phase result summary, then wait for explicit approval. One \"continue\" approves only the immediate next phase — not the rest of the pipeline. A generated artifact is not considered approved until the user reviewed it or delegated that review.\n\nGatekeeper failure: re-run the SAME phase once with corrective feedback naming the gate findings; a SECOND failure stops the chain and escalates both attempts plus the recommended fix — automatic retries stop at two.",
+      "expectations": [
+        "routes-to:sdd-orchestrator",
+        "contains:dependency-ready",
+        "regex:proposal\\s*->\\s*specs",
+        "contains:approves only the immediate next phase",
+        "regex:SECOND failure stops the chain",
+        "not-contains:approves the whole pipeline"
+      ]
+    }
+  ]
+}

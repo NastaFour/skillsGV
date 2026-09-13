@@ -1,12 +1,13 @@
 # Issues pendientes — gentle-ai-dsh
 
-Estado del plan DSH (fase 2). Cerrados: A1-A5, B, C, F, G5, G6, E4, fix del YAML tag.
+Estado del plan DSH (fase 2). Cerrados: A1-A5, B, C, F, G5, G6, E4, fix del YAML tag, E2 (tests del installer en gentle-ai-dsh/test/installer.test.mjs, gate pnpm test:addon), sync-addon (regeneración mecánica y paridad 209 skills desde canónico).
 Pendientes (para abrir como issues en GitHub):
 
-## E2 · Tests del installer (node:test)
-- node:test para: --dry-run sin escritura, instalación en un DSH_HOME temporal
-  (env override) + doctor PASS, y --uninstall que restaura el AGENTS.md de backup.
-- Gate: pnpm test en verde antes de publish.
+## E2 · Tests del installer (node:test) [CERRADO]
+- Cerrado: suite node:test en gentle-ai-dsh/test/installer.test.mjs cubre:
+  --dry-run sin escritura, instalación en DSH_HOME temporal (override de flags)
+  + doctor PASS, y --uninstall que restaura el AGENTS.md respaldado.
+- Gate: pnpm test:addon en verde.
 
 ## E3 · Bench journey mínimo (gentle-ai-bench)
 - Un journey SDD end-to-end sobre un cambio trivial del propio harness que

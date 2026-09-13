@@ -1,0 +1,32 @@
+{
+  "evals": [
+    {
+      "id": "roster-switches-provider-for-all-agents",
+      "prompt": "cambiar modelo agentes with set-models",
+      "files": [],
+      "expected_output": "Agent roster — switching provider/model for all 20 agents (single source of truth: _shared/agent-roster/roster.json).\n\nReview the plan first (default is --dry-run; nothing is written without --apply):\n  node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --dry-run\n  node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --apply\n\nHard rules: backup <target>.roster.bak-<timestamp> before touching an existing config; OpenCode gets a surgical merge of agent.<name>.model only; the API key never lands in clear text (apiKeyEnv); run everything with pnpm.",
+      "expectations": [
+        "routes-to:agent-roster",
+        "contains:--dry-run",
+        "contains:--apply",
+        "contains:20 agents",
+        "contains:roster.json",
+        "not-contains:npx"
+      ]
+    },
+    {
+      "id": "roster-audits-model-per-agent",
+      "prompt": "agent roster audit: which model does each agent use",
+      "files": [],
+      "expected_output": "Roster audit — which model each agent uses: node 00-meta-skills/agent-roster/scripts/set-models.mjs --list\nTier semantics: strong = gentle-orchestrator, jd-judge-a, jd-judge-b and sdd-apply (4 agents); flash = the other 16 (delegate_only=true per entry, except sdd-onboard which runs inline).\nRuntime mapping: OpenCode patches agent.<name>.model in opencode.json (surgical merge); dsh routes by tool — subagent (flash) vs subagent_strong (strong) with DSH_FLASH_MODEL / DSH_STRONG_MODEL; Claude Code per-agent frontmatter is documented as a future adapter.\nRegenerate, never edit by hand: roster.json is the only source; runtimes are projected from it with apply.mjs (dry-run first).",
+      "expectations": [
+        "routes-to:agent-roster",
+        "contains:--list",
+        "contains:strong",
+        "contains:flash",
+        "contains:delegate_only",
+        "regex:subagent_strong"
+      ]
+    }
+  ]
+}

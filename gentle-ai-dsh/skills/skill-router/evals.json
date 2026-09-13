@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "router-selects-skill-before-booking-edit",
+      "prompt": "which skill should I load before editing the booking flow",
+      "files": [],
+      "expected_output": "🎯 Skill Router\n  Query:       \"which skill should I load before editing the booking flow\"\n  Primary:     skill-router\n  Secondary:   [booking-scheduling-domain, find-skills, skill-loader]\n  Confidence:  1\n  needsSDD:    true\n  trivial:     false\n  skipJD:      false\n  Tier1 load:  [skill-router, booking-scheduling-domain, find-skills]\n\nNote: load only tier1toLoad — skill-router first, then booking-scheduling-domain (find-skills only when skill discovery is needed).",
+      "expectations": [
+        "routes-to:skill-router",
+        "regex:Primary:\\s+skill-router",
+        "contains:Tier1 load:",
+        "regex:Confidence:\\s+1\\b",
+        "not-contains:deprecatedHit"
+      ]
+    },
+    {
+      "id": "router-marks-five-line-docs-diff-trivial",
+      "prompt": "route skill selection for a 5-line docs change",
+      "files": [],
+      "expected_output": "🎯 Skill Router\n  Query:       \"route skill selection for a 5-line docs change\"\n  Primary:     skill-router\n  Secondary:   [skill-loader, vercel-react-view-transitions, grill-with-docs]\n  Confidence:  1\n  needsSDD:    false\n  trivial:     true\n  skipJD:      true\n  Tier1 load:  [skill-router, skill-loader, vercel-react-view-transitions]\n\nNote: with --diff 5 and no critical markers the change is trivial (skip SDD) and skipJudgmentDay=true — code-reviewer only if a review is needed.",
+      "expectations": [
+        "routes-to:skill-router",
+        "regex:trivial:\\s+true",
+        "regex:skipJD:\\s+true",
+        "regex:needsSDD:\\s+false",
+        "not-contains:needsSDD:    true"
+      ]
+    }
+  ]
+}
