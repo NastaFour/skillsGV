@@ -54,6 +54,18 @@
       "canonical": "design-driven",
       "members": ["design-driven", "taste-skill", "impeccable"],
       "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. Si las 3 puntúan, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
+    },
+    {
+      "id": "pull-request-workflow",
+      "canonical": "branch-pr",
+      "members": ["branch-pr", "github-pr"],
+      "note": "branch-pr es el workflow canónico de pull requests para Gentle AI (issue-first, vinculación obligatoria de issues y convenciones del repositorio); github-pr es la herramienta operativa basada en gh CLI. Si ambas puntúan para crear o preparar un PR, gana branch-pr; github-pr queda como secondary/tier1toLoad."
+    },
+    {
+      "id": "issue-triage-workflow",
+      "canonical": "systemic-issue-triage",
+      "members": ["issue-creation", "systemic-issue-triage", "triage"],
+      "note": "systemic-issue-triage es el workflow canónico de resolución de incidencias por clases de causa raíz y reducción del sistema; issue-creation gobierna la creación y descubrimiento de políticas/templates de issues del repositorio; triage (12-matt-pocock) gestiona la máquina de estados de triaje externo. Si puntúan concurrentemente, gana systemic-issue-triage; las demás quedan como secondary/tier1toLoad."
     }
   ]
 }

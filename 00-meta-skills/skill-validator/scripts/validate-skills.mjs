@@ -143,6 +143,24 @@ function validate(file, catalogNames) {
   }
   const { front, body } = parsed;
 
+  // Duplicate key check in YAML frontmatter (e.g. repeated keys or "compatibility: compatibility:")
+  const seenFrontmatterKeys = new Set();
+  for (const line of front.split(/\r?\n/)) {
+    const inlineDup = line.match(/^([a-z0-9_-]+):\s*\1:/i);
+    if (inlineDup) {
+      issues.push({ severity: "error", check: "frontmatter-duplicate-key", msg: `Duplicate inline key prefix detected: "${inlineDup[1]}: ${inlineDup[1]}:"` });
+    }
+    const topKeyMatch = line.match(/^([a-z0-9_-]+):/);
+    if (topKeyMatch) {
+      const k = topKeyMatch[1].toLowerCase();
+      if (seenFrontmatterKeys.has(k)) {
+        issues.push({ severity: "error", check: "frontmatter-duplicate-key", msg: `Duplicate frontmatter key: "${k}"` });
+      } else {
+        seenFrontmatterKeys.add(k);
+      }
+    }
+  }
+
   const name = getField(front, "name");
   if (!name) {
     issues.push({ severity: "error", check: "name-present", msg: "Missing required field: name" });
@@ -173,7 +191,7 @@ function validate(file, catalogNames) {
       issues.push({ severity: "error", check: "desc-length", msg: `description length ${desc.length} not in 1-1024` });
     }
     const hasWhat = /[A-Za-z]/.test(desc);
-    const hasWhen = /(when|use|if|trigger)/i.test(desc);
+    const hasWhen = /(when|use|if|trigger|úsala|usala|cuando usar)/i.test(desc);
     if (hasWhat && !hasWhen) {
       issues.push({ severity: "warning", check: "desc-when", msg: "description should mention when to use the skill (e.g. 'Use when...', 'Triggers on...')" });
     }
