@@ -117,19 +117,19 @@ test("roster.json declares exactly 21 agents and sdd-research with correct metad
   assert.equal(research.effort, "high");
   assert.match(research.role, /evidence|research/i, "role must be descriptive");
 
-  // Verify strong tier agents (research and judges + coordinator)
+  // Verify strong tier agents (coordinator, research, judges, proposal and design)
   const strongAgents = roster.agents.filter((a) => a.tier === "sdd-strong" || a.tier === "strong");
   const strongNames = strongAgents.map((a) => a.name).sort();
-  assert.deepEqual(strongNames, ["gentle-orchestrator", "jd-judge-a", "jd-judge-b", "sdd-research"]);
+  assert.deepEqual(strongNames, ["gentle-orchestrator", "jd-judge-a", "jd-judge-b", "sdd-design", "sdd-propose", "sdd-research"]);
 
-  // Verify mid tier agents (apply and fix-agent)
+  // Verify mid tier agents (apply, fix-agent, spec and verify)
   const midAgents = roster.agents.filter((a) => a.tier === "sdd-mid" || a.tier === "mid");
   const midNames = midAgents.map((a) => a.name).sort();
-  assert.deepEqual(midNames, ["jd-fix-agent", "sdd-apply"]);
+  assert.deepEqual(midNames, ["jd-fix-agent", "sdd-apply", "sdd-spec", "sdd-verify"]);
 
-  // Verify cheap tier agents (the remaining 15 agents)
+  // Verify cheap tier agents (the remaining 11 agents)
   const cheapAgents = roster.agents.filter((a) => a.tier === "sdd-cheap" || a.tier === "cheap" || a.tier === "flash");
-  assert.equal(cheapAgents.length, 15, "exactly 15 agents must be in cheap tier");
+  assert.equal(cheapAgents.length, 11, "exactly 11 agents must be in cheap tier");
 
   // Verify delegate_only exceptions
   const nonDelegated = roster.agents.filter((a) => !a.delegate_only).map((a) => a.name).sort();
@@ -157,6 +157,30 @@ test("roster.json declares native tiers and phases with reasoning effort", () =>
   // Tasks and explore must be cheap
   assert.equal(roster.phases.tasks.tier, "sdd-cheap");
   assert.equal(roster.phases.explore.tier, "sdd-cheap");
+
+  // Agent tiers must match the phases they execute (roster.json is the single
+  // source of truth; the same work must not resolve to different models
+  // depending on the mechanism).
+  const PHASE_BY_AGENT = {
+    "sdd-init": "init",
+    "sdd-explore": "explore",
+    "sdd-research": "research",
+    "sdd-propose": "propose",
+    "sdd-spec": "spec",
+    "sdd-design": "design",
+    "sdd-tasks": "tasks",
+    "sdd-apply": "apply",
+    "sdd-verify": "verify",
+    "sdd-archive": "archive",
+    "jd-judge-a": "judgment-day",
+    "jd-judge-b": "judgment-day",
+    "jd-fix-agent": "fix-agent",
+  };
+  for (const [agentName, phaseName] of Object.entries(PHASE_BY_AGENT)) {
+    const agent = roster.agents.find((a) => a.name === agentName);
+    assert.ok(agent, `${agentName} must exist in the roster`);
+    assert.equal(agent.tier, roster.phases[phaseName].tier, `${agentName} tier must match phase "${phaseName}"`);
+  }
 });
 
 // ---------------------------------------------------------------------------
@@ -222,6 +246,14 @@ test("set-models.mjs --list shows native sync args and exits 0", () => {
   assert.match(res.stdout, /Profiles/);
   assert.match(res.stdout, /Native sync args/);
   assert.match(res.stdout, /gentle-ai sync --profile sdd-strong:/);
+});
+
+test("set-models.mjs --list uses the resolved profile name in the printed sync command", () => {
+  const res = run(SET_MODELS, ["--profile", "glm", "--list"]);
+  assert.equal(res.code, 0, res.stdout);
+  assert.match(res.stdout, /glm:research:/);
+  assert.match(res.stdout, /glm:apply:/);
+  assert.doesNotMatch(res.stdout, /deepseek:research:/);
 });
 
 test("set-models.mjs dry-run produces 21 agent summary and does not touch profiles", (t) => {

@@ -103,6 +103,13 @@ test("--save-provider persists baseURL/apiKeyEnv/models and never a cleartext ke
   assert.equal(badEnv.code, 2, badEnv.stdout);
   assert.match(badEnv.stdout, /never the key itself/i);
 
+  // Real-key shapes that satisfy the env-name regex must still be rejected.
+  for (const keyish of ["ghp_a1b2c3d4e5f6", "AKIAIOSFODNN7EXAMPLE", "sk_live_51abcdef"]) {
+    const shaped = run(SET_MODELS, ["--save-provider", "acme2", "--base-url", ACME.baseURL, "--api-key-env", keyish, "--models", "m", "--profiles", prof]);
+    assert.equal(shaped.code, 2, `${keyish} must be rejected: ${shaped.stdout}`);
+    assert.match(shaped.stdout, /never the key itself/i);
+  }
+
   const incomplete = run(SET_MODELS, ["--save-provider", "acme3", "--base-url", ACME.baseURL, "--profiles", prof]);
   assert.equal(incomplete.code, 2, incomplete.stdout);
 });
@@ -204,6 +211,51 @@ test("a config without a provider section receives the block without disturbing 
   assert.equal(doc.provider.beta.options.apiKey, "{env:BETA_TOKEN}");
 });
 
+test("compact single-line config: a divergent managed entry is replaced without corrupting the file", (t) => {
+  const dir = makeDir(t);
+  const prof = profilesFixture(dir, { providers: { acme: ACME } });
+  const doc = {
+    $schema: "https://opencode.ai/config.json",
+    agent: { "gentle-orchestrator": { model: "opencode-go/deepseek-v4-pro" } },
+    provider: {
+      humain: DEFAULT_PROVIDER.humain,
+      acme: { options: { baseURL: "https://stale.example/v0" }, models: { legacy: {} } },
+    },
+  };
+  const cfg = join(dir, "opencode.json");
+  writeFileSync(cfg, JSON.stringify(doc), "utf8"); // one single line, no real indentation
+
+  const r = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--apply"]);
+  assert.equal(r.code, 0, r.stdout);
+  const applied = readJson(cfg); // throws if the merge corrupted the JSON
+  assert.equal(applied.provider.acme.options.baseURL, ACME.baseURL);
+  assert.equal(applied.provider.acme.options.apiKey, "{env:ACME_API_KEY}");
+  assert.deepEqual(Object.keys(applied.provider.acme.models), ["acme-fast", "acme-pro"]);
+  assert.deepEqual(applied.provider.humain, DEFAULT_PROVIDER.humain);
+  assert.equal(applied.agent["gentle-orchestrator"].model, "opencode-go/deepseek-v4-pro");
+});
+
+test("a nested provider block is never mistaken for the root provider section", (t) => {
+  const dir = makeDir(t);
+  const prof = profilesFixture(dir, { providers: { acme: ACME } });
+  const nested = { nested: { options: { baseURL: "https://nested.example/v1" } } };
+  const doc = {
+    $schema: "https://opencode.ai/config.json",
+    agent: { "gentle-orchestrator": { model: "opencode-go/deepseek-v4-pro", provider: nested } },
+  };
+  const cfg = join(dir, "opencode.json");
+  writeFileSync(cfg, JSON.stringify(doc, null, 2) + "\n", "utf8");
+
+  const r = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--apply"]);
+  assert.equal(r.code, 0, r.stdout);
+  const applied = readJson(cfg);
+  // The managed entry lands in a NEW root-level provider section...
+  assert.equal(applied.provider.acme.options.baseURL, ACME.baseURL);
+  assert.equal(applied.provider.acme.options.apiKey, "{env:ACME_API_KEY}");
+  // ...while the agent's nested provider object stays byte-identical in shape.
+  assert.deepEqual(applied.agent["gentle-orchestrator"].provider, nested);
+});
+
 test("apply refuses a malformed provider entry without touching the config", (t) => {
   const dir = makeDir(t);
   const prof = profilesFixture(dir, { providers: { broken: { baseURL: "https://api.broken.example" } } });
@@ -234,4 +286,44 @@ test("dsh reports the custom-provider limitation without failing and preserves t
   assert.equal(parsed.providerLimitations[0].id, "acme");
 
   assert.equal(readFileSync(DSH_PRESET, "utf8"), presetBefore, "dsh dry-run must not touch the preset");
+});
+
+test("dsh patches DSH_* fallback literals when the profile routes through a custom provider", (t) => {
+  const dir = makeDir(t);
+  const prof = join(dir, "profiles.json");
+  writeFileSync(
+    prof,
+    JSON.stringify(
+      {
+        version: 1,
+        current: "acme",
+        profiles: {
+          acme: {
+            "sdd-strong": "acme/acme-pro",
+            "sdd-mid": "acme/acme-fast",
+            "sdd-cheap": "acme/acme-fast",
+            strong: "acme/acme-pro",
+            mid: "acme/acme-fast",
+            cheap: "acme/acme-fast",
+            flash: "acme/acme-fast",
+          },
+        },
+        providers: { acme: ACME },
+      },
+      null,
+      2
+    ) + "\n",
+    "utf8"
+  );
+  const presetBefore = readFileSync(DSH_PRESET, "utf8");
+
+  const r = run(APPLY, ["--runtime", "dsh", "--profiles", prof, "--json"]);
+  assert.equal(r.code, 0, r.stdout);
+  const parsed = JSON.parse(r.stdout);
+  const byLabel = new Map(parsed.presetChanges.map((c) => [c.label, c.desired]));
+  assert.equal(byLabel.get("DSH_STRONG_PROVIDER"), "acme", "custom provider id must reach DSH_STRONG_PROVIDER");
+  assert.equal(byLabel.get("DSH_STRONG_MODEL"), "acme-pro");
+  assert.equal(byLabel.get("DSH_FLASH_PROVIDER"), "acme", "custom provider id must reach DSH_FLASH_PROVIDER");
+  assert.equal(byLabel.get("DSH_FLASH_MODEL"), "acme-fast");
+  assert.equal(readFileSync(DSH_PRESET, "utf8"), presetBefore, "dry-run must not touch the preset");
 });

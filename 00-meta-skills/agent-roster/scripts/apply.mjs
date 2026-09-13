@@ -262,6 +262,54 @@ function escapeRe(s) {
 }
 
 /**
+ * Leading whitespace of the line containing `index` (empty for compact,
+ * single-line configs). Never returns non-whitespace characters, unlike a raw
+ * slice from the previous newline.
+ */
+function lineIndentAt(text, index) {
+  const lineStart = text.lastIndexOf("\n", index - 1) + 1;
+  return (text.slice(lineStart, index).match(/^[ \t]*/) || [""])[0];
+}
+
+/**
+ * Return the object range of `"name": { ... }` at depth 1 inside the object
+ * bounded by (sectionOpen, sectionClose). Keys nested deeper (e.g. an agent's
+ * own `"provider"` block) are ignored, so merges stay anchored to the section
+ * they intend to edit.
+ */
+function findNamedObjectAtDepth(text, sectionOpen, sectionClose, name) {
+  const keyRe = new RegExp(`"${escapeRe(name)}"\\s*:\\s*\\{`, "y");
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = sectionOpen; i <= sectionClose; i++) {
+    const ch = text[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') {
+      if (depth === 1) {
+        keyRe.lastIndex = i;
+        const m = keyRe.exec(text);
+        if (m) {
+          const open = i + m[0].length - 1; // position of `{`
+          const range = findObjectRange(text, open);
+          if (range && range.close <= sectionClose) return range;
+        }
+      }
+      inStr = true;
+      continue;
+    }
+    if (ch === "{") depth++;
+    else if (ch === "}") depth--;
+  }
+  return null;
+}
+
+/**
  * Locate the JSON object for `"name": { ... }` inside a bounded section.
  * Returns { nameIdx, open, close } or null.
  */
@@ -304,8 +352,7 @@ function computeAgentEdit(text, block, desired) {
   }
   // model key missing: insert a line right after the opening brace.
   const eol = text.includes("\r\n") ? "\r\n" : "\n";
-  const lineStart = text.lastIndexOf("\n", block.nameIdx - 1) + 1;
-  const indent = text.slice(lineStart, block.nameIdx);
+  const indent = lineIndentAt(text, block.nameIdx);
   const insertAt = block.open + 1;
   return {
     kind: "insert",
@@ -438,13 +485,16 @@ function computeProviderPlan(text, providers) {
 
   let sectionOpen = -1;
   let sectionClose = -1;
-  const sectionMatch = /"provider"\s*:\s*\{/.exec(text);
-  if (sectionMatch) {
-    const range = findObjectRange(text, text.indexOf("{", sectionMatch.index));
-    if (range) {
-      sectionOpen = range.open;
-      sectionClose = range.close;
-    }
+  // Root-anchored lookup: a nested `"provider"` object (e.g. inside an agent
+  // block) is never mistaken for the config's top-level provider section.
+  const rootOpen = text.indexOf("{");
+  const rootRange = rootOpen === -1 ? null : findObjectRange(text, rootOpen);
+  const providerRange = rootRange
+    ? findNamedObjectAtDepth(text, rootRange.open, rootRange.close, "provider")
+    : null;
+  if (providerRange) {
+    sectionOpen = providerRange.open;
+    sectionClose = providerRange.close;
   }
 
   const missing = [];
@@ -454,7 +504,7 @@ function computeProviderPlan(text, providers) {
       missing.push({ id, desired });
       continue;
     }
-    const block = findNamedObject(text, sectionOpen, sectionClose, id);
+    const block = findNamedObjectAtDepth(text, sectionOpen, sectionClose, id);
     if (!block) {
       missing.push({ id, desired });
       continue;
@@ -469,8 +519,7 @@ function computeProviderPlan(text, providers) {
       changes.push({ id, kind: "none", desired });
       continue;
     }
-    const lineStart = text.lastIndexOf("\n", block.nameIdx - 1) + 1;
-    const indent = text.slice(lineStart, block.nameIdx);
+    const indent = lineIndentAt(text, block.nameIdx);
     segments.push({ start: block.open, end: block.close + 1, text: serializeEntry(desired, indent, eol) });
     changes.push({ id, kind: "replace", desired });
   }
@@ -495,8 +544,6 @@ function computeProviderPlan(text, providers) {
     }
   } else {
     // No provider section yet: create it at the top level of the root object.
-    const rootOpen = text.search(/\{/);
-    const rootRange = rootOpen === -1 ? null : findObjectRange(text, rootOpen);
     if (!rootRange) {
       console.error("❌ Cannot locate the root JSON object; the provider block was not injected.");
       process.exit(1);

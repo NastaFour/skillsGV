@@ -211,7 +211,7 @@
       "name": "sdd-propose",
       "group": "sdd",
       "role": "SDD change proposal: intent, scope, approach",
-      "tier": "sdd-cheap",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -219,7 +219,7 @@
       "name": "sdd-spec",
       "group": "sdd",
       "role": "SDD delta specs with requirements and scenarios",
-      "tier": "sdd-cheap",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
@@ -227,7 +227,7 @@
       "name": "sdd-design",
       "group": "sdd",
       "role": "SDD technical design and architecture approach",
-      "tier": "sdd-cheap",
+      "tier": "sdd-strong",
       "effort": "high",
       "delegate_only": true
     },
@@ -243,7 +243,7 @@
       "name": "sdd-verify",
       "group": "sdd",
       "role": "SDD verification against specs with compliance evidence",
-      "tier": "sdd-cheap",
+      "tier": "sdd-mid",
       "effort": "high",
       "delegate_only": true
     },
