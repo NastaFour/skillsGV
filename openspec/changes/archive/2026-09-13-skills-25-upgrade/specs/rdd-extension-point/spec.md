@@ -1,10 +1,6 @@
-# rdd-extension-point Specification
+# Delta for rdd-extension-point
 
-## Purpose
-
-Punto de extensión RDD e integración contractual con el recibo de review nativo del runtime.
-
-## Requirements
+## ADDED Requirements
 
 ### Requirement: Contrato de integración con el recibo RDD nativo
 
@@ -41,9 +37,12 @@ La activación de RDD MUST permanecer opt-in y de propiedad del usuario vía el 
 - THEN el harness no exige recibo RDD
 - AND el pipeline no falla por su ausencia
 
+## MODIFIED Requirements
+
 ### Requirement: Punto de inserción post-verify
 
 El harness MUST integrar el punto de extensión RDD en dos posiciones activas: el chequeo de existencia del recibo al cerrar `apply` (por WU) y la validación del recibo en el gate previo a `sdd-archive` (`sdd-verify` → gate de review → `sdd-archive`).
+(Previously: solo documentaba el punto de inserción entre `sdd-verify` y `sdd-archive`, sin integración activa)
 
 #### Scenario: Punto de inserción declarado
 
@@ -54,6 +53,7 @@ El harness MUST integrar el punto de extensión RDD en dos posiciones activas: e
 ### Requirement: Mapeo de lentes existentes (informativo)
 
 La documentación SHOULD señalar que los lentes existentes (`code-reviewer` 4R, `judgment-day` doble juez) mapean a los lentes de review nativos; la ejecución de lentes la decide la capa nativa, no el catálogo.
+(Previously: el mapeo se describía "sin activar RDD"; ahora RDD es activo y el catálogo no implementa lentes)
 
 #### Scenario: Mapeo documentado
 
@@ -62,13 +62,14 @@ La documentación SHOULD señalar que los lentes existentes (`code-reviewer` 4R,
 - THEN `code-reviewer` y `judgment-day` se referencian como mapeables a los lentes nativos
 - AND queda explícito que el catálogo no ejecuta lentes propios
 
-### Requirement: Extensión documental con diseño AHE
+## REMOVED Requirements
 
-La documentación del punto RDD en `harness-map.md` MUST incorporar el diseño doc-only de AHE (sidecars evaluator/debugger/evolver y niveles de evidencia `static_contract`, `transcript_replay`, `live_smoke`, `manual_oracle`) como punto de extensión relacionado pero independiente.
+### Requirement: Sin mecanismo en Slice 1
 
-#### Scenario: Documentación extendida
+(Reason: la restricción de Slice-1 quedó superada; el mecanismo RDD nativo está activo y este cambio integra su contrato)
+(Migration: reemplazado por "Contrato de integración con el recibo RDD nativo")
 
-- GIVEN `harness-map.md` con el punto RDD documentado
-- WHEN slice-2 aplica su delta
-- THEN la sección incluye el diseño AHE doc-only referenciando el punto RDD
-- AND queda explícito que activar uno no habilita al otro
+### Requirement: Sin mecanismo ejecutable por esta extensión
+
+(Reason: superado; la integración con el recibo nativo es activa. La diferición de AHE se mantiene por su propio requisito)
+(Migration: la independencia RDD/AHE se conserva en el requisito "Extensión documental con diseño AHE")
