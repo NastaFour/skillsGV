@@ -12,10 +12,16 @@
  *   node set-models.mjs --strong <model> --apply
  *   node set-models.mjs --flash <model> --apply
  *   node set-models.mjs --save-profile <name> --apply
+ *   node set-models.mjs --save-provider <id> --base-url <u> --api-key-env <VAR> --models m1,m2 [--apply]
  *   node set-models.mjs --list
  *
+ * The custom-provider block NEVER stores the API key: --api-key-env takes the
+ * env-var NAME (the key lives in the environment; opencode.json gets the
+ * literal "{env:<VAR>}" reference via apply.mjs).
+ *
  * Test-only rule: do NOT --apply against the real global opencode.json;
- * functional tests must use a temp copy via apply.mjs --config.
+ * functional tests must use a temp copy via apply.mjs --config and a temp
+ * profiles.json via --profiles.
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -44,6 +50,11 @@ function parseArgs(argv) {
     all: null,
     profile: null,
     saveProfile: null,
+    saveProvider: null,
+    baseUrl: null,
+    apiKeyEnv: null,
+    models: null,
+    profilesPath: null,
     list: false,
     dryRun: false,
     apply: false,
@@ -55,6 +66,11 @@ function parseArgs(argv) {
     else if (a === "--all") opts.all = argv[++i];
     else if (a === "--profile") opts.profile = argv[++i];
     else if (a === "--save-profile") opts.saveProfile = argv[++i];
+    else if (a === "--save-provider") opts.saveProvider = argv[++i];
+    else if (a === "--base-url") opts.baseUrl = argv[++i];
+    else if (a === "--api-key-env") opts.apiKeyEnv = argv[++i];
+    else if (a === "--models") opts.models = argv[++i];
+    else if (a === "--profiles") opts.profilesPath = resolve(argv[++i]);
     else if (a === "--list") opts.list = true;
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--apply") opts.apply = true;
@@ -74,6 +90,30 @@ function parseArgs(argv) {
     console.error(`--save-profile name must be lowercase-hyphen (got "${opts.saveProfile}")`);
     process.exit(2);
   }
+  if (opts.saveProvider) {
+    if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(opts.saveProvider)) {
+      console.error(`--save-provider id must be lowercase-hyphen (got "${opts.saveProvider}")`);
+      process.exit(2);
+    }
+    if (opts.all || opts.strong || opts.flash || opts.profile || opts.saveProfile) {
+      console.error("--save-provider cannot be combined with tier/profile flags.");
+      process.exit(2);
+    }
+    if (!opts.baseUrl || !opts.apiKeyEnv || !opts.models) {
+      console.error("--save-provider requires --base-url, --api-key-env and --models.");
+      process.exit(2);
+    }
+    if (!/^https?:\/\/\S+$/.test(opts.baseUrl)) {
+      console.error(`--base-url must be an http(s) URL (got "${opts.baseUrl}")`);
+      process.exit(2);
+    }
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(opts.apiKeyEnv)) {
+      console.error(
+        `--api-key-env expects the environment variable NAME (e.g. OPENCODE_GO_API_KEY), never the key itself (got "${opts.apiKeyEnv}")`
+      );
+      process.exit(2);
+    }
+  }
   if (!opts.dryRun && !opts.apply) opts.dryRun = true; // never write without --apply
   return opts;
 }
@@ -90,6 +130,13 @@ Options:
   --strong <model>      Override the strong-tier model
   --flash <model>       Override the flash-tier model
   --save-profile <n>    Save the resolved strong/flash as a named profile
+  --save-provider <id>  Declare a custom provider (requires --base-url,
+                        --api-key-env and --models); persisted under "providers"
+  --base-url <url>      Provider baseURL (used with --save-provider)
+  --api-key-env <VAR>   Env-var NAME that holds the key (used with --save-provider;
+                        the key itself is never accepted nor stored)
+  --models <m1,m2>      Comma-separated model ids served by the provider
+  --profiles <path>     Override profiles.json path (tests/fixtures)
   --list                Print profiles + detected runtimes + current mapping
   --dry-run             Print the plan without writing (DEFAULT)
   --apply               Persist profiles.json and write runtime configs
@@ -97,7 +144,9 @@ Options:
 
 Rules:
   - Never writes without --apply.
-  - Test-only rule: do NOT --apply against the real global opencode.json.
+  - The provider block references credentials by env-var name only.
+  - Test-only rule: do NOT --apply against the real global opencode.json; use
+    a temp config (apply.mjs --config) and a temp profiles.json (--profiles).
 `);
 }
 
@@ -105,12 +154,66 @@ function readUtf8(p) {
   return readFileSync(p, "utf8").replace(/^\uFEFF/, "");
 }
 
-function loadProfiles() {
+function loadProfiles(path) {
   try {
-    return JSON.parse(readUtf8(PROFILES_PATH));
+    return JSON.parse(readUtf8(path));
   } catch (err) {
     console.error(`❌ profiles.json unreadable: ${err.message}`);
     process.exit(2);
+  }
+}
+
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  if (a && b && typeof a === "object" && typeof b === "object") {
+    const ka = Object.keys(a);
+    const kb = Object.keys(b);
+    if (ka.length !== kb.length) return false;
+    return ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && deepEqual(a[k], b[k]));
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Custom provider persistence (never stores the key: only the env-var name)
+// ---------------------------------------------------------------------------
+
+function runSaveProvider(opts, profiles, profilesPath) {
+  const models = [...new Set(opts.models.split(",").map((s) => s.trim()).filter(Boolean))];
+  if (models.length === 0) {
+    console.error("--models must be a non-empty comma-separated list.");
+    process.exit(2);
+  }
+  if (profiles.providers === undefined) profiles.providers = {};
+  if (!profiles.providers || typeof profiles.providers !== "object" || Array.isArray(profiles.providers)) {
+    console.error('❌ profiles.json: "providers" must be an object keyed by provider id');
+    process.exit(2);
+  }
+  const entry = { baseURL: opts.baseUrl, apiKeyEnv: opts.apiKeyEnv, models };
+  const existing = profiles.providers[opts.saveProvider];
+
+  console.log(`\nset-models — save provider "${opts.saveProvider}"`);
+  console.log(`  baseURL:   ${entry.baseURL}`);
+  console.log(`  apiKeyEnv: ${entry.apiKeyEnv} (env-var name only — the key itself is never stored)`);
+  console.log(`  models:    ${entry.models.join(", ")}`);
+
+  if (existing && deepEqual(existing, entry)) {
+    console.log(`\nproviders.${opts.saveProvider}: no changes (already declared).`);
+    return;
+  }
+  console.log(`\nproviders.${opts.saveProvider}: ${existing ? "update" : "new entry"}`);
+
+  if (opts.apply) {
+    profiles.providers[opts.saveProvider] = entry;
+    writeFileSync(profilesPath, JSON.stringify(profiles, null, 2) + "\n");
+    console.log(`\n✅ Wrote ${profilesPath}`);
+    console.log("   Inject it with: node 00-meta-skills/agent-roster/scripts/apply.mjs --runtime opencode --apply");
+  } else {
+    console.log("\n✨ Dry-run: profiles.json NOT written (use --apply to persist).");
   }
 }
 
@@ -181,10 +284,11 @@ function delegateToApply(opts, resolved) {
     return;
   }
   const override = JSON.stringify({ strong: resolved.strong, flash: resolved.flash });
+  const extra = opts.profilesPath ? ["--profiles", opts.profilesPath] : [];
   for (const r of runtimes) {
     const res = spawnSync(
       process.execPath,
-      [APPLY_PATH, "--runtime", r, opts.apply ? "--apply" : "--dry-run", "--override", override],
+      [APPLY_PATH, "--runtime", r, opts.apply ? "--apply" : "--dry-run", "--override", override, ...extra],
       { stdio: "inherit" }
     );
     if (res.status !== 0) {
@@ -200,15 +304,30 @@ function delegateToApply(opts, resolved) {
 
 function main() {
   const opts = parseArgs(process.argv.slice(2));
-  const profiles = loadProfiles();
+  const profilesPath = opts.profilesPath || PROFILES_PATH;
+  const profiles = loadProfiles(profilesPath);
+
+  if (opts.saveProvider) {
+    runSaveProvider(opts, profiles, profilesPath);
+    return;
+  }
+
   const roster = JSON.parse(readUtf8(ROSTER_PATH));
 
   if (opts.list) {
-    console.log(`\nProfiles (${PROFILES_PATH}):`);
+    console.log(`\nProfiles (${profilesPath}):`);
     console.log(`  current: ${profiles.current}`);
     for (const [name, p] of Object.entries(profiles.profiles)) {
       const mark = name === profiles.current ? " *" : "  ";
       console.log(`  ${mark} ${name}: strong=${p.strong}, flash=${p.flash}`);
+    }
+    const providerIds = profiles.providers && typeof profiles.providers === "object" ? Object.keys(profiles.providers) : [];
+    if (providerIds.length > 0) {
+      console.log(`\nProviders (${providerIds.length}) — custom entries declared:`);
+      for (const id of providerIds) {
+        const p = profiles.providers[id];
+        console.log(`    ${id}: baseURL=${p.baseURL}, apiKeyEnv=${p.apiKeyEnv}, models=${(p.models || []).join(",")}`);
+      }
     }
     const resolved = { baseName: profiles.current, strong: profiles.profiles[profiles.current].strong, flash: profiles.profiles[profiles.current].flash };
     const res = spawnSync(process.execPath, [APPLY_PATH, "--runtime", "list"], { stdio: "inherit" });
@@ -252,8 +371,8 @@ function main() {
   }
 
   if (opts.apply && edits.changed) {
-    writeFileSync(PROFILES_PATH, JSON.stringify(profiles, null, 2) + "\n");
-    console.log(`\n✅ Wrote ${PROFILES_PATH}`);
+    writeFileSync(profilesPath, JSON.stringify(profiles, null, 2) + "\n");
+    console.log(`\n✅ Wrote ${profilesPath}`);
   } else if (edits.changed) {
     console.log("\n✨ Dry-run: profiles.json NOT written (use --apply to persist).");
   }

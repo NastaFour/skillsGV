@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "skills-catalog/model-routing/profiles.schema.json",
   "title": "Perfiles de modelo por fase SDD (model-routing E1)",
-  "description": "Declaración de perfiles de modelo por fase del pipeline SDD, resueltos contra el catálogo del runtime vía la interfaz list()/resolve(phase) documentada en 00-meta-skills/sdd-orchestrator/references/model-routing.md. Configuración declarativa: sin comandos de runtime, sin TUI obligatoria.",
+  "description": "Declaración de perfiles de modelo por fase del pipeline SDD, resueltos contra el catálogo del runtime vía la interfaz list()/resolve(phase) documentada en 00-meta-skills/sdd-orchestrator/references/model-routing.md. Configuración declarativa: sin comandos de runtime, sin TUI obligatoria. Incluye además la forma del bloque `providers` de proveedores custom (contrato de `_shared/agent-roster/profiles.json`): id → { baseURL, apiKeyEnv, models }; la credencial se referencia por variable de entorno y la clave nunca se persiste en claro.",
   "type": "object",
   "required": ["version", "phases"],
   "additionalProperties": false,
@@ -34,6 +34,11 @@
         "apply": { "$ref": "#/$defs/phaseProfile" },
         "verify": { "$ref": "#/$defs/phaseProfile" }
       }
+    },
+    "providers": {
+      "type": "object",
+      "description": "Bloque de proveedores custom por id (contrato de _shared/agent-roster/profiles.json): se persiste con `set-models.mjs --save-provider` y se inyecta en la configuración del runtime (OpenCode) o se reporta como limitación (dsh).",
+      "additionalProperties": { "$ref": "#/$defs/providerEntry" }
     }
   },
   "$defs": {
@@ -66,6 +71,30 @@
           "type": "string",
           "minLength": 1,
           "description": "Opcional: motivo de la asignación de esta fase."
+        }
+      }
+    },
+    "providerEntry": {
+      "type": "object",
+      "required": ["baseURL", "apiKeyEnv", "models"],
+      "additionalProperties": false,
+      "description": "Provider custom: endpoint, variable de entorno que porta la credencial y modelos servidos. La clave nunca se persiste en claro: apiKeyEnv es el NOMBRE de la env-var.",
+      "properties": {
+        "baseURL": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL base del endpoint del provider."
+        },
+        "apiKeyEnv": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nombre de la variable de entorno con la API key (p. ej. OPENCODE_GO_API_KEY)."
+        },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Ids de modelo servidos por el provider."
         }
       }
     }
