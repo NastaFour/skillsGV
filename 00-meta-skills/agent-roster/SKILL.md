@@ -42,16 +42,16 @@ Regla de oro: **`roster.json` es la única fuente de verdad**. Ningún runtime s
 |---|---|---|---|
 | coordinator | `gentle-orchestrator` (effort max) | sdd-strong | no (corre inline) |
 | judgment-day | `jd-judge-a`, `jd-judge-b` | sdd-strong | sí |
-| sdd | `sdd-research` | sdd-strong | sí |
-| sdd | `sdd-apply` | sdd-mid | sí |
+| sdd | `sdd-research`, `sdd-propose`, `sdd-design` | sdd-strong | sí |
+| sdd | `sdd-apply`, `sdd-spec`, `sdd-verify` | sdd-mid | sí |
 | review | `jd-fix-agent` | sdd-mid | sí |
 | review | `review-risk`, `review-readability`, `review-reliability`, `review-resilience`, `review-refuter`, `review-validator` | sdd-cheap | sí |
-| sdd | `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sdd-design`, `sdd-tasks`, `sdd-verify`, `sdd-archive` | sdd-cheap | sí |
+| sdd | `sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive` | sdd-cheap | sí |
 | sdd | `sdd-onboard` | sdd-cheap | **no** (excepción documentada: walkthrough interactivo corre inline) |
 
-- **Strong (`sdd-strong`, 4 agentes)**: el orquestador (`gentle-orchestrator`), los 2 jueces de Judgment Day (`jd-judge-a`, `jd-judge-b`) y `sdd-research`.
-- **Mid (`sdd-mid`, 2 agentes)**: `sdd-apply` y `jd-fix-agent`.
-- **Cheap (`sdd-cheap`, 15 agentes)**: los 6 lentes de review y los 9 agentes SDD restantes.
+- **Strong (`sdd-strong`, 6 agentes)**: el orquestador (`gentle-orchestrator`), los 2 jueces de Judgment Day (`jd-judge-a`, `jd-judge-b`), `sdd-research`, `sdd-propose` y `sdd-design`.
+- **Mid (`sdd-mid`, 4 agentes)**: `sdd-apply`, `sdd-spec`, `sdd-verify` y `jd-fix-agent`.
+- **Cheap (`sdd-cheap`, 11 agentes)**: los 6 lentes de review y los 5 agentes SDD restantes (`sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive`, `sdd-onboard`).
 
 ## 🔄 Alineación con perfiles nativos (`gentle-ai sync`)
 
