@@ -40,7 +40,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(__dirname, "..");
 
 /** Directories that are never part of the skill catalog (mirrors the validator). */
-export const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+export const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git", "catalog-doctor"]);
 
 const INDEX_TABLE_HEADER = /^\|\s*Skill\s*\|\s*Path\s*\|\s*$/;
 const SKILLS_ROW = /^\|\s*([a-z0-9-]+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*(.*?)\s*\|\s*$/;

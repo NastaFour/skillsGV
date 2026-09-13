@@ -7,6 +7,8 @@ metadata:
   trigger: ["figma mcp", "figma design context", "get_design_context", "figma node", "extraer tokens figma", "figma tokens", "figma screenshot", "design audit figma"]
   scope: [global, project]
   version: "1.0.0"
+  requires-mcp: ["figma"]
+  mcp-fallback: "Servidor Figma MCP ausente → solicitar export estático (JSON de tokens o capturas locales) y diferir a figma-implement → límite: sin extracción dinámica de nodos; el pipeline no falla"
 ---
 
 # Figma MCP — Inspect Figma Files

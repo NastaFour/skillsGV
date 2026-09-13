@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "servers": {
+    "figma": {
+      "purpose": "Inspect and extract structured design context, tokens, and screenshots from Figma files",
+      "install": "figma --url https://mcp.figma.com/mcp",
+      "spec": "https://mcp.figma.com/mcp",
+      "requiredBy": [
+        "figma-mcp"
+      ]
+    }
+  }
+}

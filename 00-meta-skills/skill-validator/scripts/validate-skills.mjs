@@ -68,7 +68,7 @@ function statSafe(p) {
 //   carry a SKILL.md marker there, but it is not a skill (name "_shared" is
 //   invalid by spec) — the registry protocol already excludes it; the walker
 //   must not even treat it as a skill candidate.
-const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git", "catalog-doctor"]);
 
 function walkSkills(dir) {
   const out = [];

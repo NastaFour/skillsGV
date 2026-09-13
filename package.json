@@ -11,6 +11,7 @@
     "validate:strict": "node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict",
     "router": "node 00-meta-skills/skill-router/scripts/skill-router.mjs",
     "registry:sync": "node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry",
-    "skills:sync": "node 00-meta-skills/skill-sync/scripts/install-skills.mjs"
+    "skills:sync": "node 00-meta-skills/skill-sync/scripts/install-skills.mjs",
+    "doctor": "node 00-meta-skills/catalog-doctor/scripts/catalog-doctor.mjs"
   }
 }
