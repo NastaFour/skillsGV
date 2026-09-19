@@ -45,7 +45,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
-import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel } from "../../../_shared/kernel-inject.mjs";
+import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel, collectKernelOwned } from "../../../_shared/kernel-inject.mjs";
 
 const args = process.argv.slice(2);
 let target = null;
@@ -170,6 +170,7 @@ function hasBinary(name) {
   const dirs = (process.env.PATH || "").split(pathSep);
   const exts = isWindows ? [".exe", ".cmd", ".bat", ""] : [""];
   for (const d of dirs) {
+    if (!d) continue; // empty PATH entry resolves against cwd — never a signal
     for (const ext of exts) {
       const p = join(d, name + ext);
       try {
@@ -489,6 +490,8 @@ function discoverForeignFiles(ownedDests) {
   return foreign;
 }
 
+// collectKernelOwned lives in _shared/kernel-inject.mjs (exported + unit-tested).
+
 function cmdUninstall() {
   const mf = loadManifest();
   if (!mf) {
@@ -508,6 +511,11 @@ function cmdUninstall() {
     for (const p of discoverForeignFiles(ownedDests)) {
       console.log(`  [dry-run] retain (foreign) ${p}`);
     }
+    const dryUnion = collectKernelOwned(mf);
+    if (dryUnion.length || (mf.kernel && mf.kernel.gitignore)) {
+      for (const f of dryUnion) console.log(`  [dry-run] strip kernel block from ${f.file}`);
+      console.log(`  [dry-run] unguard .gitignore block; remove ${INSTALL_META_DIR}`);
+    }
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
@@ -515,10 +523,17 @@ function cmdUninstall() {
   stats.foreign = discoverForeignFiles(ownedDests);
   pruneEmptyDirs(parentDirsOf(stats.removed ? owned.map((o) => o.dest) : [], LIFECYCLE_ROOT));
   let kernelRemoved = 0;
-  if (mf.kernel && Array.isArray(mf.kernel.files) && mf.kernel.files.length) {
-    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel);
-    const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel.gitignore);
+  let kernelCleanupFailed = false;
+  const kernelUnion = collectKernelOwned(mf);
+  if (kernelUnion.length || (mf.kernel && mf.kernel.gitignore)) {
+    const kStats = removeKernel(LIFECYCLE_ROOT, { files: kernelUnion });
+    const giCreatedAny = [...(mf.previousGenerations || []).map((g) => g.kernel), mf.kernel].some(
+      (k) => k && k.gitignore && k.gitignore.created
+    );
+    const gi = unguardGitignore(LIFECYCLE_ROOT, { created: giCreatedAny });
     kernelRemoved = kStats.removed;
+    kernelCleanupFailed =
+      kStats.retained.length > 0 || String(gi.status).startsWith("error") || gi.status === "skipped-corrupt-block";
     console.log(
       `\n🧠 kernel: ${kStats.removed} block(s) removed, ${kStats.retained.length} retained (edited inside markers), ${kStats.restoredBackups} backup(s) restored; .gitignore: ${gi.status}`
     );
@@ -532,7 +547,21 @@ function cmdUninstall() {
     foreign: stats.foreign.length,
     ...(kernelRemoved ? { kernelRemoved } : {}),
   });
-  saveManifest(mf);
+  // Uninstall is terminal: drop the install metadata (the manifest and backups
+  // contain copies of the user's pre-install files and must not be left behind
+  // unguarded once the .gitignore block is gone).
+  if (!kernelCleanupFailed) {
+    try {
+      rmSync(INSTALL_META_DIR, { recursive: true, force: true });
+      console.log(`\n🧹 removed install metadata: ${INSTALL_META_DIR}`);
+    } catch {
+      saveManifest(mf); // keep the history record if cleanup is impossible
+      console.log(`\n⚠️  could not remove ${INSTALL_META_DIR}; manifest kept.`);
+    }
+  } else {
+    saveManifest(mf);
+    console.log(`\n⚠️  install metadata kept: kernel cleanup retained or errored entries — resolve them and re-run --uninstall.`);
+  }
   if (stats.retained.length || stats.foreign.length) {
     console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length + stats.foreign.length}):`);
     for (const p of [...stats.retained, ...stats.foreign]) console.log(`   - ${p}`);
@@ -546,7 +575,7 @@ function cmdRollback() {
     console.error(`❌ No manifest at ${MANIFEST_PATH}; no generation to roll back. Aborting without deleting anything.`);
     process.exit(1);
   }
-  if (!mf.entries || mf.entries.length === 0) {
+  if ((!mf.entries || mf.entries.length === 0) && !mf.kernel) {
     console.log("Nothing to roll back: no active generation in the manifest.");
     return;
   }
@@ -585,16 +614,23 @@ function cmdRollback() {
     console.log(`  ♻️  restored previous content: ${e.dest}`);
   }
   if (dryRun) {
+    if (mf.kernel) {
+      const reguard = (mf.previousGenerations || []).length > 0 ? ", then re-guard the restored generation's entries" : "";
+      console.log(`  [dry-run] kernel: restore/strip ${mf.kernel.files.length} channel file(s), unguard .gitignore${reguard}`);
+    }
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
-  // Activation layer inverse: restore channel files from backups / strip kernel blocks.
+  // Activation layer inverse: force semantics live in removeKernel (restores a
+  // whole file only when it is byte-identical to what we last wrote).
   let kernelRestored = 0;
-  if (mf.kernel && Array.isArray(mf.kernel.files) && mf.kernel.files.length) {
-    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel, { force: true });
+  if (mf.kernel) {
+    const willRestoreGeneration = (mf.previousGenerations || []).length > 0;
+    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel, { force: true, restoringPreviousGeneration: willRestoreGeneration });
     const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel.gitignore);
     kernelRestored = kStats.removed;
     console.log(`\n🧠 kernel rollback: ${kStats.restoredBackups} file(s) restored from backup, ${kStats.removed} block(s) cleared; .gitignore: ${gi.status}`);
+    if (kStats.retained.length) for (const f of kStats.retained) console.log(`   🔒 retained kernel block: ${f}`);
   }
   mf.history.push({
     type: "rollback",
@@ -619,6 +655,14 @@ function cmdRollback() {
     mf.tool = null;
     mf.entries = [];
     mf.kernel = null;
+  }
+  // Re-guard the .gitignore to the restored generation's entries (judgment-day
+  // round 2: round 1 announced this re-guard but never shipped it — the guard was
+  // simply removed, reopening the 540-file commit risk).
+  if (prev && prev.kernel && prev.kernel.gitignore && Array.isArray(prev.kernel.gitignore.entries)) {
+    const dirs = prev.kernel.gitignore.entries.filter((e) => !e.startsWith(".skills-install")).map((e) => e.replace(/\/+$/, ""));
+    const re = guardGitignore({ root: LIFECYCLE_ROOT, skillDirs: dirs });
+    console.log(`🛡️  .gitignore re-guarded to generation ${prev.generation} entries [${re.status}]`);
   }
   saveManifest(mf);
   console.log(
@@ -785,12 +829,9 @@ function main() {
     }
   }
 
-  if (dryRun) {
-    console.log(`\n✨ Dry-run plan complete (create/overwrite lines above). No changes written.`);
-    return;
-  }
-
   // Activation layer (project installs): always-on kernel + .gitignore guard.
+  // Runs BEFORE the dry-run early return so --dry-run previews it (judgment-day F:
+  // the docs promise "dry-run shows what would happen" — that includes activation).
   // Bench lesson 2026-09-18: guidelines that only live in files an agent must
   // choose to read are never read — the kernel goes where the harness already
   // injects context (AGENTS.md / GEMINI.md / CLAUDE.md).
@@ -799,25 +840,38 @@ function main() {
     const variant = detectVariant({ home, target, hasBinaryFn: hasBinary });
     const skillDirs = [...new Set(filtered.map((a) => relative(target, a.projectInstallPath(target)).split(sep).join("/")))];
     let kernelIdx = 0;
-    const backupFn = (f) => backupPrevFile(f, nextGen, 9100 + kernelIdx++);
-    const injectResults = injectKernel({
-      root: target,
-      agentIds: filtered.map((a) => a.id),
-      variant,
-      catalogRoot: CATALOG_ROOT,
-      backupFn,
-    });
-    const giResult = guardGitignore({ root: target, skillDirs });
-    kernelRecord = summarizeKernel(variant, injectResults, giResult);
-    console.log(`\n🧠 Activation kernel (${variant}) →`);
-    for (const r of injectResults) {
-      const icon = r.status === "injected" || r.status === "create" ? "✨" : r.status === "updated" || r.status === "update" ? "♻️" : "✔️";
-      console.log(`  ${icon} ${join(target, r.file)} [${r.status}]`);
+    const backupFn = (f) => backupPrevFile(f, nextGen, "kernel-" + ++kernelIdx);
+    try {
+      const injectResults = injectKernel({
+        root: target,
+        agentIds: filtered.map((a) => a.id),
+        variant,
+        catalogRoot: CATALOG_ROOT,
+        dryRun,
+        backupFn,
+      });
+      const giResult = guardGitignore({ root: target, skillDirs, dryRun });
+      kernelRecord = dryRun ? null : summarizeKernel(variant, injectResults, giResult);
+      console.log(`\n🧠 Activation kernel (${variant})${dryRun ? " — dry-run preview" : " →"}`);
+      for (const r of injectResults) {
+        const icon =
+          r.status === "injected" || r.status === "create" ? "✨" : r.status === "updated" || r.status === "update" ? "♻️" : r.status === "error" ? "❌" : "✔️";
+        console.log(`  ${icon} ${join(target, r.file)} [${r.status}]${r.message ? ` — ${r.message}` : ""}`);
+      }
+      console.log(`🛡️  .gitignore guard [${giResult.status}]: ${(giResult.entries || []).join(", ")}`);
+      if (!dryRun) console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
+    } catch (err) {
+      // Skills are already copied; a channel problem must not orphan the install.
+      console.warn(`\n⚠️  activation kernel skipped (error): ${err.message}`);
+      kernelRecord = null;
     }
-    console.log(`🛡️  .gitignore guard [${giResult.status}]: ${giResult.entries.join(", ")}`);
-    console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
   } else if (noKernel) {
     console.log(`\n🧠 Activation kernel skipped (--no-kernel).`);
+  }
+
+  if (dryRun) {
+    console.log(`\n✨ Dry-run plan complete (create/overwrite lines above). No changes written.`);
+    return;
   }
 
   commitGeneration(

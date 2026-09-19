@@ -30,7 +30,7 @@ Cualquier agente que aterrice en un repo puede instalar el catálogo con:
 Cloná https://github.com/NastaFour/skillsGV y corré `node install.mjs --target .` — seguí su AGENTS.md.
 ```
 
-En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md`), blinda el `.gitignore` (las skills instaladas nunca se commitean) y deja evidencia con hash en `.skills-install/manifest.json`. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
+En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md`), blinda el `.gitignore` (las skills instaladas nunca se commitean) y deja evidencia con hash en `.skills-install/manifest.json` — que es local a tu máquina: en un clone fresco no hay manifiesto, y los bloques del kernel se gestionan con el install local de cada dev. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
 
 ## 🎨 Sistema Anti-Slop de Diseño Frontend
 
@@ -49,7 +49,7 @@ El instalador cross-tool es `00-meta-skills/skill-sync/scripts/install-skills.mj
 | Flag | Efecto |
 |---|---|
 | `--target <ruta>` | Instala dentro de un proyecto concreto. Sin este flag, instala en el entorno global de las herramientas detectadas. |
-| `--tool <id>` | Restringe la instalación a herramientas específicas. Repeatable: `claude-code`, `opencode`, `cursor`, `copilot`, `codex`, `gemini-cli`, `antigravity`, `kiro`, `windsurf`, `deepseek`. |
+| `--tool <id>` | Restringe la instalación a herramientas específicas. Repeatable: `claude-code`, `opencode`, `cursor`, `copilot`, `codex`, `gemini-cli`, `antigravity`, `kiro`, `windsurf`, `deepseek`, `dsh`. |
 | `--all-tools` | Omitte la detección e instala para todas las herramientas conocidas. |
 | `--only <lista>` | Instala solo categorías separadas por comas, por ejemplo `--only "04-backend,05-frontend"`. |
 | `--symlink` | Usa symlinks (junctions en Windows) en lugar de copiar: una única fuente de verdad. |
