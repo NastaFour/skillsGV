@@ -490,13 +490,26 @@ function discoverForeignFiles(ownedDests) {
   return foreign;
 }
 
-/** Kernel records across all generations, keyed by channel file; latest wins. */
+/**
+ * Kernel records across all generations, keyed by channel file. Latest record
+ * wins, but createdFile is OR-merged and prevBackup falls back to an earlier
+ * generation's value — a created channel must still be deletable at uninstall
+ * after a no-op re-install recorded it as "unchanged" (judgment-day round 2).
+ */
 function collectKernelOwned(mf) {
   const byFile = new Map();
+  const merge = (f) => {
+    const prevRec = byFile.get(f.file);
+    byFile.set(f.file, {
+      ...f,
+      createdFile: Boolean((prevRec && prevRec.createdFile) || f.createdFile),
+      prevBackup: f.prevBackup ?? (prevRec ? prevRec.prevBackup : null) ?? null,
+    });
+  };
   for (const gen of mf.previousGenerations || []) {
-    if (gen.kernel) for (const f of gen.kernel.files || []) byFile.set(f.file, f);
+    if (gen.kernel) for (const f of gen.kernel.files || []) merge(f);
   }
-  if (mf.kernel) for (const f of mf.kernel.files || []) byFile.set(f.file, f);
+  if (mf.kernel) for (const f of mf.kernel.files || []) merge(f);
   return [...byFile.values()];
 }
 
@@ -519,6 +532,11 @@ function cmdUninstall() {
     for (const p of discoverForeignFiles(ownedDests)) {
       console.log(`  [dry-run] retain (foreign) ${p}`);
     }
+    const dryUnion = collectKernelOwned(mf);
+    if (dryUnion.length || (mf.kernel && mf.kernel.gitignore)) {
+      for (const f of dryUnion) console.log(`  [dry-run] strip kernel block from ${f.file}`);
+      console.log(`  [dry-run] unguard .gitignore block; remove ${INSTALL_META_DIR}`);
+    }
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
@@ -529,7 +547,10 @@ function cmdUninstall() {
   const kernelUnion = collectKernelOwned(mf);
   if (kernelUnion.length || (mf.kernel && mf.kernel.gitignore)) {
     const kStats = removeKernel(LIFECYCLE_ROOT, { files: kernelUnion });
-    const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel ? mf.kernel.gitignore : null);
+    const giCreatedAny = [mf.kernel, ...(mf.previousGenerations || []).map((g) => g.kernel)].some(
+      (k) => k && k.gitignore && k.gitignore.created
+    );
+    const gi = unguardGitignore(LIFECYCLE_ROOT, { created: giCreatedAny });
     kernelRemoved = kStats.removed;
     console.log(
       `\n🧠 kernel: ${kStats.removed} block(s) removed, ${kStats.retained.length} retained (edited inside markers), ${kStats.restoredBackups} backup(s) restored; .gitignore: ${gi.status}`
@@ -544,7 +565,16 @@ function cmdUninstall() {
     foreign: stats.foreign.length,
     ...(kernelRemoved ? { kernelRemoved } : {}),
   });
-  saveManifest(mf);
+  // Uninstall is terminal: drop the install metadata (the manifest and backups
+  // contain copies of the user's pre-install files and must not be left behind
+  // unguarded once the .gitignore block is gone).
+  try {
+    rmSync(INSTALL_META_DIR, { recursive: true, force: true });
+    console.log(`\n🧹 removed install metadata: ${INSTALL_META_DIR}`);
+  } catch {
+    saveManifest(mf); // keep the history record if cleanup is impossible
+    console.log(`\n⚠️  could not remove ${INSTALL_META_DIR}; manifest kept.`);
+  }
   if (stats.retained.length || stats.foreign.length) {
     console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length + stats.foreign.length}):`);
     for (const p of [...stats.retained, ...stats.foreign]) console.log(`   - ${p}`);
@@ -597,6 +627,7 @@ function cmdRollback() {
     console.log(`  ♻️  restored previous content: ${e.dest}`);
   }
   if (dryRun) {
+    if (mf.kernel) console.log(`  [dry-run] kernel: restore/strip ${mf.kernel.files.length} channel file(s), unguard .gitignore, then re-guard the restored generation's entries`);
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
@@ -632,6 +663,14 @@ function cmdRollback() {
     mf.tool = null;
     mf.entries = [];
     mf.kernel = null;
+  }
+  // Re-guard the .gitignore to the restored generation's entries (judgment-day
+  // round 2: round 1 announced this re-guard but never shipped it — the guard was
+  // simply removed, reopening the 540-file commit risk).
+  if (prev && prev.kernel && prev.kernel.gitignore && Array.isArray(prev.kernel.gitignore.entries)) {
+    const dirs = prev.kernel.gitignore.entries.filter((e) => !e.startsWith(".skills-install")).map((e) => e.replace(/\/+$/, ""));
+    const re = guardGitignore({ root: LIFECYCLE_ROOT, skillDirs: dirs });
+    console.log(`🛡️  .gitignore re-guarded to generation ${prev.generation} entries [${re.status}]`);
   }
   saveManifest(mf);
   console.log(

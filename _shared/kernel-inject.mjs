@@ -60,7 +60,30 @@ export const KERNEL_CHANNELS = {
 
 const GITIGNORE_MARK_START = "# >>> skillsGV install (generated - do not edit) >>>";
 const GITIGNORE_MARK_END = "# <<< skillsGV install <<<";
+const GITIGNORE_MARK_START_LEGACY = "# >>> skillsGV install (generated \u2014 do not edit) >>>"; // 2.1.0 em-dash form
 const META_DIR = ".skills-install";
+
+/** Locate the guarded region (current or legacy markers). end is INCLUSIVE of the end marker. */
+function guardRegion(content) {
+  const s = content.indexOf(GITIGNORE_MARK_START);
+  const e = content.indexOf(GITIGNORE_MARK_END);
+  if (s !== -1 && e !== -1 && e > s) return { start: s, end: e + GITIGNORE_MARK_END.length };
+  const sl = content.indexOf(GITIGNORE_MARK_START_LEGACY);
+  if (sl !== -1) {
+    const el = content.indexOf(GITIGNORE_MARK_END, sl);
+    if (el !== -1) return { start: sl, end: el + GITIGNORE_MARK_END.length };
+  }
+  return null;
+}
+
+function lstatExists(p) {
+  try {
+    lstatSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function channelFilesFor(agentIds) {
   const files = [];
@@ -78,16 +101,17 @@ export function channelFilesFor(agentIds) {
  * knowledge layer and defers process to the harness. Marker-based check — a bare
  * mention of "gentle-ai" in prose is not enough.
  */
-export function detectVariant({ home = homedir(), hasBinaryFn } = {}) {
+export function detectVariant({ home = homedir(), target = null, hasBinaryFn } = {}) {
   try {
     if (typeof hasBinaryFn === "function" && hasBinaryFn("gentle-ai")) return "minimal";
   } catch {}
-  try {
-    const geminiMd = join(home, ".gemini", "GEMINI.md");
-    if (existsSync(geminiMd) && readFileSync(geminiMd, "utf8").includes("gentle-ai:")) {
-      return "minimal";
-    }
-  } catch {}
+  const markers = [join(home, ".gemini", "GEMINI.md")];
+  if (target) markers.push(join(target, "GEMINI.md")); // project-scope gentle-ai config
+  for (const p of markers) {
+    try {
+      if (existsSync(p) && readFileSync(p, "utf8").includes("gentle-ai:")) return "minimal";
+    } catch {}
+  }
   return "full";
 }
 
@@ -118,11 +142,10 @@ function templateBlock(catalogRoot, variant) {
   return toLf(block).replace(/\n+$/, "");
 }
 
-/** True when the file cannot be safely round-tripped as utf8 text. */
+/** True when the file cannot be safely round-tripped as utf8 text (UTF-16 BOM, NUL bytes). */
 function isBinaryOrUtf16(buf) {
-  if (buf.length >= 2 && ((buf[0] === 0xff && buf[1] === 0xfe) || (buf[0] === 0xfe && buf[1] === 0xff))) return true; // UTF-16 BOM
-  for (let i = 1; i < buf.length; i += 2) if (buf[i] === 0x00 && buf[i - 1] !== 0x00) return true; // UTF-16 without BOM heuristic
-  return false;
+  if (buf.length >= 2 && ((buf[0] === 0xff && buf[1] === 0xfe) || (buf[0] === 0xfe && buf[1] === 0xff))) return true;
+  return buf.includes(0); // UTF-16 (any endianness/BOM-less) of ASCII-range text shows NULs
 }
 
 function isSymlink(p) {
@@ -167,7 +190,7 @@ export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = fa
   for (const rel of channelFilesFor(agentIds)) {
     try {
       const file = join(root, rel);
-      if (existsSync(file) && isSymlink(file)) {
+      if (lstatExists(file) && isSymlink(file)) {
         results.push({ file: rel, status: "skipped-symlink" });
         continue;
       }
@@ -198,8 +221,8 @@ export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = fa
         existing !== null
           ? prev.replace(existing, () => adapted)
           : createdFile
-            ? adapted + "\n"
-            : prev.replace(/(\r?\n)*$/, "") + eol + eol + adapted + "\n";
+            ? adapted + eol
+            : prev.replace(/(\r?\n)*$/, "") + eol + eol + adapted + eol;
       writeFileSync(file, next, "utf8");
       results.push({
         file: rel,
@@ -275,7 +298,9 @@ export function removeKernel(root, kernel, { force = false } = {}) {
           stats.removed++;
           continue;
         }
-        // no backup and pre-existing: fall through to surgical strip
+        // Unchanged from an EARLIER generation that this rollback is restoring:
+        // the block belongs to that generation — keep it, never strip it.
+        continue;
       }
       const current = extractBlock(content);
       if (current === null) continue; // already gone
@@ -304,11 +329,12 @@ function gitignoreBlockFrom(entries, eol) {
 void gitignoreBlockFrom; // (kept for tests/debugging; guardGitignore builds its trim variant inline)
 
 function parseGuardedEntries(content) {
-  const s = content.indexOf(GITIGNORE_MARK_START);
-  const e = content.indexOf(GITIGNORE_MARK_END);
-  if (s === -1 || e === -1 || e < s) return null;
-  return toLf(content.slice(s + GITIGNORE_MARK_START.length, e))
+  const r = guardRegion(content);
+  if (!r) return null;
+  const region = toLf(content.slice(r.start, r.end));
+  return region
     .split("\n")
+    .slice(1)
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith("#"));
 }
@@ -335,23 +361,22 @@ export function guardGitignore({ root, skillDirs, metaDir = META_DIR, dryRun = f
       .filter((e) => e !== "")
       .sort();
     const blockTrim = adaptEol([GITIGNORE_MARK_START, ...wanted, GITIGNORE_MARK_END].join("\n"), eol);
-    const s = prev === null ? -1 : prev.indexOf(GITIGNORE_MARK_START);
-    const e = prev === null ? -1 : prev.indexOf(GITIGNORE_MARK_END);
-    if (s !== -1 && e !== -1 && e > s) {
+    const region = prev === null ? null : guardRegion(prev);
+    if (region) {
       const currentEntries = parseGuardedEntries(prev);
-      if (currentEntries && [...currentEntries].sort().join("\n") === wanted.join("\n")) {
+      if (currentEntries && [...currentEntries].sort().join("\n") === wanted.join("\n") && !regionUsesLegacy(prev, region)) {
         return { status: "unchanged", created: false, entries: wanted };
       }
       if (dryRun) return { status: "update", created: false, entries: wanted };
-      const currentRegion = prev.slice(s, e + GITIGNORE_MARK_END.length);
-      writeFileSync(gi, prev.replace(currentRegion, () => blockTrim), "utf8");
+      const currentRegion = prev.slice(region.start, region.end);
+      writeFileSync(gi, prev.replace(currentRegion, () => blockTrim), "utf8"); // upgrades legacy markers too
       return { status: "updated", created: false, entries: wanted };
     }
     if (dryRun) return { status: "create", created: prev === null, entries: wanted };
     const next =
       prev === null || prev.trim() === ""
-        ? blockTrim + "\n"
-        : prev.replace(/(\r?\n)*$/, "") + eol + eol + blockTrim + "\n";
+        ? blockTrim + eol
+        : prev.replace(/(\r?\n)*$/, "") + eol + eol + blockTrim + eol;
     writeFileSync(gi, next, "utf8");
     return { status: "created", created: prev === null, entries: wanted };
   } catch (err) {
@@ -359,7 +384,11 @@ export function guardGitignore({ root, skillDirs, metaDir = META_DIR, dryRun = f
   }
 }
 
-/** Remove the guarded block; delete .gitignore only if this installer created it. */
+function regionUsesLegacy(content, region) {
+  return content.slice(region.start, region.start + 60).includes("\u2014");
+}
+
+/** Remove the guarded block (current or legacy markers); delete .gitignore only if this installer created it. */
 export function unguardGitignore(root, giRecord) {
   const gi = join(root, ".gitignore");
   try {
@@ -367,10 +396,9 @@ export function unguardGitignore(root, giRecord) {
     if (isSymlink(gi)) return { status: "skipped-symlink" };
     const content = readFileSync(gi, "utf8");
     const eol = detectEol(content);
-    const s = content.indexOf(GITIGNORE_MARK_START);
-    const e = content.indexOf(GITIGNORE_MARK_END);
-    if (s === -1 || e === -1 || e < s) return { status: "absent" };
-    const block = content.slice(s, e + GITIGNORE_MARK_END.length);
+    const region = guardRegion(content);
+    if (!region) return { status: "absent" };
+    const block = content.slice(region.start, region.end);
     let next = content.replace(block, () => "");
     if (content.startsWith(block)) next = next.replace(/^\r?\n/, "");
     else if (content.endsWith(block)) next = next.replace(/\r?\n$/, "");

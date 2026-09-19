@@ -211,6 +211,7 @@ test("F2b: CRLF files round-trip without churn or mixed line endings", () => {
   injectKernel({ root, agentIds: ["opencode"], variant: "full", catalogRoot: CATALOG_ROOT });
   const withBlock = readFileSync(join(root, "AGENTS.md"), "utf8");
   assert.ok(withBlock.includes("\r\n"), "block must adapt to CRLF");
+  assert.ok(!withBlock.replace(/\r\n/g, "").includes("\n"), "no mixed line endings (block tail must use the file's EOL)");
 
   const second = injectKernel({ root, agentIds: ["opencode"], variant: "full", catalogRoot: CATALOG_ROOT });
   assert.equal(second.find((r) => r.file === "AGENTS.md").status, "unchanged", "CRLF must not cause perpetual churn");
@@ -272,42 +273,97 @@ test("encoding: UTF-16 channel files are skipped, not destroyed", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
-test("CLI integration: install → re-install → uninstall round-trip via install-skills.mjs", { timeout: 120000 }, async () => {
+// --- Judgment-day round 2 regression tests (2026-09-19) ---
+
+test("R2: force rollback KEEPS a block that is unchanged from an earlier generation", () => {
+  const root = tmpRoot();
+  writeFileSync(join(root, "AGENTS.md"), "# Doc\n", "utf8");
+  const rec = injectKernel({ root, agentIds: ["opencode"], variant: "full", catalogRoot: CATALOG_ROOT }).find((r) => r.file === "AGENTS.md");
+
+  // A re-install records the channel as "unchanged": no backup, not created by that generation.
+  const unchangedFromEarlierGen = {
+    files: [{ file: "AGENTS.md", blockSha256: rec.blockSha256, wroteSha256: rec.wroteSha256, prevBackup: null, createdFile: false }],
+  };
+  const stats = removeKernel(root, unchangedFromEarlierGen, { force: true });
+  assert.equal(stats.removed, 0, "rollback must not strip a block that belongs to the restored generation");
+  assert.ok(readFileSync(join(root, "AGENTS.md"), "utf8").includes(KERNEL_START), "previous generation's block survives");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("R2: merged createdFile lets uninstall delete a channel file after a no-op re-install", () => {
+  const root = tmpRoot();
+  const first = injectKernel({ root, agentIds: ["opencode"], variant: "full", catalogRoot: CATALOG_ROOT }).find((r) => r.file === "AGENTS.md");
+  assert.equal(first.createdFile, true, "first generation creates the channel");
+  const second = injectKernel({ root, agentIds: ["opencode"], variant: "full", catalogRoot: CATALOG_ROOT }).find((r) => r.file === "AGENTS.md");
+  assert.equal(second.status, "unchanged");
+
+  // collectKernelOwned OR-merges createdFile across generations (simulated here).
+  const merged = {
+    files: [{ file: "AGENTS.md", blockSha256: second.blockSha256, wroteSha256: second.wroteSha256, prevBackup: null, createdFile: Boolean(first.createdFile || second.createdFile) }],
+  };
+  const stats = removeKernel(root, merged);
+  assert.equal(stats.removedFiles, 1, "installer-created channel is deleted at uninstall");
+  assert.ok(!existsSync(join(root, "AGENTS.md")));
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("R2: legacy em-dash gitignore markers are upgraded, not duplicated", () => {
+  const root = tmpRoot();
+  const legacy =
+    "# >>> skillsGV install (generated \u2014 do not edit) >>>\n.claude/skills/\n.skills-install/\n# <<< skillsGV install <<<\n";
+  writeFileSync(join(root, ".gitignore"), "node_modules/\n\n" + legacy, "utf8");
+
+  const res = guardGitignore({ root, skillDirs: [".claude/skills", ".gemini/skills"] });
+  assert.equal(res.status, "updated", "legacy block is upgraded in place");
+  const gi = readFileSync(join(root, ".gitignore"), "utf8");
+  const startCount = gi.split("\n").filter((l) => l.startsWith("# >>>")).length;
+  assert.equal(startCount, 1, "a single guarded block");
+  assert.ok(gi.includes(".gemini/skills/") && gi.includes(".claude/skills/") && gi.includes("node_modules/"), "union keeps old and new entries");
+
+  const un = unguardGitignore(root, { created: false });
+  assert.equal(un.status, "removed-block");
+  assert.ok(!readFileSync(join(root, ".gitignore"), "utf8").includes("skillsGV install"));
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("CLI integration: install → re-install → rollback → uninstall via install-skills.mjs", { timeout: 180000 }, async () => {
   const { execFile } = await import("node:child_process");
   const { promisify } = await import("node:util");
   const run = promisify(execFile);
   const root = tmpRoot();
   const home = homedir();
-  const candidates = [
-    ["gemini-cli", join(home, ".gemini")],
-    ["claude-code", join(home, ".claude")],
-    ["opencode", join(home, ".config", "opencode")],
-  ];
-  const picked = candidates.find(([, d]) => existsSync(d));
-  if (!picked) return; // nothing detectable on this machine — skip gracefully
-  const [toolId] = picked;
-  const channel = toolId === "claude-code" ? "CLAUDE.md" : toolId === "gemini-cli" ? "GEMINI.md" : "AGENTS.md";
-  const args = ["00-meta-skills/skill-sync/scripts/install-skills.mjs", "--target", root, "--tool", toolId, "--only", "09-media-graphics"];
+  const detected = [
+    ["gemini-cli", join(home, ".gemini"), "GEMINI.md"],
+    ["claude-code", join(home, ".claude"), "CLAUDE.md"],
+    ["opencode", join(home, ".config", "opencode"), "AGENTS.md"],
+  ].filter(([, d]) => existsSync(d));
+  if (detected.length === 0) return; // nothing detectable on this machine — skip gracefully
+  const [toolId, , channel] = detected[0];
+  const [toolId2] = detected[1] || detected[0]; // second generation may reuse the tool
+  const script = "00-meta-skills/skill-sync/scripts/install-skills.mjs";
+  const run$ = (extra) =>
+    run(process.execPath, [script, "--target", root, "--only", "09-media-graphics", ...extra], { cwd: CATALOG_ROOT, maxBuffer: 8 * 1024 * 1024 });
 
-  const run$ = (extra) => run(process.execPath, [...args, ...extra], { cwd: CATALOG_ROOT, maxBuffer: 8 * 1024 * 1024 });
-
-  await run$([]); // install
+  await run$(["--tool", toolId]); // gen1
   const channelPath = join(root, channel);
   assert.ok(existsSync(channelPath) && readFileSync(channelPath, "utf8").includes(KERNEL_START), "kernel reached the channel");
   assert.ok(readFileSync(join(root, ".gitignore"), "utf8").includes(".skills-install/"), "gitignore guarded");
-  const mf1 = JSON.parse(readFileSync(join(root, ".skills-install", "manifest.json"), "utf8"));
-  assert.ok(mf1.kernel && mf1.kernel.files.length >= 1, "kernel recorded");
 
-  await run$([]); // re-install (the documented update flow)
+  await run$(["--tool", toolId2]); // gen2 — the documented update flow
   const mf2 = JSON.parse(readFileSync(join(root, ".skills-install", "manifest.json"), "utf8"));
   assert.ok(mf2.kernel && mf2.kernel.files.length >= 1, "re-install still records kernel channels (F1)");
 
+  // Judgment-day round 2: rollback must NOT destroy the restored generation's
+  // activation layer, and must re-guard the .gitignore (both were broken before).
+  await run$(["--rollback"]);
+  assert.ok(existsSync(channelPath) && readFileSync(channelPath, "utf8").includes(KERNEL_START), "rollback keeps the restored generation's kernel block");
+  assert.ok(readFileSync(join(root, ".gitignore"), "utf8").includes("skillsGV install"), "rollback re-guards the .gitignore");
+  const mf3 = JSON.parse(readFileSync(join(root, ".skills-install", "manifest.json"), "utf8"));
+  assert.equal(mf3.generation, 1, "rollback returns to generation 1");
+
   await run$(["--uninstall"]);
-  if (existsSync(channelPath)) {
-    assert.ok(!readFileSync(channelPath, "utf8").includes(KERNEL_START), "uninstall strips kernel blocks after re-install");
-  }
-  if (existsSync(join(root, ".gitignore"))) {
-    assert.ok(!readFileSync(join(root, ".gitignore"), "utf8").includes("skillsGV install"), "uninstall removes the guarded block");
-  }
+  assert.ok(!existsSync(channelPath), "uninstall deletes the installer-created channel file");
+  assert.ok(!existsSync(join(root, ".gitignore")), "uninstall deletes the installer-created .gitignore");
+  assert.ok(!existsSync(join(root, ".skills-install")), "uninstall removes install metadata (.skills-install)");
   rmSync(root, { recursive: true, force: true });
 });
