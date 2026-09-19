@@ -1,6 +1,6 @@
 ---
 name: sdd-orchestrator
-description: "Trigger: sdd new, sdd continue, sdd ff, SDD change, feature >1 archivo. Thin orchestrator that routes SDD phases without executing them: DAG, auto/interactive modes, gatekeeper, dedup, gates de entrevista (el orquestador pregunta al usuario, nunca un delegado). Use when starting or continuing an SDD change."
+description: "Trigger: sdd new, sdd continue, sdd ff, SDD change, hacé un SDD, spec-driven development. Thin orchestrator that routes SDD phases without executing them: DAG, auto/interactive modes, gatekeeper, dedup, gates de entrevista (el orquestador pregunta al usuario, nunca un delegado). Load ONLY on explicit SDD request — ODD is the default flow since gentle-ai 3.x; never route into SDD by file count."
 license: MIT
 allowed-tools: Read Task Bash(git:*,gh:*)
 metadata:
@@ -32,7 +32,12 @@ Coordina el pipeline SDD de forma delgada: **rutea, no ejecuta**. Mantenga un hi
 ## Regla Alan (lenguaje natural primero)
 
 - Prefiera triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») sobre comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- El alias slash depende de lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`, p. ej. `/sdd-new`, `/sdd-continue`). No dependa del slash para arrancar una fase: el NL es la vía primaria.
+- El alias slash depende de lo que exponga tu runtime. En gentle-ai 3.1.0 el ruteo nativo de fases vive en el dispatcher del binario (`gentle-ai sdd-status` / `gentle-ai sdd-continue`); no dependa del slash para arrancar una fase: el NL es la vía primaria.
+
+## Relación con gentle-ai 3.x (ODD-first)
+
+- **ODD es el flujo por defecto** desde gentle-ai 3.0: la mayoría del trabajo va por organic (explorar → clasificar → tarea sustancial con doc de tareas + commits por unidad). Esta skill se carga **solo ante pedido explícito de SDD** — nunca se autodispara por cantidad de archivos o dominios.
+- Si el binario `gentle-ai` está disponible, el dispatcher nativo es la autoridad de ruteo (`sdd-status` / `sdd-continue`); este documento opera como contrato de fallback para runtimes sin binario.
 
 ## Agentes de fase (roles / lee / escribe)
 

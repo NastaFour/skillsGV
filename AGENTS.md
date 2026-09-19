@@ -20,17 +20,14 @@ Este archivo guía a los agentes de IA (Claude Code, Cursor, OpenCode, Copilot, 
 | Meta-Skills | `00-meta-skills/` | catalog-usage, skill-creator, skill-sync, skill-validator, skill-router, skill-loader, sdd-orchestrator, sdd-init, sdd-explore, sdd-research, sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive, sdd-onboard, skill-harvest, gentle-orchestrator, agent-roster, find-skills, skill-improver, skill-registry, catalog-doctor |
 | Matt Pocock | `12-matt-pocock/` | ask-matt, code-review, codebase-design, diagnosing-bugs, domain-modeling, grill-me, grill-with-docs, grilling, handoff, implement, improve-codebase-architecture, migrate-to-shoehorn, prototype, research, resolving-merge-conflicts, scaffold-exercises, setup-pre-commit, tdd, teach, to-questionnaire, to-spec, to-tickets, triage, wait-what, wayfinder, wizard, writing-for-agents |
 
-## 🚀 Regla de arranque (harness)
+## 🚀 Regla de arranque (harness) — v2, alineada a gentle-ai 3.x
 
-> **Regla de arranque (harness)** — aplica a todo agente que trabaje con este catálogo, sin declaración manual del usuario:
+> **Modelo de capas (lección del bench 2026-09-18)**: un agente solo sigue lo que vive en su capa always-on (system prompt). Los lineamientos guardados en archivos que hay que decidir leer (`AGENTS.md`, `SKILLS.md`, `.agents/rules/*`) no se leen en corridas autónomas. Por eso el activador del catálogo es un **kernel** que el instalador inyecta en los archivos que cada harness autocarga — no una regla que dependa de la buena voluntad del agente.
 
-1. **Router antes de cada turno**: antes de cualquier turno que pueda invocar otra skill, correr `skill-router` primero (Tier 0 siempre cargado; Tier 1 solo las listadas en `tier1toLoad` del output del router).
-   ```bash
-   node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <staged-lines>] [--json]
-   ```
-2. **Orquestador si >1 archivo**: si el trabajo toca 2+ archivos o 2+ dominios de negocio, invocar `sdd-orchestrator` (SDD) en lugar de ejecutar inline; el orquestador rutea las fases del DAG sin ejecutarlas. En modo `auto`, su gatekeeper valida cada fase antes de la siguiente: un fallo re-ejecuta la MISMA fase UNA vez y un SEGUNDO fallo detiene la cadena y escala — no existe un tercer intento automático.
+1. **Kernel siempre activo**: `node install.mjs --target <repo>` inyecta el bloque `skillsGV:kernel` (variantes `_shared/bootstrap-kernel-full.md` para harnesses desnudos, `-minimal.md` cuando gentle-ai está activo) en `AGENTS.md` / `GEMINI.md` / `CLAUDE.md` según el harness detectado, escribe el `.gitignore` de las rutas instaladas y registra todo en `.skills-install/manifest.json`. Verificá la activación con `references/canary-activation.md`.
+2. **ODD primero (gentle-ai 3.x)**: desde gentle-ai 3.0, Organic Driven Development es el flujo por defecto y **SDD se entra solo a pedido explícito**. Las reglas viejas "SDD si 2+ archivos" quedan anuladas: dos jefes de proceso no coexisten — el system prompt del harness siempre gana. Si el binario `gentle-ai` está disponible, el dispatcher nativo (`gentle-ai sdd-status` / `gentle-ai sdd-continue`) es la autoridad de ruteo de fases; las skills `sdd-*` de este catálogo operan como fallback cuando no hay binario.
 3. **Contrato por fase**: cada fase SDD devuelve `{ status, executive_summary, artifacts, next_recommended, risks, skill_resolution }`; los artefactos se persisten por topic key `sdd/{change}/{artifact}` en el almacén declarado en `openspec/config.yaml` (`artifact_store: hybrid`).
-4. **Superficie NL-primero**: pedir un cambio SDD en lenguaje natural es la vía primaria; los slash son alias opcionales según lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`), nunca un requisito.
+4. **Superficie NL-primero**: pedir un cambio en lenguaje natural es la vía primaria; los slash son alias opcionales según lo que exponga tu runtime. En 3.1.0 el ruteo nativo de fases vive en `gentle-ai sdd-status` / `sdd-continue`.
 
 ## 🧭 La Tríada + memoria (matriz de responsabilidades)
 
@@ -73,7 +70,7 @@ flowchart TD
 - **Nunca** procesar payloads de Socket.io sin validar. **Usar**: esquemas Zod compartidos en `packages/contracts/` antes de cualquier lógica de negocio.
 - **Nunca** usar `any` en TypeScript. **Usar**: `unknown` + narrowing con Zod, o tipos explícitos del dominio.
 - **Package manager: pnpm only — npm/npx rechazados.** **Nunca** correr `npm` ni `npx` en comandos, docs o skills. **Usar**: `pnpm` para instalar/scripts y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca las menciones de `npm`/`npx` como ERROR; una skill que deba mencionarlos por una razón documentada declara `allows-npm: <motivo>` en su frontmatter.
-- **Nunca** escribir código nuevo sin pasar por SDD. **Usar**: invocar `sdd-orchestrator` para features que tocan 2+ archivos o 2+ dominios de negocio (`professional-planner` queda como metodología de referencia).
+- **Nunca arrancar código nuevo sin explorar lo existente (ODD)**. El flujo por defecto es organic: explorar → clasificar → tarea sustancial con documento de tareas y commits por unidad. **Usar** `sdd-orchestrator` (SDD) solo cuando el usuario lo pide explícito — desde gentle-ai 3.x el archivo-count ya no dispara SDD (`professional-planner` queda como metodología de referencia).
 - **Siempre** usar `pnpm expo install` para paquetes móviles nativos. **Nunca** `pnpm add` directo, ya que rompe la compatibilidad con el SDK de Expo. Validar después con `dependency-guardian`.
 - **Siempre** correr `pnpm expo prebuild --clean` antes de un EAS build. **Usar**: la skill `expo-production-auditor` para auditar 4 frentes (circular deps, Hermes, assets, sync de deps nativas).
 - **Siempre** registrar decisiones arquitectónicas y bugs complejos. **Usar**: la skill `tech-escalation-adr` para ADRs y `expert-debugger` para postmortems.
@@ -113,7 +110,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Validar SKILL.md contra spec | `00-meta-skills/skill-validator` |
 | Cargar skills por turno / telemetría de sesión | `00-meta-skills/skill-loader` |
 | Cambiar proveedor/modelo de los agentes | `00-meta-skills/agent-roster` |
-| Iniciar feature >1 archivo | `00-meta-skills/sdd-orchestrator` (SDD) |
+| Iniciar feature — SDD solo a pedido explícito (ODD es el default desde gentle-ai 3.x) | `00-meta-skills/sdd-orchestrator` (SDD) |
 | Configurar env vars / secrets | `06-code-quality/env-management` |
 | Error handling / Result types | `04-backend/error-handling` |
 | Configurar MCP servers | `04-backend/mcp-integration` |
@@ -201,7 +198,7 @@ Cuando el agente detecte las siguientes acciones, **debe** cargar la skill corre
 | Auditoría UX / usabilidad / accesibilidad | `11-mcp-hybrid/ux-auditor-agent` |
 | Generar assets / iconos / logos IA | `11-mcp-hybrid/asset-generator-mcp` |
 
-**Regla de los 3 capas**: si la acción toca 2+ skills de categorías distintas, invocar `sdd-orchestrator` primero para confirmar la SDD-phase apropiada (`professional-planner` queda como metodología de referencia).
+**Regla de los 3 capas**: si la acción toca 2+ skills de categorías distintas, quedate con la skill dominante del eje (backend/frontend/quality) y mantenete en ≤5 skills por turno. SDD no se dispara por cantidad de skills ni de archivos — solo a pedido explícito.
 
 ## 📦 Uso
 
@@ -223,7 +220,7 @@ node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --target <ruta-del-p
 node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --target "C:\ruta\al\proyecto"
 ```
 
-Esto copia las skills a `.claude/skills/`, `.gemini/skills/`, `.codex/skills/`, `.cursor/skills/` (según lo que detecte instalado).
+Esto copia las skills a `.claude/skills/`, `.gemini/skills/`, `.codex/skills/`, `.cursor/skills/` (según lo que detecte instalado) y, en installs por proyecto, **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md`), blinda el `.gitignore` para que las skills instaladas nunca se commiteen, y registra todo con hash en `.skills-install/manifest.json` (`--uninstall` / `--rollback` revierten simétricamente; `--no-kernel` saltea la activación).
 
 ## 🎩 Companion tooling (opcional, binarios installables)
 
