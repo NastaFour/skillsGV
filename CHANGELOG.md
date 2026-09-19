@@ -2,6 +2,31 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versionado [SemVer](https://semver.org/lang/es/).
 
+## [2.1.1] — 2026-09-19
+
+**Judgment Day ronda 1** (revisión adversarial dual ciega sobre PR #1; veredicto unánime FIX). Los hallazgos confirmados por overlap de ambos jueces se corrigieron; los de un solo juez se verificaron contra el código antes de actuar.
+
+### Fixed
+
+- **Simetría uninstall en el flujo de update** (blocker, ambos jueces): `summarizeKernel` ahora registra TODOS los canales (incluidos los "unchanged"), y `--uninstall` barre los records de kernel de TODAS las generaciones (unión cross-generación). Re-install → uninstall ya no deja bloques huérfanos en `AGENTS.md`/`GEMINI.md`/`CLAUDE.md` ni el guard del `.gitignore`.
+- **Strip quirúrgico** (ambos jueces): la extracción del bloque ya no reescribe espacios del archivo completo (antes colapsaba `\n\n\n` globales y recortaba extremos). Solo se elimina el bloque y la línea separadora que el instalador agregó.
+- **Rollback seguro** (Red + Blue): force-restore de archivo completo SOLO si es byte-idéntico a lo último escrito (`wroteSha256`); cualquier edición del usuario degrada a strip quirúrgico. Además el rollback **re-guarda** el `.gitignore` con las entradas de la generación restaurada (antes lo desguardaba y reabría el problema de los 540 archivos).
+- **`--dry-run` ahora muestra la capa de activación** (Blue): el bloque de kernel+gitignore corre antes del early-return, con preview de canales y estados.
+- **Unión del guard de `.gitignore`**: un re-install por subconjunto de herramientas (`--tool`) nunca desguarda directorios instalados por una generación anterior.
+- **Aislamiento de fallos**: la fase de activación tiene try/catch por canal y global — un canal bloqueado (EPERM/EBUSY) ya no huérfana un install de miles de archivos sin manifiesto.
+- **Rollback de generaciones kernel-only**: `cmdRollback` ya no hace early-return cuando `entries` está vacío pero existe kernel.
+- **Seguridad de reemplazos**: inserciones vía function-replacement (sin expansión de patrones `$&`/`` $` `` desde plantillas); backups del kernel con etiqueta propia (`kernel-N-…`, sin colisión con el índice de entries); `hasBinary` ignora entradas vacías de PATH (falso "minimal" por exe en el cwd); `detectVariant` exige marcador `gentle-ai:` (no cualquier mención en prosa).
+
+### Changed
+
+- **Archivos UTF-16/BOM se saltean con warning** (canal y `.gitignore`) en lugar de destruirse; canales symlinked se saltean; comparación y escritura CRLF-aware (sin churn en archivos de Windows); marcadores del `.gitignore` en ASCII puro.
+- Kernel full con línea para teammates (clone sin install local: ignorar o instalar).
+- README: `dsh` en la lista de `--tool`, canal Copilot documentado, nota de que el manifiesto es local por máquina.
+
+### Tests
+
+- Suite 8 → **15** tests: regresiones F1-F4, strip quirúrgico con `\n\n\n` de usuario, round-trip CRLF exacto, force-rollback con edición de usuario, unión del gitignore, skip de encoding UTF-16 byte-idéntico, y **test de integración CLI** (install → re-install → uninstall vía `install-skills.mjs` real) que cubre el wiring que la suite anterior no ejecutaba.
+
 ## [2.1.0] — 2026-09-19
 
 Alineación con **gentle-ai 3.1.0** y capa de activación always-on, motivada por el bench Zona del Sonido del 2026-09-18 (CON vs SIN skills): el agente CON solo siguió lineamientos que vivían en su system prompt inyectado y nunca leyó los archivos de reglas del workspace — ver `odd/tasks/activation-kernel-v2.md` para la evidencia completa.
