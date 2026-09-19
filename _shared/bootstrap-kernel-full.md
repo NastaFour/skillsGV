@@ -7,7 +7,7 @@
 <!-- skillsGV:kernel:start -->
 ## skillsGV — kernel de arranque (siempre activo)
 
-Este repositorio tiene el catálogo de skills skillsGV instalado. Este bloque es la capa always-on; todo lo demás del catálogo es opt-in.
+Este repositorio tiene el catálogo de skills skillsGV instalado. Este bloque es la capa always-on; todo lo demás del catálogo es opt-in. ¿Viniste de un clone y no tenés el catálogo? Ignorá este bloque o instalalo (`node install.mjs --target .` desde el repo de skillsGV).
 
 1. **Skills antes que improvisar**: al empezar una tarea, elegí hasta 5 skills relevantes del índice de skills que ya tenés en contexto (o de `.skills-install/manifest.json`) y leé solo esos `SKILL.md`.
 2. **Commits por unidad de trabajo**: un commit convencional por tarea completa (código + tests + docs). Nunca un `git add .` masivo al cierre.
