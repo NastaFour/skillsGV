@@ -63,17 +63,44 @@ const GITIGNORE_MARK_END = "# <<< skillsGV install <<<";
 const GITIGNORE_MARK_START_LEGACY = "# >>> skillsGV install (generated \u2014 do not edit) >>>"; // 2.1.0 em-dash form
 const META_DIR = ".skills-install";
 
-/** Locate the guarded region (current or legacy markers). end is INCLUSIVE of the end marker. */
-function guardRegion(content) {
-  const s = content.indexOf(GITIGNORE_MARK_START);
-  const e = content.indexOf(GITIGNORE_MARK_END);
-  if (s !== -1 && e !== -1 && e > s) return { start: s, end: e + GITIGNORE_MARK_END.length };
-  const sl = content.indexOf(GITIGNORE_MARK_START_LEGACY);
-  if (sl !== -1) {
-    const el = content.indexOf(GITIGNORE_MARK_END, sl);
-    if (el !== -1) return { start: sl, end: el + GITIGNORE_MARK_END.length };
+/** All complete guarded regions, in document order (current + legacy markers). */
+function findAllGuardRegions(content) {
+  const regions = [];
+  for (const startMark of [GITIGNORE_MARK_START, GITIGNORE_MARK_START_LEGACY]) {
+    let from = 0;
+    for (;;) {
+      const s = content.indexOf(startMark, from);
+      if (s === -1) break;
+      const e = content.indexOf(GITIGNORE_MARK_END, s);
+      if (e === -1) break;
+      regions.push({ start: s, end: e + GITIGNORE_MARK_END.length });
+      from = e + GITIGNORE_MARK_END.length;
+    }
   }
-  return null;
+  return regions.sort((a, b) => a.start - b.start);
+}
+
+/**
+ * Guarded-marker state of a file. `corrupt` means markers cannot be trusted
+ * (an orphan start pairing with a later block's end, or overlapping regions) —
+ * callers must NOT touch the file in that state (user rules could be inside a
+ * bogus span). Duplicated complete blocks are NOT corrupt: they are repaired.
+ */
+function guardMarkerState(content) {
+  const regions = findAllGuardRegions(content);
+  const count = (hay, needle) => hay.split(needle).length - 1;
+  const starts = count(content, GITIGNORE_MARK_START) + count(content, GITIGNORE_MARK_START_LEGACY);
+  const overlapping = regions.some((r, i) => i > 0 && r.start < regions[i - 1].end);
+  return { regions, corrupt: overlapping || starts > regions.length };
+}
+
+/** Remove one guarded region plus the single separator newline it carried. */
+function removeRegion(content, region) {
+  const block = content.slice(region.start, region.end);
+  let next = content.replace(block, () => "");
+  if (content.startsWith(block)) next = next.replace(/^\r?\n/, "");
+  else if (content.endsWith(block)) next = next.replace(/\r?\n$/, "");
+  return next.replace(/(\r?\n)(\r?\n)$/, "$1");
 }
 
 function lstatExists(p) {
@@ -216,11 +243,12 @@ export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = fa
       }
       mkdirSync(dirname(file), { recursive: true });
       const adapted = adaptEol(blockLf, eol);
-      const createdFile = prev === null || prev.trim() === "";
+      const createdFile = prev === null;
+      const isEmptyPrev = prev !== null && prev.trim() === "";
       const next =
         existing !== null
           ? prev.replace(existing, () => adapted)
-          : createdFile
+          : createdFile || isEmptyPrev
             ? adapted + eol
             : prev.replace(/(\r?\n)*$/, "") + eol + eol + adapted + eol;
       writeFileSync(file, next, "utf8");
@@ -251,13 +279,36 @@ export function summarizeKernel(variant, injectResults, gitignoreResult) {
         blockSha256: r.blockSha256,
         wroteSha256: r.wroteSha256 ?? null,
         prevBackup: r.prevBackup ?? null,
-        createdFile: r.status === "injected",
+        createdFile: r.createdFile === true,
       })),
     skipped: injectResults
       .filter((r) => r.status.startsWith("skipped") || r.status === "error")
       .map((r) => ({ file: r.file, status: r.status, ...(r.message ? { message: r.message } : {}) })),
     gitignore: gitignoreResult,
   };
+}
+
+/**
+ * Kernel records across all generations, keyed by channel file. Latest record
+ * wins, but createdFile is OR-merged and prevBackup falls back to an earlier
+ * generation's value — a created channel must still be deletable at uninstall
+ * after a no-op re-install recorded it as "unchanged" (judgment-day round 2).
+ */
+export function collectKernelOwned(mf) {
+  const byFile = new Map();
+  const merge = (f) => {
+    const prevRec = byFile.get(f.file);
+    byFile.set(f.file, {
+      ...f,
+      createdFile: Boolean((prevRec && prevRec.createdFile) || f.createdFile),
+      prevBackup: f.prevBackup ?? (prevRec ? prevRec.prevBackup : null) ?? null,
+    });
+  };
+  for (const gen of mf.previousGenerations || []) {
+    if (gen.kernel) for (const f of gen.kernel.files || []) merge(f);
+  }
+  if (mf.kernel) for (const f of mf.kernel.files || []) merge(f);
+  return [...byFile.values()];
 }
 
 /**
@@ -269,7 +320,7 @@ export function summarizeKernel(variant, injectResults, gitignoreResult) {
  *    content is byte-identical to what this installer last wrote; anything else
  *    degrades to the surgical strip. Created files are deleted only when empty.
  */
-export function removeKernel(root, kernel, { force = false } = {}) {
+export function removeKernel(root, kernel, { force = false, restoringPreviousGeneration = false } = {}) {
   const stats = { removed: 0, retained: [], restoredBackups: 0, removedFiles: 0 };
   if (!kernel || !Array.isArray(kernel.files)) return stats;
   for (const rec of kernel.files) {
@@ -281,26 +332,40 @@ export function removeKernel(root, kernel, { force = false } = {}) {
         continue;
       }
       const content = readFileSync(file, "utf8");
-      if (force && rec.wroteSha256 && sha256(content) === rec.wroteSha256) {
-        if (rec.prevBackup) {
-          const backup = resolve(root, META_DIR, rec.prevBackup);
-          if (existsSync(backup)) {
-            writeFileSync(file, readFileSync(backup)); // binary-safe restore
-            rmSync(backup, { force: true });
-            stats.restoredBackups++;
+      // A record authored by this generation has a backup (overwrote) or created
+      // the file; a carried-over "unchanged" record has neither (judgment-day round 3).
+      const authored = Boolean(rec.prevBackup || rec.createdFile);
+      if (force) {
+        const untouched = rec.wroteSha256 && sha256(content) === rec.wroteSha256;
+        if (untouched) {
+          if (rec.prevBackup) {
+            const backup = resolve(root, META_DIR, rec.prevBackup);
+            if (existsSync(backup)) {
+              writeFileSync(file, readFileSync(backup)); // binary-safe restore
+              rmSync(backup, { force: true });
+              stats.restoredBackups++;
+              stats.removed++;
+              continue;
+            }
+          }
+          if (rec.createdFile) {
+            rmSync(file, { force: true });
+            stats.removedFiles++;
             stats.removed++;
             continue;
           }
-        }
-        if (rec.createdFile) {
-          rmSync(file, { force: true });
-          stats.removedFiles++;
-          stats.removed++;
+          if (restoringPreviousGeneration) {
+            // Unchanged from the EARLIER generation this rollback is restoring:
+            // the block belongs to that generation — keep it, never strip it.
+            continue;
+          }
+          // No restored generation owns it — fall through to the strip below.
+        } else if (!authored && restoringPreviousGeneration) {
+          // Carried over from the restored generation but the user edited the file
+          // elsewhere: never strip a block that generation owns.
+          stats.retained.push(`${rec.file} (kept: block belongs to the restored generation)`);
           continue;
         }
-        // Unchanged from an EARLIER generation that this rollback is restoring:
-        // the block belongs to that generation — keep it, never strip it.
-        continue;
       }
       const current = extractBlock(content);
       if (current === null) continue; // already gone
@@ -328,11 +393,10 @@ function gitignoreBlockFrom(entries, eol) {
 }
 void gitignoreBlockFrom; // (kept for tests/debugging; guardGitignore builds its trim variant inline)
 
-function parseGuardedEntries(content) {
-  const r = guardRegion(content);
-  if (!r) return null;
-  const region = toLf(content.slice(r.start, r.end));
-  return region
+function parseGuardedEntries(content, region) {
+  if (!region) return null;
+  const text = toLf(content.slice(region.start, region.end));
+  return text
     .split("\n")
     .slice(1)
     .map((l) => l.trim())
@@ -349,28 +413,34 @@ function parseGuardedEntries(content) {
 export function guardGitignore({ root, skillDirs, metaDir = META_DIR, dryRun = false }) {
   const gi = join(root, ".gitignore");
   try {
-    if (existsSync(gi) && isSymlink(gi)) return { status: "skipped-symlink", created: false, entries: [] };
+    if (lstatExists(gi) && isSymlink(gi)) return { status: "skipped-symlink", created: false, entries: [] };
     const buf = existsSync(gi) ? readFileSync(gi) : null;
     if (buf !== null && isBinaryOrUtf16(buf)) return { status: "skipped-encoding", created: false, entries: [] };
     const prev = buf === null ? null : buf.toString("utf8");
     const eol = detectEol(prev ?? "\n");
-    const existing = prev === null ? [] : parseGuardedEntries(prev) || [];
+    const state = prev === null ? { regions: [], corrupt: false } : guardMarkerState(prev);
+    if (state.corrupt) return { status: "skipped-corrupt-block", created: false, entries: [] };
     // UNION with previously guarded entries: a re-install for a tool subset never
     // unguards directories an earlier generation installed (judgment-day F4).
+    const existing = state.regions.flatMap((r) => parseGuardedEntries(prev, r) || []);
     const wanted = [...new Set([...existing, ...skillDirs.map((d) => d.replace(/\/+$/, "") + "/"), metaDir + "/"])]
       .filter((e) => e !== "")
       .sort();
     const blockTrim = adaptEol([GITIGNORE_MARK_START, ...wanted, GITIGNORE_MARK_END].join("\n"), eol);
-    const region = prev === null ? null : guardRegion(prev);
-    if (region) {
-      const currentEntries = parseGuardedEntries(prev);
-      if (currentEntries && [...currentEntries].sort().join("\n") === wanted.join("\n") && !regionUsesLegacy(prev, region)) {
-        return { status: "unchanged", created: false, entries: wanted };
-      }
-      if (dryRun) return { status: "update", created: false, entries: wanted };
-      const currentRegion = prev.slice(region.start, region.end);
-      writeFileSync(gi, prev.replace(currentRegion, () => blockTrim), "utf8"); // upgrades legacy markers too
-      return { status: "updated", created: false, entries: wanted };
+    if (state.regions.length > 0) {
+      const single = state.regions.length === 1;
+      const usesLegacy = !prev.startsWith(GITIGNORE_MARK_START, state.regions[0].start);
+      const sameEntries = [...existing].sort().join("\n") === wanted.join("\n");
+      if (single && sameEntries && !usesLegacy) return { status: "unchanged", created: false, entries: wanted };
+      const status = !single ? "repaired" : usesLegacy ? "upgraded" : "updated";
+      if (dryRun) return { status, created: false, entries: wanted };
+      // Consolidate: remove EVERY guarded block (repairs duplication from earlier
+      // corrupt states), then write exactly one.
+      let next = prev;
+      for (const r of [...state.regions].reverse()) next = removeRegion(next, r);
+      next = next.replace(/(\r?\n)*$/, "");
+      writeFileSync(gi, next === "" ? blockTrim + eol : next + eol + eol + blockTrim + eol, "utf8");
+      return { status, created: false, entries: wanted };
     }
     if (dryRun) return { status: "create", created: prev === null, entries: wanted };
     const next =
@@ -384,31 +454,25 @@ export function guardGitignore({ root, skillDirs, metaDir = META_DIR, dryRun = f
   }
 }
 
-function regionUsesLegacy(content, region) {
-  return content.slice(region.start, region.start + 60).includes("\u2014");
-}
-
-/** Remove the guarded block (current or legacy markers); delete .gitignore only if this installer created it. */
+/** Remove ALL guarded blocks (repairs duplication); delete .gitignore only if this installer created it. */
 export function unguardGitignore(root, giRecord) {
   const gi = join(root, ".gitignore");
   try {
     if (!existsSync(gi)) return { status: "absent" };
-    if (isSymlink(gi)) return { status: "skipped-symlink" };
+    if (lstatExists(gi) && isSymlink(gi)) return { status: "skipped-symlink" };
     const content = readFileSync(gi, "utf8");
     const eol = detectEol(content);
-    const region = guardRegion(content);
-    if (!region) return { status: "absent" };
-    const block = content.slice(region.start, region.end);
-    let next = content.replace(block, () => "");
-    if (content.startsWith(block)) next = next.replace(/^\r?\n/, "");
-    else if (content.endsWith(block)) next = next.replace(/\r?\n$/, "");
-    next = next.replace(/(\r?\n)(\r?\n)$/, "$1"); // collapse one dangling blank line at EOF
+    const state = guardMarkerState(content);
+    if (state.corrupt) return { status: "skipped-corrupt-block" };
+    if (state.regions.length === 0) return { status: "absent" };
+    let next = content;
+    for (const r of [...state.regions].reverse()) next = removeRegion(next, r);
     if (next.trim() === "" && giRecord && giRecord.created) {
       rmSync(gi, { force: true });
       return { status: "removed-file" };
     }
     writeFileSync(gi, next.replace(/(\r?\n)+$/, "") + eol, "utf8");
-    return { status: "removed-block" };
+    return { status: state.regions.length > 1 ? "removed-blocks" : "removed-block" };
   } catch (err) {
     return { status: `error: ${err.message}` };
   }

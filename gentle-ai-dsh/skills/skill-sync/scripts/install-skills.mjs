@@ -45,7 +45,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
-import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel } from "../../../_shared/kernel-inject.mjs";
+import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel, collectKernelOwned } from "../../../_shared/kernel-inject.mjs";
 
 const args = process.argv.slice(2);
 let target = null;
@@ -490,28 +490,7 @@ function discoverForeignFiles(ownedDests) {
   return foreign;
 }
 
-/**
- * Kernel records across all generations, keyed by channel file. Latest record
- * wins, but createdFile is OR-merged and prevBackup falls back to an earlier
- * generation's value — a created channel must still be deletable at uninstall
- * after a no-op re-install recorded it as "unchanged" (judgment-day round 2).
- */
-function collectKernelOwned(mf) {
-  const byFile = new Map();
-  const merge = (f) => {
-    const prevRec = byFile.get(f.file);
-    byFile.set(f.file, {
-      ...f,
-      createdFile: Boolean((prevRec && prevRec.createdFile) || f.createdFile),
-      prevBackup: f.prevBackup ?? (prevRec ? prevRec.prevBackup : null) ?? null,
-    });
-  };
-  for (const gen of mf.previousGenerations || []) {
-    if (gen.kernel) for (const f of gen.kernel.files || []) merge(f);
-  }
-  if (mf.kernel) for (const f of mf.kernel.files || []) merge(f);
-  return [...byFile.values()];
-}
+// collectKernelOwned lives in _shared/kernel-inject.mjs (exported + unit-tested).
 
 function cmdUninstall() {
   const mf = loadManifest();
@@ -544,14 +523,17 @@ function cmdUninstall() {
   stats.foreign = discoverForeignFiles(ownedDests);
   pruneEmptyDirs(parentDirsOf(stats.removed ? owned.map((o) => o.dest) : [], LIFECYCLE_ROOT));
   let kernelRemoved = 0;
+  let kernelCleanupFailed = false;
   const kernelUnion = collectKernelOwned(mf);
   if (kernelUnion.length || (mf.kernel && mf.kernel.gitignore)) {
     const kStats = removeKernel(LIFECYCLE_ROOT, { files: kernelUnion });
-    const giCreatedAny = [mf.kernel, ...(mf.previousGenerations || []).map((g) => g.kernel)].some(
+    const giCreatedAny = [...(mf.previousGenerations || []).map((g) => g.kernel), mf.kernel].some(
       (k) => k && k.gitignore && k.gitignore.created
     );
     const gi = unguardGitignore(LIFECYCLE_ROOT, { created: giCreatedAny });
     kernelRemoved = kStats.removed;
+    kernelCleanupFailed =
+      kStats.retained.length > 0 || String(gi.status).startsWith("error") || gi.status === "skipped-corrupt-block";
     console.log(
       `\n🧠 kernel: ${kStats.removed} block(s) removed, ${kStats.retained.length} retained (edited inside markers), ${kStats.restoredBackups} backup(s) restored; .gitignore: ${gi.status}`
     );
@@ -568,12 +550,17 @@ function cmdUninstall() {
   // Uninstall is terminal: drop the install metadata (the manifest and backups
   // contain copies of the user's pre-install files and must not be left behind
   // unguarded once the .gitignore block is gone).
-  try {
-    rmSync(INSTALL_META_DIR, { recursive: true, force: true });
-    console.log(`\n🧹 removed install metadata: ${INSTALL_META_DIR}`);
-  } catch {
-    saveManifest(mf); // keep the history record if cleanup is impossible
-    console.log(`\n⚠️  could not remove ${INSTALL_META_DIR}; manifest kept.`);
+  if (!kernelCleanupFailed) {
+    try {
+      rmSync(INSTALL_META_DIR, { recursive: true, force: true });
+      console.log(`\n🧹 removed install metadata: ${INSTALL_META_DIR}`);
+    } catch {
+      saveManifest(mf); // keep the history record if cleanup is impossible
+      console.log(`\n⚠️  could not remove ${INSTALL_META_DIR}; manifest kept.`);
+    }
+  } else {
+    saveManifest(mf);
+    console.log(`\n⚠️  install metadata kept: kernel cleanup retained or errored entries — resolve them and re-run --uninstall.`);
   }
   if (stats.retained.length || stats.foreign.length) {
     console.log(`\n🔒 Retained foreign/user-edited files (${stats.retained.length + stats.foreign.length}):`);
@@ -627,7 +614,10 @@ function cmdRollback() {
     console.log(`  ♻️  restored previous content: ${e.dest}`);
   }
   if (dryRun) {
-    if (mf.kernel) console.log(`  [dry-run] kernel: restore/strip ${mf.kernel.files.length} channel file(s), unguard .gitignore, then re-guard the restored generation's entries`);
+    if (mf.kernel) {
+      const reguard = (mf.previousGenerations || []).length > 0 ? ", then re-guard the restored generation's entries" : "";
+      console.log(`  [dry-run] kernel: restore/strip ${mf.kernel.files.length} channel file(s), unguard .gitignore${reguard}`);
+    }
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
@@ -635,10 +625,12 @@ function cmdRollback() {
   // whole file only when it is byte-identical to what we last wrote).
   let kernelRestored = 0;
   if (mf.kernel) {
-    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel, { force: true });
+    const willRestoreGeneration = (mf.previousGenerations || []).length > 0;
+    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel, { force: true, restoringPreviousGeneration: willRestoreGeneration });
     const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel.gitignore);
     kernelRestored = kStats.removed;
     console.log(`\n🧠 kernel rollback: ${kStats.restoredBackups} file(s) restored from backup, ${kStats.removed} block(s) cleared; .gitignore: ${gi.status}`);
+    if (kStats.retained.length) for (const f of kStats.retained) console.log(`   🔒 retained kernel block: ${f}`);
   }
   mf.history.push({
     type: "rollback",
