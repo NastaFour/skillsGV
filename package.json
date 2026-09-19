@@ -1,6 +1,6 @@
 {
   "name": "skillsgv",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Catálogo general de skills para agentes de IA (Portable 2026, pnpm)",
   "type": "module",
   "packageManager": "pnpm@11.9.0",
