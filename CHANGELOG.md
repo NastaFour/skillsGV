@@ -27,6 +27,19 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); v
 
 - Suite 8 → **15** tests: regresiones F1-F4, strip quirúrgico con `\n\n\n` de usuario, round-trip CRLF exacto, force-rollback con edición de usuario, unión del gitignore, skip de encoding UTF-16 byte-idéntico, y **test de integración CLI** (install → re-install → uninstall vía `install-skills.mjs` real) que cubre el wiring que la suite anterior no ejecutaba.
 
+### Judgment Day — Ronda 2 (re-juicio final del diff de fixes)
+
+Los jueces ciegos volvieron a correr sobre el diff de la ronda 1 y **encontraron que parte de lo anunciado no estaba implementado** — el propio juicio atrapó la deriva:
+
+- **`--rollback` re-guarda el `.gitignore`** (blocker, ambos jueces): la ronda 1 lo anunció en este CHANGELOG pero el código nunca lo hizo (el guard quedaba simplemente removido). Implementado + cubierto por el test CLI end-to-end.
+- **El rollback de un re-install no-op conserva el kernel de la generación restaurada** (crítico, ambos): los canales "unchanged" que pertenecen a una generación previa ya no se stripean.
+- **Ciclo de vida de archivos creados a través de re-installs**: la unión cross-generación preserva `createdFile` (uninstall borra el canal creado aunque la última generación lo registre "unchanged"); el `.gitignore` creado también se borra.
+- **Marcadores legacy (2.1.0, em-dash)**: se reconocen y actualizan en guard/unguard (antes se duplicaba el bloque).
+- **Off-by-marker en la región guardada**: la región cortaba antes del marcador de cierre y corrompía el `.gitignore` en updates (detectado por el test R2 de marcadores y por debug end-to-end).
+- **UTF-16 sin BOM / cualquier NUL** detectado (antes solo BOM); **symlinks rotos** salteados con `lstat`; **CRLF sin líneas mixtas** (el tail del bloque usa el EOL del archivo).
+- **`--uninstall --dry-run` y `--rollback --dry-run`** ahora previsualizan la capa de kernel; **`.skills-install/` se elimina al final del uninstall** (manifiesto + backups ya no quedan sin guardar).
+- Tests 15 → **18**, incluido el test CLI con **rollback entre re-install y uninstall** (con dos tools) — la cobertura de wiring que faltaba.
+
 ## [2.1.0] — 2026-09-19
 
 Alineación con **gentle-ai 3.1.0** y capa de activación always-on, motivada por el bench Zona del Sonido del 2026-09-18 (CON vs SIN skills): el agente CON solo siguió lineamientos que vivían en su system prompt inyectado y nunca leyó los archivos de reglas del workspace — ver `odd/tasks/activation-kernel-v2.md` para la evidencia completa.
