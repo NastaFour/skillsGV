@@ -40,6 +40,18 @@ Los jueces ciegos volvieron a correr sobre el diff de la ronda 1 y **encontraron
 - **`--uninstall --dry-run` y `--rollback --dry-run`** ahora previsualizan la capa de kernel; **`.skills-install/` se elimina al final del uninstall** (manifiesto + backups ya no quedan sin guardar).
 - Tests 15 → **18**, incluido el test CLI con **rollback entre re-install y uninstall** (con dos tools) — la cobertura de wiring que faltaba.
 
+### Judgment Day — Ronda 3 (juicio final sobre los fixes de ronda 2)
+
+Segundo re-juicio ciego: **sin blockers nuevos**; 5 hallazgos confirmados corregidos con tests de regresión:
+
+- **Keep del rollback endurecido por autoría**: un bloque heredado de la generación restaurada se conserva aunque el usuario haya editado el archivo FUERA de los marcadores (antes se stripeaba); si ninguna generación restaurada lo posee (rollback de primera generación), se extrae.
+- **Bloques duplicados se consolidan**: archivos con dos bloques guardados (legacy em-dash + ASCII, la corrupción que dejaban versiones anteriores) se reparan a un único bloque con la unión de entradas de TODOS los bloques. Un marcador huérfano sin cierre marca el archivo como `skipped-corrupt-block` — guard y unguard no lo tocan (nunca más borrar reglas del usuario por un span falso).
+- **`.gitignore` con symlink roto** se saltea con `lstat` (mismo patrón que los canales; antes `existsSync` lo dejaba pasar y escribía a través del link).
+- **`.skills-install/` sobrevive si la limpieza del kernel retuvo/erroró entradas** (uninstall re-ejecutable tras resolverlas) en vez de destruir el manifiesto y dejar un callejón sin salida.
+- **`createdFile` fiel**: un archivo pre-existente vacío ya no se registra como creado por el installer (su restauración en force escribe el contenido previo, no lo borra). `collectKernelOwned` se movió al módulo y tiene test unitario directo.
+
+Tests 18 → **24**: escenarios CLI reestructurados (same-tool con keep-path real end-to-end; re-install con otro tool + uninstall sin rollback cubriendo la unión cross-generación y `giCreatedAny`), más los 5 unitarios de ronda 3. Protocolo judgment-day agotado (2 rondas de fix/re-juicio): la ronda 3 no abre una cuarta.
+
 ## [2.1.0] — 2026-09-19
 
 Alineación con **gentle-ai 3.1.0** y capa de activación always-on, motivada por el bench Zona del Sonido del 2026-09-18 (CON vs SIN skills): el agente CON solo siguió lineamientos que vivían en su system prompt inyectado y nunca leyó los archivos de reglas del workspace — ver `odd/tasks/activation-kernel-v2.md` para la evidencia completa.
