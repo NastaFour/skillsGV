@@ -20,7 +20,17 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --dry-run
 node 00-meta-skills/skill-sync/scripts/install-skills.mjs
 ```
 
-Requisito: Node.js 20 o superior. No hay `package.json`: los scripts `.mjs` no tienen dependencias externas.
+Requisito: Node.js 20 o superior. Los scripts `.mjs` no tienen dependencias externas (el `package.json` solo define scripts de conveniencia).
+
+### Instalación por un agente (one-liner)
+
+Cualquier agente que aterrice en un repo puede instalar el catálogo con:
+
+```
+Cloná https://github.com/NastaFour/skillsGV y corré `node install.mjs --target .` — seguí su AGENTS.md.
+```
+
+En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md`), blinda el `.gitignore` (las skills instaladas nunca se commitean) y deja evidencia con hash en `.skills-install/manifest.json`. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
 
 ## 🎨 Sistema Anti-Slop de Diseño Frontend
 
@@ -44,8 +54,9 @@ El instalador cross-tool es `00-meta-skills/skill-sync/scripts/install-skills.mj
 | `--only <lista>` | Instala solo categorías separadas por comas, por ejemplo `--only "04-backend,05-frontend"`. |
 | `--symlink` | Usa symlinks (junctions en Windows) en lugar de copiar: una única fuente de verdad. |
 | `--dry-run` | Muestra qué haría sin escribir nada. |
-| `--uninstall` | Elimina únicamente archivos propios registrados en el manifiesto. Los archivos ajenos, editados por el usuario o symlinked se conservan y se listan. Requiere manifiesto. |
-| `--rollback` | Revierte la última generación de instalación (restaura el estado previo sobrescrito y elimina lo nuevo). Queda registrado en el historial del manifiesto. |
+| `--uninstall` | Elimina únicamente archivos propios registrados en el manifiesto (también extrae los bloques del kernel y el bloque guardado del `.gitignore`). Los archivos ajenos, editados por el usuario o symlinked se conservan y se listan. Requiere manifiesto. |
+| `--rollback` | Revierte la última generación de instalación (restaura el estado previo sobrescrito y elimina lo nuevo, incluida la capa de activación). Queda registrado en el historial del manifiesto. |
+| `--no-kernel` | Saltea la capa de activación (kernel + `.gitignore`) en installs por proyecto. |
 
 ```bash
 # Proyecto concreto, solo dos herramientas
@@ -71,7 +82,7 @@ Si una instalación sale mal: `--rollback` revierte la última generación compl
   ```
 
 - **Trabajo chico, directo**: fixes de un archivo o consultas puntuales no requieren proceso adicional.
-- **Features de 2+ archivos o dominios** → `sdd-orchestrator`, que rutea las fases SDD sin ejecutarlas, con modo automático (gatekeeper entre fases) o interactivo (aprobación fase a fase).
+- **ODD por defecto (gentle-ai 3.x)**: trabajo multi-archivo → organic (explorar, doc de tareas si es sustancial, commits por unidad). `sdd-orchestrator` se carga **solo a pedido explícito de SDD** — el archivo-count ya no dispara SDD; con binario, el dispatcher nativo (`gentle-ai sdd-status` / `sdd-continue`) es la autoridad de ruteo.
 - **Antes de cerrar trabajo serio** → `judgment-day`: revisión adversarial con dos jueces independientes y ciego cruzado.
 - **Model routing** (activo desde Slice 2): perfiles declarativos en `_shared/model-routing/` que mapean cada fase SDD a un modelo; un runtime sin catálogo cae al modelo por defecto.
 

@@ -45,6 +45,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
+import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel } from "../../../_shared/kernel-inject.mjs";
+
 const args = process.argv.slice(2);
 let target = null;
 const tools = [];
@@ -54,6 +56,7 @@ let onlyCategories = null;
 let skipDetect = false;
 let doUninstall = false;
 let doRollback = false;
+let noKernel = false;
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -65,6 +68,7 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--all-tools") skipDetect = true;
   else if (a === "--uninstall") doUninstall = true;
   else if (a === "--rollback") doRollback = true;
+  else if (a === "--no-kernel") noKernel = true;
   else if (a === "--help" || a === "-h") {
     printHelp();
     process.exit(0);
@@ -192,11 +196,14 @@ Options:
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
   --all-tools          Skip detection; install for all known tools
   --uninstall          Remove only files recorded as owned in the manifest (foreign,
-                       user-edited, and symlinked entries are retained and listed;
-                       symlinks/junctions are never followed or deleted).
-                       Requires a manifest.
+                        user-edited, and symlinked entries are retained and listed;
+                        symlinks/junctions are never followed or deleted). Also strips
+                        the activation kernel blocks and the guarded .gitignore block.
+                        Requires a manifest.
   --rollback           Revert the last install generation (restores overwritten previous
-                       state, removes files that were new). Registered in manifest history.
+                        state, removes files that were new). Registered in manifest history.
+  --no-kernel          Skip the activation layer (kernel injection + .gitignore guard)
+                        on project installs.
   --help, -h           Show this help
 
 Examples:
@@ -315,6 +322,7 @@ function emptyManifest(mode) {
     tool: null,
     mode,
     entries: [],
+    kernel: null,
     previousGenerations: [],
     history: [],
   };
@@ -374,16 +382,17 @@ function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc)
 }
 
 /** Record a completed run as a new generation in the manifest. */
-function commitGeneration(toolIds, mode, entries, nextGen) {
-  if (dryRun || entries.length === 0) return;
+function commitGeneration(toolIds, mode, entries, nextGen, kernelRecord = null) {
+  if (dryRun || (entries.length === 0 && !kernelRecord)) return;
   const mf = loadManifest() || emptyManifest(mode);
-  if (mf.generation > 0 && Array.isArray(mf.entries) && mf.entries.length > 0) {
+  if (mf.generation > 0 && (Array.isArray(mf.entries) && mf.entries.length > 0 || mf.kernel)) {
     mf.previousGenerations.push({
       generation: mf.generation,
       ts: mf.ts,
       tool: mf.tool,
       mode: mf.mode,
       entries: mf.entries,
+      ...(mf.kernel ? { kernel: mf.kernel } : {}),
     });
   }
   mf.generation = nextGen;
@@ -391,6 +400,7 @@ function commitGeneration(toolIds, mode, entries, nextGen) {
   mf.tool = toolIds.join("+");
   mf.mode = mode;
   mf.entries = entries;
+  mf.kernel = kernelRecord;
   saveManifest(mf);
   console.log(`\n🗂️  generation ${mf.generation} recorded in ${MANIFEST_PATH} (${entries.length} files owned)`);
 }
@@ -504,12 +514,23 @@ function cmdUninstall() {
   for (const e of owned) removeFileOwned(e, stats, "uninstalled");
   stats.foreign = discoverForeignFiles(ownedDests);
   pruneEmptyDirs(parentDirsOf(stats.removed ? owned.map((o) => o.dest) : [], LIFECYCLE_ROOT));
+  let kernelRemoved = 0;
+  if (mf.kernel && Array.isArray(mf.kernel.files) && mf.kernel.files.length) {
+    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel);
+    const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel.gitignore);
+    kernelRemoved = kStats.removed;
+    console.log(
+      `\n🧠 kernel: ${kStats.removed} block(s) removed, ${kStats.retained.length} retained (edited inside markers), ${kStats.restoredBackups} backup(s) restored; .gitignore: ${gi.status}`
+    );
+    if (kStats.retained.length) for (const f of kStats.retained) console.log(`   🔒 retained kernel block: ${f}`);
+  }
   mf.history.push({
     type: "uninstall",
     ts: new Date().toISOString(),
     removed: stats.removed,
     retained: stats.retained.length,
     foreign: stats.foreign.length,
+    ...(kernelRemoved ? { kernelRemoved } : {}),
   });
   saveManifest(mf);
   if (stats.retained.length || stats.foreign.length) {
@@ -567,6 +588,14 @@ function cmdRollback() {
     console.log(`\n✨ Dry-run complete. No changes written.`);
     return;
   }
+  // Activation layer inverse: restore channel files from backups / strip kernel blocks.
+  let kernelRestored = 0;
+  if (mf.kernel && Array.isArray(mf.kernel.files) && mf.kernel.files.length) {
+    const kStats = removeKernel(LIFECYCLE_ROOT, mf.kernel, { force: true });
+    const gi = unguardGitignore(LIFECYCLE_ROOT, mf.kernel.gitignore);
+    kernelRestored = kStats.removed;
+    console.log(`\n🧠 kernel rollback: ${kStats.restoredBackups} file(s) restored from backup, ${kStats.removed} block(s) cleared; .gitignore: ${gi.status}`);
+  }
   mf.history.push({
     type: "rollback",
     ts: new Date().toISOString(),
@@ -574,6 +603,7 @@ function cmdRollback() {
     restored: stats.restored,
     removed: stats.removed,
     retained: stats.retained.length,
+    ...(kernelRestored ? { kernelRestored } : {}),
   });
   const prev = (mf.previousGenerations || []).pop();
   if (prev) {
@@ -582,11 +612,13 @@ function cmdRollback() {
     mf.tool = prev.tool;
     if (prev.mode) mf.mode = prev.mode; // restored generation keeps its own install mode
     mf.entries = prev.entries;
+    mf.kernel = prev.kernel || null;
   } else {
     mf.generation = 0;
     mf.ts = null;
     mf.tool = null;
     mf.entries = [];
+    mf.kernel = null;
   }
   saveManifest(mf);
   console.log(
@@ -758,11 +790,42 @@ function main() {
     return;
   }
 
+  // Activation layer (project installs): always-on kernel + .gitignore guard.
+  // Bench lesson 2026-09-18: guidelines that only live in files an agent must
+  // choose to read are never read — the kernel goes where the harness already
+  // injects context (AGENTS.md / GEMINI.md / CLAUDE.md).
+  let kernelRecord = null;
+  if (!noKernel && target) {
+    const variant = detectVariant({ home, target, hasBinaryFn: hasBinary });
+    const skillDirs = [...new Set(filtered.map((a) => relative(target, a.projectInstallPath(target)).split(sep).join("/")))];
+    let kernelIdx = 0;
+    const backupFn = (f) => backupPrevFile(f, nextGen, 9100 + kernelIdx++);
+    const injectResults = injectKernel({
+      root: target,
+      agentIds: filtered.map((a) => a.id),
+      variant,
+      catalogRoot: CATALOG_ROOT,
+      backupFn,
+    });
+    const giResult = guardGitignore({ root: target, skillDirs });
+    kernelRecord = summarizeKernel(variant, injectResults, giResult);
+    console.log(`\n🧠 Activation kernel (${variant}) →`);
+    for (const r of injectResults) {
+      const icon = r.status === "injected" || r.status === "create" ? "✨" : r.status === "updated" || r.status === "update" ? "♻️" : "✔️";
+      console.log(`  ${icon} ${join(target, r.file)} [${r.status}]`);
+    }
+    console.log(`🛡️  .gitignore guard [${giResult.status}]: ${giResult.entries.join(", ")}`);
+    console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
+  } else if (noKernel) {
+    console.log(`\n🧠 Activation kernel skipped (--no-kernel).`);
+  }
+
   commitGeneration(
     filtered.map((t) => t.id),
     useSymlink ? "symlink" : "copy",
     entriesAcc,
-    nextGen
+    nextGen,
+    kernelRecord
   );
   console.log(`\n✨ Done. Restart your AI tools to load the new skills.`);
 }

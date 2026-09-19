@@ -15,7 +15,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 ## Regla Alan (lenguaje natural primero)
 
 - Preferí triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- El alias slash depende de lo que exponga tu runtime (2.7.0 verificado: `/sdd-*`, p. ej. `/sdd-new`, `/sdd-continue`). No dependas del slash para arrancar una fase: el NL es la vía primaria.
+- El alias slash depende de lo que exponga tu runtime (en gentle-ai 3.1.0 el ruteo nativo vive en `gentle-ai sdd-status` / `sdd-continue`). No dependas del slash para arrancar una fase: el NL es la vía primaria.
 
 ## Reglas de delegación (inline vs delegar)
 
@@ -30,7 +30,7 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 
 **Reglas duras:**
 - Fix pequeño y mecánico (1 archivo, sin diseño pendiente) → inline. Todo lo demás → delegar.
-- Trabajo que toca 2+ archivos o 2+ dominios → **SDD** (`sdd-orchestrator`), nunca inline.
+- Trabajo multi-archivo: **ODD por defecto** (explorá, creá el doc de tareas si es sustancial, implementá por tareas con commits por unidad). SDD (`sdd-orchestrator`) solo a pedido explícito del usuario — desde gentle-ai 3.x el archivo-count ya no dispara SDD.
 - Implementación acotada (spec/tasks/apply) → `subagent` (flash). Propuesta/diseño/verify/review → `subagent_strong` (fuerte).
 
 ## Roster de agentes (20)
