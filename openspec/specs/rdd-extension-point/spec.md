@@ -2,27 +2,27 @@
 
 ## Purpose
 
-Punto de extensión RDD e integración contractual con el recibo de review nativo del runtime.
+Punto de extensión RDD e integración contractual con el ciclo de review nativo del runtime (Native Compact Review Orchestration, gentle-ai 3.4.0).
 
 ## Requirements
 
-### Requirement: Contrato de integración con el recibo RDD nativo
+### Requirement: Contrato de integración con el ciclo de review nativo
 
-El harness MUST integrarse con el mecanismo RDD del binario nativo sin reimplementarlo: al cerrar `apply` (por cada WU aplicada) MUST verificar la existencia del recibo de review nativo; al retomar una sesión MUST resolver el estado del recibo antes de continuar; sin recibo válido MUST seguir las acciones del gate nativo, sin abrir un presupuesto de review nuevo.
+El harness MUST integrarse con el mecanismo RDD del binario nativo sin reimplementarlo: al cerrar `apply` (por cada WU aplicada) MUST correr el preflight selectorless del ciclo de review nativo (`review status --contract gentle-ai.review-integration/v2 --next-transition`) y rutar SOLO desde el `next_transition` devuelto; al retomar una sesión MUST resolver el estado del candidato antes de continuar; nunca MUST abrir un presupuesto de review nuevo fuera de una acción nativa.
 
-#### Scenario: Chequeo de recibo post-apply
+#### Scenario: Preflight post-apply
 
 - GIVEN una WU implementada y el modo review activo en el binario
 - WHEN `apply` cierra la WU
-- THEN el harness verifica la existencia del recibo RDD nativo
-- AND si no existe, aplica la acción del gate nativo correspondiente
+- THEN el harness corre el preflight STATUS sobre el candidato del worktree actual
+- AND rutea solo desde el `next_transition` devuelto, sin abrir presupuesto propio
 
-#### Scenario: Retoma con recibo válido
+#### Scenario: Retoma con candidato activo
 
-- GIVEN una sesión retomada con un recibo RDD vigente
+- GIVEN una sesión retomada con una transacción de review activa para el candidato
 - WHEN el harness resuelve el estado
-- THEN reutiliza el recibo sin relanzar review
-- AND no se crea un presupuesto nuevo
+- THEN continúa el binding existente vía su `next_transition` sin relanzar review
+- AND un target ya acknowledged (`target_already_acknowledged`) no se re-revisiona
 
 ### Requirement: Semántica opt-in preservada
 
@@ -32,7 +32,7 @@ La activación de RDD MUST permanecer opt-in y de propiedad del usuario vía el 
 
 - GIVEN el usuario activó review mode con `--scope global`
 - WHEN corren cambios posteriores
-- THEN el harness integra el recibo nativo según este contrato
+- THEN el harness integra el ciclo de review nativo según este contrato
 
 #### Scenario: Modo inactivo
 
@@ -43,13 +43,31 @@ La activación de RDD MUST permanecer opt-in y de propiedad del usuario vía el 
 
 ### Requirement: Punto de inserción post-verify
 
-El harness MUST integrar el punto de extensión RDD en dos posiciones activas: el chequeo de existencia del recibo al cerrar `apply` (por WU) y la validación del recibo en el gate previo a `sdd-archive` (`sdd-verify` → gate de review → `sdd-archive`).
+El harness MUST integrar el punto de extensión RDD en dos posiciones activas: el preflight de review al cerrar `apply` (por WU) y el preflight de review en el gate previo a `sdd-archive` (`sdd-verify` → preflight de review → `sdd-archive`).
 
 #### Scenario: Punto de inserción declarado
 
 - GIVEN el pipeline SDD
 - WHEN se documenta la extensión RDD
-- THEN se declaran la verificación post-apply y la validación pre-archive como posiciones activas
+- THEN se declaran el preflight post-apply y el preflight pre-archive como posiciones activas
+
+### Requirement: Gates informativos y acknowledgement exacto
+
+Los comandos `review validate`/gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) MUST tratarse como compatibility/informational only: nunca descubren autoridad ni deciden la entrega (`invalidated/unmanaged` habilitados, `disabled/unmanaged` deshabilitados). Solo el acknowledgement exacto del ciclo nativo quema autoridad y artefactos (envelope `gentle-ai.review-acknowledged/v1`); commit, push, PR y release quedan fuera del lifecycle bajo política ordinaria del repositorio.
+
+#### Scenario: Gate no decide entrega
+
+- GIVEN un gate de entrega ejecutado tras un review acknowledged
+- WHEN se consulta su resultado
+- THEN es informational (`invalidated/unmanaged` o `disabled/unmanaged`)
+- AND la decisión de entrega queda bajo política ordinaria del repositorio
+
+#### Scenario: Acknowledgement quema autoridad
+
+- GIVEN una transacción de review con captura final aprobada
+- WHEN STATUS reofrece el acknowledgement exacto y se ejecuta
+- THEN quema la autoridad y artefactos de esa transacción (envelope `gentle-ai.review-acknowledged/v1`)
+- AND un target consumido no se re-revisiona
 
 ### Requirement: Mapeo de lentes existentes (informativo)
 

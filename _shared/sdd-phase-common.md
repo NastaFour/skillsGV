@@ -93,7 +93,7 @@ Ejemplo:
 (otros valores: `fallback-registry`, `fallback-path` o `none — no se encontró registro`)
 ```
 
-Nota: el punto de extensión RDD está integrado y activo (ver sección G): el harness verifica el recibo nativo al cerrar el `apply` de cada unidad de trabajo y valida el recibo en el gate previo a `sdd-archive` (`sdd-verify` → gate de review → `sdd-archive`). El contrato del recibo vive en `_shared/review-ledger-contract.md` y el mapa del harness en `00-meta-skills/harness-map.md`.
+Nota: el punto de extensión RDD está integrado y activo (ver sección G): al cerrar el `apply` de cada unidad de trabajo y antes de `sdd-archive` (`sdd-verify` → preflight de review → `sdd-archive`), el harness corre el preflight nativo y rutea solo desde el `next_transition` devuelto. El contrato del ciclo de review vive en `_shared/review-ledger-contract.md` y el mapa del harness en `00-meta-skills/harness-map.md`.
 
 ## E. Guard de carga de revisión (400 líneas)
 
@@ -129,21 +129,29 @@ Cierre su **reporte final** (el envelope) con una sección `## Key Learnings` pa
 
 Esto aplica a su respuesta final de texto al orquestador, no a salidas intermedias ni contenido de artefactos. Engram extraerá y persistirá estos aprendizajes automáticamente.
 
-## G. Contrato RDD — integración con el recibo nativo
+## G. Contrato RDD — integración con el ciclo de review nativo (gentle-ai 3.4.0)
 
-El catálogo NO reimplementa el mecanismo de review: se integra al recibo nativo del binario `gentle-ai`. El contrato completo del recibo vive en `_shared/review-ledger-contract.md` y es SOLO para el orquestador y el CLI nativo — nunca se pasa a lentes, refuters, jueces, correctores ni validadores.
+El catálogo NO reimplementa el mecanismo de review: se integra al ciclo nativo del binario `gentle-ai` (Native Compact Review Orchestration). El contrato completo del ciclo vive en `_shared/review-ledger-contract.md` y es SOLO para el orquestador y el CLI nativo — nunca se pasa a lentes, refuters, jueces, correctores ni validadores.
 
 **Dos posiciones activas:**
 
-1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness verifica la existencia del recibo nativo con `gentle-ai review validate --gate post-apply --cwd <repo>` (lineage resuelto con `gentle-ai review status`). Sin recibo: se reporta la acción del gate nativo correspondiente (`gentle-ai review start` cuando la política nativa lo indique) y NO se abre un presupuesto de review nuevo.
-2. **Pre-archive**: el pipeline es `sdd-verify` → gate de recibo → `sdd-archive`; el gate valida el recibo del candidato con los comandos nativos y no ejecuta lentes.
+1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness corre el preflight selectorless (`gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent <runtime> --next-transition`) sobre el candidato del worktree actual y rutea SOLO desde el `next_transition` devuelto — nunca desde prosa, gates ni estado ambiente. No abre un presupuesto de review por su cuenta.
+2. **Pre-archive**: el pipeline es `sdd-verify` → preflight de review → `sdd-archive`; mismo preflight, mismo ruteo.
 
-El chequeo y la validación del recibo son responsabilidad del harness/orquestador: ningún agente de fase lanza lentes, refuters, correcciones ni presupuestos de review.
+**Regla de entrada**: se entra al ciclo una vez por candidato, tras una implementación autorizada que muta fuente y antes de reportarla completa, cuando el interruptor de review del usuario está activo (`gentle-ai review mode status` lo lee sin mutarlo). El envelope de consentimiento del START decide por candidato; un runtime que corre el preflight él mismo entrega al agente los tokens START exactos y nunca corre START.
 
-**Retoma de sesión**: antes de continuar, resuelva el estado del recibo con los comandos nativos (`gentle-ai review status`). Un recibo vigente se reutiliza sin relanzar review y sin crear un presupuesto nuevo.
+**Ciclo atómico (4 pasos)**: (1) *preflight-only* — STATUS solo preflightea el candidato actual y devuelve exactamente un START; (2) *freeze-once* — se invoca solo el START devuelto con sus tokens exactos (lineage, revisión, target); (3) *stay-bound* — toda transición posterior se satisface con los tokens exactos que nombra cada `next_transition`; (4) *acknowledge-exactly* — solo el acknowledgement exacto quema autoridad y artefactos (envelope `gentle-ai.review-acknowledged/v1`); un acknowledgement errado, viejo o re-lanzado se rechaza sin crear recibo ni autoridad de entrega. Un target ya acknowledged está consumido (`target_already_acknowledged`): no se re-revisiona; la entrega sigue la política ordinaria del repositorio.
 
-**Opt-in**: la activación es propiedad del usuario y se realiza con el comando nativo (`gentle-ai review mode enable --scope global`; `status` y `disable` aceptan scope `global|clone`). El catálogo NO DEBE activarlo ni desactivarlo por sí mismo. Con el modo inactivo no se exige recibo y el pipeline no falla por su ausencia.
+**Assessment de solo lectura**: `gentle-ai review assess --cwd <repo> --json` (envelope `gentle-ai.review-assessment/v1`) expone el tier de riesgo (`passive|medium|high`), `review_due` y `review_due_reason` SIN crear autoridad de review. Sirve para graduar la verificación (p. ej. verifier independiente en tier alto) sin entrar al lifecycle.
+
+**Presupuestos y stops**: START congela los lentes, el presupuesto de corrección y el presupuesto de contexto por rol (200 KiB en 3.4.0). Stops clave: `correction_context_budget_exceeded` → liberar autoridad con `gentle-ai review abandon` y revisar como candidatos más chicos; `managed_assets_outdated` → correr el `sync` que nombra el continuation y re-consultar STATUS; `lens_context_budget_exceeded` → reducir scope y transacción nueva. La tabla completa de stops vive en el contrato.
+
+**Gates informativos**: los comandos `review validate`/gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) son compatibility/informational only — NUNCA descubren autoridad ni deciden la entrega (habilitados devuelven `invalidated/unmanaged`; deshabilitados, `disabled/unmanaged`). Commit, push, PR y release quedan FUERA del lifecycle: son decisiones humanas bajo la política ordinaria del repositorio.
+
+**Responsabilidad del harness**: el chequeo y el ruteo del ciclo son del orquestador vía los comandos nativos; ningún agente de fase lanza lentes, refuters, correcciones ni presupuestos. En OpenCode, la captura de cada lente se relaya vía una Task con el `provider_task` opaco del input (agente y prompt se copian exactos; el contrato detalla el transporte).
+
+**Retoma de sesión**: antes de continuar, resuelva el estado del candidato con el STATUS nativo y siga su `next_transition` (recibe el mismo binding; un target consumido no se re-ofrece).
+
+**Opt-in**: la activación es propiedad del usuario y se realiza con el comando nativo (`gentle-ai review mode enable --scope global`; `status` y `disable` aceptan scope `global|clone`). El catálogo NO DEBE activarlo ni desactivarlo por sí mismo. Con el modo inactivo no se entra al ciclo y el pipeline no falla por su ausencia.
 
 **Lentes**: la ejecución de lentes la decide la capa nativa. Las skills del catálogo (`02-dev-roles/code-reviewer` — lentes 4R; `02-dev-roles/judgment-day` — doble juez adversarial) son mapeables a los lentes nativos, pero el catálogo no ejecuta lentes propios.
-
-Los gates de entrega del binario son `post-apply`, `pre-commit`, `pre-push`, `pre-pr` y `release`: todos validan el mismo recibo y ninguno lanza lentes ni crea presupuesto.
