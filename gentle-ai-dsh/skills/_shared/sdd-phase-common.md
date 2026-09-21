@@ -18,25 +18,33 @@ NOTA: el camino preferido es (1) — paths exactos seleccionados por el orquesta
 
 ## B. Recuperación de artefactos
 
-**CRÍTICO**: `mem_search` devuelve PREVIEWS de ~300 caracteres, no el contenido completo. DEBE llamar `mem_get_observation(id)` por CADA artefacto. **Saltarse este paso produce salida incorrecta.**
+**Excepción del collector `sdd-research`**: ese collector output-only no lee artefactos locales, estado del repositorio ni de Engram, y no usa locators; devuelve su envelope de evidencia al orquestador, que lo valida y persiste por la ruta del store seleccionado. Las secciones B y C no aplican a `sdd-research`; toda otra fase las sigue sin cambios.
 
-**Ejecute todas las búsquedas en paralelo** — no secuencialmente.
+El orquestador inyecta el store de artefactos y los locators que el status nativo ya resolvió (`artifactStore` y `artifactPaths` de `gentle-ai sdd-status --json --instructions`). Lea lo que le dan.
 
-```
-mem_search(query: "sdd/{change-name}/{artifact-type}", project: "{project}") → guardar ID
-```
+**NO detecte el store de artefactos ni ramifique por él.** El dispatcher lo resolvió desde el store que el workspace DECLARA. Un agente que re-deriva el store discrepa con la autoridad que lo lanzó — así una fase termina leyendo un store que el workspace nunca declaró, o no leyendo nada y devolviendo un resultado vacío.
 
-Luego **ejecute todas las recuperaciones en paralelo**:
+Por cada artefacto que su fase requiere, lea su locator:
 
-```
-mem_get_observation(id: {id_guardado}) → contenido completo (OBLIGATORIO)
-```
+| store reportado | forma del locator | cómo leerlo |
+|---|---|---|
+| `openspec` | path del repo, p. ej. `openspec/changes/{change-name}/tasks.md` | lea el archivo |
+| `engram` | topic key, p. ej. `sdd/{change-name}/tasks` | `mem_search(query: "<locator>", project: "{project}")` → `mem_get_observation(id)` |
+| `hybrid` | cualquiera de las dos formas | archivo si el locator es un path; observación si es un topic key |
 
-No use previews de búsqueda como material fuente.
+**CRÍTICO para locators topic-key**: `mem_search` devuelve PREVIEWS de ~300 caracteres, no el contenido completo. DEBE llamar `mem_get_observation(id)` por CADA artefacto. **Saltarse este paso produce salida incorrecta.** No use previews de búsqueda como material fuente.
+
+**Ejecute todas las búsquedas y recuperaciones en paralelo** — no secuencialmente.
+
+Un locator requerido reportado como `<unresolved>` significa que el artefacto no existe: repórtelo como blocker. Nunca sustituya la copia de otro store ni salga a buscarla por su cuenta.
 
 ## C. Persistencia de artefactos
 
-Toda fase que produce un artefacto DEBE persistirlo. Saltarse esto ROMPE el pipeline — las fases descendentes no encontrarán su salida.
+Toda fase que produce un artefacto — salvo el collector output-only `sdd-research` — DEBE persistirlo. Saltarse esto ROMPE el pipeline — las fases descendentes no encontrarán su salida.
+
+Persista en el store que el orquestador reportó, usando el locator de ese artefacto. Como en la sección B, el store se lo dicen; no lo detecte. Los mecanismos de escritura de abajo difieren porque escribir un archivo y guardar una observación son operaciones genuinamente distintas — no porque el agente elija entre ellas.
+
+Los reportes de verificación son diagnósticos opcionales: persista resultados honestos sin validador ni certificado; preserve los hallazgos históricos y nunca fabrique un PASS para habilitar el archive.
 
 ### Modo engram
 
@@ -60,7 +68,7 @@ El archivo ya se escribió durante el paso principal de la fase. No se requiere 
 
 ### Modo hybrid
 
-Haga AMBOS: escriba el archivo en el filesystem Y llame `mem_save` como arriba, con la misma versión.
+Intente AMBAS escrituras declaradas y lea de vuelta cada una exitosa. Las escrituras hybrid NO son atómicas: preserve las exitosas y reporte persistencia parcial con el locator pendiente. No afirme un mirror exitoso, no sustituya silenciosamente otro store ni revierta progreso válido.
 
 ### Modo none
 
@@ -80,6 +88,12 @@ Toda fase DEBE devolver un envelope estructurado al orquestador con exactamente 
 - `skill_resolution`: cómo se cargaron las skills — `paths-injected` (recibió paths exactos del orquestador), `fallback-registry` (paths auto-cargados del registro), `fallback-path` (cargado vía path `SKILL: Load`), o `none` (sin skills cargadas)
 
 `status: blocked` con una dependencia insatisfecha → el orquestador NO avanza a la fase dependiente.
+
+**Validación de un resultado de fase delegada.** Un runtime cuyo host no valida los task results por sí mismo DEBE correr `gentle-ai sdd-task-result --phase <fase> --cwd <repo> --input <path|->` sobre la salida cruda del hijo antes de tratarla como resultado. Sale cero para un resultado utilizable; cualquier otro caso renderiza el fallo terminal tipado de abajo (idéntico byte a byte al que emite un host que valida, porque ambos leen una sola definición). Nunca clasifique un task result leyéndolo usted mismo.
+
+Si la validación terminal reporta `sdd_task_result_empty` o `sdd_task_result_malformed`, no asuma que este envelope fue entregado. No reintente automáticamente ni inicie otra fase. El valor terminal empieza con `GENTLE_AI_SDD_FAILURE ` seguido de un handoff JSON `gentle-ai.sdd-task-result-failure/v1`: presérvelo sin cambios, siga su `continuation` exactamente una vez y ejecútelo solo si viene provisto como comando. Nunca convierta guía en comando adivinado: use solo el status estructurado retenido del coordinador para el change y el artifact store seleccionados; si no está disponible, reporte el fallo terminal y pida al usuario que seleccione ambos. No infiera ninguno, no corra discovery de status sin scope, no reintente, no lance otra fase. Reporte el fallo tipado al usuario y espere una decisión explícita. Un lanzamiento posterior en la misma sesión recibe `sdd_task_dispatch_latched`: ese lanzamiento nunca se despachó — nombra la fase que pidió, la fase y el código anteriores que fallaron, y su `exit`; inicie una sesión nueva para lanzar fases SDD de nuevo.
+
+Los acknowledgements `background: true` de OpenCode y sus señales de progreso NO son terminales: no deben producir ni fallo de transporte ni latch de sesión; espere a que el hijo termine y use la ruta normal de artefactos/status.
 
 Ejemplo:
 
