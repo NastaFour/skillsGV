@@ -25,7 +25,8 @@
 
 | Harness | KERNEL-ACTIVE en… | Observaciones |
 |---|---|---|
-| (completar por harness) | | |
+| Antigravity CLI (`agy -p`, 2026-09-21) | **KERNEL-MISSING** | No autocarga `GEMINI.md` NI `AGENTS.md` del workspace (ambos probados con el mismo bloque byte-idéntico; sandbox `canary-activacion`, install 2.1.1 desde `main@6edd3cc`). Capa always-on reportada: solo global (`~/.gemini/GEMINI.md` gentle-ai + índice `~/.gemini/skills`). Única vía de activación para este harness: canal global (follow-up CHANGELOG 2.1.1). |
+| Gemini CLI (`gemini -p`) | **PENDING** | Sin auth configurada en el entorno (`GEMINI_API_KEY`/OAuth ausentes). Correr cuando haya auth. |
 
 ## Interpretación
 

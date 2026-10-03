@@ -8,6 +8,8 @@ metadata:
   trigger: ["playwright", "e2e testing", "end to end", "page object model", "getByRole", "getByLabel", "playwright mcp", "flaky tests"]
   scope: [global, project]
   version: "1.1.0"
+  requires-mcp: ["playwright"]
+  mcp-fallback: "Servidor Playwright MCP ausente -> proceder con creación de tests E2E basada en análisis de código estático y documentación sin exploración en vivo"
 ---
 
 # Playwright (E2E)

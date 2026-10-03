@@ -24,26 +24,26 @@ This skill guides public collaboration. It does not grant issue approval, label,
 - Inventory every operator flow claimed by the issue or PR, including entry, mode, environment, expectation, and negative controls. Require one truthful black-box bench journey per CLI or lifecycle flow, or actual runtime E2E proof when the core bench cannot represent it. Synthetic proxy coverage never proves another runtime.
 - Use CodeGraph-first impact mapping, a dedicated worktree, and behavior-first tests. Run source-mutating normalization before candidate freeze.
 - Forecast authored changes before edits. The hard limit is 400 additions plus deletions; above it, STOP for a chain or explicit maintainer-approved exception.
-- Only when RDD is enabled, bind receipts, lineage, correction, recovery, and delivery gates to the exact candidate: resolve receipt state with `gentle-ai review status` before continuing, reuse a valid receipt without relaunching review, and never open a new review budget outside a native action. Keep bounded review defects in one correction transaction.
+- Only when RDD is enabled, bind lineage, correction, recovery, and acknowledgement to the exact candidate: run the selectorless STATUS preflight (`gentle-ai review status --contract gentle-ai.review-integration/v2 --next-transition`) before continuing, route only from its returned `next_transition`, never re-review an already-acknowledged target (`target_already_acknowledged`), and never open a new review budget outside a native action. Only the exact acknowledgement burns authority (`gentle-ai.review-acknowledged/v1`); delivery gates never decide delivery. Keep bounded review defects in one correction transaction.
 - Require independent read-only candidate validation before publication. Validation cannot edit source or authority; findings require a new candidate.
 - Keep communication humane and evidence-based. Repository labels and workflow metadata are maintainer-owned, never evidence of contributor blame.
 
-## SDD Integration Points (native receipt)
+## SDD Integration Points (native review lifecycle)
 
-The catalog integrates with the native receipt at two active positions; the full receipt contract is `_shared/review-ledger-contract.md` (orchestrator and native CLI only), and the catalog-side contract lives in `_shared/sdd-phase-common.md` section G:
+The catalog integrates with the native review lifecycle at two active positions; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, orchestrator and native CLI only), and the catalog-side contract lives in `_shared/sdd-phase-common.md` section G:
 
-1. **Post-apply, per work unit**: at the close of each `apply` WU, the harness checks receipt existence with `gentle-ai review validate --gate post-apply --cwd <repo>`; when no receipt exists, follow the native gate action (`review start` when native policy says so) and never open a new review budget.
-2. **Pre-archive**: the pipeline is `sdd-verify → receipt gate → sdd-archive`; the gate validates the candidate receipt with the native commands and never runs lenses.
+1. **Post-apply, per work unit**: at the close of each `apply` WU, the harness runs the selectorless STATUS preflight over the current worktree candidate and routes only from the returned `next_transition` (an exact START freezes lineage, target, lenses, and budgets); it never opens a review budget on its own.
+2. **Pre-archive**: the pipeline is `sdd-verify → review preflight → sdd-archive`; same preflight, same routing. An already-acknowledged target is consumed and is not re-reviewed.
 
-Native delivery gates: `post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release` — all validate the same receipt and never launch reviewers or create a budget.
+`review validate` and the delivery gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) are compatibility/informational only: enabled gates return `invalidated/unmanaged`, disabled gates return `disabled/unmanaged`, and they never discover authority, decide delivery, or launch reviewers. Commit, push, PR, and release stay outside the lifecycle under ordinary repository policy.
 
 ## Bounded Correction Budget
 
-The bounded correction budget is FROZEN BY THE BINARY at review START: `budget = min(200, ceil(original_changed_lines / 2))`. The Markdown contract does NOT enforce it mechanically — it declares the contract and the agent duties:
+The bounded correction budget is FROZEN BY THE BINARY at review START, derived from the candidate's original changed-line count (the native layer owns the exact formula; the 3.4.0 compact contract does not restate it). The Markdown contract does NOT enforce it mechanically — it declares the contract and the agent duties:
 
 1. Before any corrective edit, run the positive correction forecast (native `capture-correction-plan` with `--correction-lines` > 0 when RDD is enabled).
 2. Never edit before the forecast is admitted.
-3. ONE bounded correction transaction per candidate — later observations are follow-ups, not another correction.
+3. ONE bounded correction transaction per candidate — later observations are follow-ups, not another correction. Correction also draws from a per-role context budget frozen at START (200 KiB in 3.4.0); `correction_context_budget_exceeded` means releasing authority with `gentle-ai review abandon`, not overrunning.
 4. If the fix exceeds budget, stop and request a new candidate/chain instead of overrunning.
 
 ## Decision Gates

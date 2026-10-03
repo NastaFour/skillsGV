@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **228 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -33,6 +33,7 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | skill-harvest | [00-meta-skills/skill-harvest/SKILL.md](00-meta-skills/skill-harvest/SKILL.md) ← post-project: draft new-skill proposals into _inbox from Engram, never auto-create |
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) |
+| skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) |
 
 ## 01-planning-process
 
@@ -53,6 +54,13 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | jira-epic | [01-planning-process/jira-epic/SKILL.md](01-planning-process/jira-epic/SKILL.md) ← Epic structure, child task breakdown, Jira MCP integration |
 | jira-task | [01-planning-process/jira-task/SKILL.md](01-planning-process/jira-task/SKILL.md) ← Bug/feature task templates, title conventions, MCP fields |
 | brainstorming | [01-planning-process/brainstorming/SKILL.md](01-planning-process/brainstorming/SKILL.md) ← explores user intent, requirements, design & specs before implementation (Superpowers) |
+| lean-ux | [01-planning-process/lean-ux/SKILL.md](01-planning-process/lean-ux/SKILL.md) |
+| brand-guidelines | [01-planning-process/brand-guidelines/SKILL.md](01-planning-process/brand-guidelines/SKILL.md) |
+| content-strategy | [01-planning-process/content-strategy/SKILL.md](01-planning-process/content-strategy/SKILL.md) |
+| copywriting | [01-planning-process/copywriting/SKILL.md](01-planning-process/copywriting/SKILL.md) |
+| humanizer | [01-planning-process/humanizer/SKILL.md](01-planning-process/humanizer/SKILL.md) |
+| storybrand-messaging | [01-planning-process/storybrand-messaging/SKILL.md](01-planning-process/storybrand-messaging/SKILL.md) |
+| content-studio | [01-planning-process/content-studio/SKILL.md](01-planning-process/content-studio/SKILL.md) |
 
 ## 02-dev-roles
 
@@ -88,6 +96,7 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | hexagonal-architecture-layers-java | [02-dev-roles/hexagonal-architecture-layers-java/SKILL.md](02-dev-roles/hexagonal-architecture-layers-java/SKILL.md) ← domain/application/infrastructure layers, ports & adapters, Java |
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
+| archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) |
 
 ## 03-ai-ml
 
@@ -179,6 +188,13 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | design-driven | [05-frontend/design-driven/SKILL.md](05-frontend/design-driven/SKILL.md) ← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop |
 | impeccable | [05-frontend/impeccable/SKILL.md](05-frontend/impeccable/SKILL.md) ← Comandos Bakaus, PRODUCT.md/DESIGN.md, references/commands.md |
 | taste-skill | [05-frontend/taste-skill/SKILL.md](05-frontend/taste-skill/SKILL.md) ← Design Read, diales, 10 bans, references/full-guide.md |
+| emil-kowalski | [05-frontend/emil-kowalski/SKILL.md](05-frontend/emil-kowalski/SKILL.md) |
+| refactoring-ui | [05-frontend/refactoring-ui/SKILL.md](05-frontend/refactoring-ui/SKILL.md) |
+| ui-ux-pro-max | [05-frontend/ui-ux-pro-max/SKILL.md](05-frontend/ui-ux-pro-max/SKILL.md) |
+| onboarding-cro | [05-frontend/onboarding-cro/SKILL.md](05-frontend/onboarding-cro/SKILL.md) |
+| page-cro | [05-frontend/page-cro/SKILL.md](05-frontend/page-cro/SKILL.md) |
+| popup-cro | [05-frontend/popup-cro/SKILL.md](05-frontend/popup-cro/SKILL.md) |
+| signup-flow-cro | [05-frontend/signup-flow-cro/SKILL.md](05-frontend/signup-flow-cro/SKILL.md) |
 
 ## 06-code-quality
 
@@ -220,6 +236,7 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | monitoring | [08-devops/monitoring/SKILL.md](08-devops/monitoring/SKILL.md) |
 | observability | [08-devops/observability/SKILL.md](08-devops/observability/SKILL.md) |
 | store-deployment-eas | [08-devops/store-deployment-eas/SKILL.md](08-devops/store-deployment-eas/SKILL.md) ← `references/eas-setup.md`, `scripts/check-eas-config.mjs` |
+| cloudflare-edge | [08-devops/cloudflare-edge/SKILL.md](08-devops/cloudflare-edge/SKILL.md) |
 
 ## 09-media-graphics
 
@@ -240,6 +257,7 @@ Catálogo de **210 skills** compatible con [agentskills.io](https://agentskills.
 | asset-generator-mcp | [11-mcp-hybrid/asset-generator-mcp/SKILL.md](11-mcp-hybrid/asset-generator-mcp/SKILL.md) ← assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo |
 | figma-mcp | [11-mcp-hybrid/figma-mcp/SKILL.md](11-mcp-hybrid/figma-mcp/SKILL.md) ← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP |
 | open-design | [11-mcp-hybrid/open-design/SKILL.md](11-mcp-hybrid/open-design/SKILL.md) ← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo |
+| openseo | [11-mcp-hybrid/openseo/SKILL.md](11-mcp-hybrid/openseo/SKILL.md) |
 
 ## professional-planner
 

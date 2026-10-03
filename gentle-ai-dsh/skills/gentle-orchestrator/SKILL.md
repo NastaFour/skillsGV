@@ -14,24 +14,26 @@ Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-
 
 ## Regla Alan (lenguaje natural primero)
 
-- Preferí triggers en lenguaje natural («hacé un SDD para X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- El alias slash depende de lo que exponga tu runtime (en gentle-ai 3.1.0 el ruteo nativo vive en `gentle-ai sdd-status` / `sdd-continue`). No dependas del slash para arrancar una fase: el NL es la vía primaria.
+- Preferí triggers en lenguaje natural («implementá la feature X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
+- En Gentle-AI 4.0.0, ODD (Organic Driven Development) es el flujo nativo y predefinido. Los comandos heredados de SDD (`sdd-status`, `sdd-continue`) fueron retirados en upstream 4.0.0. No dependas de comandos CLI de SDD: ODD opera directamente mediante exploración, tracking antes del primer write (`odd/tasks/<feature>.md`) e implementación por tareas atómicas con commits por unidad.
 
-## Reglas de delegación (inline vs delegar)
+## Reglas de delegación (Evidence Budget de Gentle-AI 4.0.0)
 
 | Acción | Inline | Delegar |
 |---|---|---|
-| Leer 1-3 archivos para decidir/verificar | ✅ | — |
-| Leer 4+ archivos para entender | — | ✅ un mapper |
-| Escribir 1 archivo mecánico ya-entendido | ✅ | — |
-| Escribir 2+ archivos no-triviales | — | ✅ un writer |
+| Exploración / Lectura que cabe en 1 batch paralelo (≤3 llamadas / ~10k tokens) | ✅ | — |
+| Exploración / Mapeo que supera ~10k tokens o ≥4 archivos | — | ✅ un mapper (contrato `path:line`) |
+| Escribir 1 archivo mecánico ya-entendido sin diseño pendiente | ✅ | — |
+| Escribir 2+ archivos no-triviales | — | ✅ un writer acotado |
+| Backstop de sesión larga (≥20 llamadas o ≥5 lecturas sin delegación) | — | ✅ delegar siguiente unidad |
 | bash (git/gh) | ✅ | — |
 | tests/build/install/review | ✅ acotado | ✅ worker fresco por acción |
 
 **Reglas duras:**
+- **Evidence Budget**: el trabajo inline solo está permitido si cabe en un único batch paralelo (máximo 3 llamadas de lectura o ~10k tokens de contexto). Toda lectura preparatoria amplia o mapeo de 4+ archivos DEBE delegarse a un subagente explorador con contrato de entrega en referencias `path:line`.
 - Fix pequeño y mecánico (1 archivo, sin diseño pendiente) → inline. Todo lo demás → delegar.
-- Trabajo multi-archivo: **ODD por defecto** (explorá, creá el doc de tareas si es sustancial, implementá por tareas con commits por unidad). SDD (`sdd-orchestrator`) solo a pedido explícito del usuario — desde gentle-ai 3.x el archivo-count ya no dispara SDD.
-- Implementación acotada (spec/tasks/apply) → `subagent` (flash). Propuesta/diseño/verify/review → `subagent_strong` (fuerte).
+- Multi-archivo: **ODD exclusivo**. Trackeá en `odd/tasks/<feature>.md` antes del primer write e implementá tarea por tarea con commits de unidad de trabajo (Conventional Commits) y TDD cuando aplique. SDD queda como referencia metodológica histórica.
+- Implementación acotada / mappers / tareas atómicas → `subagent` (flash). Review adversarial / árbitros de Judgment Day → `subagent_strong` (fuerte).
 
 ## Roster de agentes (20)
 

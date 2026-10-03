@@ -55,7 +55,7 @@ Regla de oro: **`roster.json` es la única fuente de verdad**. Ningún runtime s
 
 ## 🔄 Alineación con perfiles nativos (`gentle-ai sync`)
 
-El catálogo se alinea con el mecanismo nativo de perfiles de `gentle-ai 2.7.0` (`sync --profile <nombre:modelo>` y `--profile-phase <perfil:fase:modelo>`) y **no duplica su motor de perfiles de fase**:
+El catálogo se alinea con el mecanismo nativo de perfiles de `gentle-ai 3.4.0` (`sync --profile <nombre:proveedor/modelo>` y `--profile-phase <nombre:fase:modelo>`) y **no duplica su motor de perfiles de fase**:
 
 - El catálogo declara los tiers nativos (`sdd-strong`, `sdd-mid`, `sdd-cheap`) y su razonamiento/economía en `_shared/agent-roster/roster.json`.
 - `set-models.mjs --emit-sync-args` emite los argumentos exactos de `gentle-ai sync` listos para invocar el binario nativo.
