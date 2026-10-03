@@ -1,6 +1,6 @@
 # skillsGV
 
-Catálogo multi-agente de **228 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers), [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0) y [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT).
+Catálogo multi-agente de **228 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Corey Haines](https://coreyhaines.com/), [Donald Miller](https://storybrand.com/) (StoryBrand), [Adam Wathan & Steve Schoger](https://www.refactoringui.com/) (Refactoring UI), [Emil Kowalski](https://animations.dev/) (animations.dev), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) (Hermes) y [obra `superpowers`](https://github.com/obra/superpowers).
 
 Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
 
@@ -219,13 +219,30 @@ Documentación de referencia:
 - [`.atl/skill-registry.md`](.atl/skill-registry.md) — registro generado automáticamente (índice, no fuente de verdad).
 - [`openspec/specs/`](openspec/specs/) — especificaciones de los cambios aplicados al catálogo.
 
-## 🙏 Créditos e Inspiración
+## 📜 Licencias, Derechos de Autor y Reconocimientos
 
-| Proyecto | Autor | Licencia | Qué se adaptó |
+Este catálogo compila, organiza y adapta especificaciones y metodologías de código abierto y de referencia de diversos creadores y proyectos de la comunidad tecnológica. Cada componente derivado preserva los derechos morales, la propiedad intelectual y las licencias de sus respectivos autores originales:
+
+### Proyectos y Autores Adaptados
+
+| Proyecto / Metodología | Autor / Comunidad | Licencia Original | Qué se adaptó / Skills |
 |---|---|---|---|
-| [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Paul Bakaus | Apache-2.0 | Vocabulario de 23 comandos, PRODUCT.md / DESIGN.md |
-| [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Leonxlnx | MIT | Design Read, diales triaxiales, 10 Absolute Bans, preflight |
-| gentle-ai | Gentleman Programming | — | Las 6 claves estratégicas (guía de marca, 3 P's, anclaje de scroll, referencia real, componentes, móvil) |
-| Plataformas de referencia | — | — | Godly.design, Awwwards, 21st.dev, Fal.ai, Figma MCP (inspiración y tooling de diseño frontend para gentle-ai) |
+| [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) & [Engram](https://github.com/Gentleman-Programming/engram) | [Gentleman Programming](https://github.com/Gentleman-Programming) | MIT / Open Source | Harness de orquestación (ODD/SDD), memoria persistente Engram, protocolo Judgment Day, roster de 21 agentes |
+| [Anthropic Agent Skills](https://github.com/anthropics/skills) | Anthropic | MIT / Open Source | Patrones fundamentales de skills para agentes y directivas base |
+| [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills) | Vercel Labs | MIT | Patrones de composición en React, Next.js y ecosistema Vercel |
+| [Total TypeScript / Matt Pocock](https://github.com/mattpocock) | Matt Pocock | MIT / Permisiva | Suite de 23 skills en `12-matt-pocock/` (`codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grilling`, etc.) |
+| [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Paul Bakaus | Apache-2.0 | Gobernanza de diseño por 23 comandos especializados, `PRODUCT.md` y `DESIGN.md` |
+| [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Leonxlnx | MIT | Gobernanza estética anti-slop, diales triaxiales, 10 Absolute Bans y preflight |
+| [Conversion Factory / CRO](https://coreyhaines.com/) | Corey Haines | Propietaria / Educativa | Suite de CRO en `05-frontend/`: `page-cro`, `signup-flow-cro`, `onboarding-cro` y `popup-cro` |
+| [Refactoring UI](https://www.refactoringui.com/) | Adam Wathan & Steve Schoger | Educativa / Metodológica | Metodología de diseño visual en `05-frontend/refactoring-ui` (escala de grises, jerarquía por peso/tono, sombras multicapa) |
+| [animations.dev](https://animations.dev/) | Emil Kowalski | Educativa / Metodológica | Animaciones fluidas en `05-frontend/emil-kowalski` (física de resortes, gestos interrumpibles 1:1, transiciones FLIP) |
+| [Building a StoryBrand (SB7)](https://storybrand.com/) | Donald Miller | Metodológica / Comercial | Marco narrativo de 7 partes en `01-planning-process/storybrand-messaging` (el cliente como héroe) |
+| [Hermes Agent Security](https://github.com/NousResearch/Hermes-Function-Calling) | NousResearch | Apache-2.0 / MIT | Matriz de amenazas de seguridad para agentes (Hermes #13) en `00-meta-skills/skill-spector` |
+| [OpenSEO MCP](https://github.com/every-app/open-seo) | every-app | MIT | Auditoría técnica SEO y visibilidad en motores de IA en `11-mcp-hybrid/openseo` |
+| [Excalidraw](https://excalidraw.com/) | Excalidraw Team | MIT | Esquemas visuales y diagramación técnica en `02-dev-roles/archify` |
+| [obra/superpowers](https://github.com/obra/superpowers) | Jesse Vincent | MIT | Conceptos y estructura de superpoderes para agentes |
+| Plataformas de Referencia Visual | Godly.design, Awwwards, 21st.dev, Fal.ai | — | Inspiración y tooling estético documentados en `05-frontend/taste-skill/references/full-guide.md` |
 
-El índice completo de las 52 fuentes del notebook está en `05-frontend/taste-skill/references/full-guide.md`.
+### Licencia del Catálogo
+
+El código de unión (*glue-code*), los scripts de instalación, el validador mecánico y la adaptación unificada de las skills de este catálogo se distribuyen bajo la licencia **MIT**, respetando las licencias originales de cada obra y autor arriba citados.
