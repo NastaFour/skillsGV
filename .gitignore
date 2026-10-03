@@ -22,3 +22,16 @@ _jd-*.diff*
 # Dependencies
 node_modules/
 
+# Local/installed agent skills and runtime dirs (prevent committing installed skills into repo)
+.skills-install/
+.skills-installed/
+.agents/
+.gemini/
+.claude/
+.cursor/
+.vscode/
+
+# Local PR drafts
+pr-body-*.md
+
+

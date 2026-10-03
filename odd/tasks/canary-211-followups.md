@@ -28,11 +28,27 @@ Dato adicional: uninstall con código 2.1.1 sobre un manifest pre-merge limpió 
 - [x] T0b Reinstall del sandbox con la versión nueva (uninstall de install pre-merge + install fresco 2.1.1 completo).
 - [x] T0c Canary `agy` vía `GEMINI.md` → KERNEL-MISSING; vía `AGENTS.md` → KERNEL-MISSING.
 - [ ] T0d Registrar resultados del canary en `references/canary-activation.md` (tabla del paso 5).
-- [ ] T1 Follow-up #1 (slice mínimo aprobado): re-vendor del contrato review/RDD **target 3.4.0** (binario local ya 3.4.0; sync ya refrescó `~/.config/opencode/skills/_shared/review-ledger-contract.md`). WU1: contrato + referencias que enseñan la mecánica vieja. WU2: chassis `sdd-phase-common` (§B/§C/§D) + truth-up de menciones "2.7.0 verificado" → 3.4.0 con reverificación. Novedades 3.2.1→3.4.0 a incorporar: `target_already_acknowledged`, `managed_assets_outdated`, `assess` con `review_due`/`next_transition`, presupuesto de contexto 200 KiB + `correction_context_budget_exceeded`, lens-capture vía `provider_task`, delegación ODD obligatoria (3.2.1), **RTK retirado (breaking 3.4.0 — grep y eliminar menciones)**. El resto del change SDD queda abierto.
-- [ ] T2+T4 Rama B (aprobada): instalación global completa en `~/.gemini` — reinstall 210 skills + tier0 fresco + kernel minimal en `~/.gemini/GEMINI.md` coexistiendo con bloques gentle-ai. Se ejecuta DESPUÉS del trabajo del repo para instalar la versión final. Verificar soporte de canal global en el instalador (hoy kernel = solo proyecto).
-- [ ] T3 (absorbido en T1/WU2): truth-up de las 37 menciones "2.7.0".
-- [ ] T6 RTK sweep: grep RTK en catálogo + README; eliminar/no prometer (3.4.0 lo retiró).
-- [ ] T7 Bench final del usuario: skills vs sin skills con `agy` (Gemini flash, `--effort high`), tests/validaciones, análisis de session logs (adherencia a lineamientos en profundidad). Requisito del usuario: **borrar los proyectos viejos de las pruebas CON/SIN skills** para evaluar desde 0 — rutas exactas pendientes de confirmar (no encontradas con búsqueda `bench|zona|sonido|con-skills|sin-skills`).
+- [x] T1 Follow-up #1 (slice mínimo aprobado): **DONE 2026-09-21** — commits `8285a57` (re-vendor contrato review 3.4.0 byte-exacto, hash `EB8AFE47…` verificado idéntico a la fuente + refs de mecánica en 8 archivos), `1b8795f` (chassis §B/§C/§D), `67a5040` (truth-up 5 puntos + RTK sweep limpio). Autorado +303/−183 (486). Verificación: `pnpm test` 111/111, `validate:strict` 210/0/0, `sync-addon --check` PASS, spot-check del orquestador (hash + diff §G). Writer: subagente `general` (glm-5.3 full) — deliberado, ver justificación en historia de sesión.
+- [x] **REVIEW CONGELADA**: **RESUELTA / ABANDONADA** — Transacción huérfana `review-5048b2d75805b5d9` fue descartada limpiamente mediante `gentle-ai review abandon`. Store de reviews en estado limpio.
+- [x] **GITIGNORE PROTEGIDO**: `.skills-install/`, `.skills-installed/`, `.agents/`, `.gemini/`, `.claude/`, `.cursor/`, `.vscode/` agregados a `.gitignore` raíz para evitar pusheos involuntarios de skills instaladas.
+- [x] **FASE 1 (Frontend Design Skills)**: 3 nuevas skills creadas y validadas: `05-frontend/ui-ux-pro-max`, `05-frontend/refactoring-ui`, `05-frontend/emil-kowalski`.
+- [x] **FASE 2 (Arch, Lean-UX, Cloudflare, OpenSEO & MCP)**: 4 nuevas skills creadas: `02-dev-roles/archify`, `01-planning-process/lean-ux`, `08-devops/cloudflare-edge`, `11-mcp-hybrid/openseo`. Actualizado `mcp-manifest.json` (openseo, playwright) y fallback bidireccional.
+- [x] **FASE 3 (CRO Suite & Copywriting / StoryBrand / Security)**: 11 nuevas skills creadas y validadas:
+  - CRO Suite (Corey Haines): `05-frontend/page-cro`, `05-frontend/signup-flow-cro`, `05-frontend/onboarding-cro`, `05-frontend/popup-cro`.
+  - Copywriting / Brand (Donald Miller / Wondelai): `01-planning-process/storybrand-messaging`, `01-planning-process/humanizer`, `01-planning-process/copywriting`, `01-planning-process/brand-guidelines`, `01-planning-process/content-strategy`, `01-planning-process/content-studio`.
+  - Security (Hermes #13): `00-meta-skills/skill-spector`.
+- [x] **FASE 4 (Alineación Gentle-AI 4.0.0 & Evidence Budget)**:
+  - `00-meta-skills/gentle-orchestrator/SKILL.md` actualizado con el Evidence Budget de 4.0.0 (~10k tokens / máx. 3 llamadas inline; mappers y writers delegados).
+  - `00-meta-skills/harness-map.md` actualizado con nota de evolución ODD de 4.0.0.
+  - `_shared/bootstrap-kernel-minimal.md` actualizado con ODD exclusivo y Evidence Budget.
+- [x] **FASE 5 (Solución Kernel & Rutas Antigravity `agy`)**:
+  - `00-meta-skills/skill-sync/scripts/install-skills.mjs` corregido para instalar en `.agents/skills` (la ruta real donde Antigravity CLI descubre skills en Windows/Home) y detectar `.gemini/antigravity-cli`, `antigravity`, `agy`.
+- [x] **FASE 6 (Sincronización DSH & Verificación Total)**:
+  - Catálogo principal actualizado a **228 skills**.
+  - `node scripts/sync-addon.mjs --write` ejecutado con éxito: 228 skills en paridad exacta con `gentle-ai-dsh/skills/`.
+  - `pnpm validate:strict`: **228 pass · 0 errors · 0 warnings**.
+  - `pnpm test`: **111 pass · 0 fail**.
+  - `pnpm test:addon`: **3 pass · 0 fail**.
 
 ## Alcance autorizado
 
@@ -44,9 +60,18 @@ Repo `C:\Users\j1347\Desktop\skills` (origin `github.com/NastaFour/skillsGV`), b
 - `pnpm validate:strict` tras tocar SKILL.md.
 - Canales verificados con el prompt exacto del runbook (transcript en los outputs de las corridas `agy -p`).
 
-## Estrategia de entrega
+## Estado de sesión (parada 2026-09-21, "Parar acá")
 
-`ask-on-risk`. Forecast inicial: T1+T3 juntos pueden superar las 400 líneas (37 menciones + re-vendor) → si se confirma, preguntar cadena vs `size:exception` antes del PR.
+Sesión interrumpida por decisión del usuario durante el defect handoff del review nativo. Próxima sesión — orden sugerido:
+
+1. Resolver la transacción congelada (ver REVIEW CONGELADA arriba).
+2. Preguntar chain vs `size:exception` y abrir el PR de `feat/followups-211` (sin push aún).
+3. T2+T4 Rama B: instalación global `~/.gemini` completa (210 skills + tier0 + kernel minimal en `~/.gemini/GEMINI.md`) — aprobada por usuario, pendiente de ejecución.
+4. Confirmar con el usuario las rutas exactas de los proyectos viejos del bench CON/SIN skills para borrarlos (búsqueda `bench|zona|sonido|con-skills|sin-skills` en Desktop/home: sin resultados).
+5. T7 Bench final: skills vs sin skills con `agy` (Gemini flash, `--effort high`), n por definir, análisis de session logs para adherencia a lineamientos.
+
+Notas técnicas para reanudar: el STATUS del binding es el comando exacto con `--lineage=review-5048b2d75805b5d9 --repository-context=rctx2_5da5af79bd9254c60fef109ad137522c2ee2a3711f37ce60105e6f4043aae69b --base-ref=3ba49342583d17cc03e2a5b93ec328e715c12b60 --committed-only=true`. El preflight selectorless (sin binding) responde normal — el timeout es específico del binding con rctx2. Engram: proyecto `skillsgv` registrado vía session_start pero los writes (`mem_save`) fallan `ambiguous_project` en el MCP (disponibles: gentle-ai, mattpocock-skills) — mirror Engram PENDING, este archivo es la fuente de recuperación.
+
 
 ## Decisiones
 
