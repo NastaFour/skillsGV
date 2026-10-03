@@ -34,7 +34,7 @@ Hay 14 skills "tier 0" siempre-activas, definidas en
 skill-validator, skill-sync, professional-planner, sdd-orchestrator, ...).
 
 Regla dura: **antes de cada turno que pueda cargar otra skill, corré
-skill-router** para bajar 213 → 3-5 candidatas. No leas el cuerpo de una skill
+skill-router** para bajar 228 → 3-5 candidatas. No leas el cuerpo de una skill
 fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
