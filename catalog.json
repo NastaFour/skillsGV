@@ -1,23 +1,23 @@
 {
   "version": 1,
   "totals": {
-    "skills": 210
+    "skills": 228
   },
   "categories": [
     {
       "id": "00-meta-skills",
       "title": "Meta-Skills",
-      "count": 25
+      "count": 26
     },
     {
       "id": "01-planning-process",
       "title": "Planning & Process",
-      "count": 15
+      "count": 22
     },
     {
       "id": "02-dev-roles",
       "title": "Dev Roles (SDD)",
-      "count": 30
+      "count": 31
     },
     {
       "id": "03-ai-ml",
@@ -32,7 +32,7 @@
     {
       "id": "05-frontend",
       "title": "Frontend",
-      "count": 45
+      "count": 52
     },
     {
       "id": "06-code-quality",
@@ -47,7 +47,7 @@
     {
       "id": "08-devops",
       "title": "DevOps",
-      "count": 5
+      "count": 6
     },
     {
       "id": "09-media-graphics",
@@ -57,7 +57,7 @@
     {
       "id": "11-mcp-hybrid",
       "title": "MCP Hybrids",
-      "count": 8
+      "count": 9
     },
     {
       "id": "12-matt-pocock",
@@ -256,6 +256,14 @@
       "autoInvoke": true
     },
     {
+      "name": "skill-spector",
+      "path": "00-meta-skills/skill-spector/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "skill-sync",
       "path": "00-meta-skills/skill-sync/SKILL.md",
       "category": "00-meta-skills",
@@ -296,11 +304,43 @@
       "autoInvoke": true
     },
     {
+      "name": "brand-guidelines",
+      "path": "01-planning-process/brand-guidelines/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "cognitive-doc-design",
       "path": "01-planning-process/cognitive-doc-design/SKILL.md",
       "category": "01-planning-process",
       "tier0": false,
       "note": "← diseño de documentación técnica y guías reduciendo carga cognitiva",
+      "autoInvoke": false
+    },
+    {
+      "name": "content-strategy",
+      "path": "01-planning-process/content-strategy/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "content-studio",
+      "path": "01-planning-process/content-studio/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "copywriting",
+      "path": "01-planning-process/copywriting/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
       "autoInvoke": false
     },
     {
@@ -310,6 +350,14 @@
       "tier0": true,
       "note": null,
       "autoInvoke": true
+    },
+    {
+      "name": "humanizer",
+      "path": "01-planning-process/humanizer/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "idea-to-prd-express",
@@ -334,6 +382,14 @@
       "tier0": false,
       "note": "← Bug/feature task templates, title conventions, MCP fields",
       "autoInvoke": true
+    },
+    {
+      "name": "lean-ux",
+      "path": "01-planning-process/lean-ux/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "master-prompt",
@@ -376,6 +432,14 @@
       "autoInvoke": true
     },
     {
+      "name": "storybrand-messaging",
+      "path": "01-planning-process/storybrand-messaging/SKILL.md",
+      "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "tech-escalation-adr",
       "path": "01-planning-process/tech-escalation-adr/SKILL.md",
       "category": "01-planning-process",
@@ -387,6 +451,14 @@
       "name": "tech-stack-advisor",
       "path": "01-planning-process/tech-stack-advisor/SKILL.md",
       "category": "01-planning-process",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "archify",
+      "path": "02-dev-roles/archify/SKILL.md",
+      "category": "02-dev-roles",
       "tier0": false,
       "note": null,
       "autoInvoke": false
@@ -960,6 +1032,14 @@
       "autoInvoke": true
     },
     {
+      "name": "emil-kowalski",
+      "path": "05-frontend/emil-kowalski/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "expo-production-auditor",
       "path": "05-frontend/expo-production-auditor/SKILL.md",
       "category": "05-frontend",
@@ -1080,12 +1160,36 @@
       "autoInvoke": true
     },
     {
+      "name": "onboarding-cro",
+      "path": "05-frontend/onboarding-cro/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "page-cro",
+      "path": "05-frontend/page-cro/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "page-transitions",
       "path": "05-frontend/page-transitions/SKILL.md",
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/web-transitions.md`, `scripts/check-transitions.mjs`",
       "autoInvoke": true
+    },
+    {
+      "name": "popup-cro",
+      "path": "05-frontend/popup-cro/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "push-notifications",
@@ -1128,12 +1232,28 @@
       "autoInvoke": false
     },
     {
+      "name": "refactoring-ui",
+      "path": "05-frontend/refactoring-ui/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "scroll-animations",
       "path": "05-frontend/scroll-animations/SKILL.md",
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/scroll-reveal.md`, `references/parallax.md`, `scripts/check-scroll.mjs`",
       "autoInvoke": true
+    },
+    {
+      "name": "signup-flow-cro",
+      "path": "05-frontend/signup-flow-cro/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "state-management",
@@ -1174,6 +1294,14 @@
       "tier0": false,
       "note": "← `references/core-threejs.md`, `references/r3f-patterns.md`, `references/drei-helpers.md`, `references/performance-webgl.md`, `references/spline-no-code.md`",
       "autoInvoke": true
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "path": "05-frontend/ui-ux-pro-max/SKILL.md",
+      "category": "05-frontend",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "vercel-composition-patterns",
@@ -1416,6 +1544,14 @@
       "autoInvoke": true
     },
     {
+      "name": "cloudflare-edge",
+      "path": "08-devops/cloudflare-edge/SKILL.md",
+      "category": "08-devops",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "kill-switches",
       "path": "08-devops/kill-switches/SKILL.md",
       "category": "08-devops",
@@ -1518,6 +1654,14 @@
       "tier0": false,
       "note": "← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo",
       "autoInvoke": true
+    },
+    {
+      "name": "openseo",
+      "path": "11-mcp-hybrid/openseo/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier0": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "ux-auditor-agent",

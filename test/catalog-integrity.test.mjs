@@ -17,8 +17,8 @@ function walkSkills(dir) {
 
 const skills = walkSkills('.');
 
-test('catalog has exactly 210 active skills', () => {
-  assert.equal(skills.length, 210, 'Total skills count should be exactly 210');
+test('catalog has exactly 228 active skills', () => {
+  assert.equal(skills.length, 228, 'Total skills count should be exactly 228');
 });
 
 test('zero [APP] placeholder in all skills', () => {
