@@ -16,6 +16,22 @@
       "requiredBy": [
         "open-design"
       ]
+    },
+    "openseo": {
+      "purpose": "Auditar SEO técnico, indexación, rastreo y visibilidad en motores de IA con OpenSEO",
+      "install": "npx skills add every-app/open-seo (o conectar endpoint MCP de OpenSEO)",
+      "spec": "https://github.com/every-app/open-seo",
+      "requiredBy": [
+        "openseo"
+      ]
+    },
+    "playwright": {
+      "purpose": "Inspección de browser en vivo, toma de snapshots del DOM y capturas antes de generar pruebas E2E",
+      "install": "npx @executeautomation/playwright-mcp-server (o servidor MCP oficial de Playwright)",
+      "spec": "https://github.com/executeautomation/mcp-playwright",
+      "requiredBy": [
+        "playwright"
+      ]
     }
   }
 }
