@@ -23,16 +23,26 @@
     },
     "phases": {
       "type": "object",
-      "required": ["propose", "spec", "design", "tasks", "apply", "verify"],
       "additionalProperties": false,
-      "description": "Una entrada por fase del pipeline SDD. Objeto vacío = la fase hereda defaultAlias.",
+      "description": "Una entrada por rol ODD o fase del pipeline SDD. Objeto vacío = hereda defaultAlias.",
       "properties": {
+        "orchestrator": { "$ref": "#/$defs/phaseProfile" },
+        "explorer": { "$ref": "#/$defs/phaseProfile" },
+        "writer": { "$ref": "#/$defs/phaseProfile" },
+        "verifier": { "$ref": "#/$defs/phaseProfile" },
+        "judge-a": { "$ref": "#/$defs/phaseProfile" },
+        "judge-b": { "$ref": "#/$defs/phaseProfile" },
+        "fix-agent": { "$ref": "#/$defs/phaseProfile" },
         "propose": { "$ref": "#/$defs/phaseProfile" },
         "spec": { "$ref": "#/$defs/phaseProfile" },
         "design": { "$ref": "#/$defs/phaseProfile" },
         "tasks": { "$ref": "#/$defs/phaseProfile" },
         "apply": { "$ref": "#/$defs/phaseProfile" },
-        "verify": { "$ref": "#/$defs/phaseProfile" }
+        "verify": { "$ref": "#/$defs/phaseProfile" },
+        "init": { "$ref": "#/$defs/phaseProfile" },
+        "research": { "$ref": "#/$defs/phaseProfile" },
+        "archive": { "$ref": "#/$defs/phaseProfile" },
+        "judgment-day": { "$ref": "#/$defs/phaseProfile" }
       }
     },
     "providers": {

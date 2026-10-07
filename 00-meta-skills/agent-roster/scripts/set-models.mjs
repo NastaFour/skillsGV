@@ -84,9 +84,9 @@ export function normalizeTier(tier) {
 
 export function nativeTier(tier) {
   const norm = normalizeTier(tier);
-  if (norm === "strong") return "sdd-strong";
-  if (norm === "mid") return "sdd-mid";
-  if (norm === "cheap") return "sdd-cheap";
+  if (norm === "strong") return "strong";
+  if (norm === "mid") return "mid";
+  if (norm === "cheap") return "cheap";
   return tier;
 }
 
@@ -372,6 +372,9 @@ function profileEditsFor(opts, profiles, resolved) {
 
 export function buildSyncArgs(roster, resolved, profileName) {
   const args = [
+    "--profile", `strong:${resolved.strong}`,
+    "--profile", `mid:${resolved.mid}`,
+    "--profile", `cheap:${resolved.cheap}`,
     "--profile", `sdd-strong:${resolved.strong}`,
     "--profile", `sdd-mid:${resolved.mid}`,
     "--profile", `sdd-cheap:${resolved.cheap}`,

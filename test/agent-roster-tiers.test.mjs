@@ -113,7 +113,7 @@ test("roster.json declares exactly 21 agents and sdd-research with correct metad
   assert.ok(research, "sdd-research must exist in the roster");
   assert.equal(research.group, "sdd");
   assert.equal(research.delegate_only, true, "sdd-research must be delegate_only: true");
-  assert.equal(research.tier, "sdd-strong", "sdd-research must be in sdd-strong tier");
+  assert.ok(["strong", "sdd-strong"].includes(research.tier), "sdd-research must be in strong tier");
   assert.equal(research.effort, "high");
   assert.match(research.role, /evidence|research/i, "role must be descriptive");
 
@@ -136,27 +136,40 @@ test("roster.json declares exactly 21 agents and sdd-research with correct metad
   assert.deepEqual(nonDelegated, ["gentle-orchestrator", "sdd-onboard"], "only gentle-orchestrator and sdd-onboard are delegate_only: false");
 });
 
-test("roster.json declares native tiers and phases with reasoning effort", () => {
+test("roster.json declares canonical tiers, aliases, and ODD roles with reasoning effort", () => {
   const roster = readJson(ROSTER_PATH);
   assert.ok(roster.tiers, "roster must declare a 'tiers' block");
-  assert.ok(roster.tiers["sdd-strong"], "tiers must declare sdd-strong");
-  assert.ok(roster.tiers["sdd-mid"], "tiers must declare sdd-mid");
-  assert.ok(roster.tiers["sdd-cheap"], "tiers must declare sdd-cheap");
+  assert.ok(roster.tiers["strong"], "tiers must declare strong");
+  assert.ok(roster.tiers["mid"], "tiers must declare mid");
+  assert.ok(roster.tiers["cheap"], "tiers must declare cheap");
+  assert.ok(roster.tiers["sdd-strong"], "tiers must declare sdd-strong alias");
+  assert.ok(roster.tiers["sdd-mid"], "tiers must declare sdd-mid alias");
+  assert.ok(roster.tiers["sdd-cheap"], "tiers must declare sdd-cheap alias");
 
   assert.ok(roster.phases, "roster must declare a 'phases' block");
+  // ODD roles
+  assert.equal(roster.phases.orchestrator.tier, "strong");
+  assert.equal(roster.phases.orchestrator.reasoning_effort, "high");
+  assert.equal(roster.phases.explorer.tier, "cheap");
+  assert.equal(roster.phases.writer.tier, "mid");
+  assert.equal(roster.phases.verifier.tier, "mid");
+  assert.equal(roster.phases["judge-a"].tier, "strong");
+  assert.equal(roster.phases["judge-b"].tier, "strong");
+  assert.equal(roster.phases["fix-agent"].tier, "mid");
+
   // Research and judges must be strong
-  assert.equal(roster.phases.research.tier, "sdd-strong");
+  assert.equal(roster.phases.research.tier, "strong");
   assert.equal(roster.phases.research.reasoning_effort, "high");
-  assert.equal(roster.phases["judgment-day"].tier, "sdd-strong");
+  assert.equal(roster.phases["judgment-day"].tier, "strong");
   assert.equal(roster.phases["judgment-day"].reasoning_effort, "high");
 
   // Apply and fix-agent must be mid
-  assert.equal(roster.phases.apply.tier, "sdd-mid");
-  assert.equal(roster.phases["fix-agent"].tier, "sdd-mid");
+  assert.equal(roster.phases.apply.tier, "mid");
+  assert.equal(roster.phases["fix-agent"].tier, "mid");
 
   // Tasks and explore must be cheap
-  assert.equal(roster.phases.tasks.tier, "sdd-cheap");
-  assert.equal(roster.phases.explore.tier, "sdd-cheap");
+  assert.equal(roster.phases.tasks.tier, "cheap");
+  assert.equal(roster.phases.explore.tier, "cheap");
 
   // Agent tiers must match the phases they execute (roster.json is the single
   // source of truth; the same work must not resolve to different models
@@ -181,6 +194,16 @@ test("roster.json declares native tiers and phases with reasoning effort", () =>
     assert.ok(agent, `${agentName} must exist in the roster`);
     assert.equal(agent.tier, roster.phases[phaseName].tier, `${agentName} tier must match phase "${phaseName}"`);
   }
+});
+
+test("roster and switcher support canonical tiers and legacy sdd-* aliases", () => {
+  const roster = readJson(ROSTER_PATH);
+  assert.equal(roster.tiers["strong"].alias, "sdd-strong");
+  assert.equal(roster.tiers["mid"].alias, "sdd-mid");
+  assert.equal(roster.tiers["cheap"].alias, "sdd-cheap");
+  assert.equal(roster.tiers["sdd-strong"].alias, "strong");
+  assert.equal(roster.tiers["sdd-mid"].alias, "mid");
+  assert.equal(roster.tiers["sdd-cheap"].alias, "cheap");
 });
 
 // ---------------------------------------------------------------------------
@@ -245,7 +268,8 @@ test("set-models.mjs --list shows native sync args and exits 0", () => {
   assert.equal(res.code, 0, res.stdout);
   assert.match(res.stdout, /Profiles/);
   assert.match(res.stdout, /Native sync args/);
-  assert.match(res.stdout, /gentle-ai sync --profile sdd-strong:/);
+  assert.match(res.stdout, /gentle-ai sync --profile (?:strong|sdd-strong):/);
+  assert.match(res.stdout, /--profile sdd-strong:/);
 });
 
 test("set-models.mjs --list uses the resolved profile name in the printed sync command", () => {

@@ -28,7 +28,7 @@ Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier, e
 
 | Archivo | Rol |
 |---|---|
-| `_shared/agent-roster/roster.json` | **Fuente de verdad**: los 21 agentes con `tier` (`sdd-strong`/`sdd-mid`/`sdd-cheap`), `effort` (max/high/medium/low), `delegate_only`, más declaración de tiers y fases. |
+| `_shared/agent-roster/roster.json` | **Fuente de verdad**: los 21 agentes con `tier` (`strong`/`mid`/`cheap`, con aliases legacy `sdd-*`), `effort` (max/high/medium/low), `delegate_only`, más declaración de tiers y fases/roles ODD. |
 | `_shared/agent-roster/profiles.json` | Perfiles de proveedor con nombre (`deepseek`, `glm`) + campo `current` (perfil activo) y proveedores custom. |
 | `scripts/apply.mjs` | Generador por runtime: lee el roster + perfil y produce/parchea la configuración de cada runtime. |
 | `scripts/set-models.mjs` + `set-models.cmd` | Switcher: resuelve tier→modelo, emite args de sync nativos y delega en `apply.mjs` para cada runtime detectado. |
@@ -40,26 +40,26 @@ Regla de oro: **`roster.json` es la única fuente de verdad**. Ningún runtime s
 
 | Grupo | Agentes | Tier | delegate_only |
 |---|---|---|---|
-| coordinator | `gentle-orchestrator` (effort max) | sdd-strong | no (corre inline) |
-| judgment-day | `jd-judge-a`, `jd-judge-b` | sdd-strong | sí |
-| sdd | `sdd-research`, `sdd-propose`, `sdd-design` | sdd-strong | sí |
-| sdd | `sdd-apply`, `sdd-spec`, `sdd-verify` | sdd-mid | sí |
-| review | `jd-fix-agent` | sdd-mid | sí |
-| review | `review-risk`, `review-readability`, `review-reliability`, `review-resilience`, `review-refuter`, `review-validator` | sdd-cheap | sí |
-| sdd | `sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive` | sdd-cheap | sí |
-| sdd | `sdd-onboard` | sdd-cheap | **no** (excepción documentada: walkthrough interactivo corre inline) |
+| coordinator | `gentle-orchestrator` (effort max) | strong | no (corre inline) |
+| judgment-day | `jd-judge-a`, `jd-judge-b` | strong | sí |
+| sdd | `sdd-research`, `sdd-propose`, `sdd-design` | strong | sí |
+| sdd | `sdd-apply`, `sdd-spec`, `sdd-verify` | mid | sí |
+| review | `jd-fix-agent` | mid | sí |
+| review | `review-risk`, `review-readability`, `review-reliability`, `review-resilience`, `review-refuter`, `review-validator` | cheap | sí |
+| sdd | `sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive` | cheap | sí |
+| sdd | `sdd-onboard` | cheap | **no** (excepción documentada: walkthrough interactivo corre inline) |
 
-- **Strong (`sdd-strong`, 6 agentes)**: el orquestador (`gentle-orchestrator`), los 2 jueces de Judgment Day (`jd-judge-a`, `jd-judge-b`), `sdd-research`, `sdd-propose` y `sdd-design`.
-- **Mid (`sdd-mid`, 4 agentes)**: `sdd-apply`, `sdd-spec`, `sdd-verify` y `jd-fix-agent`.
-- **Cheap (`sdd-cheap`, 11 agentes)**: los 6 lentes de review y los 5 agentes SDD restantes (`sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive`, `sdd-onboard`).
+- **Strong (`strong`, alias `sdd-strong`, 6 agentes)**: el orquestador (`gentle-orchestrator`), los 2 jueces de Judgment Day (`jd-judge-a`, `jd-judge-b`), `sdd-research`, `sdd-propose` y `sdd-design`.
+- **Mid (`mid`, alias `sdd-mid`, 4 agentes)**: `sdd-apply`, `sdd-spec`, `sdd-verify` y `jd-fix-agent`.
+- **Cheap (`cheap`, alias `sdd-cheap`, 11 agentes)**: los 6 lentes de review y los 5 agentes SDD restantes (`sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive`, `sdd-onboard`).
 
 ## 🔄 Alineación con perfiles nativos (`gentle-ai sync`)
 
-El catálogo se alinea con el mecanismo nativo de perfiles de `gentle-ai 3.4.0` (`sync --profile <nombre:proveedor/modelo>` y `--profile-phase <nombre:fase:modelo>`) y **no duplica su motor de perfiles de fase**:
+El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --profile <nombre:proveedor/modelo>` y `--profile-phase <nombre:fase/rol:modelo>`) y **no duplica su motor de perfiles de fase**:
 
-- El catálogo declara los tiers nativos (`sdd-strong`, `sdd-mid`, `sdd-cheap`) y su razonamiento/economía en `_shared/agent-roster/roster.json`.
-- `set-models.mjs --emit-sync-args` emite los argumentos exactos de `gentle-ai sync` listos para invocar el binario nativo.
-- La aplicación de los perfiles por fase queda delegada enteramente a la mecánica nativa de `gentle-ai sync`.
+- El catálogo declara los tiers (`strong`, `mid`, `cheap` y aliases `sdd-*`) y su razonamiento/economía en `_shared/agent-roster/roster.json`.
+- `set-models.mjs --emit-sync-args` emite los argumentos exactos de sync listos para invocar el binario.
+- La aplicación de los perfiles por fase queda delegada enteramente a la mecánica nativa de sync.
 - El catálogo se limita a aplicar la asignación de modelos de los **21 agentes** (`agent.<name>.model` en OpenCode, preset en dsh).
 
 ## 🛠️ Workflow

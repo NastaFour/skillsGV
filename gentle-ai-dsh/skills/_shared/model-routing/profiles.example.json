@@ -1,13 +1,15 @@
 {
   "version": 1,
   "defaultAlias": "sonnet",
-  "notes": "Ejemplo ilustrativo de perfiles por fase; los alias cobran sentido al resolverse contra el catalogo del runtime actual (interfaz list()/resolve(phase)).",
+  "notes": "Ejemplo ilustrativo de perfiles por rol ODD y fase; los alias cobran sentido al resolverse contra el catalogo del runtime actual (interfaz list()/resolve(role)).",
   "phases": {
-    "propose": { "alias": "opus", "notes": "Decisiones de alcance y arquitectura del cambio" },
-    "spec": { "alias": "sonnet", "notes": "Escritura estructurada de requisitos" },
-    "design": { "alias": "opus", "notes": "Decisiones tecnicas con alternativas rechazadas" },
-    "tasks": { "alias": "sonnet", "notes": "Desglose mecanico en unidades de trabajo" },
-    "apply": { "alias": "sonnet", "notes": "Implementacion acotada por tarea" },
-    "verify": { "alias": "sonnet", "notes": "Verificacion contra spec con evidencia" }
+    "orchestrator": { "alias": "opus", "notes": "Orquestacion de alto nivel y descomposicion de tareas" },
+    "explorer": { "alias": "haiku", "notes": "Exploracion y mapeo de codigo de solo lectura" },
+    "writer": { "alias": "sonnet", "notes": "Implementacion acotada por tarea" },
+    "verifier": { "alias": "sonnet", "notes": "Verificacion de unit commits y checks" },
+    "judge-a": { "alias": "opus", "notes": "Revision adversarial independiente" },
+    "judge-b": { "alias": "opus", "notes": "Revision adversarial independiente" },
+    "fix-agent": { "alias": "sonnet", "notes": "Fixes quirurgicos de hallazgos" }
   }
 }
+
