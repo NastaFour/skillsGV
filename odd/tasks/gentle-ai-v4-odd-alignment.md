@@ -72,9 +72,9 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T6 — Deprecar SDD con redirect**
 - [x] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
 - [x] **T8 — Skills de rol desacopladas de SDD**
-- [ ] **T9 — Roster y model routing alineados a roles ODD**
-- [ ] **T10 — Validador y openspec histórico**
-- [ ] **T11 — Espejo sync-addon, release y verificación final**
+- [x] **T9 — Roster y model routing alineados a roles ODD**
+- [x] **T10 — Validador y openspec histórico**
+- [x] **T11 — Espejo sync-addon, release y verificación final**
 
 ## Progreso / evidencia
 
@@ -151,4 +151,48 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - Espejo: `node scripts/sync-addon.mjs --write` sincronizó los 9 archivos en `gentle-ai-dsh/`.
 - `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
 - `pnpm validate:strict`: 229 pass · 0 with issues.
+- Commit: `738a22d`
 - Route: direct inline.
+
+### T9: Roster y model routing alineados a roles ODD
+- `_shared/agent-roster/roster.json`: Tiers migrados a canónicos `strong`, `mid`, `cheap` y alias `sdd-strong`, `sdd-mid`, `sdd-cheap`. Fases expandidas con roles ODD (`orchestrator`, `explorer`, `writer`, `verifier`, `judge-a`, `judge-b`, `fix-agent`) y fases SDD legadas. Agentes asignados a tiers canónicos (`gentle-orchestrator` como orquestador ODD).
+- `_shared/model-routing/profiles.schema.json` & `profiles.example.json`: Actualizados para soportar roles ODD como entradas de primer nivel sin requerir estrictamente fases SDD legadas.
+- `00-meta-skills/agent-roster/scripts/set-models.mjs`: `nativeTier` normalizado a canónico y `buildSyncArgs` actualizado para emitir argumentos `--profile` y `--profile-phase` tanto para tiers canónicos como legados.
+- `00-meta-skills/agent-roster/SKILL.md` & `references/model-mapping.md`: Documentación actualizada para reflejar tiers canónicos y roles ODD.
+- `test/agent-roster-tiers.test.mjs`: Actualizadas assertions y agregado test de alias `roster and switcher support canonical tiers and legacy sdd-* aliases`.
+- Espejo `gentle-ai-dsh`: Sincronizado vía `node scripts/sync-addon.mjs --write`.
+- `pnpm test` + `pnpm test:addon`: 112 + 3 tests PASS (0 failures).
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Commit: `698ec3f`
+- Route: direct inline.
+
+### T10: Validador y openspec histórico
+- `00-meta-skills/skill-validator/scripts/validate-skills.mjs`: Eliminado `openspec/config.yaml` de la lista `PROSE_COUNT_DOCS` activa.
+- `openspec/README.md`: Creado documento indicando el estatus de archivo histórico de SDD/OpenSpec y remitiendo a `odd/tasks/`.
+- Espejo `gentle-ai-dsh`: Sincronizado vía `node scripts/sync-addon.mjs --write`.
+- `pnpm test` + `pnpm test:addon`: 112 + 3 tests PASS.
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Commit: `f416fc7`
+- Route: direct inline.
+
+### T11: Espejo sync-addon, release y verificación final
+- Version bump: `package.json` actualizado de `2.1.1` a `3.0.0`.
+- Release notes: `CHANGELOG.md` documenta la versión `[3.0.0] — 2026-10-07` con Breaking Changes, Added y Changed.
+- Salud integral: `pnpm doctor` ejecutado → 6/6 checks pasados (0 fallos).
+- Verificación de suites:
+  - `pnpm test`: 112 tests PASS (12 suites, 0 failures).
+  - `pnpm test:addon`: 3 tests PASS (0 failures).
+  - `pnpm validate:strict`: 229 pass · 0 with issues (0 errors, 0 warnings).
+  - `node scripts/sync-addon.mjs --write`: Paridad total y cobertura 100%.
+- Route: direct inline.
+
+## Cierre de Feature ODD
+
+- **Objetivo alcanzado**: El catálogo `skillsGV` está completamente alineado a `gentle-ai` 4.0.0 en modo ODD exclusivo.
+- **SDD retirado**: Todas las skills SDD están formalmente deprecadas y redirigen con gracia a `odd-workflow` o herramientas equivalentes; el router no impone proceso; el roster y modelos reconocen roles ODD; y los kernels inyectan presupuestos de evidencia limpios.
+- **Deuda técnica identificada para follow-up**:
+  1. Triggers explícitos para las 53 skills que carecen de `metadata.trigger`.
+  2. Fusión / deduplicación de skills solapadas (`electron` vs `electronjs`, `tailwindcss` vs `tailwind-4`, `frontend-design` vs `frontend-designer`, etc.).
+  3. Desacoplamiento de `gentle-ai-dsh` en git para generarlo únicamente al empaquetar/distribuir.
+  4. Configuración de workflow de CI en GitHub Actions.
+

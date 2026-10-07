@@ -2,6 +2,28 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versionado [SemVer](https://semver.org/lang/es/).
 
+## [3.0.0] — 2026-10-07
+
+Alineación completa con **gentle-ai 4.0.0** (ODD-exclusivo) y retiro de la tubería SDD.
+
+### Breaking Changes
+
+- **Router sin `needsSDD`**: se eliminó la propiedad y heurística `needsSDD` de `skill-router.mjs`. El router selecciona exclusivamente skills y confianza, dejando el flujo de desarrollo a ODD.
+- **Deprecación de 13 skills SDD**: `sdd-orchestrator`, `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sdd-design`, `sdd-tasks`, `sdd-apply`, `sdd-verify`, `sdd-archive` y `professional-planner` ahora redirigen a `odd-workflow`; `sdd-research` a `research-first`; `sdd-onboard` a `catalog-usage`.
+- **Roster & Tiers canónicos**: los tiers en `roster.json` y perfiles se normalizan a nombres canónicos `strong`, `mid` y `cheap`, conservando `sdd-strong`, `sdd-mid` y `sdd-cheap` como alias retrocompatibles.
+- **Roles ODD en fases**: se agregaron los roles de ODD (`orchestrator`, `explorer`, `writer`, `verifier`, `judge-a`, `judge-b`, `fix-agent`) como fases primarias en `roster.json` y `_shared/model-routing/profiles.schema.json`.
+
+### Added
+
+- **Skill fallback `odd-workflow`** (`00-meta-skills/odd-workflow/SKILL.md`): protocolo de 7 pasos de Organic-Driven Development (ODD), gestión de feature documents (`odd/tasks/<feature>.md`) y espejo Engram (`odd/<feature>/tasks`), presupuestos de evidencia y gates de entrega.
+- **`openspec/README.md`**: marca el directorio `openspec/` como histórico, confirmando el retiro de SDD/OpenSpec a favor de ODD.
+
+### Changed
+
+- **Kernels actualizados**: `bootstrap-kernel-full.md` y `bootstrap-kernel-minimal.md` eliminan SDD y formalizan el Evidence Budget (máx. 1 batch paralelo de ≤3 llamadas / ~10k tokens inline antes de delegar mappers/writers).
+- **Desacoplamiento de role skills**: `judgment-day`, `dod-checker`, `gentle-orchestrator`, `skill-loader`, `work-unit-commits` y `chained-pr` ya no dependen de fases SDD ni asumen gates obligatorios fuera de ODD.
+- **Validador desacoplado**: `validate-skills.mjs` ya no exige que `openspec/config.yaml` refleje el recuento activo del catálogo.
+
 ## [2.1.1] — 2026-09-19
 
 **Judgment Day ronda 1** (revisión adversarial dual ciega sobre PR #1; veredicto unánime FIX). Los hallazgos confirmados por overlap de ambos jueces se corrigieron; los de un solo juez se verificaron contra el código antes de actuar.
