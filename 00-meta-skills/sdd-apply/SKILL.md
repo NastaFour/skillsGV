@@ -1,16 +1,20 @@
 ---
 name: sdd-apply
-description: "Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
 license: MIT
 allows-script-exec: "apply-journal.test.mjs spawns the journal CLI inside temp fixtures"
 allowed-tools: Read Write Edit Bash(node:*)
 metadata:
+  deprecated: "true"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["apply sdd", "implementar tareas", "aplicar cambio sdd"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
 
 # sdd-apply — Implementación de tareas SDD
 
@@ -277,3 +281,4 @@ Si no hay ninguno, diga "None."}
 - Aplique cualquier `rules.apply` de `openspec/config.yaml`.
 - Si Strict TDD está activo (Paso 3), siga su ciclo EN LUGAR del Paso 4.
 - Envelope de retorno según la sección **D** del Protocolo Común.
+

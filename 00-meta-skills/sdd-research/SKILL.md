@@ -1,15 +1,19 @@
 ---
 name: sdd-research
-description: "Collect auditable, source-backed evidence for the research lanes the orchestrator selected after sdd-explore; mandatory before sdd-propose when selected. Trigger: orchestrator launches SDD research, research lanes, external evidence, source-backed."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar research-first. Collect auditable, source-backed evidence for the research lanes the orchestrator selected after sdd-explore; mandatory before sdd-propose when selected. Trigger: orchestrator launches SDD research, research lanes, external evidence, source-backed."
 license: MIT
 allowed-tools: Read Grep Glob
 metadata:
+  deprecated: "true"
+  redirect: "research-first"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["research lanes", "external evidence", "source-backed", "sdd research"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`research-first`](../../03-ai-ml/research-first/SKILL.md) en su lugar.
 
 # sdd-research — Evidencia externa SDD
 
@@ -122,3 +126,4 @@ Devuelva EXACTAMENTE este formato al orquestador (y escriba el mismo contenido e
 
 - [Protocolo Común de Fase SDD](../../_shared/sdd-phase-common.md) — carga de skills, recuperación, persistencia y envelope de resultado.
 - Contrato de fase tipado: `gentle-ai.sdd-research/v1`.
+

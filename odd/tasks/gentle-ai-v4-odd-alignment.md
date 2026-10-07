@@ -69,7 +69,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T3 — Skill fallback `odd-workflow`**
 - [x] **T4 — Kernels (full & minimal)**
 - [x] **T5 — Router sin `needsSDD`**
-- [ ] **T6 — Deprecar SDD con redirect**
+- [x] **T6 — Deprecar SDD con redirect**
 - [ ] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
 - [ ] **T8 — Skills de rol desacopladas de SDD**
 - [ ] **T9 — Roster y model routing alineados a roles ODD**
@@ -120,3 +120,12 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS.
 - `pnpm validate:strict`: 229 pass · 0 with issues.
 - Route: direct inline.
+
+### T6: Deprecar SDD con redirect
+- Marcadas 13 skills con `deprecated: "true"`, `redirect` y banner visual: `sdd-orchestrator`, `sdd-init`, `sdd-explore`, `sdd-propose`, `sdd-spec`, `sdd-design`, `sdd-tasks`, `sdd-apply`, `sdd-verify`, `sdd-archive`, `professional-planner` → `odd-workflow`; `sdd-research` → `research-first`; `sdd-onboard` → `catalog-usage`.
+- Ajustado `skill-router.mjs` para chequear redirección cuando la query mencione una skill deprecada y `primary` no haya sido asignado todavía.
+- `node scripts/sync-addon.mjs --write`: 14 archivos sincronizados con el espejo `gentle-ai-dsh`.
+- `node 00-meta-skills/skill-router/scripts/skill-router.mjs --query "professional-planner" --json`: resuelve `"deprecatedHit": "professional-planner"`, `"primary": "odd-workflow"`, `"confidence": 1`.
+- `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS.
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Route: direct inline (ejecutor mecánico determinista; subagentes no lanzados por cuota API compartida 429).

@@ -221,8 +221,10 @@ if (scored.length > 0) {
   if (top.triggerScore < 1.0) confidence = Math.min(confidence, 0.5);
   if (confidence >= 0.6) primary = top.name;
   secondary = [...new Set(scored.slice(1, 4).map((s) => s.name))];
-} else {
-  // Check if query mentions a deprecated skill name → redirect
+}
+
+// Check if query mentions a deprecated skill name → redirect
+if (!primary) {
   for (const s of index) {
     if (s.deprecated) {
       const nameRe = new RegExp("\\b" + escapeRegex(s.name.toLowerCase()) + "\\b", "i");

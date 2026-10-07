@@ -1,15 +1,19 @@
 ---
 name: sdd-verify
-description: "Validate the implementation against specs, design and tasks. Trigger: orchestrator launches verification for a change."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Validate the implementation against specs, design and tasks. Trigger: orchestrator launches verification for a change."
 license: MIT
 allowed-tools: Read Write Bash(node:*)
 metadata:
+  deprecated: "true"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["verify sdd", "verificar cambio", "validación contra specs"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
 
 # sdd-verify — Verificación SDD
 
@@ -145,3 +149,4 @@ Siga la sección **C** del Protocolo Común.
 - Registre comandos de test/build actuales, exit codes y hashes de salida.
 - Aplique cualquier `rules.verify` de `openspec/config.yaml`.
 - Envelope de retorno según la sección **D** del Protocolo Común.
+

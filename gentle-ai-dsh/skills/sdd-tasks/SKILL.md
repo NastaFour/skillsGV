@@ -1,15 +1,19 @@
 ---
 name: sdd-tasks
-description: "Break an SDD change into implementation tasks. Trigger: orchestrator launches task planning for a change."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Break an SDD change into implementation tasks. Trigger: orchestrator launches task planning for a change."
 license: MIT
 allowed-tools: Read Write Edit
 metadata:
+  deprecated: "true"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["tasks sdd", "desglose de tareas", "planificar tareas sdd"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
 
 # sdd-tasks — Desglose de tareas SDD
 
@@ -236,3 +240,4 @@ Devuelva al orquestador:
 - **Guard de carga de review**: SIEMPRE incluya el Review Workload Forecast. Si es probable que supere las 400 líneas, recomiende PRs encadenados y honre la estrategia de entrega recibida para decidir si se necesita una decisión/excepción antes de apply.
 - **Evidencia de unidad de trabajo**: toda unidad de trabajo sugerida DEBE nombrar su comando de test enfocado, su comando/scenario de harness runtime (o razón `N/A` explícita) y su límite de rollback.
 - Envelope de retorno según la sección **D** del Protocolo Común.
+

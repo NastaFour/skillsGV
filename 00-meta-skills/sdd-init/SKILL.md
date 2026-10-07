@@ -1,15 +1,19 @@
 ---
 name: sdd-init
-description: "Trigger: sdd init, iniciar sdd, openspec init. Initialize SDD context, testing capabilities, registry, and persistence."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Trigger: sdd init, iniciar sdd, openspec init. Initialize SDD context, testing capabilities, registry, and persistence."
 license: MIT
 allowed-tools: Read Write Edit
 metadata:
+  deprecated: "true"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["sdd init", "iniciar sdd", "openspec init"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
 
 # sdd-init — Inicialización del contexto SDD
 

@@ -1,14 +1,18 @@
 ---
 name: sdd-onboard
-description: "Walk users through the SDD workflow on the real codebase. Trigger: orchestrator launches onboarding for the full SDD cycle."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar catalog-usage. Walk users through the SDD workflow on the real codebase. Trigger: orchestrator launches onboarding for the full SDD cycle."
 license: MIT
 allowed-tools: Read Write Edit Bash(node:*)
 metadata:
+  deprecated: "true"
+  redirect: "catalog-usage"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["onboard sdd", "onboarding sdd", "walkthrough sdd"]
   scope: [global, project]
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`catalog-usage`](../catalog-usage/SKILL.md) en su lugar.
 
 # sdd-onboard — Onboarding SDD
 
@@ -230,3 +234,4 @@ Tweaks pequeños? Solo código. Features, APIs, decisiones de arquitectura? SDD 
 - Adapte el tono al usuario — si es experimentado, omita lo básico; si es nuevo, explique más.
 - Siga todas las reglas de formato de las skills individuales (sdd-propose, sdd-spec, sdd-design, sdd-tasks, sdd-apply, sdd-verify, sdd-archive).
 - Envelope de retorno según la sección **D** del Protocolo Común.
+

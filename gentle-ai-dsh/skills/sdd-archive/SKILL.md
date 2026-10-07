@@ -1,15 +1,19 @@
 ---
 name: sdd-archive
-description: "Archive a completed SDD change by syncing delta specs. Trigger: orchestrator launches archive after implementation and verification."
+description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Archive a completed SDD change by syncing delta specs. Trigger: orchestrator launches archive after implementation and verification."
 license: MIT
 allowed-tools: Read Write Edit Bash(git:*,node:*)
 metadata:
+  deprecated: "true"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["archive sdd", "archivar cambio", "sincronizar deltas specs"]
   scope: [global, project]
   delegate_only: true
 ---
+
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
 
 # sdd-archive — Archivado SDD
 
@@ -245,3 +249,4 @@ Los siguientes specs ahora reflejan el nuevo comportamiento:
 - Si `openspec/changes/archive/` no existe, créelo.
 - Aplique cualquier `rules.archive` de `openspec/config.yaml`.
 - Envelope de retorno según la sección **D** del Protocolo Común.
+
