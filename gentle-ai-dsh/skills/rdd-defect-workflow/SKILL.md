@@ -28,12 +28,12 @@ This skill guides public collaboration. It does not grant issue approval, label,
 - Require independent read-only candidate validation before publication. Validation cannot edit source or authority; findings require a new candidate.
 - Keep communication humane and evidence-based. Repository labels and workflow metadata are maintainer-owned, never evidence of contributor blame.
 
-## SDD Integration Points (native review lifecycle)
+## ODD Integration Points (native review lifecycle)
 
-The catalog integrates with the native review lifecycle at two active positions; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, orchestrator and native CLI only), and the catalog-side contract lives in `_shared/sdd-phase-common.md` section G:
+The catalog integrates with the native review lifecycle for each candidate unit; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, gentle-ai 4.0):
 
-1. **Post-apply, per work unit**: at the close of each `apply` WU, the harness runs the selectorless STATUS preflight over the current worktree candidate and routes only from the returned `next_transition` (an exact START freezes lineage, target, lenses, and budgets); it never opens a review budget on its own.
-2. **Pre-archive**: the pipeline is `sdd-verify → review preflight → sdd-archive`; same preflight, same routing. An already-acknowledged target is consumed and is not re-reviewed.
+1. **Per work-unit commit**: at the close of each work-unit commit on the feature branch, the harness runs the selectorless STATUS preflight over the candidate diff and routes only from the returned `next_transition` (an exact START freezes lineage, target, lenses, and budgets); it never opens a review budget on its own.
+2. **Per PR slice**: when preparing a PR slice or closing a feature branch; same preflight, same routing. An already-acknowledged target is consumed and is not re-reviewed.
 
 `review validate` and the delivery gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) are compatibility/informational only: enabled gates return `invalidated/unmanaged`, disabled gates return `disabled/unmanaged`, and they never discover authority, decide delivery, or launch reviewers. Commit, push, PR, and release stay outside the lifecycle under ordinary repository policy.
 

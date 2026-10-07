@@ -23,7 +23,7 @@ of the catalog.
 
 | Tier | Definition | When Loaded | Where |
 |------|------------|-------------|-------|
-| **0** | Always-on house meta: skill-router, skill-validator, skill-sync, skill-creator, skill-loader, professional-planner, agents, idea-to-prd-express, project-tracker, session-notes, decision-gate, dod-checker, engram-integration, kill-switches | Agent boot | Inline in system prompt (`tier0-context.json`) |
+| **0** | Always-on house meta: skill-router, skill-validator, skill-sync, skill-creator, skill-loader, odd-workflow, agents, idea-to-prd-express, project-tracker, session-notes, decision-gate, dod-checker, engram-integration, kill-switches | Agent boot | Inline in system prompt (`tier0-context.json`) |
 | **1** | Skills selected per turn by `skill-router` via `tier1toLoad[]` | Each turn | `tier1-instructions.txt` |
 | **2** | Everything else | On demand, only after explicit re-route | Direct Read |
 
@@ -69,7 +69,7 @@ This keeps the per-turn cost at <50ms for a cold cache and <5ms for a warm one.
 ## 🧱 Why Three Tiers?
 
 - **Tier 0** is the project's "house memory" — the rules the agent must
-  follow every turn (SDD gates, DoD, decision-making protocol, skill-system
+  follow every turn (ODD workflow, DoD, decision-making protocol, skill-system
   meta).
 - **Tier 1** is the small working set picked by the deterministic router
   (3-5 skills per turn), driven by trigger words.

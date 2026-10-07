@@ -26,16 +26,15 @@ Else: use [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) only (1 r
 
 Two independent judges review the same target from opposing stances. The goal is not consensus — it is **conflict surfacing**. Whatever both judges independently flag is almost certainly real; what only one flags is a hypothesis worth checking. Never run merge on a target that has not survived Judgment Day for non-trivial changes.
 
-`judgment-day` belongs to the SDD family (see [`professional-planner`](../../professional-planner/SKILL.md)). It slots in **after** `sdd-apply` and **before** opening a PR: adversarial review of the code diff. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to. It MUST NOT be used to validate SDD planning steps (proposal/spec/design/tasks) — that validation belongs to the orchestrator gatekeeper and the phase result contract.
+`judgment-day` slots in **after** substantial implementation completes (post-commit / PR slice) and **before** opening or merging a PR: adversarial review of the code diff. It is the cheap insurance that costs ~2× one review but catches the class of defects a single reviewer is structurally blind to.
 
 ## When to Use
 
-- After implementation completes (`sdd-apply` done) and before opening a PR.
-- Before opening a PR for a non-trivial change (2+ non-trivial files).
+- After substantial implementation completes and before opening or merging a PR.
+- Before opening a PR for a non-trivial change (2+ non-trivial files or critical paths).
 - When the author is too close to the code to see their own assumptions.
 - When the cost of being wrong is higher than the cost of a second review.
 - **Do NOT use** for trivial diffs (docs, formatting, single-line fixes) — it wastes two contexts.
-- **Do NOT use** to validate SDD planning artifacts (proposal/spec/design/tasks) — the orchestrator gatekeeper and the phase result contract own that validation.
 
 ## Setup
 
@@ -101,7 +100,7 @@ After both verdicts are sealed:
 - **Same material, same prompt.** If you give judge 2 more context than judge 1, you have wasted the run.
 - **Two is the minimum, not the maximum.** For high-stakes changes (auth, payments, migrations) use three judges: red, blue, and a **grey** judge who reads only the diff and asks "what is this even for?" — the dumb-question judge catches the obvious.
 - **Cost is ~2× one review.** Worth it when the cost of being wrong is higher. Not worth it for cosmetic changes.
-- **Review the diff, not the plan.** Judgment Day is adversarial review of CODE (post-apply / pre-PR). Validating the planning steps is the orchestrator gatekeeper's and the result contract's job — pointing the judges at a proposal, spec, design doc or task list re-runs that validation the wrong way.
+- **Review the diff, not the plan.** Judgment Day is adversarial review of CODE (post-commit / pre-PR). Validating the planning steps is done during initial exploration — pointing the judges at a planning doc re-runs validation the wrong way.
 
 ## Relationship to other skills
 
@@ -109,7 +108,7 @@ After both verdicts are sealed:
 - [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) — the strict gatekeeper. Judgment Day feeds it evidence.
 - [`parallelization`](../../01-planning-process/parallelization/SKILL.md) — the mechanics of running two agent sessions in parallel.
 - [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — if both judges say kill, the kill switch trips.
-- [`professional-planner`](../../professional-planner/SKILL.md) — planning methodology reference only: Judgment Day is adversarial review of the code diff post-apply / pre-PR and does NOT validate SDD planning steps (proposal, spec, design, tasks).
+- [`odd-workflow`](../../00-meta-skills/odd-workflow/SKILL.md) — organic workflow: Judgment Day acts as the adversarial code diff review before PR slice / merge.
 
 ## Example: judging a payment change
 

@@ -71,7 +71,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T5 — Router sin `needsSDD`**
 - [x] **T6 — Deprecar SDD con redirect**
 - [x] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
-- [ ] **T8 — Skills de rol desacopladas de SDD**
+- [x] **T8 — Skills de rol desacopladas de SDD**
 - [ ] **T9 — Roster y model routing alineados a roles ODD**
 - [ ] **T10 — Validador y openspec histórico**
 - [ ] **T11 — Espejo sync-addon, release y verificación final**
@@ -137,6 +137,18 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - `00-meta-skills/skill-router/scripts/skill-router.mjs`: Expandida la redirección determinista de skills deprecadas para evaluar también sus triggers explícitos (ej. `sdd new`, `sdd continue`), redirigiendo a `odd-workflow`.
 - Evals: Creado `00-meta-skills/odd-workflow/evals.json` (2 evals); actualizado `sdd-orchestrator/evals.json` a `routes-to:odd-workflow`; agregado `odd-workflow` a `TOP_SKILLS` en `test/evals.test.mjs`.
 - Espejo: `node scripts/sync-addon.mjs --write` ejecutado con éxito.
+- `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Route: direct inline.
+
+### T8: Skills de rol desacopladas de SDD
+- `02-dev-roles/judgment-day/SKILL.md`: Desacoplada de `sdd-apply`, reenfocada en revisión adversarial post-commit y PR slices. Eliminadas referencias a fases y validación de planes SDD.
+- `02-dev-roles/dod-checker/SKILL.md`: Desacoplada de gates de fases SDD obligatorias; reenfocada en evaluación estricta de tareas y features completadas.
+- `06-code-quality/work-unit-commits/SKILL.md` y `chained-pr/SKILL.md`: Actualizadas referencias de forecast de carga (`sdd-tasks`) al forecast del documento ODD (`odd/tasks/<feature>.md`) y estrategias de entrega (`delivery_strategy`).
+- `00-meta-skills/gentle-orchestrator/SKILL.md`: Reemplazada la tabla de fases SDD por el roster de roles ODD (`explorer`, `writer`, `verifier`, árbitros `judgment-day`, lentes `review-*`).
+- `00-meta-skills/skill-loader/SKILL.md`: Actualizado Tier 0 (`odd-workflow` en lugar de `professional-planner`) y descripción de reglas base a ODD.
+- `01-planning-process/engram-integration/SKILL.md`, `rdd-defect-workflow`, `code-reviewer`: Limpiadas referencias residuales a fases SDD.
+- Espejo: `node scripts/sync-addon.mjs --write` sincronizó los 9 archivos en `gentle-ai-dsh/`.
 - `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
 - `pnpm validate:strict`: 229 pass · 0 with issues.
 - Route: direct inline.

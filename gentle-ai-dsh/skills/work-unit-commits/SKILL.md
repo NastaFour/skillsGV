@@ -21,7 +21,7 @@ Use it for:
 - Preparing commits before opening a PR.
 - Turning a large change into chained or stacked PRs.
 - Keeping reviewer cognitive load healthy.
-- Applying SDD tasks without accidentally producing a PR above 400 changed lines.
+- Applying ODD tasks without accidentally producing a PR above 400 changed lines.
 
 ## Critical Rules
 
@@ -33,7 +33,7 @@ Use it for:
 | Keep docs with the user-visible change | Docs belong with the feature or workflow they explain. |
 | Tell a story | A reviewer should understand why each commit exists from its diff and message. |
 | Future PR-ready | Each commit should be a candidate chained PR when the change grows. |
-| SDD workload guard | If SDD tasks forecast a >400-line change, group commits into chained PR slices before implementation. |
+| Delivery budget guard | If ODD tasks forecast a >400-line change, group commits into chained PR slices before implementation. |
 
 ## Work Unit Checklist
 
@@ -66,16 +66,16 @@ Use work-unit commits as the foundation for chained PRs:
 3. Commit it with a Conventional Commit message.
 4. If the PR approaches 400 changed lines, promote commits or groups of commits into chained PRs.
 
-## SDD Relationship
+## ODD Relationship
 
-When `sdd-tasks` produces a Review Workload Forecast:
+When the ODD feature document (`odd/tasks/<feature>.md`) produces a Review Workload Forecast:
 
 - Low risk: keep work-unit commits inside one PR.
 - Medium risk: commit by work unit and monitor changed lines before PR creation.
-- High risk: follow SDD `delivery_strategy` — ask on `ask-on-risk`, auto-slice on `auto-chain`, require `size:exception` on over-budget `single-pr`, or record accepted `size:exception` on `exception-ok`.
+- High risk: follow ODD `delivery_strategy` — ask on `ask-on-risk`, auto-slice on `auto-chain`, require `size:exception` on over-budget `single-pr`, or record accepted `size:exception` on `exception-ok`.
 - Count authored additions plus deletions for the `>400` threshold. Exclude generated goldens from that authored count, but include every generated file in complete snapshot identity and receipt validation.
 
-Each SDD work unit should map cleanly to a commit or PR with:
+Each ODD task work unit should map cleanly to a commit on the feature branch with:
 
 - clear start state,
 - clear finished state,

@@ -13,7 +13,7 @@ metadata:
 
 ## Activation Contract
 
-Load this skill when a planned PR may exceed **400 changed lines**, SDD forecasts `400-line budget risk: High` or `Chained PRs recommended: Yes`, or the user asks for chained/stacked PRs, review slices, or reviewer-load control.
+Load this skill when a planned PR may exceed **400 changed lines**, ODD tasks forecast `400-line budget risk: High` or `Chained PRs recommended: Yes`, or the user asks for chained/stacked PRs, review slices, or reviewer-load control.
 
 ## Hard Rules
 
@@ -34,7 +34,7 @@ Load this skill when a planned PR may exceed **400 changed lines**, SDD forecast
 | PR >400, each slice can land independently | Use Stacked PRs to main. |
 | PR >400, feature must integrate before main | Use Feature Branch Chain with tracker. |
 | Generated/vendor/migration diff cannot split cleanly | Ask maintainer for `size:exception`. |
-| SDD provides `delivery_strategy` | Follow it before apply/PR creation. |
+| ODD provides `delivery_strategy` | Follow it before commit/PR creation. |
 
 ## Execution Steps
 

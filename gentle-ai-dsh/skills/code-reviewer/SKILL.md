@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Conduct a rigorous, professional-grade code review (Pull Request simulation) on new code. Enforces security guardrails, audits SOLID/DRY/KISS, and integrates ECC verification loops (checkpoint vs continuous evals). Use before committing, before PR creation, or during Phase 5-6 of SDD.
+description: Conduct a rigorous, professional-grade code review (Pull Request simulation) on new code. Enforces security guardrails, audits SOLID/DRY/KISS, and integrates ECC verification loops (checkpoint vs continuous evals). Use before committing, before PR creation, or during feature verification.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -22,7 +22,7 @@ ECC defines two review modes. Choose the right one:
 
 | Mode | When | What |
 |---|---|---|
-| **Checkpoint Review** | End of phase, before commit, before PR | Full audit: all 5 dimensions, security checklist |
+| **Checkpoint Review** | End of feature, before commit, before PR | Full audit: all 5 dimensions, security checklist |
 | **Continuous Review** | After each task/code batch | Quick scan: security + KISS + structure only |
 
 ### Fresh Context Rule (ECC Pattern)

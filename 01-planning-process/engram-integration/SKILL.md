@@ -124,7 +124,7 @@ Cloud is optional replication (always project-scoped; `--project` required). See
 
 ## 🚦 Protocolo de Fallback (Memoria Inactiva)
 Si el servidor MCP de Engram no está disponible, no configurado, o arroja errores:
-1. **No interrumpir el desarrollo:** continúa con las fases normalmente.
+1. **No interrumpir el desarrollo:** continúa con el desarrollo normalmente.
 2. **Aviso al usuario:** `[⚠️ NOTA: Engram MCP no activo. Operando en modo de contexto volátil.]`
 3. **Registro Manual:** crea `.md` en `references/` del proyecto como memoria manual.
 4. **Auto-healing:** ejecuta `engram doctor` para diagnóstico y reparación de `state.json`.
