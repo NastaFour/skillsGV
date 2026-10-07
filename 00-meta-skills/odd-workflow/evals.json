@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "odd-workflow-starts-feature-doc",
+      "prompt": "implementar feature multi archivo en el proyecto",
+      "files": [],
+      "expected_output": "Iniciando flujo ODD (Organic Driven Development) para trabajo sustancial.\n\nProtocolo: 1) Autorizar, 2) Explorar, 3) Resolver incertidumbre, 4) Clasificar, 5) Feature doc en odd/tasks/<feature>.md + espejo Engram, 6) Tarea a tarea con work-unit commits en feature branch, 7) Cierre con verificación observada.\nEvidence Budget: máx. 1 batch de <=3 llamadas (~10k tokens) inline; explorador/escritor delegados si supera presupuesto.",
+      "expectations": [
+        "routes-to:odd-workflow",
+        "contains:odd/tasks/",
+        "contains:work-unit commit",
+        "regex:Organic Driven Development",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "odd-workflow-organic-driven-development",
+      "prompt": "odd workflow: iniciar feature sustancial",
+      "files": [],
+      "expected_output": "Ejecutando ODD (Organic Driven Development).\n\nRegistro previo al primer write: crear odd/tasks/<feature>.md y sincronizar espejo Engram bajo el topic odd/<feature>/tasks.\nImplementación: avance atómico tarea por tarea, ejecutando checks proporcionales y cerrando cada una con al menos un work-unit commit convencional.",
+      "expectations": [
+        "routes-to:odd-workflow",
+        "contains:odd/tasks/",
+        "regex:odd/<feature>/tasks",
+        "contains:work-unit commit",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

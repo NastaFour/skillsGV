@@ -70,7 +70,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T4 — Kernels (full & minimal)**
 - [x] **T5 — Router sin `needsSDD`**
 - [x] **T6 — Deprecar SDD con redirect**
-- [ ] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
+- [x] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
 - [ ] **T8 — Skills de rol desacopladas de SDD**
 - [ ] **T9 — Roster y model routing alineados a roles ODD**
 - [ ] **T10 — Validador y openspec histórico**
@@ -129,3 +129,14 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS.
 - `pnpm validate:strict`: 229 pass · 0 with issues.
 - Route: direct inline (ejecutor mecánico determinista; subagentes no lanzados por cuota API compartida 429).
+
+### T7: Docs de proceso: AGENTS.md, README.md, harness-map
+- `AGENTS.md`: Actualizada Regla de arranque a v3 (gentle-ai 4.0.0); reemplazado diagrama y ciclo "9 Agentes con SDD" por flujo ODD y verificación proporcional; Tríada actualizada a ODD (`odd-workflow`); Auto-invoke list y Tier 0 actualizados a `odd-workflow`; Regla de 3 capas alineada a ODD directo.
+- `README.md`: Reemplazada referencia a "harness SDD nativo" por flujo ODD de gentle-ai 4.0; Tier 0 actualizado (`odd-workflow`); tabla de categorías actualizada.
+- `00-meta-skills/harness-map.md`: Actualizada sección RDD a posiciones activas en work-unit commits y PR slices de ODD.
+- `00-meta-skills/skill-router/scripts/skill-router.mjs`: Expandida la redirección determinista de skills deprecadas para evaluar también sus triggers explícitos (ej. `sdd new`, `sdd continue`), redirigiendo a `odd-workflow`.
+- Evals: Creado `00-meta-skills/odd-workflow/evals.json` (2 evals); actualizado `sdd-orchestrator/evals.json` a `routes-to:odd-workflow`; agregado `odd-workflow` a `TOP_SKILLS` en `test/evals.test.mjs`.
+- Espejo: `node scripts/sync-addon.mjs --write` ejecutado con éxito.
+- `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Route: direct inline.

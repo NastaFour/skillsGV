@@ -223,12 +223,25 @@ if (scored.length > 0) {
   secondary = [...new Set(scored.slice(1, 4).map((s) => s.name))];
 }
 
-// Check if query mentions a deprecated skill name → redirect
+// Check if query mentions a deprecated skill name or trigger → redirect
 if (!primary) {
   for (const s of index) {
     if (s.deprecated) {
       const nameRe = new RegExp("\\b" + escapeRegex(s.name.toLowerCase()) + "\\b", "i");
-      if (nameRe.test(qLower)) {
+      let triggerHit = nameRe.test(qLower);
+      if (!triggerHit && Array.isArray(s.triggers)) {
+        for (const t of s.triggers) {
+          if (!t) continue;
+          const tLower = t.toLowerCase().trim();
+          if (tLower.length < MIN_TRIGGER_LENGTH) continue;
+          const tRe = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
+          if (tRe.test(qLower)) {
+            triggerHit = true;
+            break;
+          }
+        }
+      }
+      if (triggerHit) {
         deprecatedHit = s.name;
         primary = s.redirect; // follow redirect deterministically
         confidence = 1.0;

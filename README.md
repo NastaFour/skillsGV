@@ -1,6 +1,6 @@
 # skillsGV
 
-Catálogo multi-agente de **229 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), con harness SDD nativo: un orquestador que rutea las fases del ciclo de vida (`proposal → specs → design → tasks → apply → verify → archive`), routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Corey Haines](https://coreyhaines.com/), [Donald Miller](https://storybrand.com/) (StoryBrand), [Adam Wathan & Steve Schoger](https://www.refactoringui.com/) (Refactoring UI), [Emil Kowalski](https://animations.dev/) (animations.dev), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) (Hermes) y [obra `superpowers`](https://github.com/obra/superpowers).
+Catálogo multi-agente de **229 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), alineado al flujo ODD (Organic-Driven Development) de gentle-ai 4.0: fallback `odd-workflow`, routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Corey Haines](https://coreyhaines.com/), [Donald Miller](https://storybrand.com/) (StoryBrand), [Adam Wathan & Steve Schoger](https://www.refactoringui.com/) (Refactoring UI), [Emil Kowalski](https://animations.dev/) (animations.dev), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) (Hermes) y [obra `superpowers`](https://github.com/obra/superpowers).
 
 Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
 
@@ -30,7 +30,7 @@ Cualquier agente que aterrice en un repo puede instalar el catálogo con:
 Cloná https://github.com/NastaFour/skillsGV y corré `node install.mjs --target .` — seguí su AGENTS.md.
 ```
 
-En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md`), blinda el `.gitignore` (las skills instaladas nunca se commitean) y deja evidencia con hash en `.skills-install/manifest.json` — que es local a tu máquina: en un clone fresco no hay manifiesto, y los bloques del kernel se gestionan con el install local de cada dev. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
+En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md`), blinda el `.gitignore` (las skills instaladas nunca se commiteen) y deja evidencia con hash en `.skills-install/manifest.json` — que es local a tu máquina: en un clone fresco no hay manifiesto, y los bloques del kernel se gestionan con el install local de cada dev. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
 
 ## 🎨 Sistema Anti-Slop de Diseño Frontend
 
@@ -74,7 +74,7 @@ Si una instalación sale mal: `--rollback` revierte la última generación compl
 
 ## Uso diario
 
-- **Tier 0 (siempre cargadas)**: 14 skills base (~2K tokens): `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `skill-loader`, `professional-planner`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `decision-gate`, `kill-switches`, `dod-checker`.
+- **Tier 0 (siempre cargadas)**: 14 skills base (~2K tokens): `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `skill-loader`, `odd-workflow`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `decision-gate`, `kill-switches`, `dod-checker`.
 - **Router antes de cada turno**: el resto de las skills se cargan bajo demanda según `tier1toLoad`:
 
   ```bash
@@ -82,9 +82,9 @@ Si una instalación sale mal: `--rollback` revierte la última generación compl
   ```
 
 - **Trabajo chico, directo**: fixes de un archivo o consultas puntuales no requieren proceso adicional.
-- **ODD por defecto (gentle-ai 3.x)**: trabajo multi-archivo → organic (explorar, doc de tareas si es sustancial, commits por unidad). `sdd-orchestrator` se carga **solo a pedido explícito de SDD** — el archivo-count ya no dispara SDD; con binario, el dispatcher nativo (`gentle-ai sdd-status` / `sdd-continue`) es la autoridad de ruteo.
+- **ODD exclusivo (gentle-ai 4.0)**: todo cambio de código entra en Organic-Driven Development (autorizar, explorar, clasificar, feature doc en `odd/tasks/<feature>.md` + espejo Engram si es sustancial, work-unit commits en feature branch). En runtimes sin binario gentle-ai, `odd-workflow` es el fallback estructurado. Las fases SDD upstream han sido retiradas.
 - **Antes de cerrar trabajo serio** → `judgment-day`: revisión adversarial con dos jueces independientes y ciego cruzado.
-- **Model routing** (activo desde Slice 2): perfiles declarativos en `_shared/model-routing/` que mapean cada fase SDD a un modelo; un runtime sin catálogo cae al modelo por defecto.
+- **Model routing**: perfiles declarativos en `_shared/model-routing/` que mapean roles de ejecución a modelos; un runtime sin catálogo cae al modelo por defecto.
 
 ## Configuración de agentes (agent-roster)
 
@@ -130,7 +130,7 @@ node 00-meta-skills/agent-roster/scripts/set-models.mjs --list
 
 | Directorio | Propósito |
 |---|---|
-| `00-meta-skills/` | Harness propio del catálogo: routing, validación, instalación, carga por tiers, orquestación SDD y sus fases. |
+| `00-meta-skills/` | Harness propio del catálogo: routing, validación, instalación, carga por tiers, flujo ODD y meta-skills. |
 | `01-planning-process/` | Planificación y procesos: roadmap, ADRs, Jira, brainstorming, notas de sesión, paralelización. |
 | `02-dev-roles/` | Roles de desarrollo: code review, debugging, security audit, PRs, diseño frontend, Judgment Day. |
 | `03-ai-ml/` | Integración de IA/LLM en productos: orquestación multi-agente, billing de APIs, prompt engineering, MLOps. |
@@ -141,7 +141,7 @@ node 00-meta-skills/agent-roster/scripts/set-models.mjs --list
 | `08-devops/` | CI/CD, monitoreo, observabilidad, kill switches y despliegue a stores. |
 | `09-media-graphics/` | Generación de imágenes y assets visuales con IA (Nano Banana, dirección creativa). |
 | `11-mcp-hybrid/` | Skills híbridas que combinan instrucciones con servidores MCP: Figma, scraping de componentes, auditoría UX, video. |
-| `professional-planner/` | Metodología SDD de referencia (Spec-Driven Development en 6 fases). |
+| `professional-planner/` | Metodología histórica de planificación (deprecada, redirige a odd-workflow). |
 
 ## Mantenimiento del catálogo
 

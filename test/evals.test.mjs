@@ -13,8 +13,8 @@ import {
   validateEvalSuite,
 } from '../_shared/eval-harness.mjs';
 
-// The four top skills that must ship evals.json (design: skills-25-upgrade).
-const TOP_SKILLS = ['skill-router', 'sdd-orchestrator', 'judgment-day', 'agent-roster'];
+// The top skills that must ship evals.json (design: skills-25-upgrade, aligned to gentle-ai 4.0).
+const TOP_SKILLS = ['skill-router', 'odd-workflow', 'sdd-orchestrator', 'judgment-day', 'agent-roster'];
 
 function makeFixtureRoot() {
   const root = mkdtempSync(join(tmpdir(), 'skills-evals-'));
