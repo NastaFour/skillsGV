@@ -65,7 +65,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 
 - [x] **T0 — Actualizar gentle-ai a 4.0.0** (Completado: `gentle-ai 4.0.0`, `gentle-ai sync` ejecutado).
 - [x] **T1 — Baseline + feature doc**
-- [ ] **T2 — Conteo de skills dinámico en tests**
+- [x] **T2 — Conteo de skills dinámico en tests**
 - [ ] **T3 — Skill fallback `odd-workflow`**
 - [ ] **T4 — Kernels (full & minimal)**
 - [ ] **T5 — Router sin `needsSDD`**
@@ -90,4 +90,10 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - Engram mirror: `obs-985e9153d6e50b2e` (id 541, project `skills-catalog`, topic `odd/gentle-ai-v4-odd-alignment/tasks`)
 - `pnpm test`: 12 test suites PASS, 0 failures.
 - `pnpm validate:strict`: 228 pass · 0 with issues (0 errors, 0 warnings).
+- Route: direct inline.
+
+### T2: Conteo de skills dinámico en tests
+- Modificados: `test/validator.test.mjs`, `test/catalog-integrity.test.mjs`.
+- Comportamiento: `test/validator.test.mjs` valida `(\d+) pass · 0 with issues` (asegurando count >= 200 y 0 errors), desacoplándolo del número exacto. `test/catalog-integrity.test.mjs` compara el recuento real contra `catalog.json`.
+- `pnpm test`: 111 tests PASS (0 failures, 12 suites).
 - Route: direct inline.

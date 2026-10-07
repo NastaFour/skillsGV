@@ -17,8 +17,10 @@ function walkSkills(dir) {
 
 const skills = walkSkills('.');
 
-test('catalog has exactly 228 active skills', () => {
-  assert.equal(skills.length, 228, 'Total skills count should be exactly 228');
+test('catalog active skills count matches catalog.json', () => {
+  const catalog = JSON.parse(readFileSync('catalog.json', 'utf8'));
+  const expected = catalog.totals?.skills || Object.keys(catalog.skills || {}).length;
+  assert.equal(skills.length, expected, `Total skills count (${skills.length}) should match catalog.json (${expected})`);
 });
 
 test('zero [APP] placeholder in all skills', () => {
