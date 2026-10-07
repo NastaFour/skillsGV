@@ -39,8 +39,7 @@ skill-router.mjs (deterministic, classic Node)
 {
   primary:    "skill-name" | null,      // best exact match, null if confidence <0.6
   secondary:  ["skill-a", "skill-b"],   // other candidates
-  needsSDD:   true | false,             // touches 2+ categories → invoke sdd-orchestrator
-  trivial:    true | false,             // diff <20 lines + no critical markers → skip SDD
+  trivial:    true | false,             // diff <20 lines + no critical markers
   skipJudgmentDay: true | false,        // diff <100 lines AND no auth/payments/migrations → code-reviewer only
   deprecatedHit: "nextjs" | null        // if user mentioned a deprecated skill, where to redirect
 }
@@ -56,7 +55,7 @@ node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "add OAuth l
 
 Flags:
 - `--query "<text>"` — user input or task description (required).
-- `--diff <N>` — number of staged lines (enables trivial/needsSDD/skipJudgmentDay heuristics).
+- `--diff <N>` — number of staged lines (enables trivial/skipJudgmentDay heuristics).
 - `--json` — machine output for piping.
 
 ## Matching algorithm (all deterministic)
@@ -67,7 +66,6 @@ Flags:
 4. **Confidence**: max(exact, keyword)*0.7 + secondaryMatches*0.3.
 5. **Deprecated handling**: if the top match has `deprecated: true`, return `deprecatedHit` and use `redirect` field as primary.
 6. **Heuristics** (no LLM):
-   - `needsSDD`: query touches 2+ distinct category prefixes (`04-backend`, `05-frontend`, etc.) AND diff >20 lines.
    - `trivial`: diff <20 lines AND query has no markers `auth|payment|prisma|migration|socketio|ssl|secret`.
    - `skipJudgmentDay`: diff <100 lines AND no markers `auth|payments|migration|sql|ssl`.
 7. **Overlap matrix** (D4): after scoring, if ≥2 members of an `overlap-matrix.json` group are in the top-4 AND the group leads the scoring (current top-1 is a member), `primary = canonical` — only when the canonical itself has a trigger hit (`triggerScore >= 1`); a keyword-only canonical never displaces the leader. Members in the top-4 that are only keyword noise never displace a genuine primary. Matrix smoke tests in `references/overlap-smoke-tests.json`.
@@ -79,7 +77,6 @@ Flags:
   "primary": "expressjs",
   "secondary": ["jwt-bcrypt", "api-design"],
   "confidence": 0.92,
-  "needsSDD": false,
   "trivial": false,
   "skipJudgmentDay": true,
   "deprecatedHit": null,
@@ -91,7 +88,7 @@ Flags:
 
 ## Integration
 
-- [`sdd-orchestrator`](../sdd-orchestrator/SKILL.md) — invoke when `needsSDD=true` (`professional-planner` remains the reference methodology).
+- [`odd-workflow`](../odd-workflow/SKILL.md) — fallback workflow when gentle-ai is not installed.
 - [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) — skip when `skipJudgmentDay=true`.
 - [`kill-switches`](../../08-devops/kill-switches/SKILL.md) — abort if router returns confidence 0 on a critical-area query.
 

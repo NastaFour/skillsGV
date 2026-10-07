@@ -68,7 +68,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T2 — Conteo de skills dinámico en tests**
 - [x] **T3 — Skill fallback `odd-workflow`**
 - [x] **T4 — Kernels (full & minimal)**
-- [ ] **T5 — Router sin `needsSDD`**
+- [x] **T5 — Router sin `needsSDD`**
 - [ ] **T6 — Deprecar SDD con redirect**
 - [ ] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
 - [ ] **T8 — Skills de rol desacopladas de SDD**
@@ -110,5 +110,13 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - Actualizado `_shared/bootstrap-kernel-full.md`: regla 2 ahora establece ODD explícito (`odd-workflow`) y retiro de SDD; fusionado recordatorio de gitignore en regla 4. Mantiene 6 reglas limpias.
 - Actualizado `_shared/bootstrap-kernel-minimal.md`: delimitado el Evidence Budget ("máx. 1 batch paralelo de ≤3 llamadas / ~10k tokens inline; mappers y writers delegados").
 - `node --test test/kernel-inject.test.mjs`: 21 tests PASS (0 failures).
+- `pnpm validate:strict`: 229 pass · 0 with issues.
+- Route: direct inline.
+
+### T5: Router sin `needsSDD`
+- Modificados: `00-meta-skills/skill-router/scripts/skill-router.mjs`, `SKILL.md`, `evals.json`.
+- Eliminado el cálculo y emisión del campo `needsSDD`. El router devuelve únicamente selección de skills (`primary`, `secondary`, `tier1toLoad`), confianza y heurísticas de diff (`trivial`, `skipJudgmentDay`).
+- `node --test test/router.test.mjs test/evals.test.mjs`: 15 tests PASS.
+- `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS.
 - `pnpm validate:strict`: 229 pass · 0 with issues.
 - Route: direct inline.

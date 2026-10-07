@@ -13,7 +13,7 @@
  * Usage:
  *   node skill-router.mjs --query "add OAuth login" [--diff <n>] [--json]
  *
- * Output: { primary, secondary[], confidence, needsSDD, trivial, skipJudgmentDay,
+ * Output: { primary, secondary[], confidence, trivial, skipJudgmentDay,
  *           deprecatedHit, tier1toLoad[] }
  *
  * Exit codes: 0 = routed (primary may be null if confidence <0.6),
@@ -239,8 +239,6 @@ if (scored.length > 0) {
 
 // Heuristics (deterministic, no LLM)
 const CRITICAL_MARKERS = /\b(auth|payment|prisma|migration|socketio|ssl|secret|jwt|bcrypt|sql|checkout|env|token|password|keys|schema|seed|credentials)\b/i;
-const touchedCategories = new Set(scored.slice(0, 5).map((s) => s.category));
-const needsSDD = touchedCategories.size >= 2 && (diffLines === null || diffLines > 20);
 const trivial = diffLines !== null && diffLines < 20 && !CRITICAL_MARKERS.test(qLower);
 const skipJudgmentDay = diffLines !== null && diffLines < 100 && !CRITICAL_MARKERS.test(qLower);
 
@@ -250,7 +248,6 @@ const output = {
   primary,
   secondary,
   confidence: Math.round(confidence * 100) / 100,
-  needsSDD,
   trivial,
   skipJudgmentDay,
   deprecatedHit,
@@ -273,7 +270,6 @@ else {
   console.log(`  Primary:     ${primary || "(none, agent decides)"}`);
   console.log(`  Secondary:   [${secondary.join(", ")}]`);
   console.log(`  Confidence:  ${output.confidence}`);
-  console.log(`  needsSDD:    ${needsSDD}`);
   console.log(`  trivial:     ${trivial}`);
   console.log(`  skipJD:      ${skipJudgmentDay}`);
   if (deprecatedHit) console.log(`  deprecatedHit: ${deprecatedHit} -> redirect to ${primary}`);
