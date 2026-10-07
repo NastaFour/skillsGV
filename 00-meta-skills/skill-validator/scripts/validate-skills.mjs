@@ -555,7 +555,6 @@ const PROSE_COUNT_DOCS = [
   "SKILLS.md",
   "AGENTS.md",
   "README.md",
-  "openspec/config.yaml",
   "00-meta-skills/harness-map.md",
   "gentle-ai-dsh/AGENTS.md",
   "gentle-ai-dsh/README.md",
