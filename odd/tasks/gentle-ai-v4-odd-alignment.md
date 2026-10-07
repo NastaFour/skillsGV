@@ -66,7 +66,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T0 — Actualizar gentle-ai a 4.0.0** (Completado: `gentle-ai 4.0.0`, `gentle-ai sync` ejecutado).
 - [x] **T1 — Baseline + feature doc**
 - [x] **T2 — Conteo de skills dinámico en tests**
-- [ ] **T3 — Skill fallback `odd-workflow`**
+- [x] **T3 — Skill fallback `odd-workflow`**
 - [ ] **T4 — Kernels (full & minimal)**
 - [ ] **T5 — Router sin `needsSDD`**
 - [ ] **T6 — Deprecar SDD con redirect**
@@ -96,4 +96,12 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - Modificados: `test/validator.test.mjs`, `test/catalog-integrity.test.mjs`.
 - Comportamiento: `test/validator.test.mjs` valida `(\d+) pass · 0 with issues` (asegurando count >= 200 y 0 errors), desacoplándolo del número exacto. `test/catalog-integrity.test.mjs` compara el recuento real contra `catalog.json`.
 - `pnpm test`: 111 tests PASS (0 failures, 12 suites).
+- Route: direct inline.
+
+### T3: Skill fallback `odd-workflow`
+- Creada: `00-meta-skills/odd-workflow/SKILL.md` (con precedencia explícita sobre gentle-ai, 7 pasos ODD, estructura de feature doc, evidence budget y delivery/RDD/TDD).
+- Sincronizados índices: `catalog.json`, `SKILLS.md`, `AGENTS.md`, `.atl/skill-registry.md`, `README.md`, `openspec/config.yaml`, `00-meta-skills/harness-map.md`, espejo `gentle-ai-dsh`. Total: 229 skills.
+- `pnpm validate:strict`: 229 pass · 0 with issues (0 errors, 0 warnings).
+- `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
+- Router test: `pnpm router --query "implementar feature multi archivo"` resuelve `"primary": "odd-workflow"`, `"confidence": 1`.
 - Route: direct inline.

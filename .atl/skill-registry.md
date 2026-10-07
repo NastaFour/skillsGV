@@ -2,7 +2,7 @@
 
 > Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.
 > Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).
-> Total de skills indexadas: 215.
+> Total de skills indexadas: 216.
 
 ## Archivos de convención y contexto del proyecto
 
@@ -27,6 +27,7 @@
 | `catalog-usage` | Trigger: instalar skills, catálogo de skills, usar el catálogo, skill-sync, install-skills, onboarding, rollback, uninstall. Onboarding y operación del catálogo para agentes: instalación, uso diario y mantenimiento. | `global, project` | `00-meta-skills/catalog-usage/SKILL.md` |
 | `find-skills` | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill. | `global, project` | `00-meta-skills/find-skills/SKILL.md` |
 | `gentle-orchestrator` | Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, SDD. Coordinator protocol: delegate ALL real work to sub-agents, run small reads/writes inline, re-launch failed agents. Load as the orchestrator identity for any non-trivial task. | `project` | `00-meta-skills/gentle-orchestrator/SKILL.md` |
+| `odd-workflow` | Use when executing substantial features or multi-step development in harnesses without native gentle-ai. Governs Organic Driven Development (ODD): authorize, explore, clarify, track before first write in odd/tasks/<feature>.md, implement task-by-task with work-unit commits, and close with verified evidence. Do NOT use when gentle-ai is already active in the system prompt. | `project` | `00-meta-skills/odd-workflow/SKILL.md` |
 | `skill-creator` | Generates new skills following the official agentskills.io spec (name lowercase-hyphen, description under 1024 chars). Creates the folder structure (SKILL.md + references/, scripts/, assets/), validates frontmatter constraints, and seeds the SKILLS.md index. Use when adding a new skill, refactoring an existing one, or bootstrapping a skill catalog. | `root-only` | `00-meta-skills/skill-creator/SKILL.md` |
 | `skill-harvest` | Trigger: harvest, cerrar proyecto, fin de proyecto, extraer aprendizajes, skill harvest, crear skill nueva, post-project. At project close (after ALL fixes), extract repeatable patterns from Engram memory and draft new-skill proposals into the _inbox folder — never auto-create skills. | `project` | `00-meta-skills/skill-harvest/SKILL.md` |
 | `skill-improver` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | `global, project` | `00-meta-skills/skill-improver/SKILL.md` |

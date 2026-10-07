@@ -1,13 +1,13 @@
 {
   "version": 1,
   "totals": {
-    "skills": 228
+    "skills": 229
   },
   "categories": [
     {
       "id": "00-meta-skills",
       "title": "Meta-Skills",
-      "count": 26
+      "count": 27
     },
     {
       "id": "01-planning-process",
@@ -109,6 +109,14 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← coordinator: delegation rules + 20-agent roster + retry-on-failure",
+      "autoInvoke": false
+    },
+    {
+      "name": "odd-workflow",
+      "path": "00-meta-skills/odd-workflow/SKILL.md",
+      "category": "00-meta-skills",
+      "tier0": false,
+      "note": null,
       "autoInvoke": false
     },
     {
