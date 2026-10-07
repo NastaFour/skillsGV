@@ -34,4 +34,7 @@ node_modules/
 # Local PR drafts
 pr-body-*.md
 
+# CodeGraph and local gentle-ai config
+.codegraph/
+.gentle-ai-default-agent.json
 
