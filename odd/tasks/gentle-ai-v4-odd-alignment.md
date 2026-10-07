@@ -67,7 +67,7 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - [x] **T1 — Baseline + feature doc**
 - [x] **T2 — Conteo de skills dinámico en tests**
 - [x] **T3 — Skill fallback `odd-workflow`**
-- [ ] **T4 — Kernels (full & minimal)**
+- [x] **T4 — Kernels (full & minimal)**
 - [ ] **T5 — Router sin `needsSDD`**
 - [ ] **T6 — Deprecar SDD con redirect**
 - [ ] **T7 — Docs de proceso: AGENTS.md, README.md, harness-map**
@@ -104,4 +104,11 @@ Que el catálogo deje de ser "SDD con parches ODD" y quede **alineado a gentle-a
 - `pnpm validate:strict`: 229 pass · 0 with issues (0 errors, 0 warnings).
 - `pnpm test` + `pnpm test:addon`: 111 + 3 tests PASS (0 failures).
 - Router test: `pnpm router --query "implementar feature multi archivo"` resuelve `"primary": "odd-workflow"`, `"confidence": 1`.
+- Route: direct inline.
+
+### T4: Kernels (full & minimal)
+- Actualizado `_shared/bootstrap-kernel-full.md`: regla 2 ahora establece ODD explícito (`odd-workflow`) y retiro de SDD; fusionado recordatorio de gitignore en regla 4. Mantiene 6 reglas limpias.
+- Actualizado `_shared/bootstrap-kernel-minimal.md`: delimitado el Evidence Budget ("máx. 1 batch paralelo de ≤3 llamadas / ~10k tokens inline; mappers y writers delegados").
+- `node --test test/kernel-inject.test.mjs`: 21 tests PASS (0 failures).
+- `pnpm validate:strict`: 229 pass · 0 with issues.
 - Route: direct inline.
