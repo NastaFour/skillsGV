@@ -280,13 +280,13 @@ test("manifest-prose-count: docs declaring a divergent total fail naming doc, de
   const root = makeRoot(t);
   skillFixture(root);
   write(join(root, "README.md"), "Catálogo de **150 skills** conforme a la especificación.\n");
-  write(join(root, "openspec", "config.yaml"), "context: |\n  Proyecto: fixture (catálogo de 151 skills)\n");
+  write(join(root, "SKILLS.md"), "# SKILLS\n\nCatálogo de **151 skills** disponibles.\n");
 
   const r = runValidator(root, ["--catalog-root"]);
   assert.equal(r.code, 1, r.stdout);
   const hits = findIssues(r.json, "manifest-prose-count");
   assert.ok(hits.some((h) => /README\.md/.test(h.msg) && /150/.test(h.msg) && /has 1\b/.test(h.msg)), "README drift must name doc, declared and real counts");
-  assert.ok(hits.some((h) => /config\.yaml/.test(h.msg) && /151/.test(h.msg)));
+  assert.ok(hits.some((h) => /SKILLS\.md/.test(h.msg) && /151/.test(h.msg)));
 });
 
 test("external-target: external skill directory without catalog root skips manifest-* checks and passes --strict", (t) => {

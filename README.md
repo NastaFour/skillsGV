@@ -1,248 +1,216 @@
 # skillsGV
 
-Catálogo multi-agente de **229 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), alineado al flujo ODD (Organic-Driven Development) de gentle-ai 4.0: fallback `odd-workflow`, routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Corey Haines](https://coreyhaines.com/), [Donald Miller](https://storybrand.com/) (StoryBrand), [Adam Wathan & Steve Schoger](https://www.refactoringui.com/) (Refactoring UI), [Emil Kowalski](https://animations.dev/) (animations.dev), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) (Hermes) y [obra `superpowers`](https://github.com/obra/superpowers).
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](package.json)
+[![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
+[![Skills Count](https://img.shields.io/badge/skills-229-purple.svg)](#categories)
+[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.0)-brightgreen.svg)](#organic-driven-development)
 
-Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+>
+> 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
-> **pnpm only — `npm`/`npx` rechazados**: el catálogo exige `pnpm` (y `pnpm dlx` en lugar de `npx`). El validador estricto falla ante cualquier mención de `npm`/`npx` en los cuerpos de las skills, salvo excepción documentada vía frontmatter `allows-npm`.
+---
 
-## Quick start
+## 🌟 Why skillsGV?
+
+Most AI coding setups suffer from two extremes:
+1. **Monolithic prompt bloat**: stuffing hundreds of rules into `AGENTS.md` or system prompts, burning 15k+ tokens per turn and degrading reasoning on flash models.
+2. **Fragmented, undisciplined agents**: agents write uncontrolled code without tests, forget past architectural decisions across sessions, and produce generic "AI-slop" designs.
+
+**skillsGV solves this with a structured, layered harness:**
+
+- 🎯 **229 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
+- 🔄 **ODD-Exclusive Workflow**: Authorize → Explore → Classify → Task File + Engram Mirror → Atomic Work-Unit Commits on feature branch.
+- ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
+- 🎨 **Anti-Slop Design Governance**: Incorporates Paul Bakaus's `impeccable`, Leonxlnx's `taste-skill` (10 Absolute Bans, triaxial dials), and `design-driven` DNA interviews.
+- 🧠 **Cross-Session Memory**: Seamless MCP integration with [Engram](https://github.com/Gentleman-Programming/engram) (`mem_save`, `mem_search`, `mem_judge`).
+- 🤖 **Universal Agent Portability**: One install script works with Claude Code, Gemini CLI, Cursor, Antigravity, OpenCode, Codex, GitHub Copilot, Windsurf, Kiro, and DeepSeek.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Manual Clone & Install
 
 ```bash
-# 1. Clonar
+# Clone the repository
 git clone https://github.com/NastaFour/skillsGV.git
 cd skillsGV
 
-# 2. Previsualizar qué se instalaría en las herramientas detectadas (recomendado siempre)
+# Preview what will be installed across detected tools
 node 00-meta-skills/skill-sync/scripts/install-skills.mjs --dry-run
 
-# 3. Instalar globalmente para todos los agentes detectados
+# Install globally for all detected agents
 node 00-meta-skills/skill-sync/scripts/install-skills.mjs
 ```
 
-Requisito: Node.js 20 o superior. Los scripts `.mjs` no tienen dependencias externas (el `package.json` solo define scripts de conveniencia).
+*Requirements: Node.js 20+ (Pure Node.js `.mjs` scripts — Windows-first, zero native bash dependencies).*
 
-### Instalación por un agente (one-liner)
+### 2. One-Liner for Any Autonomous Agent
 
-Cualquier agente que aterrice en un repo puede instalar el catálogo con:
+Give this instruction to any AI coding assistant inside your target repository:
 
+```text
+Clone https://github.com/NastaFour/skillsGV and run `node install.mjs --target .` — follow its AGENTS.md.
 ```
-Cloná https://github.com/NastaFour/skillsGV y corré `node install.mjs --target .` — seguí su AGENTS.md.
+
+In project-level installs, the installer **activates the always-on kernel**:
+- Injects `skillsGV:kernel` into the files your harness automatically loads (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`).
+- Updates `.gitignore` to prevent installed skill folders from ever being committed to your source code repository.
+- Generates `.skills-install/manifest.json` for deterministic `--rollback` and `--uninstall`.
+
+---
+
+## 🔄 How It Works: The Layered Architecture
+
+```mermaid
+flowchart TD
+    User["User Request"] --> Kernel["Always-on Kernel (AGENTS.md / GEMINI.md)"]
+    Kernel --> Router["Deterministic Router (skill-router.mjs)"]
+    Router -->|Picks ≤5 skills| Loader["Tier 1 On-Demand Loader"]
+    Loader --> ODD["Organic-Driven Development (ODD)"]
+    ODD --> Authorize["1. Authorize (Read-only guard)"]
+    Authorize --> Explore["2. Explore & Classify"]
+    Explore --> FeatureDoc["3. odd/tasks/<feature>.md + Engram Mirror"]
+    FeatureDoc --> Implement["4. Task-by-task with TDD & Evidence"]
+    Implement --> Commit["5. Work-Unit Conventional Commit"]
+    Commit --> Review["6. Verification Gate / Judgment Day"]
+    Review --> Done["Verified Completion"]
 ```
 
-En installs por proyecto, el instalador además **activa la capa always-on**: inyecta el kernel `skillsGV:kernel` en los archivos que el harness autocarga (`AGENTS.md` / `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md`), blinda el `.gitignore` (las skills instaladas nunca se commiteen) y deja evidencia con hash en `.skills-install/manifest.json` — que es local a tu máquina: en un clone fresco no hay manifiesto, y los bloques del kernel se gestionan con el install local de cada dev. Verificá que tu harness realmente inyecta cada canal con `references/canary-activation.md`.
+### Feature Comparison
 
-## 🎨 Sistema Anti-Slop de Diseño Frontend
+| Capability | Raw Prompting | Generic Skills Repos | skillsGV |
+|---|:---:|:---:|:---:|
+| **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
+| **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.0 alignment) |
+| **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
+| **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
+| **Anti-Slop Design System** | ❌ | ❌ | ✅ (`impeccable` + `taste-skill`) |
+| **Multi-Agent Roster Switcher** | ❌ | ❌ | ✅ (21 agents across strong/mid/cheap) |
+| **Automated Validator** | ❌ | ❌ | ✅ (`validate-skills.mjs --strict`) |
 
-Gobernanza visual determinista y erradicación de sesgos genéricos de IA en interfaces web y móviles:
+---
 
-- **impeccable** (`05-frontend/impeccable`): gobernanza por 23 comandos especializados (`shape`, `craft`, `critique`, `audit`, `polish`...), manteniendo `PRODUCT.md` (contexto durable) y `DESIGN.md` (tokens visuales en formato Google Stitch).
-- **taste-skill** (`05-frontend/taste-skill`): Design Read obligatorio previo a la implementación, diales triaxiales 1-10 (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), 10 Absolute Bans de fallo automático y preflight mecánico.
-- **design-driven D1b**: entrevista de unicidad en 5 bloques secuenciales (3 P's, diales, referencias reales, firma visual, anti-slop) que alimenta el Design DNA del producto.
-- **MCPs opcionales**: integración no bloqueante con Figma (vía `figma-implement`), 21st.dev y Fal.ai (FLUX Schnell).
-- *Nota*: el índice completo de las 52 fuentes vive en `05-frontend/taste-skill/references/full-guide.md`.
+## 🛠️ CLI Flags & Advanced Installation
 
-## Instalación
+The primary installer is `00-meta-skills/skill-sync/scripts/install-skills.mjs`.
 
-El instalador cross-tool es `00-meta-skills/skill-sync/scripts/install-skills.mjs`. Ejecutalo siempre primero con `--dry-run` para revisar el plan antes de escribir.
-
-| Flag | Efecto |
+| Flag | Description |
 |---|---|
-| `--target <ruta>` | Instala dentro de un proyecto concreto. Sin este flag, instala en el entorno global de las herramientas detectadas. |
-| `--tool <id>` | Restringe la instalación a herramientas específicas. Repeatable: `claude-code`, `opencode`, `cursor`, `copilot`, `codex`, `gemini-cli`, `antigravity`, `kiro`, `windsurf`, `deepseek`, `dsh`. |
-| `--all-tools` | Omitte la detección e instala para todas las herramientas conocidas. |
-| `--only <lista>` | Instala solo categorías separadas por comas, por ejemplo `--only "04-backend,05-frontend"`. |
-| `--symlink` | Usa symlinks (junctions en Windows) en lugar de copiar: una única fuente de verdad. |
-| `--dry-run` | Muestra qué haría sin escribir nada. |
-| `--uninstall` | Elimina únicamente archivos propios registrados en el manifiesto (también extrae los bloques del kernel y el bloque guardado del `.gitignore`). Los archivos ajenos, editados por el usuario o symlinked se conservan y se listan. Requiere manifiesto. |
-| `--rollback` | Revierte la última generación de instalación (restaura el estado previo sobrescrito y elimina lo nuevo, incluida la capa de activación). Queda registrado en el historial del manifiesto. |
-| `--no-kernel` | Saltea la capa de activación (kernel + `.gitignore`) en installs por proyecto. |
+| `--target <path>` | Install into a specific project. Omit to install globally across detected tools. |
+| `--tool <id>` | Target specific tools: `claude-code`, `opencode`, `cursor`, `copilot`, `codex`, `gemini-cli`, `antigravity`, `kiro`, `windsurf`, `deepseek`, `dsh`. |
+| `--all-tools` | Install for all known tools without automatic detection. |
+| `--only <list>` | Install specific categories only (e.g. `--only "04-backend,05-frontend"`). |
+| `--symlink` | Use directory junctions/symlinks instead of copying (single source of truth). |
+| `--dry-run` | Preview actions without touching the filesystem. |
+| `--uninstall` | Safely remove catalog files and clean kernel injections using manifest. |
+| `--rollback` | Roll back the most recent install generation. |
+| `--no-kernel` | Skip kernel injection and `.gitignore` updates. |
+
+### Examples
 
 ```bash
-# Proyecto concreto, solo dos herramientas
-node 00-meta-skills/skill-sync/scripts/install-skills.mjs --target "C:\ruta\al\proyecto" --tool claude-code --tool cursor
+# Specific project, targeting Claude Code and Cursor only
+node 00-meta-skills/skill-sync/scripts/install-skills.mjs --target "C:\projects\my-app" --tool claude-code --tool cursor
 
-# Solo dos categorías, con symlinks
+# Only frontend and backend skills via symlinks
 node 00-meta-skills/skill-sync/scripts/install-skills.mjs --only "04-backend,05-frontend" --symlink
 
-# Deshacer la última instalación o retirar el catálogo
+# Roll back changes if an installation fails
 node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
-node 00-meta-skills/skill-sync/scripts/install-skills.mjs --uninstall
 ```
 
-Si una instalación sale mal: `--rollback` revierte la última generación completa; `--uninstall` retira los archivos propios del catálogo sin tocar nada ajeno. Ambos requieren el manifiesto que el instalador deja en cada destino.
+---
 
-## Uso diario
+## 📂 Categories
 
-- **Tier 0 (siempre cargadas)**: 14 skills base (~2K tokens): `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `skill-loader`, `odd-workflow`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `decision-gate`, `kill-switches`, `dod-checker`.
-- **Router antes de cada turno**: el resto de las skills se cargan bajo demanda según `tier1toLoad`:
+The catalog contains **229 skills** distributed across structured domains:
 
-  ```bash
-  node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <lineas>] [--json]
-  ```
+| Category | Path | Key Skills & Focus |
+|---|---|---|
+| **Meta-Skills** | `00-meta-skills/` | `skill-router`, `skill-validator`, `skill-loader`, `skill-creator`, `agent-roster`, `odd-workflow` |
+| **Planning & Process** | `01-planning-process/` | `project-tracker`, `engram-integration`, `brainstorming`, `session-notes`, `tech-escalation-adr` |
+| **Dev Roles** | `02-dev-roles/` | `code-reviewer`, `expert-debugger`, `judgment-day`, `security-audit`, `dod-checker`, `archify` |
+| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `api-ai-billing`, `prompt-engineering` |
+| **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
+| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `angular-core`, `tailwind-4`, `react-native`, `impeccable`, `taste-skill` |
+| **Code Quality** | `06-code-quality/` | `typescript`, `solid-clean-code`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
+| **Testing** | `07-testing/` | `testing-patterns` (TDD RED/GREEN), `playwright`, `pytest`, `go-testing` |
+| **DevOps** | `08-devops/` | `ci-cd`, `observability`, `monitoring`, `kill-switches`, `store-deployment-eas` |
+| **Media & Graphics** | `09-media-graphics/` | `nano-banana`, `banana-claude` |
+| **MCP Hybrids** | `11-mcp-hybrid/` | `component-scrapper-mcp`, `figma-mcp`, `oklch-theme-injector`, `open-design`, `openseo` |
+| **Matt Pocock Suite** | `12-matt-pocock/` | `ask-matt`, `domain-modeling`, `grilling`, `scaffold-exercises`, `tdd`, `writing-for-agents` |
 
-- **Trabajo chico, directo**: fixes de un archivo o consultas puntuales no requieren proceso adicional.
-- **ODD exclusivo (gentle-ai 4.0)**: todo cambio de código entra en Organic-Driven Development (autorizar, explorar, clasificar, feature doc en `odd/tasks/<feature>.md` + espejo Engram si es sustancial, work-unit commits en feature branch). En runtimes sin binario gentle-ai, `odd-workflow` es el fallback estructurado. Las fases SDD upstream han sido retiradas.
-- **Antes de cerrar trabajo serio** → `judgment-day`: revisión adversarial con dos jueces independientes y ciego cruzado.
-- **Model routing**: perfiles declarativos en `_shared/model-routing/` que mapean roles de ejecución a modelos; un runtime sin catálogo cae al modelo por defecto.
+---
 
-## Configuración de agentes (agent-roster)
+## 🤖 Agent Roster & Multi-Model Switching
 
-Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier `sdd-strong`/`sdd-mid`/`sdd-cheap`, effort `max`/`high`/`medium`/`low`, `delegate_only`), con generador por runtime y switcher de proveedor con un comando:
-
-| Archivo | Rol |
-|---|---|
-| `_shared/agent-roster/roster.json` | **Fuente de verdad**: nombre, grupo, tier, effort y delegate_only de los 21 agentes, más tiers y fases. |
-| `_shared/agent-roster/profiles.json` | Perfiles de proveedor con nombre (`deepseek`, `glm`) y perfil activo (`current`). |
-| `00-meta-skills/agent-roster/scripts/apply.mjs` | Generador por runtime (`opencode`, `dsh`, `list`). `--dry-run` por defecto; nunca escribe sin `--apply`; backup timestamped antes de escribir. |
-| `00-meta-skills/agent-roster/scripts/set-models.mjs` (+ `set-models.cmd`) | Cambia el proveedor/modelo de TODOS los agentes de una vez, emite args de sync nativos y delega en `apply.mjs` para cada runtime detectado. |
-
-Ejemplos (PowerShell; el wrapper `set-models.cmd` acepta los mismos flags):
+Manage model assignments across all **21 agents** in the ecosystem (`strong`, `mid`, `cheap` tiers) with zero vendor lock-in:
 
 ```powershell
-# Ver qué cambiaría (nunca escribe sin --apply)
+# Preview provider changes without applying
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --dry-run
 
-# Cambiar todos los agentes al perfil GLM
+# Switch all 21 agents to GLM profile
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --apply
 
-# Un único modelo para todos los tiers
-node 00-meta-skills/agent-roster/scripts/set-models.mjs --all opencode-go/deepseek-v4-pro --apply
-
-# Ajustar un solo tier
+# Set individual tiers dynamically
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --strong opencode-go/glm-5.3 --apply
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --mid opencode-go/glm-5.2 --apply
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --cheap opencode-go/glm-5.2 --apply
-
-# Emitir argumentos exactos para gentle-ai sync
-node 00-meta-skills/agent-roster/scripts/set-models.mjs --emit-sync-args
-
-# Guardar la combinación actual como perfil nuevo
-node 00-meta-skills/agent-roster/scripts/set-models.mjs --save-profile mi-perfil --apply
-
-# Inspeccionar el estado actual
-node 00-meta-skills/agent-roster/scripts/set-models.mjs --list
 ```
 
-**Promesa de portabilidad**: un runtime nuevo es un adaptador más en `apply.mjs` (detección + plan + escritura con backup); `roster.json` no cambia nunca. El merge en OpenCode es quirúrgico (solo `agent.<name>.model` de los 21 agentes, todo lo demás queda byte a byte). Regla de prueba: nunca aplicar `--apply` sobre el `opencode.json` global real en tests — usar una copia temporal con `apply.mjs --config <copia>`.
+---
 
-## Categorías
+## 🔒 Package Manager Rules
 
-| Directorio | Propósito |
-|---|---|
-| `00-meta-skills/` | Harness propio del catálogo: routing, validación, instalación, carga por tiers, flujo ODD y meta-skills. |
-| `01-planning-process/` | Planificación y procesos: roadmap, ADRs, Jira, brainstorming, notas de sesión, paralelización. |
-| `02-dev-roles/` | Roles de desarrollo: code review, debugging, security audit, PRs, diseño frontend, Judgment Day. |
-| `03-ai-ml/` | Integración de IA/LLM en productos: orquestación multi-agente, billing de APIs, prompt engineering, MLOps. |
-| `04-backend/` | Backend: Node/Express, Prisma, PostgreSQL, auth, sockets, jobs, uploads, pagos y stacks adicionales (Django, Java, Spring). |
-| `05-frontend/` | Frontend: React/Vite, Next.js 15, Angular, React Native/Expo, Tailwind, animaciones y diseño de interfaces. |
-| `06-code-quality/` | Calidad y tooling: TypeScript estricto, SOLID, pnpm workspaces, Turborepo, Biome, changesets, gestión de env vars. |
-| `07-testing/` | Pruebas unitarias, de integración y E2E (Vitest, Playwright, pytest). |
-| `08-devops/` | CI/CD, monitoreo, observabilidad, kill switches y despliegue a stores. |
-| `09-media-graphics/` | Generación de imágenes y assets visuales con IA (Nano Banana, dirección creativa). |
-| `11-mcp-hybrid/` | Skills híbridas que combinan instrucciones con servidores MCP: Figma, scraping de componentes, auditoría UX, video. |
-| `professional-planner/` | Metodología histórica de planificación (deprecada, redirige a odd-workflow). |
+> ⚠️ **pnpm only — `npm` and `npx` are rejected.**
+>
+> All scripts and commands require `pnpm` (and `pnpm dlx` in place of `npx`). The strict mechanical validator fails if `npm` or `npx` appears in skill instructions unless justified via `allows-npm: <reason>` in frontmatter.
 
-## Mantenimiento del catálogo
+---
 
-Actualizar desde upstream y reinstalar en las herramientas locales:
+## 🧪 Testing & Validation
+
+Run the complete offline test and validation suite:
 
 ```bash
-git pull
-node 00-meta-skills/skill-sync/scripts/install-skills.mjs --dry-run
-node 00-meta-skills/skill-sync/scripts/install-skills.mjs
-```
+# Run all unit tests (112+ tests)
+pnpm test
 
-Agregar una skill nueva (los gates son obligatorios y van en el mismo commit):
+# Strict mechanical specification validation (0 errors, 0 warnings required)
+pnpm validate:strict
 
-1. Crearla con `skill-creator` respetando la spec agentskills.io (nombre lowercase-hyphen, descripción de una línea trigger-first, `allowed-tools` presente).
-2. Registrarla en `SKILLS.md` (tabla de su categoría + contador actualizado) y en `AGENTS.md` (tabla de categorías y Auto-Invoke List) en el mismo PR: el validador en modo estricto falla si el índice queda desincronizado.
-3. Validar mecánicamente:
+# Catalog health check
+pnpm doctor
 
-   ```bash
-   node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict
-   ```
-
-4. Regenerar los índices derivados:
-
-   ```bash
-   node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry
-   ```
-
-5. Si la skill solapa semánticamente con otra, delimitarla en `00-meta-skills/skill-router/references/overlap-matrix.json` y agregar el fixture correspondiente en `overlap-smoke-tests.json`.
-
-Verificación completa del harness:
-
-```bash
-# Validación de spec (exit 0 = limpio)
-node 00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict
-
-# Smoke test del router determinista
-node 00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" --json
-
-# Estado de la caché Tier 0/1 y telemetría
+# Benchmark / telemetry status
 node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --status
 ```
 
-## Companion tooling (opcional)
+---
 
-Binarios complementarios del mismo ecosistema (no son skills):
+## 📜 Credits & Attributions
 
-| Herramienta | Qué aporta | macOS/Linux (brew) | Windows (scoop) |
-|---|---|---|---|
-| [Engram](https://github.com/Gentleman-Programming/engram) | Memoria persistente cross-session vía MCP. | `brew install gentleman-programming/tap/engram && engram setup <agente>` | `scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket && scoop install engram` |
-| [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) | Configura agentes con Engram + workflow SDD + skills + persona. | `brew install gentleman-programming/tap/gentle-ai && gentle-ai install` | `scoop install gentle-ai` |
-| [GGA](https://github.com/Gentleman-Programming/gentleman-guardian-angel) | Code review pre-commit agnóstico del proveedor (requiere Git Bash o WSL). | `brew install gentleman-programming/tap/gga && gga init && gga install` | Clonar y ejecutar `bash install.sh` en Git Bash o WSL. Alternativa nativa: `engram` + `gentle-ai`. |
+This repository synthesizes, adapts, and organizes open-source standards and methodologies from exceptional engineers across the tech community:
 
-## Estructura del repo
+- **[Gentleman Programming](https://github.com/Gentleman-Programming)**: ODD process harness, Engram persistent memory, Judgment Day protocol, 21-agent roster, GGA pre-commit verification.
+- **[Anthropic](https://github.com/anthropics/skills)**: Core Agent Skills patterns, directory structure, and foundational prompts.
+- **[Vercel Labs](https://github.com/vercel-labs/agent-skills)**: React/Next.js composition and performance patterns.
+- **[Matt Pocock](https://github.com/mattpocock)**: The 23 engineering skills in `12-matt-pocock/`.
+- **[Paul Bakaus](https://github.com/pbakaus/impeccable)**: Impeccable design system governance (Apache-2.0).
+- **[Leonxlnx](https://github.com/Leonxlnx/taste-skill)**: Taste-skill anti-slop aesthetic dial system (MIT).
+- **[Corey Haines](https://coreyhaines.com/)**: CRO and conversion funnels.
+- **[Adam Wathan & Steve Schoger](https://www.refactoringui.com/)**: Refactoring UI visual design rules.
+- **[Emil Kowalski](https://animations.dev/)**: Physics-based animations and fluid micro-interactions.
+- **[Donald Miller](https://storybrand.com/)**: StoryBrand SB7 narrative architecture.
+- **[Jesse Vincent](https://github.com/obra/superpowers)**: Superpowers agent capabilities concepts.
 
-```
-skillsGV/
-├── AGENTS.md                  # Reglas globales y Auto-Invoke List para agentes
-├── SKILLS.md                  # Índice completo del catálogo
-├── README.md                  # Esta guía
-├── _shared/                   # Utilidades compartidas y perfiles de model-routing
-├── .atl/skill-registry.md     # Registro generado desde el frontmatter (--emit-registry)
-├── openspec/                  # Especificaciones y cambios SDD del propio catálogo
-│   ├── config.yaml            # Almacén de artefactos y comandos de verificación
-│   └── specs/
-├── 00-meta-skills/            # Meta-skills y fases SDD
-├── 01-planning-process/       # … categorías 01 a 09 y 11
-├── 11-mcp-hybrid/
-└── professional-planner/      # Metodología SDD de referencia
-```
+### License
 
-Documentación de referencia:
-
-- [`AGENTS.md`](AGENTS.md) — reglas globales, arranque del harness y Auto-Invoke List.
-- [`SKILLS.md`](SKILLS.md) — índice completo con paths por categoría.
-- [`.atl/skill-registry.md`](.atl/skill-registry.md) — registro generado automáticamente (índice, no fuente de verdad).
-- [`openspec/specs/`](openspec/specs/) — especificaciones de los cambios aplicados al catálogo.
-
-## 📜 Licencias, Derechos de Autor y Reconocimientos
-
-Este catálogo compila, organiza y adapta especificaciones y metodologías de código abierto y de referencia de diversos creadores y proyectos de la comunidad tecnológica. Cada componente derivado preserva los derechos morales, la propiedad intelectual y las licencias de sus respectivos autores originales:
-
-### Proyectos y Autores Adaptados
-
-| Proyecto / Metodología | Autor / Comunidad | Licencia Original | Qué se adaptó / Skills |
-|---|---|---|---|
-| [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) & [Engram](https://github.com/Gentleman-Programming/engram) | [Gentleman Programming](https://github.com/Gentleman-Programming) | MIT / Open Source | Harness de orquestación (ODD/SDD), memoria persistente Engram, protocolo Judgment Day, roster de 21 agentes |
-| [Anthropic Agent Skills](https://github.com/anthropics/skills) | Anthropic | MIT / Open Source | Patrones fundamentales de skills para agentes y directivas base |
-| [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills) | Vercel Labs | MIT | Patrones de composición en React, Next.js y ecosistema Vercel |
-| [Total TypeScript / Matt Pocock](https://github.com/mattpocock) | Matt Pocock | MIT / Permisiva | Suite de 23 skills en `12-matt-pocock/` (`codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grilling`, etc.) |
-| [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Paul Bakaus | Apache-2.0 | Gobernanza de diseño por 23 comandos especializados, `PRODUCT.md` y `DESIGN.md` |
-| [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Leonxlnx | MIT | Gobernanza estética anti-slop, diales triaxiales, 10 Absolute Bans y preflight |
-| [Conversion Factory / CRO](https://coreyhaines.com/) | Corey Haines | Propietaria / Educativa | Suite de CRO en `05-frontend/`: `page-cro`, `signup-flow-cro`, `onboarding-cro` y `popup-cro` |
-| [Refactoring UI](https://www.refactoringui.com/) | Adam Wathan & Steve Schoger | Educativa / Metodológica | Metodología de diseño visual en `05-frontend/refactoring-ui` (escala de grises, jerarquía por peso/tono, sombras multicapa) |
-| [animations.dev](https://animations.dev/) | Emil Kowalski | Educativa / Metodológica | Animaciones fluidas en `05-frontend/emil-kowalski` (física de resortes, gestos interrumpibles 1:1, transiciones FLIP) |
-| [Building a StoryBrand (SB7)](https://storybrand.com/) | Donald Miller | Metodológica / Comercial | Marco narrativo de 7 partes en `01-planning-process/storybrand-messaging` (el cliente como héroe) |
-| [Hermes Agent Security](https://github.com/NousResearch/Hermes-Function-Calling) | NousResearch | Apache-2.0 / MIT | Matriz de amenazas de seguridad para agentes (Hermes #13) en `00-meta-skills/skill-spector` |
-| [OpenSEO MCP](https://github.com/every-app/open-seo) | every-app | MIT | Auditoría técnica SEO y visibilidad en motores de IA en `11-mcp-hybrid/openseo` |
-| [Excalidraw](https://excalidraw.com/) | Excalidraw Team | MIT | Esquemas visuales y diagramación técnica en `02-dev-roles/archify` |
-| [obra/superpowers](https://github.com/obra/superpowers) | Jesse Vincent | MIT | Conceptos y estructura de superpoderes para agentes |
-| Plataformas de Referencia Visual | Godly.design, Awwwards, 21st.dev, Fal.ai | — | Inspiración y tooling estético documentados en `05-frontend/taste-skill/references/full-guide.md` |
-
-### Licencia del Catálogo
-
-El código de unión (*glue-code*), los scripts de instalación, el validador mecánico y la adaptación unificada de las skills de este catálogo se distribuyen bajo la licencia **MIT**, respetando las licencias originales de cada obra y autor arriba citados.
+The integration glue-code, installation tooling, mechanical validators, and adapted skill manifests are licensed under the **MIT License**. Original works retain their respective licenses cited above.
