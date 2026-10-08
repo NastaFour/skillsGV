@@ -35,7 +35,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T8: Curated Core Tier System (`--tier core|extended|full` in installer and catalog metadata)
 
 ### Phase 3 — ODD Alignment & Technical Debt
-- [ ] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
+- [x] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
 - [ ] T10: Resolve AGENTS.md & Kernel Contradictions (version 4.0.0, ≤5 skills, no forced turns)
 - [ ] T11: Update `references/model-mapping.md` to canonical tiers & update v3.0.0 feature doc header
 - [ ] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
@@ -106,7 +106,14 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Added `--tier core|extended|full` (default: `full`) to `install-skills.mjs` with hierarchical filtering during collection.
   - Added automated test coverage in `test/catalog-integrity.test.mjs` verifying tier completeness and dry-run tier filtering.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `55d3016`
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (115 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T9** (Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS`):
+  - Generalized `CRITICAL_MARKERS` to domain categories (`auth|payment|billing|migration|security|ssl|secret|jwt|token|password|keys|credentials|database|sql|schema|seed|checkout|env`) removing project-specific package keywords (`prisma`, `socketio`).
+  - Added advisory heuristic `suggestsStructuredFlow` that is strictly `false` by default (honoring ODD organic flow) and only evaluates to `true` when explicit spec/SDD terms (`sdd`, `spec-first`, `openspec`, `formal spec`, `waterfall`, `rfc document`) are provided in query.
+  - Added automated unit tests in `test/router.test.mjs` verifying `suggestsStructuredFlow` and generalized `CRITICAL_MARKERS`.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
 
 
 

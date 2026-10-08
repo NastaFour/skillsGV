@@ -253,9 +253,11 @@ if (!primary) {
 }
 
 // Heuristics (deterministic, no LLM)
-const CRITICAL_MARKERS = /\b(auth|payment|prisma|migration|socketio|ssl|secret|jwt|bcrypt|sql|checkout|env|token|password|keys|schema|seed|credentials)\b/i;
+const CRITICAL_MARKERS = /\b(auth|payment|billing|migration|security|ssl|secret|jwt|token|password|keys|credentials|database|sql|schema|seed|checkout|env)\b/i;
 const trivial = diffLines !== null && diffLines < 20 && !CRITICAL_MARKERS.test(qLower);
 const skipJudgmentDay = diffLines !== null && diffLines < 100 && !CRITICAL_MARKERS.test(qLower);
+const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfall|rfc document)\b/i;
+const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
 const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))];
 
@@ -263,6 +265,7 @@ const output = {
   primary,
   secondary,
   confidence: Math.round(confidence * 100) / 100,
+  suggestsStructuredFlow,
   trivial,
   skipJudgmentDay,
   deprecatedHit,
