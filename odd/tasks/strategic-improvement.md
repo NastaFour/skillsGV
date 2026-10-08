@@ -195,7 +195,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
     - `skill_proposal.yml`: structured proposal for new skills (tier, triggers, scope & exclusions).
     - `feature_request.yml`: structured template for harness/tooling enhancements.
   - Created `.github/workflows/release.yml`: automated release workflow running all validation suites, tests, benchmark generation, and publishing releases on tag push (`v*.*.*`).
-  - Commit: PENDING
+  - Commit: `5f31792`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (122 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
