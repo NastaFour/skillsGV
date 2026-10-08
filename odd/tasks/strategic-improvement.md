@@ -25,7 +25,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 ### Phase 1 — Foundation & Discoverability
 - [x] T1: English-First README + Hero Presentation + Badges (`README.md`, `README.es.md`)
 - [x] T2: Packaging & One-Command Install (`.claude-plugin/marketplace.json`, `gemini-extension.json`, `skills.sh` compatibility)
-- [ ] T3: GitHub Actions CI Workflow (`.github/workflows/ci.yml`, dynamic validator test count)
+- [x] T3: GitHub Actions CI Workflow (`.github/workflows/ci.yml`, dynamic validator test count)
 
 ### Phase 2 — Token Efficiency (Flash-Model Optimization)
 - [ ] T4: Decouple Validator from AGENTS.md → Validate against `catalog.json` (`validate-skills.mjs`, `validator-gates.test.mjs`)
@@ -62,6 +62,14 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Created `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` for Claude Code plugin marketplace discovery.
   - Created `gemini-extension.json` for Gemini CLI extensions (`gemini extensions install`).
   - Added native one-command install commands (Skills CLI / `pnpm dlx skills add`, Claude Code marketplace, Gemini CLI) to `README.md`.
+  - Commit: `aaa37fe`
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (112 tests PASS).
+- **T3** (GitHub Actions CI Workflow):
+  - Created `.github/workflows/ci.yml` running cross-platform (ubuntu-latest & windows-latest) across Node.js 20 & 22 with pnpm 11.9.0.
+  - CI pipeline executes `pnpm validate:strict`, `pnpm test`, `pnpm test:addon`, and `pnpm doctor`.
+  - Added CI status badge to `README.md`.
+  - Verified test suite has dynamic counts across all test files (0 hardcoded test counts).
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (112 tests PASS), `pnpm doctor` (6/6 checks PASS).
+
 
 

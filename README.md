@@ -1,5 +1,6 @@
 # skillsGV
 
+[![CI](https://github.com/NastaFour/skillsGV/actions/workflows/ci.yml/badge.svg)](https://github.com/NastaFour/skillsGV/actions)
 [![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](package.json)
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
