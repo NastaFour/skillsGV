@@ -73,22 +73,8 @@ const SECRET_SHAPE_PATTERNS = [
 ];
 const looksLikeSecret = (value) => SECRET_SHAPE_PATTERNS.some((re) => re.test(value));
 
-export function normalizeTier(tier) {
-  if (!tier) return "cheap";
-  const t = String(tier).toLowerCase().trim();
-  if (t === "sdd-strong" || t === "strong") return "strong";
-  if (t === "sdd-mid" || t === "mid") return "mid";
-  if (t === "sdd-cheap" || t === "cheap" || t === "flash") return "cheap";
-  return t;
-}
-
-export function nativeTier(tier) {
-  const norm = normalizeTier(tier);
-  if (norm === "strong") return "strong";
-  if (norm === "mid") return "mid";
-  if (norm === "cheap") return "cheap";
-  return tier;
-}
+import { normalizeTier, nativeTier } from "../../../_shared/agent-roster/normalize-tier.mjs";
+export { normalizeTier, nativeTier };
 
 // ---------------------------------------------------------------------------
 // CLI

@@ -32,6 +32,7 @@ const ROSTER_PATH = join(ROOT, "_shared", "agent-roster", "roster.json");
 const PROFILES_PATH = join(ROOT, "_shared", "agent-roster", "profiles.json");
 const SET_MODELS = join(ROOT, "00-meta-skills", "agent-roster", "scripts", "set-models.mjs");
 const APPLY = join(ROOT, "00-meta-skills", "agent-roster", "scripts", "apply.mjs");
+import { normalizeTier, nativeTier } from "../_shared/agent-roster/normalize-tier.mjs";
 
 function run(script, args) {
   const res = spawnSync(process.execPath, [script, ...args], { encoding: "utf8" });
@@ -387,4 +388,20 @@ test("apply.mjs rejects an unknown runtime argument with exit 2", () => {
   const res = run(APPLY, ["--runtime", "unsupported-runtime"]);
   assert.equal(res.code, 2);
   assert.match(res.stdout, /--runtime must be one of: opencode, dsh, list/);
+});
+
+test("normalizeTier canonicalizes tier aliases properly", () => {
+  assert.equal(normalizeTier("sdd-strong"), "strong");
+  assert.equal(normalizeTier("strong"), "strong");
+  assert.equal(normalizeTier("sdd-mid"), "mid");
+  assert.equal(normalizeTier("mid"), "mid");
+  assert.equal(normalizeTier("sdd-cheap"), "cheap");
+  assert.equal(normalizeTier("cheap"), "cheap");
+  assert.equal(normalizeTier("flash"), "cheap");
+  assert.equal(normalizeTier(null), "cheap");
+  assert.equal(normalizeTier(""), "cheap");
+  assert.equal(nativeTier("strong"), "strong");
+  assert.equal(nativeTier("sdd-strong"), "strong");
+  assert.equal(nativeTier("sdd-mid"), "mid");
+  assert.equal(nativeTier("sdd-cheap"), "cheap");
 });

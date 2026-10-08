@@ -38,7 +38,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
 - [x] T10: Resolve AGENTS.md & Kernel Contradictions (version 4.0.0, ≤5 skills, no forced turns)
 - [x] T11: Update `references/model-mapping.md` to canonical tiers & update v3.0.0 feature doc header
-- [ ] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
+- [x] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
 
 ### Phase 4 — Catalog Deduplication & Hygiene
 - [ ] T13: Deprecate/Redirect 7 Overlapping Skill Pairs (`electronjs`, `tailwindcss`, `frontend-designer`, etc.)
@@ -125,7 +125,14 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Updated `00-meta-skills/agent-roster/references/model-mapping.md` to define `strong`, `mid`, and `cheap` / `flash` as canonical model tiers, marking `sdd-*` as legacy compatibility aliases.
   - Updated `odd/tasks/gentle-ai-v4-odd-alignment.md` header from `en curso` to `COMPLETADO`.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `e6d4350`
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
+- **T12** (Extract Shared `normalizeTier()` Module):
+  - Extracted duplicate `normalizeTier()` and `nativeTier()` implementations from `set-models.mjs` and `apply.mjs` into `_shared/agent-roster/normalize-tier.mjs`.
+  - Re-exported from both scripts to guarantee 100% backward compatibility for all external callers and tests.
+  - Added unit test coverage in `test/agent-roster-tiers.test.mjs`.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (118 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
 

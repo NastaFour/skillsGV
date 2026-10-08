@@ -145,14 +145,8 @@ function backupStamp() {
 // Roster / profile resolution
 // ---------------------------------------------------------------------------
 
-export function normalizeTier(tier) {
-  if (!tier) return "cheap";
-  const t = String(tier).toLowerCase().trim();
-  if (t === "sdd-strong" || t === "strong") return "strong";
-  if (t === "sdd-mid" || t === "mid") return "mid";
-  if (t === "sdd-cheap" || t === "cheap" || t === "flash") return "cheap";
-  return t;
-}
+import { normalizeTier } from "../../../_shared/agent-roster/normalize-tier.mjs";
+export { normalizeTier };
 
 function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
   if (override) {
