@@ -37,7 +37,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 ### Phase 3 — ODD Alignment & Technical Debt
 - [x] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
 - [x] T10: Resolve AGENTS.md & Kernel Contradictions (version 4.0.0, ≤5 skills, no forced turns)
-- [ ] T11: Update `references/model-mapping.md` to canonical tiers & update v3.0.0 feature doc header
+- [x] T11: Update `references/model-mapping.md` to canonical tiers & update v3.0.0 feature doc header
 - [ ] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
 
 ### Phase 4 — Catalog Deduplication & Hygiene
@@ -118,6 +118,12 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - **T10** (Resolve AGENTS.md & Kernel Contradictions):
   - Standardized gentle-ai version references to Gentle-AI 4.0.0 across `AGENTS.md`, `odd-workflow/SKILL.md`, and `set-models.mjs`.
   - Clarified Two-Tier progressive disclosure in `AGENTS.md`: Tier 0 base house-meta available at startup; Tier 1 (≤5 skills) loaded on demand via router without forced per-turn router looping.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `3f38f8b`
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
+- **T11** (Update `references/model-mapping.md` & Feature Doc Header):
+  - Updated `00-meta-skills/agent-roster/references/model-mapping.md` to define `strong`, `mid`, and `cheap` / `flash` as canonical model tiers, marking `sdd-*` as legacy compatibility aliases.
+  - Updated `odd/tasks/gentle-ai-v4-odd-alignment.md` header from `en curso` to `COMPLETADO`.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
 

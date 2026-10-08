@@ -6,21 +6,21 @@
 
 | Campo | Significado | Valores |
 |---|---|---|
-| `tier` | Clase de modelo para el agente. | `sdd-strong` (modelo de razonamiento completo) \| `sdd-mid` (modelo balanceado para código/fixes) \| `sdd-cheap` (modelo económico/rápido) — compatibles con aliases `strong`, `mid`, `cheap`/`flash` |
+| `tier` | Clase de modelo para el agente. | `strong` (modelo de razonamiento completo) \| `mid` (modelo balanceado para código/fixes) \| `cheap` / `flash` (modelo económico/rápido) — retrocompatible con aliases heredados `sdd-strong`, `sdd-mid`, `sdd-cheap` |
 | `effort` | Intensidad de razonamiento esperada. | `max` \| `high` \| `medium` \| `low` |
 | `delegate_only` | Si el agente solo se ejecuta como sub-agente delegado (nunca como agente principal de sesión). | `true` \| `false` |
 
 `delegate_only: false` solo aparece en dos agentes, por razones distintas:
 
-- `gentle-orchestrator`: es el coordinador principal de la sesión (tier sdd-strong, effort max).
+- `gentle-orchestrator`: es el coordinador principal de la sesión (tier strong, effort max).
 - `sdd-onboard`: walkthrough interactivo que corre inline con el usuario (excepción documentada en el SKILL.md).
 
 ## Alineación con perfiles nativos (`gentle-ai sync`) y no-duplicación
 
-El catálogo define la economía de modelos por fase y por agente en `roster.json`, utilizando la nomenclatura nativa:
-- **`sdd-strong`**: research (`sdd-research`), propuesta (`sdd-propose`), diseño (`sdd-design`), orquestador (`gentle-orchestrator`) y jueces (`jd-judge-a`, `jd-judge-b`).
-- **`sdd-mid`**: implementación (`sdd-apply`), especificación (`sdd-spec`), verificación (`sdd-verify`) y agente de fixes quirúrgicos (`jd-fix-agent`).
-- **`sdd-cheap`**: arranque (`sdd-init`), exploración (`sdd-explore`), tareas (`sdd-tasks`), archivo (`sdd-archive`), walkthrough (`sdd-onboard`) y lentes de revisión (`review-*`).
+El catálogo define la economía de modelos por fase y por agente en `roster.json`, utilizando la nomenclatura canónica:
+- **`strong`** (alias legacy `sdd-strong`): investigación (`research-first`), propuesta, diseño, orquestador (`gentle-orchestrator`) y jueces (`jd-judge-a`, `jd-judge-b`).
+- **`mid`** (alias legacy `sdd-mid`): implementación (`feature-implementer`), verificación (`testing-patterns`, `qa-tester`) y agente de fixes quirúrgicos (`jd-fix-agent`).
+- **`cheap` / `flash`** (alias legacy `sdd-cheap`): exploración, mappers, tareas atómicas y lentes de revisión (`review-*`).
 
 **Principio de no-duplicación**:
 1. Para **perfiles de fase**: el catálogo **no** implementa un motor propio de aplicación. En su lugar, `set-models.mjs --emit-sync-args` emite los argumentos exactos:

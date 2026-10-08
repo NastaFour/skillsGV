@@ -1,6 +1,6 @@
 # Alineación skillsGV → gentle-ai v4.0.0 (ODD único) — feature doc (ODD)
 
-- **Estado**: en curso (branch `feat/odd-v4-alignment`)
+- **Estado**: COMPLETADO
 - **Fecha**: 2026-10-07
 - **Mirror Engram**: OK (`obs-985e9153d6e50b2e`, id 541, project `skills-catalog`, topic `odd/gentle-ai-v4-odd-alignment/tasks`)
 
