@@ -185,7 +185,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
     - 100% invariant check success rate (164/164 checks pass, 0 failures)
   - Added automated test in `test/benchmark.test.mjs` and updated `TOP_SKILLS` in `test/evals.test.mjs`.
   - Added `"benchmark"` script to `package.json` and published benchmark results in `README.md` and `README.es.md`.
-  - Commit: PENDING
+  - Commit: `fa07c6b`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (122 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
