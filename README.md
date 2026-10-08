@@ -33,7 +33,23 @@ Most AI coding setups suffer from two extremes:
 
 ## 🚀 Quick Start
 
-### 1. Manual Clone & Install
+### 1. One-Command Install (Recommended)
+
+Install using your preferred agent's native ecosystem:
+
+```bash
+# Via Skills CLI (Vercel Labs / skills.sh)
+pnpm dlx skills add NastaFour/skillsGV
+
+# In Claude Code chat interface
+/plugin marketplace add NastaFour/skillsGV
+/plugin install skillsgv@skillsgv-marketplace
+
+# In Gemini CLI
+gemini extensions install https://github.com/NastaFour/skillsGV
+```
+
+### 2. Manual Clone & Install
 
 ```bash
 # Clone the repository
@@ -49,7 +65,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs
 
 *Requirements: Node.js 20+ (Pure Node.js `.mjs` scripts — Windows-first, zero native bash dependencies).*
 
-### 2. One-Liner for Any Autonomous Agent
+### 3. One-Liner for Any Autonomous Agent
 
 Give this instruction to any AI coding assistant inside your target repository:
 

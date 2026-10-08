@@ -1,0 +1,20 @@
+{
+  "name": "skillsgv-marketplace",
+  "version": "3.0.0",
+  "description": "Multi-agent skill catalog and process harness for AI coding assistants",
+  "owner": {
+    "name": "NastaFour",
+    "url": "https://github.com/NastaFour/skillsGV"
+  },
+  "plugins": [
+    {
+      "name": "skillsgv",
+      "description": "Portable 229-skill catalog with ODD workflow, dual-judge review, and deterministic routing",
+      "version": "3.0.0",
+      "source": {
+        "source": "github",
+        "repo": "NastaFour/skillsGV"
+      }
+    }
+  ]
+}

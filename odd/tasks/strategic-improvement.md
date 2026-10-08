@@ -24,7 +24,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 
 ### Phase 1 — Foundation & Discoverability
 - [x] T1: English-First README + Hero Presentation + Badges (`README.md`, `README.es.md`)
-- [ ] T2: Packaging & One-Command Install (`.claude-plugin/marketplace.json`, `gemini-extension.json`, `skills.sh` compatibility)
+- [x] T2: Packaging & One-Command Install (`.claude-plugin/marketplace.json`, `gemini-extension.json`, `skills.sh` compatibility)
 - [ ] T3: GitHub Actions CI Workflow (`.github/workflows/ci.yml`, dynamic validator test count)
 
 ### Phase 2 — Token Efficiency (Flash-Model Optimization)
@@ -56,5 +56,12 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - `README.md` completely rewritten in English with official badges (version, spec, license, pnpm-only, 229 skills, ODD process), value proposition, Mermaid architecture flow, comparison matrix, quickstart, and full categories index.
   - `README.es.md` created preserving comprehensive Spanish documentation.
   - Fixed test fixture in `test/validator-gates.test.mjs` to target `SKILLS.md` instead of historical `openspec/config.yaml`.
+  - Commit: `9f8eca2`
   - Verification: `pnpm validate:strict` (229 pass, 0 errors, 0 warnings), `pnpm test` (112 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `node scripts/sync-addon.mjs --check` (229 skills in full parity).
+- **T2** (Packaging & One-Command Install):
+  - Created `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` for Claude Code plugin marketplace discovery.
+  - Created `gemini-extension.json` for Gemini CLI extensions (`gemini extensions install`).
+  - Added native one-command install commands (Skills CLI / `pnpm dlx skills add`, Claude Code marketplace, Gemini CLI) to `README.md`.
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (112 tests PASS).
+
 

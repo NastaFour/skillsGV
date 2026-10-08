@@ -1,0 +1,10 @@
+{
+  "name": "skillsgv",
+  "version": "3.0.0",
+  "description": "Portable 229-skill catalog with ODD workflow, dual-judge review, and deterministic routing",
+  "author": {
+    "name": "NastaFour",
+    "url": "https://github.com/NastaFour/skillsGV"
+  },
+  "skills": "./"
+}
