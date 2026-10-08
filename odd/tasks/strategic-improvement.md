@@ -164,7 +164,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Copied 5 missing shared files (`engram-convention.md`, `openspec-convention.md`, `persistence-contract.md`, `sdd-status-contract.md`, `SKILL.md`) to canonical `_shared/`.
   - Added `"build:addon": "node scripts/sync-addon.mjs --write"` to `package.json` and updated `"test:addon"` to auto-build before testing.
   - Added `"build"` and `"prepack"` scripts in `gentle-ai-dsh/package.json`.
-  - Commit: PENDING
+  - Commit: `a3770f6`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (120 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
