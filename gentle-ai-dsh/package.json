@@ -20,6 +20,8 @@
     "README.md"
   ],
   "scripts": {
+    "build": "node ../scripts/sync-addon.mjs --write",
+    "prepack": "node ../scripts/sync-addon.mjs --write",
     "test": "node --test test/installer.test.mjs"
   },
   "dependencies": {

@@ -38,3 +38,6 @@ pr-body-*.md
 .codegraph/
 .gentle-ai-default-agent.json
 
+# Addon build artifact (generated on-demand by scripts/sync-addon.mjs)
+gentle-ai-dsh/skills/
+

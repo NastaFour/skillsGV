@@ -43,7 +43,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 ### Phase 4 — Catalog Deduplication & Hygiene
 - [x] T13: Deprecate/Redirect 7 Overlapping Skill Pairs (`electronjs`, `tailwindcss`, `frontend-designer`, etc.)
 - [x] T14: Strip Project-Specific Content (admin panels, cash registers) into optional preset
-- [ ] T15: untrack or packaging-time build for `gentle-ai-dsh` mirror
+- [x] T15: untrack or packaging-time build for `gentle-ai-dsh` mirror
 
 ### Phase 5 — Credibility & Community
 - [ ] T16: Expand Evals to 15+ Core Skills with with-vs-without metrics script
@@ -156,7 +156,17 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Cleaned up domain remnants in `prompt-engineering`, `electronjs`, `tailwindcss`, and `testing-patterns`.
   - Added test in `test/catalog-integrity.test.mjs` verifying zero hardcoded personal Windows user paths across all skills in the catalog.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `9b93ced`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (119 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T15** (Untrack gentle-ai-dsh/skills and make build-on-demand):
+  - Untracked 557 duplicate files under `gentle-ai-dsh/skills/` via `git rm -r --cached gentle-ai-dsh/skills`, reducing tracked repository files by 45%.
+  - Added `gentle-ai-dsh/skills/` build artifact to `.gitignore`.
+  - Copied 5 missing shared files (`engram-convention.md`, `openspec-convention.md`, `persistence-contract.md`, `sdd-status-contract.md`, `SKILL.md`) to canonical `_shared/`.
+  - Added `"build:addon": "node scripts/sync-addon.mjs --write"` to `package.json` and updated `"test:addon"` to auto-build before testing.
+  - Added `"build"` and `"prepack"` scripts in `gentle-ai-dsh/package.json`.
+  - Commit: PENDING
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (120 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+
 
 
 
