@@ -1,0 +1,64 @@
+name: 🐛 Bug Report
+description: Report an issue with skill installation, routing, validation, or behavior.
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue! Please provide as much context as possible.
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Target AI Agent / Tool
+      description: Which agent or tool were you using when you encountered the issue?
+      options:
+        - Claude Code
+        - Cursor
+        - Gemini CLI / Antigravity
+        - OpenCode
+        - Codex / VS Code Copilot
+        - Kiro / Windsurf
+        - Standalone CLI / pnpm scripts
+        - Other (specify in description)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: skillsGV Version / Commit
+      description: Run `node -e "console.log(require('./package.json').version)"` or `git rev-parse --short HEAD`.
+      placeholder: "v3.0.0 or commit hash"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear and concise description of what the bug is.
+      placeholder: "When running `pnpm router --query ...`, the router unexpectedly..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps or command line used to reproduce the behavior.
+      placeholder: |
+        1. Run `pnpm router --query "..."`
+        2. Observe output
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs Observed Behavior
+      description: What did you expect to happen, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or Terminal Output
+      description: Paste relevant command line output or error stack trace.
+      render: shell

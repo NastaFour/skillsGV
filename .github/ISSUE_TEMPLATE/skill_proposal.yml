@@ -1,0 +1,74 @@
+name: 💡 New Skill Proposal
+description: Propose a new skill to be added to the skillsGV catalog.
+title: "[SKILL]: "
+labels: ["skill-proposal", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please use this template to propose a new skill conforming to the [agentskills.io](https://agentskills.io/specification) standard.
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill Name
+      description: Lowercase alphanumeric name with hyphens (e.g. `fastapi-optimization`).
+      placeholder: "e.g. redis-caching"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Target Category
+      description: Which category directory does this skill belong to?
+      options:
+        - 00-meta-skills
+        - 01-planning-process
+        - 02-dev-roles
+        - 03-ai-ml
+        - 04-backend
+        - 05-frontend
+        - 06-code-quality
+        - 07-testing
+        - 08-devops
+        - 09-media-graphics
+        - 11-mcp-hybrid
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Distribution Tier
+      options:
+        - core (Tier 1 foundational engineering / harness)
+        - extended (Tier 2 specialist frameworks / roles)
+        - full (Tier 3 specialized / niche tools)
+    validations:
+      required: true
+  - type: textarea
+    id: triggers
+    attributes:
+      label: Proposed Triggers
+      description: Specific trigger keywords or user intent queries that should activate this skill.
+      placeholder: |
+        - redis cache
+        - cache invalidation
+        - redis pubsub
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and Exclusions
+      description: When SHOULD an agent load this skill? When should it NOT (exclusion clause)?
+      placeholder: |
+        - Use when: configuring Redis clusters, setting cache strategies, or caching query results.
+        - Do NOT use for: generic in-memory Map caches, Memcached, or relational DB query caching.
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale & Value Proposition
+      description: Why does this skill provide meaningful value to an AI coding agent?
+    validations:
+      required: true

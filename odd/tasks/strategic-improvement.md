@@ -6,7 +6,7 @@
 - **Project**: `skills-catalog`
 - **Branch**: `feat/strategic-improvement`
 - **Delivery Strategy**: `ask-on-risk` (target ~400 lines per task)
-- **Status**: IN PROGRESS
+- **Status**: COMPLETED
 
 ## Problem Statement
 `skillsGV` is a portable 229-skill catalog with harness capabilities (ODD, RDD, Engram, persona) that can run on any agent (Claude Code, Gemini CLI, Cursor, Codex, OpenCode). However:
@@ -47,7 +47,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 
 ### Phase 5 — Credibility & Community
 - [x] T16: Expand Evals to 15+ Core Skills with with-vs-without metrics script
-- [ ] T17: Community Files: `CONTRIBUTING.md`, GitHub Issue Templates & Release setup
+- [x] T17: Community Files: `CONTRIBUTING.md`, GitHub Issue Templates & Release setup
 
 ---
 
@@ -187,6 +187,17 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Added `"benchmark"` script to `package.json` and published benchmark results in `README.md` and `README.es.md`.
   - Commit: `fa07c6b`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (122 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T17** (Community Files, Issue Templates & Release Setup):
+  - Created `CONTRIBUTING.md` in English covering core architectural principles, pnpm-only rules, ODD workflow, agentskills.io frontmatter specification, tier hierarchy, eval authoring, and PR checklist.
+  - Created GitHub Issue Templates in `.github/ISSUE_TEMPLATE/`:
+    - `config.yml`: links to docs and discussions.
+    - `bug_report.yml`: structured form for agents/tools, reproduction steps, observed vs expected.
+    - `skill_proposal.yml`: structured proposal for new skills (tier, triggers, scope & exclusions).
+    - `feature_request.yml`: structured template for harness/tooling enhancements.
+  - Created `.github/workflows/release.yml`: automated release workflow running all validation suites, tests, benchmark generation, and publishing releases on tag push (`v*.*.*`).
+  - Commit: PENDING
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (122 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+
 
 
 

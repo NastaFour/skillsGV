@@ -1,0 +1,29 @@
+name: 🚀 Feature Request
+description: Propose an enhancement for the skillsGV harness, router, installer, or tooling.
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make skillsGV more token-efficient, faster, or more widely compatible? We'd love to hear it!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Limitation
+      description: Is your feature request related to a problem or current limitation?
+      placeholder: "A clear and concise description of what the limitation is..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution / Enhancement
+      description: Describe what you want to happen and how it benefits agents.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or workarounds you've considered.

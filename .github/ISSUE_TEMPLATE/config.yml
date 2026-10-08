@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation & Architecture
+    url: https://github.com/NastaFour/skillsGV#readme
+    about: Read the full architectural overview, benchmark, and guidelines.
+  - name: 💬 GitHub Discussions
+    url: https://github.com/NastaFour/skillsGV/discussions
+    about: Ask questions, share workflows, and discuss ideas with the community.
