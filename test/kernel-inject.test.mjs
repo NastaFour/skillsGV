@@ -1,10 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { walkSkillPaths, readSkillName } from "../_shared/catalog-manifest.mjs";
 import {
   KERNEL_START,
   KERNEL_END,
@@ -325,6 +327,63 @@ test("R2: legacy em-dash gitignore markers are upgraded, not duplicated", () => 
   assert.equal(un.status, "removed-block");
   assert.ok(!readFileSync(join(root, ".gitignore"), "utf8").includes("skillsGV install"));
   rmSync(root, { recursive: true, force: true });
+});
+
+// --- Tier 0 kernel alignment (proof-of-value T1) ---
+
+/** The canonical Tier-0 set declared in AGENTS.md §3. */
+const CANONICAL_TIER0 = [
+  "odd-workflow",
+  "skill-router",
+  "skill-loader",
+  "skill-validator",
+  "testing-patterns",
+  "code-reviewer",
+  "engram-integration",
+  "dod-checker",
+  "decision-gate",
+];
+
+/** Skill names whose frontmatter declares `deprecated: true`. */
+function deprecatedSkillNames(root) {
+  const names = [];
+  for (const rel of walkSkillPaths(root)) {
+    const content = readFileSync(join(root, rel), "utf8");
+    const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (fm && /^[ \t]*deprecated\s*:\s*"?true"?\s*$/im.test(fm[1])) names.push(readSkillName(root, rel));
+  }
+  return names;
+}
+
+test("Tier-0 alignment: catalog.json flags exactly the 9 canonical skills as tier0:true", () => {
+  const catalog = JSON.parse(readFileSync(join(CATALOG_ROOT, "catalog.json"), "utf8"));
+  const flagged = catalog.skills.filter((s) => s.tier0).map((s) => s.name).sort();
+  assert.deepEqual(flagged, [...CANONICAL_TIER0].sort(), "tier0 flags must match the canonical Tier-0 set from AGENTS.md §3");
+  for (const name of CANONICAL_TIER0) {
+    const skill = catalog.skills.find((s) => s.name === name);
+    assert.ok(skill, `${name} must exist in catalog.json`);
+    assert.equal(skill.tier, "core", `${name} must be tier:core to ship on --tier core installs`);
+  }
+});
+
+test("installer: --tier core force-includes every tier0:true skill and skips deprecated skills", () => {
+  const catalog = JSON.parse(readFileSync(join(CATALOG_ROOT, "catalog.json"), "utf8"));
+  const tier0Names = catalog.skills.filter((s) => s.tier0).map((s) => s.name);
+  assert.ok(tier0Names.length > 0, "catalog must flag at least one Tier-0 skill");
+  const script = join(CATALOG_ROOT, "00-meta-skills", "skill-sync", "scripts", "install-skills.mjs");
+  // --symlink dry-run prints one plan line per skill per tool ("<src> -> <dest>"),
+  // so the plan is auditable without a detected tool or disk writes.
+  const out = execFileSync(process.execPath, [script, "--dry-run", "--symlink", "--all-tools", "--tier", "core"], {
+    cwd: CATALOG_ROOT,
+    encoding: "utf8",
+    maxBuffer: 32 * 1024 * 1024,
+  });
+  for (const name of tier0Names) {
+    assert.ok(new RegExp(`[\\\\/]${name} -> `).test(out), `Tier-0 skill "${name}" must be force-included by --tier core`);
+  }
+  for (const name of deprecatedSkillNames(CATALOG_ROOT)) {
+    assert.ok(!new RegExp(`[\\\\/]${name} -> `).test(out), `deprecated skill "${name}" must not appear in the --tier core plan`);
+  }
 });
 
 test("CLI integration A: install → re-install (same tool) → rollback → uninstall", { timeout: 180000 }, async () => {

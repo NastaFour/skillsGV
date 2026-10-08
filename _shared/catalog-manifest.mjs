@@ -7,7 +7,8 @@
  * - `catalog.json` is the single source of truth for skills, categories and
  *   counts; indexes are generated from it and validated against it.
  * - Derived fields: `name`, `path`, `category` come from the tree + frontmatter;
- *   `tier0` comes from the loader set (`skills-loader.mjs`, TIER0_SKILLS).
+ *   `tier0` comes from the loader set (`skills-loader.mjs`, TIER0_SKILLS);
+ *   `deprecated` comes from each SKILL.md frontmatter (`deprecated: true`).
  * - Preserved fields: `note` and `autoInvoke` are merge-preserved per skill
  *   (previous manifest first; the current indexes are only used to bootstrap
  *   entries the manifest does not know yet). Category titles are preserved the
@@ -114,6 +115,21 @@ export function readSkillName(root, relPath) {
   }
   const parts = relPath.split("/");
   return parts.length >= 2 ? parts[parts.length - 2] : relPath;
+}
+
+/**
+ * `deprecated: true` declared anywhere in the SKILL.md frontmatter (top level
+ * or nested under `metadata:`, quotes optional). Absent/unreadable → false.
+ */
+export function readSkillDeprecated(root, relPath) {
+  try {
+    const parsed = parseFrontmatter(readFileUtf8(join(root, relPath)));
+    if (!parsed) return false;
+    const m = parsed.front.match(/^[ \t]*deprecated:\s*"?([a-zA-Z]+)"?\s*$/m);
+    return m ? m[1].toLowerCase() === "true" : false;
+  } catch {
+    return false;
+  }
 }
 
 /** Tier 0 set derived from the loader script (single source: TIER0_SKILLS). */
@@ -257,6 +273,7 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
       category: path.includes("/") ? path.split("/")[0] : "(root)",
       tier: prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full"),
       tier0: tier0.has(name),
+      deprecated: readSkillDeprecated(root, path),
       note: prev ? (prev.note ?? null) : (notes.get(name) ?? null),
       autoInvoke: prev ? Boolean(prev.autoInvoke) : autoInvoke.has(name),
     };
@@ -437,6 +454,9 @@ function diffManifest(expected, actual, { checkTier0 = true } = {}) {
     }
     if (checkTier0 && Boolean(current.tier0) !== skill.tier0) {
       issues.push({ code: "manifest-tier0-mismatch", detail: `${skill.name}: ${Boolean(current.tier0)} != ${skill.tier0}` });
+    }
+    if (Boolean(current.deprecated) !== skill.deprecated) {
+      issues.push({ code: "manifest-deprecated-mismatch", detail: `${skill.name}: ${Boolean(current.deprecated)} != ${skill.deprecated}` });
     }
     if (current.tier && skill.tier && current.tier !== skill.tier) {
       issues.push({ code: "manifest-tier-mismatch", detail: `${skill.name}: "${current.tier}" != "${skill.tier}"` });

@@ -222,6 +222,7 @@ Options:
                         core: ~35 foundational skills (ODD harness, quality, testing, UI, essential stack)
                         extended: core + dev roles, frameworks & extra tools (~100 skills)
                         full: all skills in catalog
+                        Tier-0 kernel skills always install, regardless of the tier.
   --help, -h           Show this help
 
 Examples:
@@ -243,12 +244,14 @@ function collectSkills(root) {
   const skills = [];
   const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git", "gentle-ai-dsh", "_shared"]);
   const tierMap = new Map();
+  const tier0Set = new Set();
   const catalogPath = join(root, "catalog.json");
   if (existsSync(catalogPath)) {
     try {
       const cat = JSON.parse(readFileSync(catalogPath, "utf8"));
       for (const s of cat.skills || []) {
         tierMap.set(s.name, s.tier || "full");
+        if (s.tier0 === true) tier0Set.add(s.name);
       }
     } catch {}
   }
@@ -281,13 +284,17 @@ function collectSkills(root) {
         }
         if (selectedTier !== "full") {
           const skillName = basename(dir);
-          let skillTier = tierMap.get(skillName);
-          if (!skillTier && fmMatch) {
-            const tm = fmMatch[1].match(/\btier:\s*"?([a-z0-9-]+)"?/i);
-            if (tm) skillTier = tm[1].toLowerCase();
+          // Tier-0 kernel skills always install, regardless of the --tier rank
+          // filter: the bootstrap kernel must never be silently omitted.
+          if (!tier0Set.has(skillName)) {
+            let skillTier = tierMap.get(skillName);
+            if (!skillTier && fmMatch) {
+              const tm = fmMatch[1].match(/\btier:\s*"?([a-z0-9-]+)"?/i);
+              if (tm) skillTier = tm[1].toLowerCase();
+            }
+            const rank = tierRank[skillTier || "full"] || 3;
+            if (rank > maxRank) continue;
           }
-          const rank = tierRank[skillTier || "full"] || 3;
-          if (rank > maxRank) continue;
         }
         skills.push(dir);
       }

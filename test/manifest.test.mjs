@@ -140,6 +140,35 @@ test("manifest: --write bootstraps catalog.json (notes, autoInvoke, Tier 0) and 
   assert.deepEqual(c.json.issues, []);
 });
 
+test("manifest: frontmatter deprecated:true materializes as a boolean and drift is gated", (t) => {
+  const root = catalogFixture(t);
+  // Mark skill-c deprecated in frontmatter (nested under metadata, quoted true).
+  write(
+    join(root, "01-beta", "skill-c", "SKILL.md"),
+    `---\nname: skill-c\ndescription: "Fixture skill skill-c. Use when testing."\nmetadata:\n  deprecated: "true"\n---\n\nFixture body for skill-c.\n`
+  );
+
+  assert.equal(runCli(root, ["--write"]).code, 0);
+  const manifest = JSON.parse(readFileSync(join(root, "catalog.json"), "utf8"));
+  const byName = new Map(manifest.skills.map((s) => [s.name, s]));
+  assert.equal(byName.get("skill-c").deprecated, true, "deprecated:true must materialize as true");
+  assert.equal(byName.get("skill-a").deprecated, false, "absent deprecated must materialize as false");
+
+  // The derived field must not churn on a second write.
+  assert.deepEqual(runCli(root, ["--write"]).json.written, []);
+
+  // Flipping the frontmatter without regenerating must fail the check.
+  write(
+    join(root, "00-alpha", "skill-a", "SKILL.md"),
+    `---\nname: skill-a\ndescription: "Fixture skill skill-a. Use when testing."\nmetadata:\n  deprecated: "true"\n---\n\nFixture body for skill-a.\n`
+  );
+  const c = runCli(root, ["--check"]);
+  assert.equal(c.code, 1);
+  const drift = c.json.issues.find((i) => i.code === "manifest-deprecated-mismatch");
+  assert.ok(drift, "deprecated drift must be reported by the check");
+  assert.match(drift.detail, /skill-a/);
+});
+
 test("manifest: skill added to the tree without regeneration fails naming the missing skill", (t) => {
   const root = catalogFixture(t);
   assert.equal(runCli(root, ["--write"]).code, 0);

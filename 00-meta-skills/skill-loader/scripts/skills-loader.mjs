@@ -3,7 +3,7 @@
  * skills-loader.mjs — Tier 0/1 enforcement for the skills catalog.
  *
  * Caches skill frontmatter with mtime in ~/.skill-router-cache.json.
- * Emits tier0-context.json (14 always-on skills, ~2K tokens) on first run
+ * Emits tier0-context.json (9 always-on skills, ~2K tokens) on first run
  * or when any Tier 0 source mtime changes.
  * Per-turn, invokes skill-router internally and emits tier1-instructions.txt
  * with ONLY the bodies of skills the router selected via tier1toLoad[].
@@ -110,25 +110,19 @@ function logCheckTelemetry(skillName, allowed) {
   }
 }
 
-// The 14 Tier 0 (always-on) skills. Hardcoded so we don't need to modify
-// 14 SKILL.md files; updates here are versioned with the loader.
-// Source of truth: the Tier 0 set documented in AGENTS.md (union of the
-// documented set and {skill-loader, decision-gate}).
+// The 9 Tier 0 (always-on) skills. Hardcoded so we don't need to modify
+// 9 SKILL.md files; updates here are versioned with the loader.
+// Source of truth: the canonical Tier 0 set documented in AGENTS.md §3.
 const TIER0_SKILLS = [
+  "odd-workflow",
   "skill-router",
-  "skill-validator",
-  "skill-sync",
-  "skill-creator",
   "skill-loader",
-  "professional-planner",
-  "agents",
-  "idea-to-prd-express",
-  "project-tracker",
-  "session-notes",
-  "decision-gate",
-  "dod-checker",
+  "skill-validator",
+  "testing-patterns",
+  "code-reviewer",
   "engram-integration",
-  "kill-switches",
+  "dod-checker",
+  "decision-gate",
 ];
 
 // ---------- Args ----------
