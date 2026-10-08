@@ -505,8 +505,7 @@ export function checkCatalog(root) {
     issues.push({ code: "agents-index-missing", detail: AGENTS_FILE });
   } else {
     const parsedAgents = parseAgentsMd(agentsText);
-    if (!parsedAgents.table) issues.push({ code: "agents-table-missing", detail: AGENTS_FILE });
-    else if (catalog) {
+    if (parsedAgents.table && catalog) {
       const diff = diffText(renderAgentsMd(agentsText, expected), agentsText);
       if (diff.changed) issues.push({ code: "index-drift", detail: `${AGENTS_FILE}: ${diff.summary}` });
     }
@@ -544,15 +543,13 @@ export function generateIndexes(root) {
 
   const parsedSkills = parseSkillsMd(skillsText);
   const parsedAgents = parseAgentsMd(agentsText);
-  if (!parsedAgents.table) {
-    return { ok: false, issues: [{ code: "agents-table-missing", detail: AGENTS_FILE }], written: [], skills: 0, categories: 0 };
-  }
-
   // Bootstrap sources: consulted only for entries the previous manifest lacks.
   const previous = parseCatalogJson(catalogText);
   const notes = new Map();
   for (const row of parsedSkills.rows) if (row.note && !notes.has(row.name)) notes.set(row.name, row.note);
-  const titles = new Map(parsedAgents.table.rows.map((row) => [row.id, row.title]));
+  const titles = parsedAgents.table
+    ? new Map(parsedAgents.table.rows.map((row) => [row.id, row.title]))
+    : new Map();
 
   const manifest = buildManifest(root, { tier0: tier0.names, previous, notes, titles });
   if (!previous) {
@@ -574,7 +571,7 @@ export function generateIndexes(root) {
 
   const catalogOut = `${JSON.stringify(manifest, null, 2)}\n`;
   const skillsOut = renderSkillsMd(skillsText, manifest);
-  const agentsOut = renderAgentsMd(agentsText, manifest);
+  const agentsOut = parsedAgents.table ? renderAgentsMd(agentsText, manifest) : agentsText;
   const written = [];
   if (catalogText !== catalogOut) {
     writeFileSync(catalogPath, catalogOut, "utf8");

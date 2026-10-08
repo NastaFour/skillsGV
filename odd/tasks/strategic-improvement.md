@@ -29,7 +29,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 
 ### Phase 2 — Token Efficiency (Flash-Model Optimization)
 - [x] T4: Decouple Validator from AGENTS.md → Validate against `catalog.json` (`validate-skills.mjs`, `validator-gates.test.mjs`)
-- [ ] T5: Slim AGENTS.md to ≤60 lines (<1,500 tokens) Contract
+- [x] T5: Slim AGENTS.md to ≤60 lines (<1,500 tokens) Contract
 - [ ] T6: Skip Deprecated Skills by Default in Installer (`install-skills.mjs`, `catalog.json`)
 - [ ] T7: Add Triggers to 52 Triggerless Skills (Matt Pocock skills, review-*, roles, etc.)
 - [ ] T8: Curated Core Tier System (`--tier core|extended|full` in installer and catalog metadata)
@@ -76,7 +76,14 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Skills are now strictly validated against `catalog.json` and `SKILLS.md`, liberating `AGENTS.md` from mandatory token bloat.
   - Added new unit test in `test/validator-gates.test.mjs` asserting `catalog-sync-missing-skill` failure on missing skills in `catalog.json`.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `f803d9e`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (113 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS).
+- **T5** (Slim AGENTS.md Contract):
+  - Made categories table optional in `_shared/catalog-manifest.mjs` (`checkCatalog` & `generateIndexes`) so `AGENTS.md` is treated as a lean agent behavior contract, not a bloated index duplicate.
+  - Slimmed `AGENTS.md` from 234 lines (24,667 bytes / ~6,167 tokens) to 37 lines (2,476 bytes / ~619 tokens), achieving an **89.9% always-on token reduction**.
+  - Retained core behavioral rules: activation kernel, ODD process authority, Tier 0/1 progressive disclosure via dynamic router, and non-negotiables (pnpm only, TDD, persistent memory, adversarial review, anti-slop).
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (113 tests PASS), `pnpm test:addon` (3 tests PASS).
+
 
 
 
