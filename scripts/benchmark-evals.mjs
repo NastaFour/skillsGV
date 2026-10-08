@@ -2,11 +2,16 @@
 /**
  * benchmark-evals.mjs — Performance and quality benchmark for skillsGV harness.
  *
- * Compares "Without skillsGV (Baseline / monolithic)" vs "With skillsGV (Harness)",
+ * Compares "Without skillsGV (historical baseline)" vs "With skillsGV (Harness)",
  * measuring:
  * 1. Always-on token cost (monolithic prompt vs 2-tier progressive disclosure).
- * 2. Deterministic routing precision across all 16 core skill suites.
- * 3. Expectation checks (routes-to, contains, not-contains, regex) passing rate.
+ * 2. Deterministic routing evals over the core skill suites.
+ * 3. Offline expectation checks (routes-to, contains, not-contains, regex)
+ *    passing rate.
+ *
+ * Every reported figure is computed by `calculateMetrics()` at runtime. The
+ * baseline is a FIXED historical reference (the old monolithic kernel size),
+ * not a re-measured arm.
  *
  * Usage:
  *   node scripts/benchmark-evals.mjs [--json] [--markdown] [--quiet]
@@ -22,16 +27,17 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // Token calculation heuristic: ~4 bytes per token for typical code/English markdown
 const bytesToTokens = (bytes) => Math.round(bytes / 4);
 
-// Baseline historical values (pre-T5 monolithic AGENTS.md + index bloat)
-const BASELINE_AGENTS_BYTES = 24667;
-const BASELINE_AGENTS_TOKENS = bytesToTokens(BASELINE_AGENTS_BYTES); // ~6,167 tokens
+// FIXED HISTORICAL REFERENCE: the pre-T5 monolithic AGENTS.md (24,667 bytes,
+// ~6,167 tokens). Kept as a historical baseline size — it is never re-measured.
+const HISTORICAL_KERNEL_BYTES = 24667;
+const HISTORICAL_KERNEL_TOKENS = bytesToTokens(HISTORICAL_KERNEL_BYTES); // ~6,167 tokens
 
 export function calculateMetrics(root = REPO_ROOT) {
   // 1. Always-On Token metrics
   const agentsPath = join(root, "AGENTS.md");
   const agentsBytes = existsSync(agentsPath) ? readFileSync(agentsPath, "utf8").length : 2476;
   const currentTokens = bytesToTokens(agentsBytes);
-  const tokenSavingsPercent = Number((((BASELINE_AGENTS_TOKENS - currentTokens) / BASELINE_AGENTS_TOKENS) * 100).toFixed(1));
+  const tokenSavingsPercent = Number((((HISTORICAL_KERNEL_TOKENS - currentTokens) / HISTORICAL_KERNEL_TOKENS) * 100).toFixed(1));
 
   // 2. Offline evaluations over core suites
   const evalResults = runOfflineEvaluations(root);
@@ -62,7 +68,7 @@ export function calculateMetrics(root = REPO_ROOT) {
   return {
     timestamp: new Date().toISOString(),
     tokens: {
-      baselineTokens: BASELINE_AGENTS_TOKENS,
+      baselineTokens: HISTORICAL_KERNEL_TOKENS,
       currentTokens,
       tokenSavingsPercent,
       alwaysOnReduction: `${tokenSavingsPercent}%`,
@@ -93,14 +99,12 @@ export function calculateMetrics(root = REPO_ROOT) {
 export function formatMarkdown(metrics) {
   return `### 📊 skillsGV Benchmark: With vs Without Harness
 
-| Metric | Without skillsGV (Baseline) | With skillsGV (Harness) | Improvement |
+| Metric | Without skillsGV (Historical Baseline) | With skillsGV (Harness) | Measured Delta |
 |---|---|---|---|
-| **Always-On Context Cost** | ~${metrics.tokens.baselineTokens.toLocaleString()} tokens | ~${metrics.tokens.currentTokens.toLocaleString()} tokens | **-${metrics.tokens.tokenSavingsPercent}% token reduction** |
-| **Skill Routing Determinism** | 0% (ad-hoc prompt guesswork) | ${metrics.routing.precisionPercent}% deterministic (${metrics.routing.routingPassed}/${metrics.routing.totalRoutingQueries} queries) | **100% precision on primary intent** |
-| **Evaluated Core Skills** | 0 suites / 0 tests | ${metrics.quality.suitesCount} suites / ${metrics.quality.evalsCount} evals | **${metrics.quality.suitesCount} core skills verified** |
-| **Quality & Invariant Checks** | Unchecked / regression-prone | ${metrics.quality.checksPassed}/${metrics.quality.totalChecks} checks passing (0 failures) | **${metrics.quality.successRatePercent}% pass rate** |
-| **Process Governance** | Ad-hoc / drift | Strict ODD (tasks doc + commits) | **100% traceable ODD workflow** |
-| **Persistent Memory** | Lost on session close | Engram MCP (SQLite + FTS5) | **Cross-session durability** |
+| **Always-On Context Cost** | ~${metrics.tokens.baselineTokens.toLocaleString()} tokens (historical monolithic kernel, fixed reference) | ~${metrics.tokens.currentTokens.toLocaleString()} tokens (current AGENTS.md, measured at runtime) | **-${metrics.tokens.tokenSavingsPercent}% token reduction** |
+| **Skill Routing Determinism** | ad-hoc prompt guesswork (not measured) | ${metrics.routing.precisionPercent}% deterministic (${metrics.routing.routingPassed}/${metrics.routing.totalRoutingQueries} routing evals) | **${metrics.routing.precisionPercent}% routing precision** |
+| **Evaluated Core Skills** | no offline evals | ${metrics.quality.suitesCount} suites / ${metrics.quality.evalsCount} evals | **${metrics.quality.suitesCount} suites with \`evals.json\`** |
+| **Quality & Invariant Checks** | not run | ${metrics.quality.checksPassed}/${metrics.quality.totalChecks} checks passing (${metrics.quality.checksFailed} failed) | **${metrics.quality.successRatePercent}% pass rate** |
 `;
 }
 
@@ -111,8 +115,8 @@ export function formatTerminal(metrics) {
     "============================================================",
     "",
     "1. Always-On Token Overhead (Two-Tier Progressive Disclosure):",
-    `   Baseline (Monolithic AGENTS.md):   ~${metrics.tokens.baselineTokens} tokens`,
-    `   skillsGV Contract:                 ~${metrics.tokens.currentTokens} tokens`,
+    `   Historical monolithic kernel:      ~${metrics.tokens.baselineTokens} tokens (fixed reference)`,
+    `   skillsGV Contract:                 ~${metrics.tokens.currentTokens} tokens (AGENTS.md, measured)`,
     `   -> Net Context Savings:            ${metrics.tokens.tokenSavingsPercent}% token reduction`,
     "",
     "2. Deterministic Routing Benchmark:",
@@ -120,7 +124,7 @@ export function formatTerminal(metrics) {
     `   Successful Route Matches:          ${metrics.routing.routingPassed}`,
     `   Routing Precision:                 ${metrics.routing.precisionPercent}%`,
     "",
-    "3. Core Skill Suite Evals (Anthropic Eval Schema):",
+    "3. Core Skill Suite Evals (deterministic offline checks):",
     `   Total Core Suites:                 ${metrics.quality.suitesCount}`,
     `   Total Scenario Evals:              ${metrics.quality.evalsCount}`,
     `   Total Invariant Checks:            ${metrics.quality.totalChecks}`,

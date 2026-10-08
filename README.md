@@ -113,16 +113,14 @@ flowchart TD
 
 ### 📊 Benchmark: With vs Without skillsGV Harness
 
-Validated across 16 core skill suites using the Anthropic eval schema (`evals.json`) and automated deterministic routing:
+Offline deterministic benchmark over the core skill suites that ship `evals.json` — `skill-router` routing evals plus expectation checks. The "Without skillsGV" column is a fixed historical reference, never a re-measured arm; every "With skillsGV" figure is computed at runtime by `pnpm benchmark`.
 
-| Metric | Without skillsGV (Baseline) | With skillsGV (Harness) | Impact |
+| Metric | Without skillsGV (Historical Baseline) | With skillsGV (Harness) | Measured Delta |
 |---|---|---|---|
-| **Always-On Context Cost** | ~6,167 tokens | ~835 tokens | **-86.5% token reduction** |
-| **Skill Routing Determinism** | 0% (ad-hoc prompt guesswork) | 100% deterministic (32/32 queries) | **100% precision on primary intent** |
-| **Evaluated Core Skills** | 0 suites / 0 tests | 16 suites / 32 evals | **16 core skills verified** |
-| **Quality & Invariant Checks** | Unchecked / regression-prone | 164/164 checks passing (0 failures) | **100% pass rate** |
-| **Process Governance** | Ad-hoc / prompt drift | Strict ODD (tasks doc + commits) | **100% traceable ODD workflow** |
-| **Persistent Memory** | Lost on session close | Engram MCP (SQLite + FTS5) | **Cross-session durability** |
+| **Always-On Context Cost** | ~6,167 tokens (historical monolithic kernel, fixed reference) | current `AGENTS.md` size, measured by `pnpm benchmark` | token reduction computed at runtime |
+| **Skill Routing Determinism** | ad-hoc prompt guesswork (not measured) | deterministic `skill-router` evals, results measured by `pnpm benchmark` | routing precision computed at runtime |
+| **Evaluated Core Skills** | no offline evals | the core suites shipping `evals.json`, counted at runtime | suite count computed at runtime |
+| **Quality & Invariant Checks** | not run | offline expectation checks, pass rate measured by `pnpm benchmark` | pass rate computed at runtime |
 
 Run the benchmark locally:
 ```bash

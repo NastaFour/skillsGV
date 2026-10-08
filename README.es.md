@@ -99,16 +99,14 @@ Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier `s
 
 ## 📊 Benchmark: Con vs Sin Harness skillsGV
 
-Validado en 16 suites de skills core usando el esquema oficial de evals de Anthropic (`evals.json`) y enrutamiento determinista:
+Benchmark offline determinista sobre las suites de skills core que incluyen `evals.json` — evals de routing de `skill-router` más checks de expectativas. La columna "Sin skillsGV" es una referencia histórica fija, nunca un brazo re-medido; cada cifra de "Con skillsGV" se calcula en runtime con `pnpm benchmark`.
 
-| Métrica | Sin skillsGV (Línea Base) | Con skillsGV (Harness) | Impacto |
+| Métrica | Sin skillsGV (Línea Base Histórica) | Con skillsGV (Harness) | Delta Medido |
 |---|---|---|---|
-| **Costo de Contexto Always-On** | ~6.167 tokens | ~835 tokens | **-86.5% de reducción de tokens** |
-| **Determinismo de Routing** | 0% (suposición por prompt) | 100% determinista (32/32 queries) | **100% de precisión en intención primaria** |
-| **Skills Core Evaluadas** | 0 suites / 0 tests | 16 suites / 32 evals | **16 skills core verificadas** |
-| **Checks de Invariantes y Calidad** | Sin verificar / propenso a regresión | 164/164 checks pasando (0 fallos) | **100% tasa de éxito** |
-| **Gobernanza de Proceso** | Ad-hoc / deriva de contexto | ODD estricto (doc de tareas + commits) | **Flujo ODD 100% auditable** |
-| **Memoria Persistente** | Se pierde al cerrar sesión | Engram MCP (SQLite + FTS5) | **Persistencia entre sesiones** |
+| **Costo de Contexto Always-On** | ~6.167 tokens (kernel monolítico histórico, referencia fija) | tamaño actual de `AGENTS.md`, medido por `pnpm benchmark` | reducción de tokens calculada en runtime |
+| **Determinismo de Routing** | suposición ad-hoc por prompt (sin medir) | evals deterministas de `skill-router`, resultados medidos por `pnpm benchmark` | precisión de routing calculada en runtime |
+| **Skills Core Evaluadas** | sin evals offline | las suites core que incluyen `evals.json`, contadas en runtime | cantidad de suites calculada en runtime |
+| **Checks de Invariantes y Calidad** | sin ejecutar | checks offline de expectativas, tasa medida por `pnpm benchmark` | tasa de éxito calculada en runtime |
 
 Ejecutar benchmark localmente:
 ```bash
