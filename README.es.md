@@ -97,6 +97,24 @@ Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier `s
 | `00-meta-skills/agent-roster/scripts/apply.mjs` | Generador por runtime (`opencode`, `dsh`, `list`). `--dry-run` por defecto; nunca escribe sin `--apply`. |
 | `00-meta-skills/agent-roster/scripts/set-models.mjs` (+ `set-models.cmd`) | Cambia el proveedor/modelo de TODOS los agentes de una vez. |
 
+## 📊 Benchmark: Con vs Sin Harness skillsGV
+
+Validado en 16 suites de skills core usando el esquema oficial de evals de Anthropic (`evals.json`) y enrutamiento determinista:
+
+| Métrica | Sin skillsGV (Línea Base) | Con skillsGV (Harness) | Impacto |
+|---|---|---|---|
+| **Costo de Contexto Always-On** | ~6.167 tokens | ~835 tokens | **-86.5% de reducción de tokens** |
+| **Determinismo de Routing** | 0% (suposición por prompt) | 100% determinista (32/32 queries) | **100% de precisión en intención primaria** |
+| **Skills Core Evaluadas** | 0 suites / 0 tests | 16 suites / 32 evals | **16 skills core verificadas** |
+| **Checks de Invariantes y Calidad** | Sin verificar / propenso a regresión | 164/164 checks pasando (0 fallos) | **100% tasa de éxito** |
+| **Gobernanza de Proceso** | Ad-hoc / deriva de contexto | ODD estricto (doc de tareas + commits) | **Flujo ODD 100% auditable** |
+| **Memoria Persistente** | Se pierde al cerrar sesión | Engram MCP (SQLite + FTS5) | **Persistencia entre sesiones** |
+
+Ejecutar benchmark localmente:
+```bash
+pnpm benchmark
+```
+
 ## Categorías
 
 | Directorio | Propósito |

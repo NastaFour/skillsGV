@@ -46,7 +46,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T15: untrack or packaging-time build for `gentle-ai-dsh` mirror
 
 ### Phase 5 — Credibility & Community
-- [ ] T16: Expand Evals to 15+ Core Skills with with-vs-without metrics script
+- [x] T16: Expand Evals to 15+ Core Skills with with-vs-without metrics script
 - [ ] T17: Community Files: `CONTRIBUTING.md`, GitHub Issue Templates & Release setup
 
 ---
@@ -166,6 +166,28 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Added `"build"` and `"prepack"` scripts in `gentle-ai-dsh/package.json`.
   - Commit: `a3770f6`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (120 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T16** (Expand Evals to 16 Core Skills & Benchmark Harness):
+  - Authored Anthropic eval schema (`evals.json`) suites for 11 additional core skills, expanding coverage from 5 to 16 core skill suites (32 evals, 164 invariant checks):
+    - `02-dev-roles/code-reviewer`
+    - `02-dev-roles/systematic-debugging`
+    - `07-testing/testing-patterns`
+    - `06-code-quality/work-unit-commits`
+    - `01-planning-process/engram-integration`
+    - `06-code-quality/solid-clean-code`
+    - `06-code-quality/typescript`
+    - `05-frontend/impeccable`
+    - `05-frontend/taste-skill`
+    - `05-frontend/tailwind-4`
+    - `05-frontend/react-19`
+  - Created `scripts/benchmark-evals.mjs` measuring:
+    - -86.5% always-on token reduction (~6,167 -> ~835 tokens)
+    - 100% deterministic routing precision (32/32 queries)
+    - 100% invariant check success rate (164/164 checks pass, 0 failures)
+  - Added automated test in `test/benchmark.test.mjs` and updated `TOP_SKILLS` in `test/evals.test.mjs`.
+  - Added `"benchmark"` script to `package.json` and published benchmark results in `README.md` and `README.es.md`.
+  - Commit: PENDING
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (122 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+
 
 
 

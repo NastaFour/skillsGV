@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "code-reviewer-pr-audit",
+      "prompt": "code reviewer: review this code and check for bugs and code smells",
+      "files": [],
+      "expected_output": "Initiating Code Review as Senior Staff Reviewer.\n\nReview checklist:\n1. Functional correctness and edge case handling\n2. Architecture alignment and SOLID boundaries\n3. Security and sensitive data leakage\n4. Performance, memory leaks, and concurrency\n5. Test coverage and regression risks\n\nCategorizing findings by severity (Blocking, Important, Nitpick).",
+      "expectations": [
+        "routes-to:code-reviewer",
+        "contains:Code Review",
+        "contains:checklist",
+        "regex:Senior|Staff",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "code-reviewer-security-audit",
+      "prompt": "code review: revisar vulnerabilidades y calidad de codigo en pull request",
+      "files": [],
+      "expected_output": "Ejecutando revisión de código rigurosa.\n\nAnálisis de vulnerabilidades, higiene de tipos y cobertura de pruebas.\nSe reportan hallazgos clasificados por severidad (crítico, medio, bajo) con recomendaciones accionables de corrección.",
+      "expectations": [
+        "routes-to:code-reviewer",
+        "contains:vulnerabilidades",
+        "contains:hallazgos",
+        "regex:severidad",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "systematic-debugging-reproduce-root-cause",
+      "prompt": "systematic debugging: reproduce root cause fix and regression test",
+      "files": [],
+      "expected_output": "Following Systematic Debugging protocol.\n\nIron Law: NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.\n\nSteps:\n1. Reproduce: Create minimal reproducible failure\n2. Isolate: Inspect state, stack trace, and root cause\n3. Evidence: Form testable hypothesis before editing\n4. Fix: Apply surgical patch addressing cause, not symptom\n5. Verify: Add automated regression test to prevent recurrence.",
+      "expectations": [
+        "routes-to:systematic-debugging",
+        "contains:ROOT CAUSE",
+        "contains:regression test",
+        "regex:Reproduce|Isolate",
+        "not-contains:quick patch without tests"
+      ]
+    },
+    {
+      "id": "systematic-debugging-test-failure-isolation",
+      "prompt": "isolate bug: identify root cause of test failure before patching",
+      "files": [],
+      "expected_output": "Isolating test failure using systematic debugging.\n\nRoot cause investigation:\n- Verify failure deterministically\n- Trace execution flow and variable state\n- Eliminate symptom masking\n- Implement fix with regression coverage.",
+      "expectations": [
+        "routes-to:systematic-debugging",
+        "contains:Root cause",
+        "contains:regression",
+        "regex:Isolating|trace",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

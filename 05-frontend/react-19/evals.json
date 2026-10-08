@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "react-19-server-actions-compiler",
+      "prompt": "react 19: server actions useActionState and new hooks",
+      "files": [],
+      "expected_output": "Writing React 19 components with modern patterns.\n\nKey conventions:\n- React Compiler replaces manual useMemo and useCallback\n- useActionState and useFormStatus for form actions\n- Server Components first architecture\n- Native ref as prop without forwardRef boilerplate\n- use() hook for reading promises and context.",
+      "expectations": [
+        "routes-to:react-19",
+        "contains:React 19",
+        "contains:useActionState",
+        "regex:React Compiler|ref as prop",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "react-19-ref-as-prop-compiler",
+      "prompt": "react compiler: ref as prop and use hook in react 19",
+      "files": [],
+      "expected_output": "Leveraging React Compiler in React 19.\n\nPatterns:\n1. Pass ref directly as a prop to functional components\n2. Do not use legacy forwardRef\n3. Consume async resources with use(promise)\n4. Omit manual memoization dependencies.",
+      "expectations": [
+        "routes-to:react-19",
+        "contains:ref directly as a prop",
+        "contains:forwardRef",
+        "regex:React Compiler|use hook",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

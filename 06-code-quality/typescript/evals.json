@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "typescript-strict-types-generics",
+      "prompt": "typescript: strict types generics type narrowing tsconfig",
+      "files": [],
+      "expected_output": "Enforcing strict TypeScript standards.\n\nRules:\n- Zero implicit any: use unknown with type guards\n- Strict compiler settings: noImplicitAny and strict mode\n- Discriminated unions for state modeling\n- Generics bounded by constraints\n- Interface Segregation Principle (ISP) in public contracts.",
+      "expectations": [
+        "routes-to:typescript",
+        "contains:Zero implicit any",
+        "contains:unknown",
+        "regex:strict|narrowing",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "typescript-no-any-interface-narrowing",
+      "prompt": "no any: typescript strict interface and unknown type narrowing",
+      "files": [],
+      "expected_output": "Designing strict interfaces without any.\n\nImplementation:\n1. Define precise domain interfaces\n2. Use unknown for external I/O\n3. Type narrowing via custom type predicates (is)\n4. Exhaustive checks in switch statements using never.",
+      "expectations": [
+        "routes-to:typescript",
+        "contains:unknown",
+        "contains:type predicates",
+        "regex:interfaces|narrowing",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "work-unit-commits-conventional-atomic",
+      "prompt": "work unit commits: atomic commits with conventional commit message",
+      "files": [],
+      "expected_output": "Planning atomic commits as reviewable work units.\n\nRules:\n- Coherent scope: code, tests, and documentation committed together\n- Conventional commit message format: type(scope): description\n- No AI co-authorship or attribution footers\n- Reviewer cognitive load budget: ~400 changed lines per unit.",
+      "expectations": [
+        "routes-to:work-unit-commits",
+        "contains:Conventional commit",
+        "contains:work units",
+        "regex:atomic|reviewable",
+        "not-contains:Co-Authored-By"
+      ]
+    },
+    {
+      "id": "work-unit-commits-split-feature",
+      "prompt": "commit atomico: split feature into reviewable work unit commits",
+      "files": [],
+      "expected_output": "Dividiendo implementación en unidades de trabajo atómicas.\n\nEstrategia de commits por unidad:\n1. Cada tarea de ODD concluye con un commit de trabajo verificable.\n2. Incluye cambios de comportamiento junto con sus pruebas.\n3. Registro del hash de commit en el documento de tareas.",
+      "expectations": [
+        "routes-to:work-unit-commits",
+        "contains:unidades de trabajo",
+        "contains:ODD",
+        "regex:commit|verificable",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

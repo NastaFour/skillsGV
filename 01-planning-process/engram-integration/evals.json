@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "engram-integration-persistent-memory-save",
+      "prompt": "engram integration: persistent memory save topic key and search",
+      "files": [],
+      "expected_output": "Interacting with Engram persistent memory layer.\n\nKey capabilities:\n- Record decisions and discoveries using mem_save with topic_key and project scope\n- Query cross-session memory with mem_search and mem_context\n- Support ODD feature document mirrors under odd/<feature>/tasks\n- SQLite + FTS5 full-text indexing.",
+      "expectations": [
+        "routes-to:engram-integration",
+        "contains:mem_save",
+        "contains:mem_search",
+        "regex:persistent memory|topic_key",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "engram-integration-decision-record",
+      "prompt": "mem_save: record decision memory in cross-session memory with engram",
+      "files": [],
+      "expected_output": "Recording architectural decision into persistent memory via Engram.\n\nExecuting mem_save with:\n- topic_key: architectural context key\n- content: decision rationale, trade-offs, and invariants\n- project scope for session isolation.",
+      "expectations": [
+        "routes-to:engram-integration",
+        "contains:mem_save",
+        "contains:Engram",
+        "regex:architectural|topic_key",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

@@ -14,7 +14,24 @@ import {
 } from '../_shared/eval-harness.mjs';
 
 // The top skills that must ship evals.json (design: skills-25-upgrade, aligned to gentle-ai 4.0).
-const TOP_SKILLS = ['skill-router', 'odd-workflow', 'sdd-orchestrator', 'judgment-day', 'agent-roster'];
+const TOP_SKILLS = [
+  'skill-router',
+  'odd-workflow',
+  'sdd-orchestrator',
+  'judgment-day',
+  'agent-roster',
+  'code-reviewer',
+  'systematic-debugging',
+  'testing-patterns',
+  'work-unit-commits',
+  'engram-integration',
+  'solid-clean-code',
+  'typescript',
+  'impeccable',
+  'taste-skill',
+  'tailwind-4',
+  'react-19',
+];
 
 function makeFixtureRoot() {
   const root = mkdtempSync(join(tmpdir(), 'skills-evals-'));

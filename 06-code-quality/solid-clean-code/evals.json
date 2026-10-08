@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "solid-clean-code-refactor-principles",
+      "prompt": "solid clean code: refactor code applying SOLID principles",
+      "files": [],
+      "expected_output": "Applying SOLID principles and clean code standards.\n\nKey rules:\n- Single Responsibility Principle (SRP): One reason to change\n- DRY (Don't Repeat Yourself) without premature abstraction\n- KISS (Keep It Simple, Stupid)\n- Keep functions small (≤40 lines) and avoid 'any'\n- Decouple business logic from framework glue.",
+      "expectations": [
+        "routes-to:solid-clean-code",
+        "contains:Single Responsibility",
+        "contains:KISS",
+        "regex:SRP|SOLID",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "solid-clean-code-srp-kiss-refactor",
+      "prompt": "SRP and clean code: refactor function following Single Responsibility Principle and KISS",
+      "files": [],
+      "expected_output": "Refactoring module under SRP and KISS.\n\nActions:\n1. Separate data access, business orchestration, and presentation\n2. Extract cohesive helper functions\n3. Enforce strict typing and eliminate code smells\n4. Maintain readable, self-documenting code.",
+      "expectations": [
+        "routes-to:solid-clean-code",
+        "contains:SRP",
+        "contains:cohesive",
+        "regex:refactor|typing",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

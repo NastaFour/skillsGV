@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "taste-skill-anti-slop-dials",
+      "prompt": "taste-skill: anti-slop audit with lila rule and DESIGN_VARIANCE dials",
+      "files": [],
+      "expected_output": "Enforcing taste-skill aesthetic governance.\n\nKey mechanisms:\n- Triaxial dials (1-10): DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY\n- 10 Absolute Bans (automatic failure for AI-purple, default Inter, nested card slop)\n- Lila rule: no gratuitous purple/violet gradients\n- Design Read declaration before code emission.",
+      "expectations": [
+        "routes-to:taste-skill",
+        "contains:DESIGN_VARIANCE",
+        "contains:10 Absolute Bans",
+        "regex:Lila rule|purple",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "taste-skill-visual-density-audit",
+      "prompt": "AI slop: audit interface against lila rule and calibrate VISUAL_DENSITY",
+      "files": [],
+      "expected_output": "Auditing frontend against AI slop anti-patterns.\n\nEvaluation checklist:\n1. Calibrate VISUAL_DENSITY and MOTION_INTENSITY dials\n2. Enforce lila rule against generic AI palette cliches\n3. Check typography and avoid generic framework themes\n4. Guarantee intentional, handcrafted visual taste.",
+      "expectations": [
+        "routes-to:taste-skill",
+        "contains:VISUAL_DENSITY",
+        "contains:lila rule",
+        "regex:AI slop|anti-patterns",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "impeccable-design-governance-commands",
+      "prompt": "/impeccable: paul bakaus PRODUCT.md DESIGN.md polish anti-slop",
+      "files": [],
+      "expected_output": "Executing impeccable design governance.\n\nCommand framework (Paul Bakaus adaptation):\n- Maintaining PRODUCT.md (durable context) and DESIGN.md (design tokens)\n- Executing audit commands (shape, craft, critique, polish)\n- Eliminating AI frontend tells and enforcing anti-slop standards\n- Strict typography hierarchy and coherent spacing rhythms.",
+      "expectations": [
+        "routes-to:impeccable",
+        "contains:PRODUCT.md",
+        "contains:DESIGN.md",
+        "regex:anti-slop|typography",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "impeccable-critique-ui-polish",
+      "prompt": "critique UI: polish anti-slop using impeccable design governance",
+      "files": [],
+      "expected_output": "Critiquing UI components against aesthetic standards.\n\nAudit focus:\n1. Spacing and layout alignment\n2. Color harmony and contrast accessibility\n3. Micro-interactions and transition smoothness\n4. Eradicating generic AI design defaults with anti-slop rules.",
+      "expectations": [
+        "routes-to:impeccable",
+        "contains:anti-slop",
+        "contains:contrast accessibility",
+        "regex:micro-interactions|spacing",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

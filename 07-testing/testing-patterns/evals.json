@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "testing-patterns-vitest-unit",
+      "prompt": "vitest: escribir tests unitarios con mocking y coverage",
+      "files": [],
+      "expected_output": "Aplicando patrones de testing automatizado.\n\nEstructura de test con Vitest:\n- AAA (Arrange, Act, Assert)\n- Mocks deterministas con vi.mock y vi.fn\n- Aserciones estrictas y comprobación de coverage\n- Aislamiento de efectos secundarios.",
+      "expectations": [
+        "routes-to:testing-patterns",
+        "contains:Vitest",
+        "contains:Arrange, Act, Assert",
+        "regex:vi\\.mock|mocking",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "testing-patterns-integration-supertest",
+      "prompt": "unit test: integration test with supertest and vitest coverage",
+      "files": [],
+      "expected_output": "Writing integration test suite with Supertest and Vitest.\n\nKey practices:\n1. Real HTTP requests against express test app\n2. Database state isolation and transactional rollback\n3. Assertion of status codes, headers, and json payloads\n4. Fast feedback loop with high coverage.",
+      "expectations": [
+        "routes-to:testing-patterns",
+        "contains:Supertest",
+        "contains:Vitest",
+        "regex:integration|HTTP",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

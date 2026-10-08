@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "id": "tailwind-4-utility-classes-theme",
+      "prompt": "tailwind 4: styling utility classes and css theme",
+      "files": [],
+      "expected_output": "Applying Tailwind CSS 4 styling architecture.\n\nStandards:\n- cn() helper combining clsx and twMerge for conditional classes\n- Semantic theme classes instead of inline var() or raw hex in className\n- Responsive breakpoints and modern dark mode variants\n- Elimination of className-as-inline-CSS anti-patterns.",
+      "expectations": [
+        "routes-to:tailwind-4",
+        "contains:Tailwind CSS 4",
+        "contains:cn()",
+        "regex:clsx|twMerge",
+        "not-contains:sdd-status"
+      ]
+    },
+    {
+      "id": "tailwind-4-cn-utility-merging",
+      "prompt": "tailwind css 4: cn utility clsx twmerge and theme variables",
+      "files": [],
+      "expected_output": "Implementing Tailwind 4 styling utility.\n\nKey practices:\n1. Use cn(...) for merging dynamic conditionals\n2. Configure theme variables cleanly\n3. Prefer utility classes over inline styles for static properties\n4. Dark mode styling with semantic tokens.",
+      "expectations": [
+        "routes-to:tailwind-4",
+        "contains:cn(",
+        "contains:theme variables",
+        "regex:dynamic|utility",
+        "not-contains:sdd-orchestrator"
+      ]
+    }
+  ]
+}

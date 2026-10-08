@@ -111,6 +111,24 @@ flowchart TD
 | **Multi-Agent Roster Switcher** | ❌ | ❌ | ✅ (21 agents across strong/mid/cheap) |
 | **Automated Validator** | ❌ | ❌ | ✅ (`validate-skills.mjs --strict`) |
 
+### 📊 Benchmark: With vs Without skillsGV Harness
+
+Validated across 16 core skill suites using the Anthropic eval schema (`evals.json`) and automated deterministic routing:
+
+| Metric | Without skillsGV (Baseline) | With skillsGV (Harness) | Impact |
+|---|---|---|---|
+| **Always-On Context Cost** | ~6,167 tokens | ~835 tokens | **-86.5% token reduction** |
+| **Skill Routing Determinism** | 0% (ad-hoc prompt guesswork) | 100% deterministic (32/32 queries) | **100% precision on primary intent** |
+| **Evaluated Core Skills** | 0 suites / 0 tests | 16 suites / 32 evals | **16 core skills verified** |
+| **Quality & Invariant Checks** | Unchecked / regression-prone | 164/164 checks passing (0 failures) | **100% pass rate** |
+| **Process Governance** | Ad-hoc / prompt drift | Strict ODD (tasks doc + commits) | **100% traceable ODD workflow** |
+| **Persistent Memory** | Lost on session close | Engram MCP (SQLite + FTS5) | **Cross-session durability** |
+
+Run the benchmark locally:
+```bash
+pnpm benchmark
+```
+
 ---
 
 ## 🛠️ CLI Flags & Advanced Installation
