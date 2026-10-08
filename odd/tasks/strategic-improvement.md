@@ -36,7 +36,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 
 ### Phase 3 — ODD Alignment & Technical Debt
 - [x] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
-- [ ] T10: Resolve AGENTS.md & Kernel Contradictions (version 4.0.0, ≤5 skills, no forced turns)
+- [x] T10: Resolve AGENTS.md & Kernel Contradictions (version 4.0.0, ≤5 skills, no forced turns)
 - [ ] T11: Update `references/model-mapping.md` to canonical tiers & update v3.0.0 feature doc header
 - [ ] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
 
@@ -112,6 +112,12 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Generalized `CRITICAL_MARKERS` to domain categories (`auth|payment|billing|migration|security|ssl|secret|jwt|token|password|keys|credentials|database|sql|schema|seed|checkout|env`) removing project-specific package keywords (`prisma`, `socketio`).
   - Added advisory heuristic `suggestsStructuredFlow` that is strictly `false` by default (honoring ODD organic flow) and only evaluates to `true` when explicit spec/SDD terms (`sdd`, `spec-first`, `openspec`, `formal spec`, `waterfall`, `rfc document`) are provided in query.
   - Added automated unit tests in `test/router.test.mjs` verifying `suggestsStructuredFlow` and generalized `CRITICAL_MARKERS`.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `89fb2d3`
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
+- **T10** (Resolve AGENTS.md & Kernel Contradictions):
+  - Standardized gentle-ai version references to Gentle-AI 4.0.0 across `AGENTS.md`, `odd-workflow/SKILL.md`, and `set-models.mjs`.
+  - Clarified Two-Tier progressive disclosure in `AGENTS.md`: Tier 0 base house-meta available at startup; Tier 1 (≤5 skills) loaded on demand via router without forced per-turn router looping.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (116 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
 

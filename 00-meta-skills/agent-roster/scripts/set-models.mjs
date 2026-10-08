@@ -6,7 +6,7 @@
  * --strong/--mid/--cheap/--flash/--all overrides), then delegates to apply.mjs
  * for every detected runtime. Nothing is written without --apply (dry-run default).
  *
- * Aligns with native gentle-ai 3.4.0 profiles:
+ * Aligns with native gentle-ai 4.0.0 profiles:
  * - Emits exact arguments for `gentle-ai sync --profile <name:provider/model>` and
  *   `--profile-phase <name:phase:model>` using native tier names
  *   (sdd-strong, sdd-mid, sdd-cheap) via `--emit-sync-args`.

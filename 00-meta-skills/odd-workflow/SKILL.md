@@ -53,5 +53,5 @@ Todo documento de feature debe incluir:
 ## Estrategia de Entrega y RDD
 
 - **Entrega**: `ask-on-risk` (preguntar una vez la estrategia de cadena si supera ~400 líneas), `auto-chain`, `single-pr`, `exception-ok`. Cadena: `stacked-to-main` o `feature-branch-chain`.
-- **RDD (Receipt-Driven Development)**: Viene `on` por defecto desde gentle-ai 3.5.0. No lo apagues ni lo enciendas por decisión propia: pertenece al usuario vía `gentle-ai review mode enable|disable`. Tras cada commit, evaluar con `gentle-ai review assess`.
+- **RDD (Receipt-Driven Development)**: Viene `on` por defecto desde gentle-ai 4.0.0. No lo apagues ni lo enciendas por decisión propia: pertenece al usuario vía `gentle-ai review mode enable|disable`. Tras cada commit, evaluar con `gentle-ai review assess`.
 - **TDD**: Se aplica test-first cuando existe un test ejecutable determinista y el entorno lo soporta; no inventar runners ni asumir TDD por la sola presencia de tests.

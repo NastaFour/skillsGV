@@ -8,7 +8,7 @@ Este archivo define el contrato de comportamiento y gobernanza cognitiva para cu
 - **Índice completo**: Consulta [`SKILLS.md`](SKILLS.md) para el árbol de skills y rutas, y [`catalog.json`](catalog.json) para el manifiesto estructurado.
 
 ## 🔄 2. Proceso Exclusivo: ODD (Organic-Driven Development)
-Gentle-AI 4.0 ODD es la única vía de desarrollo autorizada. Todo cambio sigue este protocolo:
+Gentle-AI 4.0.0 ODD es la única vía de desarrollo autorizada. Todo cambio sigue este protocolo:
 1. **Authorize**: Establecé si la solicitud autoriza cambios en código. Auditorías, revisiones o consultas son de solo lectura.
 2. **Explore**: Inspeccioná código antes de proponer o escribir.
 3. **Resolve Uncertainty**: Máximo una pregunta enfocada si hay decisiones de producto ambiguas.
@@ -18,12 +18,12 @@ Gentle-AI 4.0 ODD es la única vía de desarrollo autorizada. Todo cambio sigue 
 7. **Close & Verify**: Reporte con evidencia observada (comando + salida). Cero claims de "listo" sin prueba.
 
 ## 🧭 3. Carga de Skills por Turno (Two-Tier Progressive Disclosure)
-- **Tier 0 (Base)**: Skills fundamentales siempre activas (`odd-workflow`, `skill-router`, `skill-loader`, `skill-validator`, `testing-patterns`, `code-reviewer`, `engram-integration`, `dod-checker`, `decision-gate`).
-- **Tier 1 (Bajo demanda)**: Ejecutá el router determinista para resolver las ≤5 skills exactas para la tarea:
+- **Tier 0 (Base)**: House-meta disponible al inicio (`odd-workflow`, `skill-router`, `skill-loader`, `skill-validator`, `testing-patterns`, `code-reviewer`, `engram-integration`, `dod-checker`, `decision-gate`).
+- **Tier 1 (Bajo demanda)**: Cuando la tarea lo requiera o haya ambigüedad, ejecutá el router determinista para resolver las ≤5 skills exactas:
   ```bash
   node 00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <lineas>] [--json]
   ```
-- **Límite de contexto**: Jamás cargues más de 5 skills en un único turno.
+- **Límite de contexto**: Jamás cargues más de 5 skills en un único turno. No ejecutes el router en bucle si las skills ya están en contexto.
 
 ## 🚦 4. Reglas Globales No Negociables
 - **pnpm only**: `npm` y `npx` están estrictamente rechazados. Usá `pnpm` para scripts/dependencias y `pnpm dlx` en reemplazo de `npx`.
