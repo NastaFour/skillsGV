@@ -5,7 +5,7 @@ description: >
   security hardening (contextIsolation, sandbox), native menus, auto-update, and packaging.
   Trigger when building or reviewing an Electron app, or when the user asks about desktop apps
   with web technologies, main/renderer communication, or Electron security.
-  NOTE: skillsGV also has `electronjs` — this skill extends it with Gentleman Programming patterns.
+  NOTE: `electronjs` is deprecated and superseded by this canonical skill.
 license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Node 18+."
 allowed-tools: Read

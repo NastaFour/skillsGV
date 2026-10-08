@@ -1,16 +1,22 @@
 ---
 name: frontend-designer
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.
+description: DEPRECATED. Use frontend-design instead. Legacy frontend designer guidelines kept for retrocompatibility. The skill-router ignores this skill.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["frontend designer"]
+  deprecated: "true"
+  redirect: "frontend-design"
+  trigger: ["frontend-designer legacy", "frontend-designer deprecated"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-This skill guides the creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. It integrates **Prompt-Driven UI Prototyping** methods to design premium layouts with absolute state control.
+> ⚠️ **DEPRECATED**: Replaced by [`frontend-design`](../frontend-design/SKILL.md). Use `frontend-design` for anti-slop aesthetic direction, typography, palette, and distinctive UI branding.
+
+# 🎨 Frontend Designer (Legacy)
+
+This legacy skill is superseded by [`frontend-design`](../frontend-design/SKILL.md). For React and Tailwind component implementation, see [`react-19`](../../05-frontend/react-19/SKILL.md) and [`tailwind-4`](../../05-frontend/tailwind-4/SKILL.md).
 
 ## Design Thinking
 

@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
+description: "Test-driven development red-green-refactor loop principles and seam definition (Matt Pocock methodology). Use when practicing test-first red-green cycles. For test runner setup, layer patterns, and coverage templates, use testing-patterns."
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:

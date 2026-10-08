@@ -41,7 +41,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T12: Extract Shared `normalizeTier()` module (`_shared/agent-roster/normalize-tier.mjs`)
 
 ### Phase 4 — Catalog Deduplication & Hygiene
-- [ ] T13: Deprecate/Redirect 7 Overlapping Skill Pairs (`electronjs`, `tailwindcss`, `frontend-designer`, etc.)
+- [x] T13: Deprecate/Redirect 7 Overlapping Skill Pairs (`electronjs`, `tailwindcss`, `frontend-designer`, etc.)
 - [ ] T14: Strip Project-Specific Content (admin panels, cash registers) into optional preset
 - [ ] T15: untrack or packaging-time build for `gentle-ai-dsh` mirror
 
@@ -132,7 +132,22 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Re-exported from both scripts to guarantee 100% backward compatibility for all external callers and tests.
   - Added unit test coverage in `test/agent-roster-tiers.test.mjs`.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `7ffc1fe`
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (118 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T13** (Deprecate/Redirect Overlapping Skill Pairs & Overlap Matrix Groups):
+  - Deprecated 4 redundant skills with `deprecated: "true"`, `redirect: "<canonical>"`, deprecation banners, and legacy triggers:
+    - `05-frontend/electronjs` -> redirect `electron`
+    - `05-frontend/tailwindcss` -> redirect `tailwind-4`
+    - `02-dev-roles/frontend-designer` -> redirect `frontend-design`
+    - `02-dev-roles/expert-debugger` -> redirect `systematic-debugging`
+  - Clarified scope and boundaries in descriptions for 3 Matt Pocock pairing workflows vs core execution harnesses:
+    - `12-matt-pocock/code-review` vs `02-dev-roles/code-reviewer`
+    - `12-matt-pocock/research` vs `03-ai-ml/research-first`
+    - `12-matt-pocock/tdd` vs `07-testing/testing-patterns`
+  - Registered 4 new de-tying groups in `overlap-matrix.json` (`code-review-workflow`, `debugging-workflow`, `research-workflow`, `tdd-workflow`).
+  - Added unit test in `test/router.test.mjs` verifying deterministic redirect resolution.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (119 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
 

@@ -1,18 +1,22 @@
 ---
 name: electronjs
-description: Desktop application development with Electron.js. Covers main/renderer process separation, secure IPC communication channels, contextIsolation, and window bounds management. Use when building desktop wrappers, cash register interfaces, or regional manager software.
+description: DEPRECATED. Use electron instead. Legacy Electron.js desktop guidelines kept for retrocompatibility. The skill-router ignores this skill.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["electron", "desktop", "contextBridge", "IPC", "cash register"]
+  deprecated: "true"
+  redirect: "electron"
+  trigger: ["electronjs legacy", "electronjs deprecated"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-# 💻 Electron.js Desktop Development (Secure Shells)
+> ⚠️ **DEPRECATED**: Replaced by [`electron`](../electron/SKILL.md). Use `electron` for modern desktop application architecture and IPC security.
 
-Use this skill when developing desktop wrappers, cash register interfaces, or regional manager software for the application system.
+# 💻 Electron.js Desktop Development (Legacy)
+
+Use this skill only for legacy references. For all active development, use [`electron`](../electron/SKILL.md).
 
 ## 🚨 Security & IPC Hardening (2026 Guardrails)
 

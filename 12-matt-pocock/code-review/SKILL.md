@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
+description: "Two-axis Standards vs Spec review since a fixed git ref (Matt Pocock interactive methodology). Runs both reviews in parallel sub-agents. Use when reviewing a branch or PR against its originating issue/spec. For standard ODD code reviews, ECC loops, and 4R audits, use code-reviewer."
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:

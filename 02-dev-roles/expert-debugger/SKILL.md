@@ -1,18 +1,22 @@
 ---
 name: expert-debugger
-description: Methodically analyze and resolve bugs in the codebase. Includes diagnostic steps for tracing WebSocket leaks, MLOps bottlenecks, database schema drift, and transaction failures.
+description: DEPRECATED. Use systematic-debugging instead. Legacy debugging guidelines kept for retrocompatibility. The skill-router ignores this skill.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["expert debugger"]
+  deprecated: "true"
+  redirect: "systematic-debugging"
+  trigger: ["expert-debugger legacy", "expert-debugger deprecated"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-# 🐞 Expert Debugger & Telemetry Auditor
+> ⚠️ **DEPRECATED**: Replaced by [`systematic-debugging`](../systematic-debugging/SKILL.md). Use `systematic-debugging` for root-cause analysis, hypothesis testing, and the 4-phase debugging protocol.
 
-This skill enforces a systematic, scientific approach to debugging rather than blind guessing.
+# 🐞 Expert Debugger & Telemetry Auditor (Legacy)
+
+This legacy skill is superseded by [`systematic-debugging`](../systematic-debugging/SKILL.md).
 
 ---
 

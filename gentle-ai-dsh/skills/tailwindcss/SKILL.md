@@ -1,18 +1,22 @@
 ---
 name: tailwindcss
-description: Standards and guidelines for Tailwind CSS styling. Prevents runtime CSS string interpolation issues, organizes responsive layouts, and ensures clean utility classes compilation. Use when styling with Tailwind, configuring JIT, or building responsive layouts.
+description: DEPRECATED. Use tailwind-4 instead. Legacy Tailwind CSS v3 guidelines kept for retrocompatibility. The skill-router ignores this skill.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["tailwind", "CSS", "glassmorphism", "responsive", "estilos"]
+  deprecated: "true"
+  redirect: "tailwind-4"
+  trigger: ["tailwindcss legacy", "tailwindcss deprecated"]
   scope: [global, project]
   version: "1.0.0"
 ---
 
-# 🎨 Tailwind CSS Design Guidelines
+> ⚠️ **DEPRECATED**: Replaced by [`tailwind-4`](../tailwind-4/SKILL.md). Use `tailwind-4` for modern Tailwind CSS 4 patterns, `cn()` utility, and semantic theme tokens.
 
-Use this skill when styling React, Next.js, or React Native (via Tailwind/NativeWind) components. Enforces clean utility usage and avoids compiling issues.
+# 🎨 Tailwind CSS Design Guidelines (Legacy)
+
+Use this skill only for legacy Tailwind v3 references. For modern implementations, use [`tailwind-4`](../tailwind-4/SKILL.md).
 
 ## 🚨 Tailwind CSS Guardrails
 

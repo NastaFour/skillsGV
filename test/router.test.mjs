@@ -61,3 +61,21 @@ test('router critical markers detects generalized security/payment terms', () =>
   const resTriv = JSON.parse(stdoutTriv);
   assert.equal(resTriv.trivial, true, 'Small typo fix should be marked trivial');
 });
+
+test('router redirects deprecated skills to canonical equivalents', () => {
+  const resElectron = runRouter('electronjs');
+  assert.equal(resElectron.primary, 'electron');
+  assert.equal(resElectron.deprecatedHit, 'electronjs');
+
+  const resTailwind = runRouter('tailwindcss');
+  assert.equal(resTailwind.primary, 'tailwind-4');
+  assert.equal(resTailwind.deprecatedHit, 'tailwindcss');
+
+  const resDesigner = runRouter('frontend-designer');
+  assert.equal(resDesigner.primary, 'frontend-design');
+  assert.equal(resDesigner.deprecatedHit, 'frontend-designer');
+
+  const resDebugger = runRouter('expert-debugger');
+  assert.equal(resDebugger.primary, 'systematic-debugging');
+  assert.equal(resDebugger.deprecatedHit, 'expert-debugger');
+});

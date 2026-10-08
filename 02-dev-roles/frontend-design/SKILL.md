@@ -14,7 +14,7 @@ metadata:
 
 Approach this as the design lead at a small studio known for giving every client a visual identity that could not be mistaken for anyone else's. The client has already rejected proposals that felt templated, and is paying for a distinctive point of view: make deliberate, opinionated choices about palette, typography, and layout that are specific to this brief, and take one real aesthetic risk you can justify.
 
-> Companion skill: [`frontend-designer`](../frontend-designer/SKILL.md) covers the React/Tailwind implementation side of premium UI. Use this skill for **direction** (palette, type, signature, copy), and `frontend-designer` for **implementation** (component structure, Tailwind JIT, sanitized rendering).
+> Implementation: For React/Tailwind component implementation, use [`tailwind-4`](../../05-frontend/tailwind-4/SKILL.md) and [`react-19`](../../05-frontend/react-19/SKILL.md). Legacy `frontend-designer` has been deprecated and redirected to this skill.
 
 ## Ground it in the subject
 
