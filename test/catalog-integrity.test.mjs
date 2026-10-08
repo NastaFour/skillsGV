@@ -55,6 +55,17 @@ test('zero QuickOrder / supermercado business logic in all skills', () => {
   assert.deepEqual(violations, [], 'No skill should contain QuickOrder or supermarket remnants');
 });
 
+test('zero hardcoded personal Windows user paths in all skills', () => {
+  const violations = [];
+  for (const s of skills) {
+    const c = readFileSync(s, 'utf8');
+    if (/C:\\Users\\j1347/i.test(c)) {
+      violations.push(s);
+    }
+  }
+  assert.deepEqual(violations, [], 'No skill should contain hardcoded personal Windows user paths');
+});
+
 test('all skills declare strict semver version X.Y.Z', () => {
   const violations = [];
   for (const s of skills) {

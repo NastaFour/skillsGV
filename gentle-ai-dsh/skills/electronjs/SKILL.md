@@ -50,8 +50,8 @@ Use this skill only for legacy references. For all active development, use [`ele
 3. **Remote Navigation Control**:
    - Block unexpected navigations to unauthorized URLs. Enforce CSP headers in the renderer window context.
 
-## 🛒 Desktop Shell (Regional Managers / Cash Registers)
+## 🖥️ Desktop Shell (Offline Persistence & Hardware Integration)
 
-- **Offline Cash Register Mode**: If the local cash register loses internet access, write checkout transactions to a local SQLite database file (`better-sqlite3` in the main process).
-- **Auto-Sync daemon**: In the background (Electron main process), run a daemon that polls the local DB and uploads transactions to the main Postgres server as soon as connection is restored.
-- **Hardware Integration**: Use Node native packages inside the main process to connect to local USB barcode scanners and receipt printers, exposing triggers to the renderer via context bridge.
+- **Offline Mode**: If the local desktop client loses internet access, write local transactions to a local SQLite database file (`better-sqlite3` in the main process).
+- **Auto-Sync daemon**: In the background (Electron main process), run a daemon that polls the local DB and uploads pending records to the main backend server as soon as connection is restored.
+- **Hardware Integration**: Use Node native packages inside the main process to connect to local hardware peripherals (scanners, printers), exposing triggers to the renderer via context bridge.

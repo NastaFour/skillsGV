@@ -10,9 +10,9 @@ metadata:
   version: "1.0.0"
 ---
 
-# 🧪 Testing Patterns — Application
+# 🧪 Testing Patterns — Fullstack Applications
 
-Usa este skill al escribir cualquier tipo de test automatizado para el monorepo de la aplicación. Sigue los patrones establecidos para mantener consistencia entre backend, admin panel, y app móvil.
+Usa este skill al escribir cualquier tipo de test automatizado en arquitecturas fullstack. Sigue los patrones establecidos para mantener consistencia entre backend, frontend web, y app móvil.
 
 ---
 
@@ -21,8 +21,8 @@ Usa este skill al escribir cualquier tipo de test automatizado para el monorepo 
 | Capa | Framework | Runner | Mocking | Ubicación |
 |---|---|---|---|---|
 | Backend (Express) | Vitest + Supertest | Vitest | `vi.mock` / MSW | `apps/backend/__tests__/` |
-| Admin Panel (React/Vite) | Vitest + React Testing Library | Vitest | `vi.mock` / MSW | `apps/admin-panel/src/__tests__/` |
-| Móvil (Expo) | Jest + React Native Testing Library | Jest | `jest.mock` | `apps/mobile-app/__tests__/` |
+| Web Frontend (React/Vite) | Vitest + React Testing Library | Vitest | `vi.mock` / MSW | `apps/web/__tests__/` |
+| Móvil (Expo) | Jest + React Native Testing Library | Jest | `jest.mock` | `apps/mobile/__tests__/` |
 | Tipos compartidos | Vitest | Vitest | `vi.mock` | `packages/shared-types/__tests__/` |
 
 ---

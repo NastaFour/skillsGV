@@ -42,13 +42,13 @@ Use this skill only for legacy Tailwind v3 references. For modern implementation
    - Use Tailwind's screen breakpoints (`sm:`, `md:`, `lg:`, `xl:`) systematically.
    - Design with mobile-first layout systems (e.g. mobile app has a simple vertical catalog layout, while admin dashboard has a multi-column grid layout).
 
-## 🛒 Dashboard Layouts (Admin Web UI)
+## 📊 Dashboard Layouts
 
-- **Grid Skeletons**: The layout must structure dashboards with:
+- **Grid Skeletons**: Structure analytical dashboards with responsive grid columns:
   ```html
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
-    <!-- Active Orders, Out-of-Stock Alert, Total Sales, Courier maps -->
+    <!-- Metric Cards, Status Feeds, Data Visualizations -->
   </div>
   ```
-- **Live Inventory Cards**: Cards representing products must visually indicate shortages with bright warning borders (`border-amber-500` or `border-red-500` for 0 stock) and disable packing check-actions.
-- **Support Chat Box**: Ensure flexbox configurations allow the support chat area to shrink/grow and scroll independently from the side navigation.
+- **Status Cards**: Cards representing monitored entities should visually indicate states with semantic borders (`border-amber-500` for warnings, `border-red-500` for critical errors).
+- **Flexible Panels**: Ensure flexbox containers allow content areas to shrink/grow and scroll independently from side navigation.

@@ -42,7 +42,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 
 ### Phase 4 — Catalog Deduplication & Hygiene
 - [x] T13: Deprecate/Redirect 7 Overlapping Skill Pairs (`electronjs`, `tailwindcss`, `frontend-designer`, etc.)
-- [ ] T14: Strip Project-Specific Content (admin panels, cash registers) into optional preset
+- [x] T14: Strip Project-Specific Content (admin panels, cash registers) into optional preset
 - [ ] T15: untrack or packaging-time build for `gentle-ai-dsh` mirror
 
 ### Phase 5 — Credibility & Community
@@ -146,6 +146,15 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
     - `12-matt-pocock/tdd` vs `07-testing/testing-patterns`
   - Registered 4 new de-tying groups in `overlap-matrix.json` (`code-review-workflow`, `debugging-workflow`, `research-workflow`, `tdd-workflow`).
   - Added unit test in `test/router.test.mjs` verifying deterministic redirect resolution.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `eac74f5`
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (119 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T14** (Strip Project-Specific Remnants into Reference Presets):
+  - Generalize `01-planning-process/application-workflow/SKILL.md` into domain-agnostic Fullstack Architecture Orchestrator (Client -> API Gateway -> ACID DB -> Worker Queues -> Real-Time Streaming). Extracted grocery/delivery flow into `references/e-commerce-delivery-example.md`.
+  - Modernize `01-planning-process/master-prompt/SKILL.md` removing all personal hardcoded paths (`C:\Users\j1347\...`), switching to repo-relative paths and extracting LATAM payment simulation into `references/latam-payments-demo.md`.
+  - Fix personal hardcoded path in `02-dev-roles/decision-gate/scripts/resolve-default.mjs` to dynamically resolve Engram from `ENGRAM_PATH`, `USERPROFILE/bin/engram.exe`, or `PATH`.
+  - Cleaned up domain remnants in `prompt-engineering`, `electronjs`, `tailwindcss`, and `testing-patterns`.
+  - Added test in `test/catalog-integrity.test.mjs` verifying zero hardcoded personal Windows user paths across all skills in the catalog.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (119 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 

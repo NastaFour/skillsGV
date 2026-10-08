@@ -1,53 +1,55 @@
 ---
 name: application-workflow
-description: Ultimate business-logic orchestrator for the application. Links the Expo mobile client, Admin Vite website, Node/Express server, Sockets, and AI modules into a unified workflow.
+description: Fullstack business-logic and architecture orchestrator. Coordinates interactions between client applications (mobile/web), backend APIs, transactional databases, asynchronous event buses, and realtime streams. Use when designing end-to-end features, verifying cross-service workflows, or integrating fullstack pipelines.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["workflow orchestrator", "business workflow", "domain workflow", "pipeline integration"]
+  trigger: ["workflow orchestrator", "business workflow", "domain workflow", "pipeline integration", "fullstack architecture", "end-to-end integration"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# 🛒 Application Workflow Orchestrator
+# 🌐 Fullstack Application Workflow Orchestrator
 
-Use this skill to guide the integration and verification of business processes across the application codebase. It ties the frontend client, admin panel, backend service database, real-time streams, and customer support desks together.
+Use this skill to guide the design, integration, and verification of end-to-end business workflows across a fullstack architecture. It coordinates client interfaces (mobile, web), API gateways, relational databases, event queues, and real-time streaming layers into a coherent lifecycle.
 
 ```mermaid
 flowchart TD
-    A["Buyer App (Expo Router)"] -->|1. Places Order / Sockets| B["Backend API (Express/Prisma)"]
-    B -->|2. Transaction ACID| C[PostgreSQL Database]
-    B -->|3. Event Broadcast| D["Admin Panel (React/Vite)"]
-    D -->|4. Stock Checks / packing| B
-    B -->|5. GPS Location updates| A
-    E["AI Support Desk"] <-->|6. Injects context / Restock alerts| B
+    A["Client Apps (Web / Mobile)"] -->|1. Authenticated Mutation| B["API Gateway / Backend Service"]
+    B -->|2. ACID Transaction| C["Primary Database"]
+    B -->|3. Event Publish| D["Event Bus / Message Queue"]
+    D -->|4. Async Processing| E["Background Workers / Services"]
+    E -->|5. Real-Time Broadcast| F["WebSocket / SSE Stream"]
+    F -->|6. State Sync| A
 ```
 
 ---
 
-## 📋 Unified Business Pipelines
+## 🏛️ Core Workflow Lifecycles
 
-### 🛍️ Pipeline A: Order Placement & Inventory Check
-1. **Client Request**: The buyer selects items in the Mobile Catalog (`skill-react-native`, `skill-expo`).
-2. **Checkout Validation**: The mobile app triggers biometric validation (`skill-expo`) for high-value orders and transmits details via secure endpoints (`skill-expressjs`).
-3. **Transaction Execution**: The backend (`skill-nodejs`, `skill-prisma-orm`) starts an ACID transaction (`skill-postgresql`). It verifies stock levels:
-   - If stock is sufficient, it creates the `Order` record, reduces the stock, commits the transaction, and returns `status: PENDING`.
-   - If stock is insufficient, it rolls back the transaction and informs the client.
-4. **WebSocket Update**: The backend emits an `order:created` event via Socket.io (`skill-socketio`) to the employee dashboard room.
+### 1. Synchronous Request & Transactional Boundary
+1. **Client Ingestion**: Client triggers an authenticated action with schema-validated input (e.g. Zod, TypeScript types).
+2. **Pre-flight Policy & Auth**: Middleware verifies session identity, RBAC permissions, and idempotency keys.
+3. **Transactional Execution**:
+   - Wrap state modifications in an atomic database transaction.
+   - Enforce domain invariants before persistence.
+   - Commit transaction or roll back on error with clear domain diagnostics.
+4. **Immediate Response**: Return an authoritative acknowledgement with the new entity status (e.g., `PENDING` or `PROCESSING`).
 
-### 📦 Pipeline B: Employee Packing & Out-of-Stock Support
-1. **Dashboard Packing List**: Employees view pending orders in the Admin Dashboard (`skill-react-vite`, `skill-tailwindcss`).
-2. **Item Collection**: As the employee packs items, if they discover that a physical item is missing/damaged (real stock differs from DB), they mark a "Stock Alert" status in the Admin Web.
-3. **AI Support Trigger**: The server invokes the AI Assistant (`skill-ai-orchestration`, `skill-llm-integration`, `skill-prompt-engineering`) to analyze the issue:
-   - The AI inspects the buyer's purchase history and other similar catalog products with high stock.
-   - It suggests a replacement item (e.g. *"We don't have Brand A milk, would you like to replace it with Brand B milk at no extra charge?"*).
-   - This replacement request is pushed to the user's mobile screen in real-time via Socket.io (`skill-socketio`).
-4. **Buyer Confirmation**: Once the buyer clicks "Accept" on their screen, the order status changes to `PACKED` and the DB is updated.
+### 2. Asynchronous Event Processing & Worker Queues
+1. **Event Dispatch**: On transaction commit, emit domain events to an in-memory queue, Redis Pub/Sub, or message broker.
+2. **Worker Processing**: Background workers process heavy tasks (email notifications, data indexing, third-party webhook relays) without blocking the primary request thread.
+3. **Failure Handling**: Configure dead-letter queues (DLQ), exponential backoff retries, and circuit breakers for external integrations.
 
-### 🚚 Pipeline C: Delivery Dispatch & Real-Time Tracking
-1. **Driver Assignment**: The employee sets the order status to `SHIPPED` and assigns it to an active delivery driver in the Admin Web.
-2. **Optimized Route**: The backend calls the Routing Agent (`skill-ai-orchestration`) to optimize coordinates and display the route on the driver's screen (`skill-react-native`).
-3. **Live GPS Stream**: The driver's app streams GPS location data via Sockets (`skill-socketio`) every 5 seconds.
-4. **Buyer Live Map**: The buyer's app listens to the socket stream and updates the courier icon on the interactive map (`skill-react-native`) in real-time.
-5. **Completion**: Upon delivery, the driver marks it as `DELIVERED`. The server records final metrics and resets client AI billing quotas (`skill-api-ai-billing`).
+### 3. Real-Time Streaming & State Synchronization
+1. **Channel Subscription**: Clients join scoped real-time channels or rooms (e.g. `entity:<id>`, `user:<id>`) after verifying authentication tokens.
+2. **State Updates**: Services emit state transitions over WebSocket or Server-Sent Events (SSE) connections.
+3. **Optimistic Reconciliation**: Client UI applies optimistic updates while reconciling against authoritative server payloads.
+4. **Completion & Audit**: Log finalized status, metrics, and telemetry for observability.
+
+---
+
+## 📚 Domain References
+
+- For a complete e-commerce and on-demand delivery domain implementation example, see [`references/e-commerce-delivery-example.md`](references/e-commerce-delivery-example.md).

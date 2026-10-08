@@ -39,6 +39,7 @@
  * (still emits JSON), 2 = invalid args.
  */
 import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { resolve, fileURLToPath } from "node:url";
 import { runScriptGuarded } from "../../../_shared/script-utils.mjs";
 
@@ -75,7 +76,13 @@ if (!Array.isArray(options) || options.length === 0) {
 }
 
 function defaultEngramPath() {
-  if (process.platform === "win32") return "C:\\Users\\j1347\\bin\\engram.exe";
+  if (process.env.ENGRAM_PATH) return process.env.ENGRAM_PATH;
+  if (process.platform === "win32") {
+    const userProfile = process.env.USERPROFILE;
+    if (userProfile && existsSync(join(userProfile, "bin", "engram.exe"))) {
+      return join(userProfile, "bin", "engram.exe");
+    }
+  }
   return "engram";
 }
 const ENGRAM = engramPath || defaultEngramPath();

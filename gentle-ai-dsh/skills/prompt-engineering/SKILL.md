@@ -20,7 +20,7 @@ Use this skill when designing system instructions, prompt templates, or user-que
 
 ### 1. Persona/Role Pattern
 - Direct the model to act as a specific expert. This calibrates the tone, style, and depth of the response.
-- **Example**: *"You are a Senior Customer Relations Manager at a premium supermarket. Your tone is highly professional, polite, and brief."*
+- **Example**: *"You are a Senior Customer Relations Manager at a software platform. Your tone is highly professional, polite, and brief."*
 
 ### 2. Context & Constraints
 - Provide explicit background details and strict constraints to prevent hallucinations.
@@ -46,11 +46,11 @@ Use this skill when designing system instructions, prompt templates, or user-que
 
 ---
 
-## 🛒 the application Prompt Template (SOLID / CoT Edition)
+## 🤖 Production Prompt Template (SOLID / CoT Edition)
 
 ```markdown
 <instructions>
-You are the AI Assistant for a catalog supermarket. Classify the customer's problem and propose a resolution.
+You are an expert AI Resolution Assistant. Classify the customer's issue and propose a structured resolution.
 
 Follow this Chain of Thought reasoning:
 1. Identify what item is missing or damaged in the order.
