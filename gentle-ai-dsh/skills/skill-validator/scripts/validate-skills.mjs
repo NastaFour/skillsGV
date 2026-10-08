@@ -747,12 +747,19 @@ function runIndexSyncChecks(catalogNames, skills, targetPath) {
     }
   }
 
-  // Check 2: Every skill name in catalog must be in AGENTS.md
-  for (const name of catalogNames) {
-    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp("\\b" + escaped + "\\b");
-    if (!re.test(agentsMdContent)) {
-      issues.push({ severity: "error", check: "agents-sync-missing-skill", msg: `Skill name "${name}" is present in catalog but missing in AGENTS.md` });
+  // Check 2: Every skill name in catalog must be in catalog.json (when present)
+  const catalogJsonPath = join(targetPath, "catalog.json");
+  if (existsSync(catalogJsonPath)) {
+    try {
+      const catalogData = JSON.parse(readFileSync(catalogJsonPath, "utf8"));
+      const manifestNames = new Set((catalogData.skills || []).map(s => s.name));
+      for (const name of catalogNames) {
+        if (!manifestNames.has(name)) {
+          issues.push({ severity: "error", check: "catalog-sync-missing-skill", msg: `Skill name "${name}" is present in catalog but missing in catalog.json` });
+        }
+      }
+    } catch {
+      issues.push({ severity: "error", check: "catalog-sync-invalid-json", msg: "catalog.json is unparseable" });
     }
   }
 

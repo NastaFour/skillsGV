@@ -302,3 +302,17 @@ test("external-target: external skill directory without catalog root skips manif
   assert.equal(manifestIssues.length, 0, "external target must not trigger manifest-* errors");
 });
 
+test("catalog-sync-missing-skill: skill present in catalog but missing in catalog.json fails", (t) => {
+  const root = makeRoot(t);
+  skillFixture(root, { dir: "my-domain", name: "domain-skill" });
+  write(join(root, "SKILLS.md"), "# SKILLS\n\n| domain-skill | [my-domain/domain-skill/SKILL.md](my-domain/domain-skill/SKILL.md) |\n");
+  write(join(root, "AGENTS.md"), "# AGENTS\n\nReglas generales.\n");
+  write(join(root, "catalog.json"), JSON.stringify({ version: 1, totals: { skills: 0 }, skills: [] }));
+
+  const r = runValidator(root, ["--catalog-root"]);
+  assert.equal(r.code, 1, r.stdout);
+  const hits = findIssues(r.json, "catalog-sync-missing-skill");
+  assert.ok(hits.some((h) => /domain-skill/.test(h.msg)));
+});
+
+

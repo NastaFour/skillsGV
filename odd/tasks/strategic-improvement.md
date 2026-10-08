@@ -28,7 +28,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T3: GitHub Actions CI Workflow (`.github/workflows/ci.yml`, dynamic validator test count)
 
 ### Phase 2 — Token Efficiency (Flash-Model Optimization)
-- [ ] T4: Decouple Validator from AGENTS.md → Validate against `catalog.json` (`validate-skills.mjs`, `validator-gates.test.mjs`)
+- [x] T4: Decouple Validator from AGENTS.md → Validate against `catalog.json` (`validate-skills.mjs`, `validator-gates.test.mjs`)
 - [ ] T5: Slim AGENTS.md to ≤60 lines (<1,500 tokens) Contract
 - [ ] T6: Skip Deprecated Skills by Default in Installer (`install-skills.mjs`, `catalog.json`)
 - [ ] T7: Add Triggers to 52 Triggerless Skills (Matt Pocock skills, review-*, roles, etc.)
@@ -69,7 +69,15 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - CI pipeline executes `pnpm validate:strict`, `pnpm test`, `pnpm test:addon`, and `pnpm doctor`.
   - Added CI status badge to `README.md`.
   - Verified test suite has dynamic counts across all test files (0 hardcoded test counts).
+  - Commit: `95d6d91`
   - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (112 tests PASS), `pnpm doctor` (6/6 checks PASS).
+- **T4** (Decouple Validator from AGENTS.md):
+  - Replaced `agents-sync-missing-skill` (which forced every skill into AGENTS.md prose) with `catalog-sync-missing-skill` in `validate-skills.mjs`.
+  - Skills are now strictly validated against `catalog.json` and `SKILLS.md`, liberating `AGENTS.md` from mandatory token bloat.
+  - Added new unit test in `test/validator-gates.test.mjs` asserting `catalog-sync-missing-skill` failure on missing skills in `catalog.json`.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (113 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS).
+
 
 
 
