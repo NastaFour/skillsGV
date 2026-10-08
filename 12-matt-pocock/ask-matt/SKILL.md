@@ -4,6 +4,7 @@ description: Ask which skill or flow fits your situation. A router over the skil
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["ask matt","consultar concepto","explicar typescript","matt pocock explanation"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

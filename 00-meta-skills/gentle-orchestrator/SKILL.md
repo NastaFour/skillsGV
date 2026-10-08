@@ -4,6 +4,7 @@ description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo gra
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
+  trigger: ["gentle orchestrator","orquestador","delegation rules","coordinar agentes","roster delegation"]
   author: gentleman-programming
   version: "1.0.0"
 ---

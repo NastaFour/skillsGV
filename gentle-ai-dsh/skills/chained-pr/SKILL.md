@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(git:*,gh:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "chained pr, stacked pr, split pr, large pr, pr over 400 lines, review slices"
+  trigger: ["chained pr","stacked prs","prs encadenados","chain pull requests","stacked pr","split pr","large pr","pr over 400 lines","review slices"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

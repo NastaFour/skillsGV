@@ -4,6 +4,7 @@ description: Test-driven development. Use when the user wants to build features 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["matt tdd","test driven development pocock","ciclo tdd red green"]
   author: mattpocock
   version: "1.0.0"
 ---

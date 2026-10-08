@@ -8,6 +8,7 @@ description:
   API changes.
 license: MIT
 metadata:
+  trigger: ["composition patterns","patrones de composicion","compound components","slot pattern react"]
   author: vercel
   version: '1.0.0'
 allowed-tools: Bash(node:*) Read

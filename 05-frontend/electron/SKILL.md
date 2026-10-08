@@ -10,6 +10,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Node 18+."
 allowed-tools: Read
 metadata:
+  trigger: ["electron app","desktop electron","electron js","aplicacion de escritorio electron"]
   author: gentleman-programming
   version: "1.0.0"
   category: 05-frontend

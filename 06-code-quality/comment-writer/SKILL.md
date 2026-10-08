@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(gh:*)
 license: Apache-2.0
 metadata:
-  trigger: "pr feedback, issue replies, code review comments, comment writer"
+  trigger: ["comment writer","escribir comentarios","docstrings","jsdoc","comentar codigo","pr feedback","issue replies","code review comments"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

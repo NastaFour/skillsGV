@@ -4,6 +4,7 @@ description: Build a throwaway prototype to answer a design question. Use when t
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["prototype","crear prototipo rapido","spike tecnico","poc prototyped"]
   author: mattpocock
   version: "1.0.0"
 ---

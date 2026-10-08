@@ -4,6 +4,7 @@ description: "Trigger: wait what, re-pitch. Use when the last message did not la
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["wait what","analizar perplejidad","clarificar contradiccion"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

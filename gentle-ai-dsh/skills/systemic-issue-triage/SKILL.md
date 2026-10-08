@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Glob Grep Bash(git:*,gh:*)
 license: Apache-2.0
 metadata:
-  trigger: "issue triage, bug report triage, backlog triage, issue flood, community report"
+  trigger: ["systemic issue triage","triaje sistemico","clasificar problemas","agrupar bugs","issue triage","bug report triage","backlog triage","issue flood","community report"]
   scope: "global, project"
   author: "Alan-TheGentleman"
   version: "1.0.0"

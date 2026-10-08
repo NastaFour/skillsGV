@@ -8,6 +8,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Java 17+ and Spring Boot 3+."
 allowed-tools: Read
 metadata:
+  trigger: ["spring boot","spring boot 3","spring framework","inyeccion de dependencias spring"]
   author: gentleman-programming
   version: "1.0.0"
   category: 04-backend

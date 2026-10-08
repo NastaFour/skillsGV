@@ -4,6 +4,7 @@ description: Trigger: grill, interview, stress-test. Use when the user wants to 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["grill me","interrogar plan","cuestionar diseno","grilling interview"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

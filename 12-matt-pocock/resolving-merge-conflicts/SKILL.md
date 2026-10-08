@@ -4,6 +4,7 @@ description: "Use when you need to resolve an in-progress git merge/rebase confl
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["resolving merge conflicts","resolver conflictos git","merge conflict resolution"]
   author: mattpocock
   version: "1.0.0"
 ---

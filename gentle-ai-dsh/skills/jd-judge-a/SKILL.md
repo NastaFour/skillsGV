@@ -4,6 +4,7 @@ description: "Trigger: judgment-day, review adversarial dual. Use when the orche
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["jd judge a","juez a","primer juez","blind judge a"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

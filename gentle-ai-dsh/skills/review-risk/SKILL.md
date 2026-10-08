@@ -4,6 +4,7 @@ description: "Trigger: review risk, security review, R1 lens. Use when reviewing
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review risk","evaluar riesgo","risk assessment","blast radius review"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

@@ -4,6 +4,7 @@ description: "Trigger: review validator, validation gate, validar cierre, eviden
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review validator","validar cambios","gate de cierre","pre-completion check"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

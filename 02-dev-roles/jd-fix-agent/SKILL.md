@@ -4,6 +4,7 @@ description: "Trigger: judgment-day fixes. Use when the orchestrator applies con
 license: MIT
 allowed-tools: Read Edit Write Glob Grep Bash
 metadata:
+  trigger: ["jd fix","judgment fix","remediar veredicto","fix adversarial findings"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

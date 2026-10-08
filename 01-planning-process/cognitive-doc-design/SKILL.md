@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Edit Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "writing guides, readmes, rfcs, onboarding docs, cognitive load"
+  trigger: ["cognitive doc","diseno documental","documentacion cognitiva","formato de docs","writing guides","readmes","rfcs","onboarding docs","cognitive load"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

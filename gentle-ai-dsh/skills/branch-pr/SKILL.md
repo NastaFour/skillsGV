@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(git:*,gh:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "creating pr, opening pr, preparing pr, branch pr, issue first"
+  trigger: ["branch pr","crear branch","flujo de ramas","git branch strategy","creating pr","opening pr","preparing pr","issue first"]
   scope: "global, project"
   author: gentleman-programming
   version: "2.0.0"

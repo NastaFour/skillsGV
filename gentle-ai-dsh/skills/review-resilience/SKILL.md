@@ -4,6 +4,7 @@ description: "Trigger: review resilience, R4 lens. Use when reviewing fallbacks,
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review resilience","resiliencia","tolerancia a fallos","circuit breaker review"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

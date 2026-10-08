@@ -4,6 +4,7 @@ description: "Implement a piece of work based on a spec or set of tickets." Use 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["matt implement","implementar spec","ejecutar implementacion pocock"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

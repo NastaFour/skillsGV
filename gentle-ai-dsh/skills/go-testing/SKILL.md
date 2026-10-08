@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(go:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "go tests, go test coverage, bubbletea teatest, golden files, go unit test"
+  trigger: ["go tests", "go test", "golang testing", "go test coverage", "bubbletea teatest", "golden files", "go unit test", "pruebas go", "table driven tests go"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

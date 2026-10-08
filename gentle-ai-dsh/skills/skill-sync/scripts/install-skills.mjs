@@ -57,6 +57,7 @@ let skipDetect = false;
 let doUninstall = false;
 let doRollback = false;
 let noKernel = false;
+let skipDeprecated = true;
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -69,6 +70,8 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--uninstall") doUninstall = true;
   else if (a === "--rollback") doRollback = true;
   else if (a === "--no-kernel") noKernel = true;
+  else if (a === "--include-deprecated") skipDeprecated = false;
+  else if (a === "--skip-deprecated") skipDeprecated = true;
   else if (a === "--help" || a === "-h") {
     printHelp();
     process.exit(0);
@@ -205,6 +208,8 @@ Options:
                         state, removes files that were new). Registered in manifest history.
   --no-kernel          Skip the activation layer (kernel injection + .gitignore guard)
                         on project installs.
+  --include-deprecated Include deprecated skills (default: skip deprecated skills)
+  --skip-deprecated    Skip deprecated skills during installation (default)
   --help, -h           Show this help
 
 Examples:
@@ -239,6 +244,15 @@ function collectSkills(root) {
         if (rel === "" && !isCategoryDir(subRel)) continue;
         walk(join(dir, e.name), subRel);
       } else if (e.isFile() && e.name === "SKILL.md") {
+        if (skipDeprecated) {
+          try {
+            const content = readFileSync(join(dir, "SKILL.md"), "utf8");
+            const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+            if (fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])) {
+              continue;
+            }
+          } catch {}
+        }
         skills.push(dir);
       }
     }

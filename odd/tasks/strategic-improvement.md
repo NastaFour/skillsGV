@@ -31,7 +31,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T4: Decouple Validator from AGENTS.md → Validate against `catalog.json` (`validate-skills.mjs`, `validator-gates.test.mjs`)
 - [x] T5: Slim AGENTS.md to ≤60 lines (<1,500 tokens) Contract
 - [x] T6: Skip Deprecated Skills by Default in Installer (`install-skills.mjs`, `catalog.json`)
-- [ ] T7: Add Triggers to 52 Triggerless Skills (Matt Pocock skills, review-*, roles, etc.)
+- [x] T7: Add Triggers to 52 Triggerless Skills (Matt Pocock skills, review-*, roles, etc.)
 - [ ] T8: Curated Core Tier System (`--tier core|extended|full` in installer and catalog metadata)
 
 ### Phase 3 — ODD Alignment & Technical Debt
@@ -87,7 +87,15 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - **T6** (Skip Deprecated Skills by Default in Installer):
   - Added `--skip-deprecated` (default: true) and `--include-deprecated` flags to `install-skills.mjs`.
   - Installer parses frontmatter during folder traversal and automatically excludes the 15 deprecated skills (12 legacy SDD skills + professional-planner + nextjs + state-management) from being copied into agent configurations unless explicitly requested.
+  - Commit: `fa5e5ad`
   - Verification: `install-skills.mjs --dry-run` confirms 15 deprecated skills skipped; `pnpm validate:strict` (229 pass), `pnpm test` (113 tests PASS).
+- **T7** (Add Triggers to Triggerless Skills):
+  - Analyzed and mapped curated trigger arrays for all 65 active skills that previously lacked YAML frontmatter triggers (all 27 Matt Pocock skills, 6 review-* lenses, 3 judgment day agents, dev roles, backend frameworks, and MCP hybrids).
+  - Cleaned up string-vs-array trigger duplicates to maintain strict single-array `metadata.trigger` formatting.
+  - 100% of active skills in the catalog now have triggers and are discoverable by `skill-router.mjs`.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (113 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
+
 
 
 

@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(node:*,go:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "gentle-ai-bench, benchmark agents, journey corpus, driven mode"
+  trigger: ["gentle ai bench","benchmarking skills","medir performance skills","evaluar harness","gentle-ai-bench","benchmark agents","journey corpus","driven mode"]
   scope: "global, project"
   author: "Gentleman-Programming"
   version: "1.0.0"

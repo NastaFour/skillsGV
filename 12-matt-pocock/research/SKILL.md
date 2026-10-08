@@ -4,6 +4,7 @@ description: Investigate a question against high-trust primary sources and captu
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["matt research","investigar tecnologia","evaluar libreria pocock"]
   author: mattpocock
   version: "1.0.0"
 ---

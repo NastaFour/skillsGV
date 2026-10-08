@@ -4,6 +4,7 @@ description: Move issues and external PRs through a state machine of triage role
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["triage issues","triaje de errores","priorizar tickets"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

@@ -4,6 +4,7 @@ description: "Trigger: review readability, R2 lens. Use when reviewing naming, c
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review readability","legibilidad","code readability","claridad de codigo"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

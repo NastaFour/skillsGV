@@ -4,6 +4,7 @@ description: Set up Husky pre-commit hooks with lint-staged (Prettier), type che
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["setup pre commit","configurar pre-commit","husky lint-staged setup"]
   author: mattpocock
   version: "1.0.0"
 ---

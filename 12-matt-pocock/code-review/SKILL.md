@@ -4,6 +4,7 @@ description: "Review the changes since a fixed point (commit, branch, tag, or me
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["matt code review","two axis review","standards and spec review"]
   author: mattpocock
   version: "1.0.0"
 ---

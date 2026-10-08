@@ -4,6 +4,7 @@ description: "Trigger: to tickets, ticket breakdown. Use when a plan, spec, or c
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["to tickets","desglosar a tickets","dividir en tareas tecnicas"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

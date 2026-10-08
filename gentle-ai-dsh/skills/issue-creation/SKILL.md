@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(gh:*,git:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "issue creation, bug filing, filing an issue, feature request issue"
+  trigger: ["issue creation","crear issue","redactar issue","reportar bug issue","bug filing","filing an issue","feature request issue"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.2.0"

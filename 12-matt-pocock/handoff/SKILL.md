@@ -4,6 +4,7 @@ description: Trigger: handoff, context compaction. Use when the session must be 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["handoff","traspaso de tarea","context handoff","entregar sesion"]
   author: mattpocock
   version: "1.0.0"
 argument-hint: "What will the next session be used for?"

@@ -4,6 +4,7 @@ description: Trigger: questionnaire, pending decision. Use when a decision can't
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["to questionnaire","generar cuestionario","requisitos a preguntas"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

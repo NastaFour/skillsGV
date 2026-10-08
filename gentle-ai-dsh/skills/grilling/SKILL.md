@@ -4,6 +4,7 @@ description: Grill the user relentlessly about a plan, decision, or idea. Use wh
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["grilling process","cuestionamiento tecnico","socratic grilling"]
   author: mattpocock
   version: "1.0.0"
 ---

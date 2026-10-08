@@ -9,6 +9,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent."
 allowed-tools: Read
 metadata:
+  trigger: ["jira task","crear ticket","historia de usuario jira","ticket jira"]
   author: gentleman-programming
   version: "1.0.0"
   category: 01-planning-process

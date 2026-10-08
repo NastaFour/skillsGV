@@ -4,6 +4,7 @@ description: Create exercise directory structures with sections, problems, solut
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["scaffold exercises","crear ejercicios","generar workshops","tutorial scaffolding"]
   author: mattpocock
   version: "1.0.0"
 ---

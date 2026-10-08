@@ -8,6 +8,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Python 3.8+."
 allowed-tools: Read
 metadata:
+  trigger: ["pytest","pruebas python","fixtures pytest","python test"]
   author: gentleman-programming
   version: "1.0.0"
   category: 07-testing

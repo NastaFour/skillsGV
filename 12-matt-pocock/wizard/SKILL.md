@@ -4,6 +4,7 @@ description: Generate an interactive bash wizard that walks a human through step
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["wizard flow","asistente paso a paso","guiar proceso complejo"]
   author: mattpocock
   version: "1.0.0"
 ---

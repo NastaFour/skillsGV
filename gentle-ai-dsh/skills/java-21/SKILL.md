@@ -8,6 +8,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Java 21+."
 allowed-tools: Read
 metadata:
+  trigger: ["java 21","java backend","virtual threads java","pattern matching java"]
   author: gentleman-programming
   version: "1.0.0"
   category: 04-backend

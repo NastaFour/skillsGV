@@ -4,6 +4,7 @@ description: "Trigger: harvest, cerrar proyecto, fin de proyecto, extraer aprend
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
+  trigger: ["skill harvest","cosechar skills","extraer skills","exportar skill"]
   author: gentleman-programming
   version: "1.0.0"
 ---

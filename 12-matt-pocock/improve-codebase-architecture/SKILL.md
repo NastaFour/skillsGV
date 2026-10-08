@@ -4,6 +4,7 @@ description: Scan a codebase for deepening opportunities, present them as a visu
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["improve codebase architecture","mejorar arquitectura","refactorizar codebase"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

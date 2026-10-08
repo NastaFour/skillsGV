@@ -4,6 +4,7 @@ description: "Trigger: refute findings, adversarial verification. Use when verif
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review refuter","refutar hipotesis","assumption challenge","desafiar premisa"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

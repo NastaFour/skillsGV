@@ -4,6 +4,7 @@ description: A relentless interview to sharpen a plan or design, which also crea
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["grill with docs","confrontar documentacion","verificar contra docs"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

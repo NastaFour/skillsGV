@@ -4,6 +4,7 @@ description: "Trigger: wayfinder, decision tickets. Use when a large chunk of wo
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["wayfinder","orientacion en codebase","ubicar modulo en repo"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

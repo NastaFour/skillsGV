@@ -4,6 +4,7 @@ description: "Trigger: open design, open-design, od, prototipo, landing page, da
 license: Apache-2.0
 allowed-tools: Read Bash(pwsh:*)
 metadata:
+  trigger: ["open design","opendesign","prototipos visuales","mockup generator"]
   author: nexu-io
   version: "1.1.0"
   requires-mcp: ["mcp-open-design"]

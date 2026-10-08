@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Edit Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "improve skills, audit skills, refactor skills, skill quality"
+  trigger: ["skill improver","mejorar skill","optimizar skill","refinar skill","improve skills","audit skills","refactor skills","skill quality"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

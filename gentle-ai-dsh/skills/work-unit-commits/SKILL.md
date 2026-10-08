@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Bash(git:*) Glob Grep
 license: Apache-2.0
 metadata:
-  trigger: "work unit commits, commit splitting, atomic commits, implementation commits"
+  trigger: ["work unit commits","conventional commit","commit atomico","work unit","commit splitting","atomic commits","implementation commits"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

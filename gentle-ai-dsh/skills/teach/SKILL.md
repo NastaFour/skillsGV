@@ -4,6 +4,7 @@ description: Teach the user a new skill or concept, within this workspace.
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["teach concept","ensenar concepto","pedagogia tecnica","explicar paso a paso"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

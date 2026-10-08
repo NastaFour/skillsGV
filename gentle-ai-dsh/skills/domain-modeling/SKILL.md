@@ -4,6 +4,7 @@ description: Build and sharpen a project's domain model. Use when discussing cod
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["domain modeling","modelado de dominio","domain types","diseno de entidades"]
   author: mattpocock
   version: "1.0.0"
 ---

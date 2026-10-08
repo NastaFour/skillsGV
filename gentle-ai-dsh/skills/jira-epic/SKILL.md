@@ -8,6 +8,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent."
 allowed-tools: Read
 metadata:
+  trigger: ["jira epic","crear epic","epic jira","desglosar epic"]
   author: gentleman-programming
   version: "1.0.0"
   category: 01-planning-process

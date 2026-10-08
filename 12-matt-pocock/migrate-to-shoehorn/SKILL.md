@@ -4,6 +4,7 @@ description: Migrate test files from `as` type assertions to @total-typescript/s
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["migrate shoehorn","migrar a shoehorn","shoehorn migration"]
   author: mattpocock
   version: "1.0.0"
 ---

@@ -4,6 +4,7 @@ description: "Trigger: review reliability, R3 lens. Use when reviewing tests, co
 license: MIT
 allowed-tools: Read Glob Grep
 metadata:
+  trigger: ["review reliability","confiabilidad","edge cases review","fallos silenciosos"]
   author: gentleman-programming
   version: "1.0.0"
   delegate_only: true

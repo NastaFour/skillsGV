@@ -4,6 +4,7 @@ description: "Trigger: RDD, receipt-driven development, review authority, receip
 allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 license: Apache-2.0
 metadata:
+  trigger: ["rdd defect","remediar defecto","defecto rdd","defect workflow"]
   author: gentleman-programming
   version: "1.0.0"
 ---

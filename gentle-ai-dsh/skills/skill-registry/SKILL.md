@@ -5,7 +5,7 @@ compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. R
 allowed-tools: Read Write Bash(node:*) Glob Grep
 license: MIT
 metadata:
-  trigger: "update skills, skill registry, actualizar skills, after skill changes"
+  trigger: ["skill registry","registro de skills","emit registry","regenerar registro","update skills","actualizar skills","after skill changes"]
   scope: "global, project"
   author: gentleman-programming
   version: "1.0.0"

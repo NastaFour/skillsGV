@@ -4,6 +4,7 @@ description: Shared vocabulary for designing deep modules. Use when the user wan
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["codebase design","disenar arquitectura base","clean architecture pocock"]
   author: mattpocock
   version: "1.0.0"
 ---

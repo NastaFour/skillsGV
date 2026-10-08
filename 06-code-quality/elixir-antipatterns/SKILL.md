@@ -9,6 +9,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Elixir 1.15+."
 allowed-tools: Read
 metadata:
+  trigger: ["elixir","elixir antipatterns","phoenix framework","gen_server antipatterns"]
   author: gentleman-programming
   version: "1.0.0"
   category: 06-code-quality

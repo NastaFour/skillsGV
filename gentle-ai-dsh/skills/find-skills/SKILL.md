@@ -4,7 +4,7 @@ description: Helps users discover and install agent skills when they ask questio
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 license: MIT
 metadata:
-  trigger: "find skills, search skills, discover skills, install skills, skills cli"
+  trigger: ["find skills","buscar skills","descubrir skills","install skill","catalogo abierto","search skills","discover skills","install skills","skills cli"]
   scope: "global, project"
   author: skills.sh
   version: "1.0.0"

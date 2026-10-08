@@ -4,6 +4,7 @@ description: Diagnosis loop for hard bugs and performance regressions. Use when 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["diagnosing bugs","diagnosticar bug","depurar error pocock","root cause diagnosis"]
   author: mattpocock
   version: "1.0.0"
 ---

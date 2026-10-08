@@ -4,6 +4,7 @@ description: "Trigger: to spec, publish spec. Use when the current conversation 
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
+  trigger: ["to spec","convertir a especificacion","generar spec funcional"]
   author: mattpocock
   version: "1.0.0"
 disable-model-invocation: true

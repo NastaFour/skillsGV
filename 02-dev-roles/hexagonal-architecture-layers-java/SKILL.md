@@ -9,6 +9,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Java 17+."
 allowed-tools: Read
 metadata:
+  trigger: ["hexagonal java","arquitectura hexagonal java","puertos y adaptadores java","java hexagonal"]
   author: gentleman-programming
   version: "1.0.0"
   category: 02-dev-roles
