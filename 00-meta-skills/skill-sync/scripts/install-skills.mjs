@@ -58,6 +58,7 @@ let doUninstall = false;
 let doRollback = false;
 let noKernel = false;
 let skipDeprecated = true;
+let selectedTier = "full";
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -72,7 +73,14 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--no-kernel") noKernel = true;
   else if (a === "--include-deprecated") skipDeprecated = false;
   else if (a === "--skip-deprecated") skipDeprecated = true;
-  else if (a === "--help" || a === "-h") {
+  else if (a === "--tier") {
+    const val = args[++i]?.toLowerCase();
+    if (!["core", "extended", "full"].includes(val)) {
+      console.error(`Invalid --tier: ${val}. Must be one of: core, extended, full`);
+      process.exit(2);
+    }
+    selectedTier = val;
+  } else if (a === "--help" || a === "-h") {
     printHelp();
     process.exit(0);
   } else {
@@ -210,6 +218,10 @@ Options:
                         on project installs.
   --include-deprecated Include deprecated skills (default: skip deprecated skills)
   --skip-deprecated    Skip deprecated skills during installation (default)
+  --tier <name>        Install tier: core, extended, or full (default: full)
+                        core: ~35 foundational skills (ODD harness, quality, testing, UI, essential stack)
+                        extended: core + dev roles, frameworks & extra tools (~100 skills)
+                        full: all skills in catalog
   --help, -h           Show this help
 
 Examples:
@@ -230,6 +242,19 @@ Examples:
 function collectSkills(root) {
   const skills = [];
   const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git", "gentle-ai-dsh", "_shared"]);
+  const tierMap = new Map();
+  const catalogPath = join(root, "catalog.json");
+  if (existsSync(catalogPath)) {
+    try {
+      const cat = JSON.parse(readFileSync(catalogPath, "utf8"));
+      for (const s of cat.skills || []) {
+        tierMap.set(s.name, s.tier || "full");
+      }
+    } catch {}
+  }
+  const tierRank = { core: 1, extended: 2, full: 3 };
+  const maxRank = tierRank[selectedTier] || 3;
+
   function isCategoryDir(relPath) {
     if (!onlyCategories) return true;
     const topFolder = relPath.split(sep)[0];
@@ -244,14 +269,25 @@ function collectSkills(root) {
         if (rel === "" && !isCategoryDir(subRel)) continue;
         walk(join(dir, e.name), subRel);
       } else if (e.isFile() && e.name === "SKILL.md") {
-        if (skipDeprecated) {
+        let fmMatch = null;
+        if (skipDeprecated || selectedTier !== "full") {
           try {
             const content = readFileSync(join(dir, "SKILL.md"), "utf8");
-            const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-            if (fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])) {
-              continue;
-            }
+            fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
           } catch {}
+        }
+        if (skipDeprecated && fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])) {
+          continue;
+        }
+        if (selectedTier !== "full") {
+          const skillName = basename(dir);
+          let skillTier = tierMap.get(skillName);
+          if (!skillTier && fmMatch) {
+            const tm = fmMatch[1].match(/\btier:\s*"?([a-z0-9-]+)"?/i);
+            if (tm) skillTier = tm[1].toLowerCase();
+          }
+          const rank = tierRank[skillTier || "full"] || 3;
+          if (rank > maxRank) continue;
         }
         skills.push(dir);
       }
@@ -800,7 +836,7 @@ function main() {
   console.log(`🔍 Detected ${filtered.length} tool(s): ${filtered.map((t) => t.name).join(", ")}\n`);
 
   const skills = collectSkills(CATALOG_ROOT);
-  console.log(`📚 Found ${skills.length} skills in catalog${onlyCategories ? ` (filtered to: ${onlyCategories.join(", ")})` : ""}\n`);
+  console.log(`📚 Found ${skills.length} skills in catalog${selectedTier !== "full" ? ` (tier: ${selectedTier})` : ""}${onlyCategories ? ` (filtered to: ${onlyCategories.join(", ")})` : ""}\n`);
 
   for (const agent of filtered) {
     const installPath = target ? agent.projectInstallPath(target) : agent.globalInstallPath(home);

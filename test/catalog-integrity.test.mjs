@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, basename } from 'node:path';
 
 function walkSkills(dir) {
@@ -91,5 +92,41 @@ test('zero [APP], barber, or supermarket contamination in gentle-ai-dsh/skills',
     }
   }
   assert.deepEqual(violations, [], 'gentle-ai-dsh/skills must have zero contamination');
+});
+
+test('all skills in catalog.json have a valid tier (core | extended | full)', () => {
+  const catalog = JSON.parse(readFileSync('catalog.json', 'utf8'));
+  const validTiers = new Set(['core', 'extended', 'full']);
+  const violations = [];
+  for (const s of catalog.skills) {
+    if (!validTiers.has(s.tier)) violations.push(`${s.name}: invalid tier "${s.tier}"`);
+  }
+  assert.deepEqual(violations, [], 'All skills must declare a valid tier');
+  const coreCount = catalog.skills.filter((s) => s.tier === 'core').length;
+  const extCount = catalog.skills.filter((s) => s.tier === 'extended').length;
+  assert.ok(coreCount >= 30 && coreCount <= 45, `Core tier should have ~35 skills, got ${coreCount}`);
+  assert.ok(coreCount + extCount >= 80 && coreCount + extCount <= 105, `Core+Extended should have ~90 skills, got ${coreCount + extCount}`);
+});
+
+test('installer --tier filters skills properly in dry-run', () => {
+  const script = '00-meta-skills/skill-sync/scripts/install-skills.mjs';
+  const outCore = execFileSync('node', [script, '--dry-run', '--tier', 'core', '--tool', 'claude-code'], { encoding: 'utf8' });
+  const coreMatch = outCore.match(/Found (\d+) skills in catalog/);
+  assert.ok(coreMatch, 'Core tier output should report skill count');
+  const countCore = parseInt(coreMatch[1], 10);
+  assert.ok(countCore >= 30 && countCore <= 45, `Core count in installer should be ~35, got ${countCore}`);
+
+  const outExt = execFileSync('node', [script, '--dry-run', '--tier', 'extended', '--tool', 'claude-code'], { encoding: 'utf8' });
+  const extMatch = outExt.match(/Found (\d+) skills in catalog/);
+  assert.ok(extMatch, 'Extended tier output should report skill count');
+  const countExt = parseInt(extMatch[1], 10);
+  assert.ok(countExt >= 80 && countExt <= 105, `Extended count in installer should be ~90, got ${countExt}`);
+  assert.ok(countExt > countCore, 'Extended count should exceed Core count');
+
+  const outFull = execFileSync('node', [script, '--dry-run', '--tier', 'full', '--tool', 'claude-code'], { encoding: 'utf8' });
+  const fullMatch = outFull.match(/Found (\d+) skills in catalog/);
+  assert.ok(fullMatch, 'Full tier output should report skill count');
+  const countFull = parseInt(fullMatch[1], 10);
+  assert.ok(countFull > countExt, 'Full count should exceed Extended count');
 });
 

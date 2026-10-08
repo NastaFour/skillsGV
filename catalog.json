@@ -77,7 +77,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "catalog-doctor",
@@ -85,7 +86,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "catalog-usage",
@@ -93,7 +95,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "find-skills",
@@ -101,7 +104,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← descubrimiento e instalación de skills del ecosistema abierto",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "gentle-orchestrator",
@@ -109,7 +113,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← coordinator: delegation rules + 20-agent roster + retry-on-failure",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "odd-workflow",
@@ -117,7 +122,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "sdd-apply",
@@ -125,7 +131,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD implementation with apply-progress merge",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-archive",
@@ -133,7 +140,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD archive: sync delta specs and close the change",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-design",
@@ -141,7 +149,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD technical design and architecture approach",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-explore",
@@ -149,7 +158,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD exploration before committing to a change",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-init",
@@ -157,7 +167,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD init: stack/testing capabilities, registry and persistence",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-onboard",
@@ -165,7 +176,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD walkthrough onboarding on the real codebase",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-orchestrator",
@@ -173,7 +185,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "sdd-propose",
@@ -181,7 +194,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD change proposal: intent, scope, approach",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-research",
@@ -189,7 +203,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD research: source-backed evidence lanes before propose",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-spec",
@@ -197,7 +212,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD delta specs with requirements and scenarios",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-tasks",
@@ -205,7 +221,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD task breakdown with review workload forecast",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "sdd-verify",
@@ -213,7 +230,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← SDD verification against specs with compliance matrix",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "skill-creator",
@@ -221,7 +239,8 @@
       "category": "00-meta-skills",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "skill-harvest",
@@ -229,7 +248,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← post-project: draft new-skill proposals into _inbox from Engram, never auto-create",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "skill-improver",
@@ -237,7 +257,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← auditoría, evaluación y refactorización de calidad de skills",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "skill-loader",
@@ -245,7 +266,8 @@
       "category": "00-meta-skills",
       "tier0": true,
       "note": "← two-tier loading, session telemetry, route-first enforcement",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "skill-registry",
@@ -253,7 +275,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": "← sincronización y actualización del registro tras cambios en skills",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "skill-router",
@@ -261,7 +284,8 @@
       "category": "00-meta-skills",
       "tier0": true,
       "note": "← deterministic routing, replaces ~80% of LLM skill selection",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "skill-spector",
@@ -269,7 +293,8 @@
       "category": "00-meta-skills",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "skill-sync",
@@ -277,7 +302,8 @@
       "category": "00-meta-skills",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "skill-validator",
@@ -285,7 +311,8 @@
       "category": "00-meta-skills",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "agents",
@@ -293,7 +320,8 @@
       "category": "01-planning-process",
       "tier0": true,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "application-workflow",
@@ -301,7 +329,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "brainstorming",
@@ -309,7 +338,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": "← explores user intent, requirements, design & specs before implementation (Superpowers)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "brand-guidelines",
@@ -317,7 +347,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "cognitive-doc-design",
@@ -325,7 +356,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": "← diseño de documentación técnica y guías reduciendo carga cognitiva",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "content-strategy",
@@ -333,7 +365,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "content-studio",
@@ -341,7 +374,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "copywriting",
@@ -349,7 +383,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "engram-integration",
@@ -357,7 +392,8 @@
       "category": "01-planning-process",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "humanizer",
@@ -365,7 +401,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "idea-to-prd-express",
@@ -373,7 +410,8 @@
       "category": "01-planning-process",
       "tier0": true,
       "note": "← 20-min compressed SDD for technical decisions",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "jira-epic",
@@ -381,7 +419,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": "← Epic structure, child task breakdown, Jira MCP integration",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "jira-task",
@@ -389,7 +428,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": "← Bug/feature task templates, title conventions, MCP fields",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "lean-ux",
@@ -397,7 +437,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "master-prompt",
@@ -405,7 +446,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "parallelization",
@@ -413,7 +455,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "project-tracker",
@@ -421,7 +464,8 @@
       "category": "01-planning-process",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "session-notes",
@@ -429,7 +473,8 @@
       "category": "01-planning-process",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "speckit-integration",
@@ -437,7 +482,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "storybrand-messaging",
@@ -445,7 +491,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "tech-escalation-adr",
@@ -453,7 +500,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "tech-stack-advisor",
@@ -461,7 +509,8 @@
       "category": "01-planning-process",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "archify",
@@ -469,7 +518,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "architecture-designer",
@@ -477,7 +527,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "auth-flow-audit",
@@ -485,7 +536,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← `references/audit-checklist.md`, `scripts/audit-auth.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "code-reviewer",
@@ -493,7 +545,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "decision-gate",
@@ -501,7 +554,8 @@
       "category": "02-dev-roles",
       "tier0": true,
       "note": "← compress human's last-20% judgment to 3 min, traceable",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "dod-checker",
@@ -509,7 +563,8 @@
       "category": "02-dev-roles",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "expert-debugger",
@@ -517,7 +572,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "feature-implementer",
@@ -525,7 +581,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "frontend-debugging-protocol",
@@ -533,7 +590,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← `references/diagnostic-tree.md`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "frontend-design",
@@ -541,7 +599,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← Anthropic methodology, anti-AI-slop, signature element",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "frontend-designer",
@@ -549,7 +608,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "github-pr",
@@ -557,7 +617,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← conventional commits, structured PR descriptions",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "hexagonal-architecture-layers-java",
@@ -565,7 +626,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← domain/application/infrastructure layers, ports & adapters, Java",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "jd-fix-agent",
@@ -573,7 +635,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← surgical fix agent for judgment-day",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "jd-judge-a",
@@ -581,7 +644,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← blind Judge A (adversarial reviewer)",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "jd-judge-b",
@@ -589,7 +653,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← blind Judge B (adversarial reviewer)",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "judgment-day",
@@ -597,7 +662,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← parallel adversarial review (red + blue)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "micro-interactions",
@@ -605,7 +671,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← hover, press, stagger, shimmer copy-paste catalog",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "performance-refactor",
@@ -613,7 +680,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "qa-tester",
@@ -621,7 +689,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "rdd-defect-workflow",
@@ -629,7 +698,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← RDD: recibos, corrección acotada, gates de entrega y kill switch",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "review-readability",
@@ -637,7 +707,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← R2 clarity lens",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "review-refuter",
@@ -645,7 +716,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← refutes BLOCKER/CRITICAL findings",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "review-reliability",
@@ -653,7 +725,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← R3 tests/contracts lens",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "review-resilience",
@@ -661,7 +734,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← R4 ops/rollback lens",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "review-risk",
@@ -669,7 +743,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← R1 security lens",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "review-validator",
@@ -677,7 +752,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← gate final: evidencia antes de \"listo\"",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "security-audit",
@@ -685,7 +761,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "systematic-debugging",
@@ -693,7 +770,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "technical-writer",
@@ -701,7 +779,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "verification-before-completion",
@@ -709,7 +788,8 @@
       "category": "02-dev-roles",
       "tier0": false,
       "note": "← evidence before assertions, pre-commit/PR proof check (Superpowers)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "ai-orchestration",
@@ -717,7 +797,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "ai-scalability-mlops",
@@ -725,7 +806,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "ai-sdk-5",
@@ -733,7 +815,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": "← Vercel AI SDK 5, useChat/UIMessage/streaming",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "api-ai-billing",
@@ -741,7 +824,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "llm-integration",
@@ -749,7 +833,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "prompt-engineering",
@@ -757,7 +842,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "research-first",
@@ -765,7 +851,8 @@
       "category": "03-ai-ml",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "api-design",
@@ -773,7 +860,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "api-response-normalizer",
@@ -781,7 +869,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/envelope-convention.md`, `scripts/check-id-consistency.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "background-jobs-queues",
@@ -789,7 +878,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/job-catalog.md`, `references/bullmq-setup.md`, `scripts/check-jobs.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "booking-scheduling-domain",
@@ -797,7 +887,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/slot-logic.md`, `references/conflict-resolution.md`, `references/no-show-protocol.md`, `scripts/check-booking-queries.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "django-drf",
@@ -805,7 +896,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← Django REST Framework: serializers, viewsets, permissions, JWT",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "docker",
@@ -813,7 +905,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "error-handling",
@@ -821,7 +914,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "expressjs",
@@ -829,7 +923,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "file-uploads-storage",
@@ -837,7 +932,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/upload-patterns.md`, `references/validation-rules.md`, `scripts/check-uploads.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "java-21",
@@ -845,7 +941,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← records, sealed classes, pattern matching, virtual threads (Loom)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "jwt-bcrypt",
@@ -853,7 +950,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "mcp-integration",
@@ -861,7 +959,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "microservices",
@@ -869,7 +968,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "nodejs-module-loading",
@@ -877,7 +977,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/esm-evaluation-order.md`, `scripts/check-env-loading.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "nodejs",
@@ -885,7 +986,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "notifications-multichannel",
@@ -893,7 +995,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/channel-priority.md`, `references/templates.md`, `scripts/check-notifications.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "payments",
@@ -901,7 +1004,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/bcv-integration.md`, `pago-movil-flows.md`, `cashea-bnpl.md`",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "postgresql",
@@ -909,7 +1013,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/schema-reference.md`",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "prisma-frontend-types",
@@ -917,7 +1022,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/type-mapping-rules.md`, `scripts/generate-frontend-types.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "prisma-orm",
@@ -925,7 +1031,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/schema-template.md`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "rate-limiting-design",
@@ -933,7 +1040,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/tier-table.md`, `scripts/check-limiters.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "reports-exports",
@@ -941,7 +1049,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← `references/report-types.md`, `scripts/check-reports.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "socketio",
@@ -949,7 +1058,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "spring-boot-3",
@@ -957,7 +1067,8 @@
       "category": "04-backend",
       "tier0": false,
       "note": "← constructor injection, @ConfigurationProperties, @Transactional",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "ai-ui-generation",
@@ -965,7 +1076,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Google Stitch/v0/Lovable, anti-slop, prompt→deploy",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "angular-architecture",
@@ -973,7 +1085,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Scope Rule, file naming",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "angular-core",
@@ -981,7 +1094,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← signals, zoneless, inject(), no lifecycle hooks",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "angular-forms",
@@ -989,7 +1103,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Signal Forms (v21) + Reactive Forms",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "angular-performance",
@@ -997,7 +1112,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← NgOptimizedImage, @defer, SSR",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "deep-linking-mobile",
@@ -1005,7 +1121,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/setup-guide.md`, `scripts/check-deep-links.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "design-driven",
@@ -1013,7 +1130,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "design-system-tokens",
@@ -1021,7 +1139,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/token-taxonomy.md`, `references/color-scales.md`, `scripts/check-tokens.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "electron",
@@ -1029,7 +1148,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← security patterns: contextBridge, sandbox, IPC validation (gentleman-skills)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "electronjs",
@@ -1037,7 +1157,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "emil-kowalski",
@@ -1045,7 +1166,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "expo-production-auditor",
@@ -1053,7 +1175,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/troubleshooting.md`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "figma-implement",
@@ -1061,7 +1184,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← plegado Capa 1: Figma → código 1:1 (canónico del grupo figma), design context + screenshots vía MCP",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "forms-validation-react",
@@ -1069,7 +1193,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/rhf-zod-pattern.md`, `references/multi-step-forms.md`, `scripts/check-forms.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "i18n-localization",
@@ -1077,7 +1202,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/setup-guide.md`, `scripts/check-hardcoded-strings.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "impeccable",
@@ -1085,7 +1211,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Comandos Bakaus, PRODUCT.md/DESIGN.md, references/commands.md",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "interface-design",
@@ -1093,7 +1220,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← craft-first UI for dashboards, SaaS apps, admin panels, tokens (Linear/Stripe standard)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "lazy-loading-patterns",
@@ -1101,7 +1229,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/lazy-patterns.md`, `scripts/check-module-level-loads.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "lottie-animations",
@@ -1109,7 +1238,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/lottie-integration.md`, `scripts/check-lottie.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "maps-gps",
@@ -1117,7 +1247,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "motion-accessibility",
@@ -1125,7 +1256,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/reduced-motion.md`, `references/performance.md`, `scripts/check-motion-a11y.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "motion-framer",
@@ -1133,7 +1265,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/spring-layout.md`, `references/animate-presence.md`, `scripts/check-motion.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "motion-gsap",
@@ -1141,7 +1274,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/timelines.md`, `references/svg-text.md`, `scripts/check-gsap.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "nextjs-15",
@@ -1149,7 +1283,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Next.js 15 App Router, Server Actions",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "nextjs",
@@ -1157,7 +1292,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "offline-sync-mobile",
@@ -1165,7 +1301,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/sync-patterns.md`, `scripts/check-offline-sync.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "onboarding-cro",
@@ -1173,7 +1310,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "page-cro",
@@ -1181,7 +1319,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "page-transitions",
@@ -1189,7 +1328,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/web-transitions.md`, `scripts/check-transitions.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "popup-cro",
@@ -1197,7 +1337,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "push-notifications",
@@ -1205,7 +1346,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "pwa-capacitor",
@@ -1213,7 +1355,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "react-19",
@@ -1221,7 +1364,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← React 19 with React Compiler, no manual memoization",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "react-native",
@@ -1229,7 +1373,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "react-vite",
@@ -1237,7 +1382,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "refactoring-ui",
@@ -1245,7 +1391,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "scroll-animations",
@@ -1253,7 +1400,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/scroll-reveal.md`, `references/parallax.md`, `scripts/check-scroll.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "signup-flow-cro",
@@ -1261,7 +1409,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "state-management",
@@ -1269,7 +1418,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "tailwind-4",
@@ -1277,7 +1427,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Tailwind 4, cn() utility, theme classes",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "tailwindcss",
@@ -1285,7 +1436,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "taste-skill",
@@ -1293,7 +1445,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Design Read, diales, 10 bans, references/full-guide.md",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "three-js-web",
@@ -1301,7 +1454,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/core-threejs.md`, `references/r3f-patterns.md`, `references/drei-helpers.md`, `references/performance-webgl.md`, `references/spline-no-code.md`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "ui-ux-pro-max",
@@ -1309,7 +1463,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "vercel-composition-patterns",
@@ -1317,7 +1472,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← scalable React composition, compound components, React 19 API",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "vercel-react-best-practices",
@@ -1325,7 +1481,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Vercel Engineering: React & Next.js performance rules, server components, bundle optimization",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "vercel-react-view-transitions",
@@ -1333,7 +1490,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← native ViewTransition animations, shared elements, CSS pseudo-elements",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "visual-effects",
@@ -1341,7 +1499,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/glassmorphism.md`, `references/gradients-blends.md`, `scripts/check-effects.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "web-animation-sources",
@@ -1349,7 +1508,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← `references/animation-sources.md` (10 referencias curadas por tópico)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "web-design-guidelines",
@@ -1357,7 +1517,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← review UI code for Web Interface Guidelines compliance, accessibility, UX audit",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "zod-4",
@@ -1365,7 +1526,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Zod 4 breaking changes from v3",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "zustand-5",
@@ -1373,7 +1535,8 @@
       "category": "05-frontend",
       "tier0": false,
       "note": "← Zustand 5 with useShallow selectors",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "biome",
@@ -1381,7 +1544,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "branch-pr",
@@ -1389,7 +1553,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← creación de pull requests con validación issue-first",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "build-config-validator",
@@ -1397,7 +1562,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← `scripts/validate-build-config.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "chained-pr",
@@ -1405,7 +1571,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← división de PRs grandes (>400 líneas) en slices apilados para revisión",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "changelog-generator",
@@ -1413,7 +1580,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← automatic user-facing changelogs & release notes from git commits",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "changesets",
@@ -1421,7 +1589,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "comment-writer",
@@ -1429,7 +1598,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← redacción colaborativa y directa en comentarios de PRs y code reviews",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "dependency-guardian",
@@ -1437,7 +1607,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "elixir-antipatterns",
@@ -1445,7 +1616,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← Agent misuse, nested case, bare spawn, GenServer bottleneck",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "env-management",
@@ -1453,7 +1625,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "issue-creation",
@@ -1461,7 +1634,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← creación y triage estructurado de issues en GitHub con evidencia técnica",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "pnpm-workspaces",
@@ -1469,7 +1643,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "solid-clean-code",
@@ -1477,7 +1652,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "systemic-issue-triage",
@@ -1485,7 +1661,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← triage masivo de reportes de bugs, issues y backlog",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "turborepo",
@@ -1493,7 +1670,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "typescript",
@@ -1501,7 +1679,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "work-unit-commits",
@@ -1509,7 +1688,8 @@
       "category": "06-code-quality",
       "tier0": false,
       "note": "← commits atómicos estructurados por unidad de trabajo revisable",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "core"
     },
     {
       "name": "go-testing",
@@ -1517,7 +1697,8 @@
       "category": "07-testing",
       "tier0": false,
       "note": "← patrones de prueba para Go: unit tests, cobertura, Bubbletea teatest y golden files",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "playwright",
@@ -1525,7 +1706,8 @@
       "category": "07-testing",
       "tier0": false,
       "note": "← E2E, MCP-first exploration, Page Object Model",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "pytest",
@@ -1533,7 +1715,8 @@
       "category": "07-testing",
       "tier0": false,
       "note": "← fixtures, mocking, parametrize, markers, async, conftest",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "extended"
     },
     {
       "name": "testing-patterns",
@@ -1541,7 +1724,8 @@
       "category": "07-testing",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "ci-cd",
@@ -1549,7 +1733,8 @@
       "category": "08-devops",
       "tier0": false,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "cloudflare-edge",
@@ -1557,7 +1742,8 @@
       "category": "08-devops",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "kill-switches",
@@ -1565,7 +1751,8 @@
       "category": "08-devops",
       "tier0": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "core"
     },
     {
       "name": "monitoring",
@@ -1573,7 +1760,8 @@
       "category": "08-devops",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "observability",
@@ -1581,7 +1769,8 @@
       "category": "08-devops",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "store-deployment-eas",
@@ -1589,7 +1778,8 @@
       "category": "08-devops",
       "tier0": false,
       "note": "← `references/eas-setup.md`, `scripts/check-eas-config.mjs`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "banana-claude",
@@ -1597,7 +1787,8 @@
       "category": "09-media-graphics",
       "tier0": false,
       "note": "← Creative Director: prompt engineering, modos de dominio y control de aspecto para imágenes profesionales",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "nano-banana",
@@ -1605,7 +1796,8 @@
       "category": "09-media-graphics",
       "tier0": false,
       "note": "← canónico del grupo banana-image-gen: generación/edición de imágenes con Nano Banana (Gemini CLI nanobanana)",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "asset-generator-mcp",
@@ -1613,7 +1805,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "component-scrapper-mcp",
@@ -1621,7 +1814,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← scrapea componentes de sitios en vivo vía MCP y los reutiliza como código project-ready",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "figma-mcp",
@@ -1629,7 +1823,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "gentle-ai-bench",
@@ -1637,7 +1832,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← benchmarking y evaluación de agentes mediante corpus de journeys",
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "motion-video-pipeline",
@@ -1645,7 +1841,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← pipeline motion-to-video: render de frames y ensamblaje con timing determinístico",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "oklch-theme-injector",
@@ -1653,7 +1850,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← temas de color perceptivo OKLCH/OKHSL sobre la taxonomía de tokens HSL",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "open-design",
@@ -1661,7 +1859,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "openseo",
@@ -1669,7 +1868,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "ux-auditor-agent",
@@ -1677,7 +1877,8 @@
       "category": "11-mcp-hybrid",
       "tier0": false,
       "note": "← auditoría UX/usabilidad/accesibilidad con hallazgos priorizados y evidencia",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     },
     {
       "name": "ask-matt",
@@ -1685,7 +1886,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "code-review",
@@ -1693,7 +1895,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "codebase-design",
@@ -1701,7 +1904,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "diagnosing-bugs",
@@ -1709,7 +1913,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "domain-modeling",
@@ -1717,7 +1922,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "grill-me",
@@ -1725,7 +1931,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "grill-with-docs",
@@ -1733,7 +1940,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "grilling",
@@ -1741,7 +1949,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "handoff",
@@ -1749,7 +1958,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "implement",
@@ -1757,7 +1967,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "improve-codebase-architecture",
@@ -1765,7 +1976,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "migrate-to-shoehorn",
@@ -1773,7 +1985,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "prototype",
@@ -1781,7 +1994,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "research",
@@ -1789,7 +2003,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "resolving-merge-conflicts",
@@ -1797,7 +2012,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "scaffold-exercises",
@@ -1805,7 +2021,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "setup-pre-commit",
@@ -1813,7 +2030,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "tdd",
@@ -1821,7 +2039,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "extended"
     },
     {
       "name": "teach",
@@ -1829,7 +2048,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "to-questionnaire",
@@ -1837,7 +2057,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "to-spec",
@@ -1845,7 +2066,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "to-tickets",
@@ -1853,7 +2075,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "triage",
@@ -1861,7 +2084,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "wait-what",
@@ -1869,7 +2093,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "wayfinder",
@@ -1877,7 +2102,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "wizard",
@@ -1885,7 +2111,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "writing-for-agents",
@@ -1893,7 +2120,8 @@
       "category": "12-matt-pocock",
       "tier0": false,
       "note": null,
-      "autoInvoke": false
+      "autoInvoke": false,
+      "tier": "full"
     },
     {
       "name": "professional-planner",
@@ -1901,7 +2129,8 @@
       "category": "professional-planner",
       "tier0": true,
       "note": "← `references/sdd-methodology.md`, `references/templates.md`",
-      "autoInvoke": true
+      "autoInvoke": true,
+      "tier": "full"
     }
   ]
 }

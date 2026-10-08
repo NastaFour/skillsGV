@@ -255,6 +255,7 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
       name,
       path,
       category: path.includes("/") ? path.split("/")[0] : "(root)",
+      tier: prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full"),
       tier0: tier0.has(name),
       note: prev ? (prev.note ?? null) : (notes.get(name) ?? null),
       autoInvoke: prev ? Boolean(prev.autoInvoke) : autoInvoke.has(name),
@@ -436,6 +437,9 @@ function diffManifest(expected, actual, { checkTier0 = true } = {}) {
     }
     if (checkTier0 && Boolean(current.tier0) !== skill.tier0) {
       issues.push({ code: "manifest-tier0-mismatch", detail: `${skill.name}: ${Boolean(current.tier0)} != ${skill.tier0}` });
+    }
+    if (current.tier && skill.tier && current.tier !== skill.tier) {
+      issues.push({ code: "manifest-tier-mismatch", detail: `${skill.name}: "${current.tier}" != "${skill.tier}"` });
     }
   }
   for (const [path, skill] of actSkills) {

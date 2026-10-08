@@ -32,7 +32,7 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
 - [x] T5: Slim AGENTS.md to ≤60 lines (<1,500 tokens) Contract
 - [x] T6: Skip Deprecated Skills by Default in Installer (`install-skills.mjs`, `catalog.json`)
 - [x] T7: Add Triggers to 52 Triggerless Skills (Matt Pocock skills, review-*, roles, etc.)
-- [ ] T8: Curated Core Tier System (`--tier core|extended|full` in installer and catalog metadata)
+- [x] T8: Curated Core Tier System (`--tier core|extended|full` in installer and catalog metadata)
 
 ### Phase 3 — ODD Alignment & Technical Debt
 - [ ] T9: Fix Router `needsSDD` → `suggestsStructuredFlow` & Generalize `CRITICAL_MARKERS` (`skill-router.mjs`)
@@ -94,7 +94,19 @@ Execute the 17-task Strategic Improvement Plan across 5 phases to make skillsGV 
   - Cleaned up string-vs-array trigger duplicates to maintain strict single-array `metadata.trigger` formatting.
   - 100% of active skills in the catalog now have triggers and are discoverable by `skill-router.mjs`.
   - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Commit: `ad931cc`
   - Verification: `pnpm validate:strict` (229 pass, 0 issues), `pnpm test` (113 tests PASS, 0 fail), `node scripts/sync-addon.mjs --check` (full parity).
+- **T8** (Curated Core Tier System):
+  - Defined 3-tier hierarchy (`core` <= 1, `extended` <= 2, `full` <= 3):
+    - `core`: 36 foundational skills (full ODD harness, code review, systematic debugging, clean code, impeccable taste, UI Pro Max, Tailwind 4, React 19, Node, Postgres, Docker, Git).
+    - `extended`: 103 skills (Core + dev roles, review lenses, Judgement Day, fullstack frameworks like Next.js 15, mobile, testing tools).
+    - `full`: all 229 catalog skills (214 active when excluding deprecated).
+  - Tagged all 229 skills in `catalog.json` with their distribution tier.
+  - Updated `_shared/catalog-manifest.mjs` to preserve and enforce `tier` consistency during index generation.
+  - Added `--tier core|extended|full` (default: `full`) to `install-skills.mjs` with hierarchical filtering during collection.
+  - Added automated test coverage in `test/catalog-integrity.test.mjs` verifying tier completeness and dry-run tier filtering.
+  - Synced addon mirror via `scripts/sync-addon.mjs --write`.
+  - Verification: `pnpm validate:strict` (229 pass), `pnpm test` (115 tests PASS, 0 fail), `pnpm test:addon` (3 tests PASS), `pnpm doctor` (6/6 checks PASS).
 
 
 
