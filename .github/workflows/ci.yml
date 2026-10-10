@@ -45,3 +45,7 @@ jobs:
 
       - name: Run catalog doctor health checks
         run: pnpm doctor
+
+      - name: Run routing and context benchmark
+        run: pnpm benchmark
+
