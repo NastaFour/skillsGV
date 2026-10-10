@@ -245,6 +245,7 @@ function collectSkills(root) {
   const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git", "gentle-ai-dsh", "_shared"]);
   const tierMap = new Map();
   const tier0Set = new Set();
+  const deprecatedSet = new Set();
   const catalogPath = join(root, "catalog.json");
   if (existsSync(catalogPath)) {
     try {
@@ -252,6 +253,7 @@ function collectSkills(root) {
       for (const s of cat.skills || []) {
         tierMap.set(s.name, s.tier || "full");
         if (s.tier0 === true) tier0Set.add(s.name);
+        if (s.deprecated === true) deprecatedSet.add(s.name);
       }
     } catch {}
   }
@@ -279,11 +281,15 @@ function collectSkills(root) {
             fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
           } catch {}
         }
-        if (skipDeprecated && fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])) {
+        const skillName = basename(dir);
+        // Deprecated skills are excluded from every install plan (unless the
+        // user passes --include-deprecated). The catalog.json `deprecated`
+        // flag and the SKILL.md frontmatter are the two sources; both are
+        // honored so a drift between them cannot resurrect a deprecated skill.
+        if (skipDeprecated && (deprecatedSet.has(skillName) || (fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])))) {
           continue;
         }
         if (selectedTier !== "full") {
-          const skillName = basename(dir);
           // Tier-0 kernel skills always install, regardless of the --tier rank
           // filter: the bootstrap kernel must never be silently omitted.
           if (!tier0Set.has(skillName)) {
