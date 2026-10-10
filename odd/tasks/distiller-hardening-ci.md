@@ -22,8 +22,8 @@ Execute the three strategic initiatives in order:
 ## Actionable Checklist
 - [x] T1: Implement `00-meta-skills/skill-distiller` (SKILL.md + `scripts/distill-project-skills.mjs`) and register in `package.json` as `pnpm distill`.
 - [x] T2: Add comprehensive unit tests in `test/skill-distiller.test.mjs` validating stack scanning, catalog linking, and project-scoped skill generation.
-- [ ] T3: Harden `06-code-quality/solid-clean-code` and `06-code-quality/typescript` with Absolute Bans and Before/After pattern tables.
-- [ ] T4: Harden `05-frontend/react-19` and `02-dev-roles/systematic-debugging` with Absolute Bans and Before/After pattern tables.
+- [x] T3: Harden `06-code-quality/solid-clean-code` and `06-code-quality/typescript` with Absolute Bans and Before/After pattern tables.
+- [x] T4: Harden `05-frontend/react-19` and `02-dev-roles/systematic-debugging` with Absolute Bans and Before/After pattern tables.
 - [ ] T5: Add benchmark verification step to `.github/workflows/ci.yml`, run all full repository gates, and verify clean status.
 
 ## Constraints & Gates

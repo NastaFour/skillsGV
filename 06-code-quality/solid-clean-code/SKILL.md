@@ -1,84 +1,119 @@
 ---
 name: solid-clean-code
-description: Enforces software engineering quality and clean coding principles. Covers SOLID, DRY, and KISS guidelines applied to TypeScript, React, and Node.js to minimize technical debt. Use when reviewing or writing code to keep functions ≤40 lines, avoid `any`, and enforce SRP.
+description: Enforces software engineering quality and clean coding principles. Covers SOLID, DRY, and KISS guidelines applied to TypeScript, React, and Node.js to minimize technical debt. Use when reviewing, writing, or refactoring code to keep functions ≤40 lines, avoid 'any', and enforce SRP and DIP. Do NOT use for syntax-level language reference or build tool configuration.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["SOLID", "DRY", "KISS", "clean code", "SRP"]
+  trigger: ["SOLID", "DRY", "KISS", "clean code", "SRP", "DIP", "refactor god class"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # 📐 SOLID & Clean Code Standards (DRY / KISS)
 
-Use this skill to guide code structures, refactoring loops, or style audits. It ensures that the AI generates clean, understandable, and highly optimized code without convoluted logic.
+Use this skill to guide architectural boundaries, refactoring sessions, and code review standards. It ensures code is modular, decoupled, and testable without convoluted or premature abstractions.
 
 ---
 
-## 🏛️ 1. SOLID Principles in Full-Stack TypeScript
+## 🚫 Absolute Bans
 
-### 🟢 Single Responsibility Principle (SRP)
-* **Rule**: A class, file, or component must have exactly **one reason to change**.
-* **React**: Separate visual layouts from state fetchers. Keep custom hooks (e.g., `useDeliverySocket`) separated from presenter UI grids.
-* **Express**: Controllers should only delegate actions. Keep database queries (Prisma) inside separate repository files and keep validation logic inside schemas (Zod).
+| Anti-Pattern | Why It Is Banned | Enforced Alternative |
+|---|---|---|
+| **God Classes / Mega-Services** | Classes handling multiple concerns violate SRP, cause merge conflicts, and are impossible to unit test. | Decompose into focused single-responsibility services (e.g., `OrderValidator`, `PricingEngine`, `PaymentGateway`). |
+| **Direct Persistence in Controllers** | Embedding database queries directly into route handlers tightly couples HTTP with persistence. | Encapsulate database access in repository classes or domain data mappers. |
+| **Untyped Domain Contracts (\`any\`)** | Using \`any\` destroys compiler safety and masks structural regressions. | Define strict TypeScript interfaces and validate input payloads with Zod schemas. |
+| **Coupling to Concrete Implementations** | Depending directly on 3rd-party vendor classes makes unit testing and provider swapping painful. | Invert dependencies (DIP): high-level logic depends on domain interfaces, not vendor SDKs. |
+| **Functions Exceeding 40 Lines** | Long methods hide multiple responsibilities and increase cognitive load. | Extract cohesive sub-helpers and pure domain calculation functions. |
+| **Premature Abstraction** | Creating deep class hierarchies for single-use logic introduces unnecessary indirection. | Follow KISS and the Rule of Three: keep logic simple until 2+ distinct consumers emerge. |
 
-### 🟢 Open/Closed Principle (OCP)
-* **Rule**: Software entities should be **open for extension, but closed for modification**.
-* **Practice**: Add new payment methods, delivery dispatchers, or support filters by extending interfaces or implementing factory patterns. Do not modify the core controller.
-  ```typescript
-  // Extendable Payment Dispatcher
-  export interface PaymentGateway {
-    process(amount: number): Promise<boolean>;
+---
+
+## 🏛️ SOLID Principles Reference
+
+### 1. Single Responsibility Principle (SRP)
+* A module or class must have exactly **one reason to change**.
+* **Controllers**: Receive HTTP request, parse/validate DTO, delegate to application service, return HTTP response.
+* **Services**: Execute domain business logic and coordinate dependencies.
+* **Repositories**: Execute database queries and map rows to domain entities.
+
+### 2. Open/Closed Principle (OCP)
+* Open for extension, closed for modification.
+* Introduce new payment processors, notification channels, or export formats by implementing shared domain interfaces rather than modifying core workflow conditionals (`switch/case`).
+
+### 3. Liskov Substitution Principle (LSP)
+* Subclasses or interface implementations must be interchangeable without breaking caller expectations.
+* Every payment gateway adapter (`StripeGateway`, `MockGateway`) must return the same contract and throw standard domain exceptions.
+
+### 4. Interface Segregation Principle (ISP)
+* Clients must not be forced to depend on methods they do not need.
+* Split bloated contracts into cohesive, role-based interfaces (e.g., `OrderReader` vs `OrderWriter`).
+
+### 5. Dependency Inversion Principle (DIP)
+* High-level business logic must depend on abstractions (interfaces), never concrete vendor implementations.
+
+---
+
+## 📊 Before & After Refactoring Patterns
+
+### 1. Eliminating the God Class / Monolithic Controller
+
+**❌ Anti-Pattern (Violates SRP, DIP, and Type Safety):**
+\`\`\`typescript
+export class OrderController {
+  async handleCheckout(req: any, res: any) {
+    // 1. Inlined validation
+    if (!req.body.items || !req.body.cardToken) throw new Error('Invalid');
+    
+    // 2. Direct tax & discount calculation
+    let total = req.body.items.reduce((acc: number, i: any) => acc + i.price * i.qty, 0);
+    if (req.body.coupon === 'SAVE10') total *= 0.9;
+    
+    // 3. Direct vendor call
+    const stripe = new Stripe(process.env.STRIPE_KEY!);
+    const charge = await stripe.charges.create({ amount: total, source: req.body.cardToken });
+    
+    // 4. Direct raw database query
+    await db.query('INSERT INTO orders (total, charge_id) VALUES ($1, $2)', [total, charge.id]);
+    
+    // 5. Inlined notification
+    await sendgrid.send({ to: req.body.email, subject: 'Receipt', text: 'Paid ' + total });
+    res.json({ success: true });
   }
-  ```
+}
+\`\`\`
 
-### 🟢 Liskov Substitution Principle (LSP)
-* **Rule**: Objects of a superclass must be replaceable with objects of a subclass without breaking correctness.
-* **Practice**: All payment adapters (e.g. Stripe, PayPal, local terminal mockup) must implement `PaymentGateway` and share identical return signatures. A driver should be able to swap them interchangeably.
+**✅ Approved Pattern (Clean Architecture & SOLID):**
+\`\`\`typescript
+// Pure application orchestrator depending on abstractions
+export class CheckoutUseCase {
+  constructor(
+    private readonly pricingEngine: PricingEngine,
+    private readonly paymentGateway: PaymentGateway,
+    private readonly orderRepository: OrderRepository,
+    private readonly notificationService: NotificationService
+  ) {}
 
-### 🟢 Interface Segregation Principle (ISP)
-* **Rule**: Clients should not be forced to depend on methods they do not use.
-* **Practice**: Split bloated data contracts. A delivery routing system only needs coordinates, not the buyer's full purchase checkout history. Define restricted interfaces.
-  ```typescript
-  export interface Routable {
-    id: string;
-    deliveryAddress: string;
-    coordinates?: { latitude: number; longitude: number };
+  async execute(dto: CheckoutDTO): Promise<OrderRecord> {
+    const pricing = await this.pricingEngine.calculate(dto.items, dto.couponCode);
+    const payment = await this.paymentGateway.charge(dto.paymentToken, pricing.total);
+    
+    const order = await this.orderRepository.save({
+      customerId: dto.customerId,
+      total: pricing.total,
+      transactionId: payment.id,
+    });
+
+    await this.notificationService.sendReceipt(dto.customerEmail, order);
+    return order;
   }
-  ```
-
-### 🟢 Dependency Inversion Principle (DIP)
-* **Rule**: Depend on abstractions (interfaces), not on concrete implementations.
-* **Practice**: Controllers should call the `PaymentGateway` interface instead of calling `new StripePayment()`. This makes testing easy by swapping implementations with mocks.
+}
+\`\`\`
 
 ---
 
-## ♻️ 2. DRY (Don't Repeat Yourself)
-
-1. **Shared Workspace Modules**:
-   - Common validation schemas (Zod) and TypeScript models must reside in the `@scope/shared-types` package.
-   - Do not duplicate data structures between `apps/backend`, `apps/admin-panel`, and `apps/mobile-app`.
-2. **Encapsulate Common Routines**:
-   - Wrap cookie parsing, error mapping, and coordinate calculations in single helper modules inside `packages/shared-utils`.
-
----
-
-## 🧠 3. KISS (Keep It Simple, Stupid)
-
-1. **Avoid Over-Engineering**:
-   - Write clean, straightforward logic. Do not install heavy state machines or libraries (like Redux or RxJS) for simple state bindings.
-   - Use standard React state (`useState`/`useContext`) and vanilla JS array operations.
-2. **Cognitive Load Minimization**:
-   - Keep functions shorter than 40 lines. If a function does more, extract sub-helpers.
-   - Variable and function names must declare their exact purpose (e.g., `updateInventoryStock` rather than `handleInv`).
-
----
-
-## 🔄 4. Incremental Refactoring Loop
-
-- Perform changes in atomic commits. Never change logic behavior and performance attributes simultaneously.
-- When cleaning code:
-  1. Confirm the happy-path automated test suite passes.
-  2. Perform code cleanup (renaming variables, extracting sub-components).
-  3. Re-run tests to confirm zero regression.
+## 🔄 Incremental Refactoring Checklist
+1. **Preserve Green Tests**: Verify automated test coverage before refactoring.
+2. **Extract Interfaces**: Define domain contracts before replacing concrete references.
+3. **Migrate Incrementally**: Move one responsibility at a time in atomic work-unit commits.
+4. **Re-verify Zero Regressions**: Run test suite after each atomic extraction.
