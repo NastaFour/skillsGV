@@ -87,7 +87,7 @@ export) are OUT OF SCOPE for this feature doc.
       --judge-cmd, and --max-tasks.
 - [x] T5 [F1] Pilot: 4–6 tasks × 2 arms, record results, update README claim
       only with measured numbers.
-      **Done: pending commit**. Evidence: Live A/B double-blind trial executed
+      **Done: 1271f4c**. Evidence: Live A/B double-blind trial executed
       across 4 tasks (work-unit-commits, testing-patterns, code-reviewer, odd-workflow)
       with Gemini Flash. Win Rate: Treatment 50% (2/4), Control 25% (1/4), Ties 25% (1/4).
       Quality score lift: +0.45 (4.58 vs 4.13). Persisted to evals/results/ab-*.json.
