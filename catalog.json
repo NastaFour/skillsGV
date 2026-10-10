@@ -1,13 +1,13 @@
 {
   "version": 1,
   "totals": {
-    "skills": 229
+    "skills": 230
   },
   "categories": [
     {
       "id": "00-meta-skills",
       "title": "Meta-Skills",
-      "count": 27
+      "count": 28
     },
     {
       "id": "01-planning-process",
@@ -260,6 +260,16 @@
       "deprecated": false,
       "note": null,
       "autoInvoke": true
+    },
+    {
+      "name": "skill-distiller",
+      "path": "00-meta-skills/skill-distiller/SKILL.md",
+      "category": "00-meta-skills",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "skill-harvest",

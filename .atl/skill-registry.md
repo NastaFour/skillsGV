@@ -2,7 +2,7 @@
 
 > Índice generado automáticamente a partir del frontmatter de los `SKILL.md` del catálogo.
 > Fuente de verdad: el archivo `SKILL.md` completo de cada skill (este registro es solo un índice, no un resumen).
-> Total de skills indexadas: 216.
+> Total de skills indexadas: 217.
 
 ## Archivos de convención y contexto del proyecto
 
@@ -29,6 +29,7 @@
 | `gentle-orchestrator` | Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, SDD. Coordinator protocol: delegate ALL real work to sub-agents, run small reads/writes inline, re-launch failed agents. Load as the orchestrator identity for any non-trivial task. | `project` | `00-meta-skills/gentle-orchestrator/SKILL.md` |
 | `odd-workflow` | Use when executing substantial features or multi-step development in harnesses without native gentle-ai. Governs Organic Driven Development (ODD): authorize, explore, clarify, track before first write in odd/tasks/<feature>.md, implement task-by-task with work-unit commits, and close with verified evidence. Do NOT use when gentle-ai is already active in the system prompt. | `project` | `00-meta-skills/odd-workflow/SKILL.md` |
 | `skill-creator` | Generates new skills following the official agentskills.io spec (name lowercase-hyphen, description under 1024 chars). Creates the folder structure (SKILL.md + references/, scripts/, assets/), validates frontmatter constraints, and seeds the SKILLS.md index. Use when adding a new skill, refactoring an existing one, or bootstrapping a skill catalog. | `root-only` | `00-meta-skills/skill-creator/SKILL.md` |
+| `skill-distiller` | Analyzes an external project workspace to discover applicable catalog skills and automatically synthesize tailored project-scoped skills with Absolute Bans, Before and After patterns, and domain invariants. Use when onboarding a new project, scaffolding repository-specific architectural guidelines, or distilling domain conventions into local agent skills. Do NOT use for general catalog maintenance or editing core catalog skills. | `root-only` | `00-meta-skills/skill-distiller/SKILL.md` |
 | `skill-harvest` | Trigger: harvest, cerrar proyecto, fin de proyecto, extraer aprendizajes, skill harvest, crear skill nueva, post-project. At project close (after ALL fixes), extract repeatable patterns from Engram memory and draft new-skill proposals into the _inbox folder — never auto-create skills. | `project` | `00-meta-skills/skill-harvest/SKILL.md` |
 | `skill-improver` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | `global, project` | `00-meta-skills/skill-improver/SKILL.md` |
 | `skill-loader` | Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (9 always-on skills) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the "route first" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body. | `root-only` | `00-meta-skills/skill-loader/SKILL.md` |
@@ -218,7 +219,7 @@
 | `systemic-issue-triage` | Trigger: new issue, bug report, triage, backlog, issue flood, community report, root cause, dead-end, blocked user. Attack issues by root class, never one-by-one; fixes must shrink the system, not grow it. | `global, project` | `06-code-quality/systemic-issue-triage/SKILL.md` |
 | `turborepo` | Configures Turborepo for build caching and parallel execution in pnpm monorepos. Use when setting up incremental builds, running tasks across packages, or optimizing CI pipeline speed with remote caching. | `global, project` | `06-code-quality/turborepo/SKILL.md` |
 | `typescript` | Guidelines for strict TypeScript development. Enforces precise type safety, prevents 'any', and implements SOLID principles (ISP/DIP) in class and interface contracts. Use when writing TypeScript types, narrowing `unknown`, or designing interface contracts. | `global, project` | `06-code-quality/typescript/SKILL.md` |
-| `work-unit-commits` | Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code. | `global, project` | `06-code-quality/work-unit-commits/SKILL.md` |
+| `work-unit-commits` | Plan commits as reviewable work units. Use when splitting commits, chaining PRs, or keeping tests with code. Do NOT use for branch merging or release tagging. | `global, project` | `06-code-quality/work-unit-commits/SKILL.md` |
 
 ## Testing (07-testing/)
 
@@ -227,7 +228,7 @@
 | `go-testing` | Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns. | `global, project` | `07-testing/go-testing/SKILL.md` |
 | `playwright` | Playwright E2E testing patterns — MCP-first exploration, Page Object Model, selector priority (getByRole/getByLabel), BasePage reuse, helpers, test tags, documentation format. Use when writing E2E tests so the AI verifies real selectors before writing flaky tests. | `global, project` | `07-testing/playwright/SKILL.md` |
 | `pytest` | Python testing patterns with pytest. Fixtures, mocking, parametrize, markers, async tests, and conftest.py structure. Trigger when the user writes or debugs Python tests, uses pytest, or asks about test coverage, fixtures, or mocking in a Python project. | `project` | `07-testing/pytest/SKILL.md` |
-| `testing-patterns` | Unit, integration, and E2E testing patterns for the ecosystem. Use when writing tests with Vitest, Supertest, or React Native Testing Library. Do not use for load testing, pentesting, or security audits. | `global, project` | `07-testing/testing-patterns/SKILL.md` |
+| `testing-patterns` | Unit, integration, and E2E testing patterns for fullstack apps. Use when writing tests with Vitest, Supertest, or React Testing Library. Do NOT use for penetration testing or security audits. | `global, project` | `07-testing/testing-patterns/SKILL.md` |
 
 ## DevOps (08-devops/)
 
