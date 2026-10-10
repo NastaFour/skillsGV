@@ -1,6 +1,6 @@
 ---
 name: work-unit-commits
-description: "Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code."
+description: "Plan commits as reviewable work units. Use when splitting commits, chaining PRs, or keeping tests with code. Do NOT use for branch merging or release tagging."
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Bash(git:*) Glob Grep
 license: Apache-2.0
@@ -8,94 +8,68 @@ metadata:
   trigger: ["work unit commits","conventional commit","commit atomico","work unit","commit splitting","atomic commits","implementation commits"]
   scope: "global, project"
   author: gentleman-programming
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-## When to Use
+# 📦 Work Unit Commits — Atomic Conventional Commits
 
-Load this skill when deciding what belongs in each commit or PR.
+Plan and execute git commits as reviewable, deliverable work units. Every commit represents a coherent slice of deliverable behavior with its tests and docs.
 
-Use it for:
+---
 
-- Splitting a feature into reviewable work.
-- Preparing commits before opening a PR.
-- Turning a large change into chained or stacked PRs.
-- Keeping reviewer cognitive load healthy.
-- Applying ODD tasks without accidentally producing a PR above 400 changed lines.
+## 🚫 ABSOLUTE BANS (Non-Negotiable)
 
-## Critical Rules
+1. **NO AI ATTRIBUTION TRAILERS**: NEVER include `Co-Authored-By: AI`, `Co-authored-by: Assistant`, or any AI disclaimer. Use pure conventional commits.
+2. **NO COMMITS BY FILE CATEGORY**: NEVER commit `models/`, then `services/`, then `tests/` across separate commits if none works alone. Code + tests + docs belong in the same commit.
+3. **NO MONOLITHIC COMMITS (>400 lines)**: Never lump unrelated features or entire projects into a single mega-commit. Respect the ~400 authored lines reviewer budget.
+4. **NO BROKEN INTERMEDIATE COMMITS**: Every commit MUST leave the test suite green and the project compiling cleanly (`git bisect`-safe).
 
-| Rule | Requirement |
-|------|-------------|
-| Commit by work unit | A commit represents a deliverable behavior, fix, migration, or docs unit. |
-| Do not commit by file type | Avoid `models`, then `services`, then `tests` if none works alone. |
-| Keep tests with code | Tests belong in the same commit as the behavior they verify. |
-| Keep docs with the user-visible change | Docs belong with the feature or workflow they explain. |
-| Tell a story | A reviewer should understand why each commit exists from its diff and message. |
-| Future PR-ready | Each commit should be a candidate chained PR when the change grows. |
-| Delivery budget guard | If ODD tasks forecast a >400-line change, group commits into chained PR slices before implementation. |
+---
 
-## Work Unit Checklist
+## 📐 Conventional Commit Format
 
-Before committing, confirm:
-
-- [ ] The commit has one clear purpose.
-- [ ] The repo still makes sense after applying only this commit.
-- [ ] Tests or docs for this unit are included when relevant.
-- [ ] Rollback is reasonable without reverting unrelated work.
-- [ ] Focused test command and exact result are recorded.
-- [ ] Runtime harness command/scenario and exact result are recorded, or explicit `N/A` explains why no runtime boundary exists.
-- [ ] Rollback boundary names the exact files/behavior removable without unrelated work.
-- [ ] The commit message explains the outcome, not the file list.
-
-## Split Examples
-
-| Weak split | Better work-unit split |
-|------------|------------------------|
-| `add models` | `feat(auth): add token validation domain model and tests` |
-| `add services` | `feat(auth): wire token validation into login flow` |
-| `add tests` | Tests included with each behavior commit |
-| `update docs` | Docs included with the user-facing change they explain |
-
-## PR Relationship
-
-Use work-unit commits as the foundation for chained PRs:
-
-1. Build the smallest independent work unit.
-2. Include verification for that unit.
-3. Commit it with a Conventional Commit message.
-4. If the PR approaches 400 changed lines, promote commits or groups of commits into chained PRs.
-
-## ODD Relationship
-
-When the ODD feature document (`odd/tasks/<feature>.md`) produces a Review Workload Forecast:
-
-- Low risk: keep work-unit commits inside one PR.
-- Medium risk: commit by work unit and monitor changed lines before PR creation.
-- High risk: follow ODD `delivery_strategy` — ask on `ask-on-risk`, auto-slice on `auto-chain`, require `size:exception` on over-budget `single-pr`, or record accepted `size:exception` on `exception-ok`.
-- Count authored additions plus deletions for the `>400` threshold. Exclude generated goldens from that authored count, but include every generated file in complete snapshot identity and receipt validation.
-
-Each ODD task work unit should map cleanly to a commit on the feature branch with:
-
-- clear start state,
-- clear finished state,
-- verification in the same unit,
-- rollback that does not remove unrelated work.
-
-Its implementation evidence MUST include:
-
-- Focused test command and exact result.
-- Runtime harness command/scenario and exact result, or explicit `N/A` with reason.
-- Rollback boundary stated independently of commit creation; uncommitted work units still require it.
-- When fixing a bounded review ledger, group atomic work units inside the single correction transaction; work-unit count never creates another fix budget.
-
-## Commands
-
-```bash
-# Review the story before committing
-git diff --stat
-git diff --cached --stat
-
-# Check recent commit style
-git log --oneline -5
 ```
+<type>(<scope>): <imperative summary in lowercase>
+
+[optional body describing the WHY and deliverable behavior]
+
+[optional issue reference: closes #123]
+```
+
+### Allowed Types
+- `feat`: Delivers user- or consumer-facing behavior.
+- `fix`: Patches a bug or regression.
+- `refactor`: Changes code structure without altering external behavior.
+- `test`: Adds or repairs tests alongside behavior or isolated fix.
+- `docs`: Documentation updates only.
+- `perf`: Verified performance improvement.
+- `chore`: Tooling, build configuration, or dependency updates.
+
+---
+
+## ⚖️ Before & After: Work Unit Decomposition
+
+| ❌ Anti-Pattern (Weak / Categorical) | ✅ Work Unit Pattern (Behavioral & Atomic) |
+|---|---|
+| `git commit -m "add models"`<br>`git commit -m "add services"`<br>`git commit -m "add tests"` | `git commit -m "feat(auth): add user token validation model and unit tests"`<br>`git commit -m "feat(auth): integrate token validation into login endpoint with tests"` |
+| `git commit -m "fix bugs and refactor whole app (850 lines)"` | `git commit -m "fix(payment): prevent duplicate charges on network retry"`<br>`git commit -m "refactor(payment): extract currency conversion helper"` |
+| `git commit -m "feat: user profile\n\nCo-Authored-By: Claude"` | `git commit -m "feat(user): add profile avatar upload with validation tests"` |
+
+---
+
+## ✅ Work Unit Verification Checklist
+
+Before running `git commit`, confirm:
+- [ ] **Single deliverable purpose**: Represents exactly one coherent behavior, fix, or migration.
+- [ ] **Tests included**: Unit or integration tests are staged together with the behavior change.
+- [ ] **Docs included**: If the behavior alters user contracts or CLI flags, docs are committed alongside it.
+- [ ] **Clean rollback boundary**: Can be reverted cleanly with `git revert <hash>` without breaking unrelated code.
+- [ ] **Clean message**: Summarizes the outcome and intent, never a mere list of modified file names.
+
+---
+
+## 🔗 ODD Integration & Budget Guard
+
+- **Budget Heuristic**: ~400 authored lines per work unit (additions + deletions, excluding generated files).
+- **Chained PRs**: When a feature requires >400 lines, group work-unit commits into logical slices and open chained PRs rather than a single bloated pull request.
+- **Task Identity**: Every ODD task in `odd/tasks/<feature>.md` closes with at least one work-unit commit; record the commit hash in the task doc as verifiable evidence.

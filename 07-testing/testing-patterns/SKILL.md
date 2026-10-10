@@ -1,185 +1,84 @@
 ---
 name: testing-patterns
-description: Unit, integration, and E2E testing patterns for the ecosystem. Use when writing tests with Vitest, Supertest, or React Native Testing Library. Do not use for load testing, pentesting, or security audits.
+description: "Unit, integration, and E2E testing patterns for fullstack apps. Use when writing tests with Vitest, Supertest, or React Testing Library. Do NOT use for penetration testing or security audits."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["escribir tests", "crear pruebas", "unit test", "integration test", "e2e", "vitest", "jest", "supertest", "coverage"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# 🧪 Testing Patterns — Fullstack Applications
+# 🧪 Testing Patterns — Automated Fullstack Testing
 
-Usa este skill al escribir cualquier tipo de test automatizado en arquitecturas fullstack. Sigue los patrones establecidos para mantener consistencia entre backend, frontend web, y app móvil.
-
----
-
-## 🏛️ Stack de Testing por Capa
-
-| Capa | Framework | Runner | Mocking | Ubicación |
-|---|---|---|---|---|
-| Backend (Express) | Vitest + Supertest | Vitest | `vi.mock` / MSW | `apps/backend/__tests__/` |
-| Web Frontend (React/Vite) | Vitest + React Testing Library | Vitest | `vi.mock` / MSW | `apps/web/__tests__/` |
-| Móvil (Expo) | Jest + React Native Testing Library | Jest | `jest.mock` | `apps/mobile/__tests__/` |
-| Tipos compartidos | Vitest | Vitest | `vi.mock` | `packages/shared-types/__tests__/` |
+Rigorous, deterministic testing standards for backend and frontend services. Emphasizes pure isolation, strict assertion, and zero flaky side-effects.
 
 ---
 
-## 📋 Estructura de Archivos de Test
+## 🚫 ABSOLUTE BANS (Non-Negotiable)
 
-```
-apps/backend/__tests__/
-├── unit/
-│   ├── services/
-│   │   └── pricing.service.test.ts
-│   └── middleware/
-│       └── auth.test.ts
-├── integration/
-│   ├── routes/
-│   │   └── orders.test.ts
-│   └── socket/
-│       └── notifications.test.ts
-└── fixtures/
-    ├── users.ts
-    └── products.ts
-```
-
-**Reglas:**
-- Nombres de archivo: `*.test.ts` o `*.spec.ts` (elegir uno y mantener consistencia)
-- Fixtures en `__tests__/fixtures/`, nunca hardcodeados inline
-- Cada `describe` debe cubrir una función o ruta específica
+1. **PNPM ONLY**: Strictly use `pnpm test`, `pnpm test:coverage`, or `pnpm dlx`. All legacy package managers (non-pnpm) are strictly forbidden in this repository.
+2. **NO UNMOCKED NETWORK OR DB IN UNIT TESTS**: Unit tests MUST NEVER make live HTTP calls or touch persistent disks/databases. Use `vi.mock` or `vi.fn()`.
+3. **NO SHARED MUTABLE STATE**: Every test suite MUST reset mocks before or after each test via `beforeEach(() => { vi.clearAllMocks(); })`.
+4. **NO TAUTOLOGICAL TESTS**: Never assert `expect(true).toBe(true)` or test mock implementations instead of system-under-test behavior.
+5. **NO UNTYPED TESTS OR `any`**: Test fixtures and mock signatures must be strictly typed.
 
 ---
 
-## ✅ Cobertura Obligatoria (6 escenarios)
+## 🏛️ Structure: The AAA Pattern (Arrange, Act, Assert)
 
-Cada feature debe tener tests que cubran:
-
-1. **Happy Path** — flujo normal esperado (mínimo 2 tests)
-2. **Edge Cases** — inputs vacíos, null, negativos, caracteres especiales (mínimo 3)
-3. **Auth/Seguridad** — requests sin JWT bloqueados, socket handshake rechazado sin token
-4. **Real-time Cleanup** — sockets cierran correctamente, listeners detach en unmount
-5. **Integridad DB** — rollback completo si un item falla en transacción ACID
-6. **Regresión SOLID** — ninguna función > 40 líneas, cero `any`, sin lógica duplicada
-
----
-
-## 🔧 Patrones de Test
-
-### Backend: Jest + Supertest
-
+Every test must follow the 3 clean phases:
 ```typescript
-// apps/backend/__tests__/integration/routes/orders.test.ts
-import request from 'supertest';
-import { app } from '../../../src/app';
-import { prisma } from '../../../src/lib/prisma';
-import { createTestUser, generateToken } from '../../fixtures/users';
+it('processes payment and confirms order in happy path', async () => {
+  // 1. Arrange: setup inputs, fixtures, and deterministic mocks
+  const input = { orderId: 'ord-123', amount: 99 };
+  paymentGatewayMock.charge.mockResolvedValueOnce({ id: 'tx-456', status: 'SUCCESS' });
 
-describe('POST /api/orders', () => {
-  let buyerToken: string;
+  // 2. Act: invoke SUT
+  const result = await sut.processOrder(input);
 
-  beforeAll(async () => {
-    const buyer = await createTestUser({ role: 'BUYER' });
-    buyerToken = generateToken(buyer);
-  });
-
-  afterAll(async () => {
-    await prisma.order.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.$disconnect();
-  });
-
-  it('debe crear una orden y reducir stock en transacción ACID', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .set('Authorization', `Bearer ${buyerToken}`)
-      .send({
-        items: [{ productId: 'prod-1', quantity: 2 }],
-        deliveryAddress: 'Calle 123, Caracas',
-        paymentMethod: 'PAGO_MOVIL',
-      });
-
-    expect(res.status).toBe(201);
-    expect(res.body.order.status).toBe('PENDING');
-    expect(res.body.order.totalUsd).toBeGreaterThan(0);
-  });
-
-  it('debe hacer rollback si stock insuficiente', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .set('Authorization', `Bearer ${buyerToken}`)
-      .send({
-        items: [{ productId: 'prod-1', quantity: 99999 }],
-        deliveryAddress: 'Calle 123',
-        paymentMethod: 'PAGO_MOVIL',
-      });
-
-    expect(res.status).toBe(400);
-    expect(res.body.error).toContain('Insufficient stock');
-  });
-
-  it('debe rechazar request sin JWT', async () => {
-    const res = await request(app)
-      .post('/api/orders')
-      .send({ items: [], deliveryAddress: 'test' });
-
-    expect(res.status).toBe(401);
-  });
-});
-```
-
-### Frontend Admin: React Testing Library + Vitest
-
-```typescript
-// apps/admin-panel/src/__tests__/InventoryTable.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { InventoryTable } from '../components/InventoryTable';
-import { vi } from 'vitest';
-
-describe('InventoryTable', () => {
-  const mockProducts = [
-    { id: '1', name: 'Leche', stock: 10, price: 2.5, category: 'Lácteos' },
-  ];
-
-  it('debe mostrar productos y permitir actualizar stock', () => {
-    const onUpdate = vi.fn();
-    render(<InventoryTable products={mockProducts} onStockUpdate={onUpdate} />);
-
-    expect(screen.getByText('Leche')).toBeDefined();
-    fireEvent.click(screen.getByText('-1'));
-    expect(onUpdate).toHaveBeenCalledWith('1', -1);
-  });
-
-  it('debe mostrar estado vacío cuando no hay productos', () => {
-    render(<InventoryTable products={[]} onStockUpdate={vi.fn()} />);
-    expect(screen.getByText(/sin productos/i)).toBeDefined();
-  });
-});
-```
-
-### Móvil: React Native Testing Library
-
-```typescript
-// apps/mobile-app/__tests__/CatalogScreen.test.tsx
-import { render, fireEvent } from '@testing-library/react-native';
-import { CatalogScreen } from '../app/(tabs)/catalog';
-
-describe('CatalogScreen', () => {
-  it('debe renderizar FlatList con productos', () => {
-    const { getByText } = render(<CatalogScreen />);
-    expect(getByText('Catálogo')).toBeDefined();
-  });
+  // 3. Assert: verify results, mock invocations, and state
+  expect(result.status).toBe('CONFIRMED');
+  expect(paymentGatewayMock.charge).toHaveBeenCalledTimes(1);
+  expect(paymentGatewayMock.charge).toHaveBeenCalledWith(99);
 });
 ```
 
 ---
 
-## 🎯 Métricas de Calidad
+## ⚖️ Before & After: Testing Anti-Patterns vs Best Practices
 
-- **Cobertura mínima**: 80% (statements, branches, functions, lines)
-- **Sin tests flaky**: 0 fallos en CI por intermittencia
-- **Velocidad**: suite completa de backend < 30s, admin < 15s, mobile < 60s
-- Consultar `../02-dev-roles/qa-tester/SKILL.md` para los 6 escenarios obligatorios.
-- Consultar `../02-dev-roles/dod-checker/SKILL.md` para el gate de calidad.
+| ❌ Anti-Pattern | ✅ Best Practice Pattern |
+|---|---|
+| Invoking tests via unapproved legacy runners | `pnpm dlx vitest run`<br>`pnpm add -D @vitest/coverage-v8` |
+| Live database calls or random sleep timers:<br>`await new Promise(r => setTimeout(r, 1000));` | Deterministic fake timers or async awaiting:<br>`vi.useFakeTimers(); vi.advanceTimersByTime(1000);` |
+| Lingering mock state across tests (flaky suites) | `beforeEach(() => { vi.clearAllMocks(); });` in every describe block |
+| `describe('test', () => { it('works', () => { ... }) })` | Clear describe/it naming describing SUT and expected contract |
+
+---
+
+## 📋 Obligatory Coverage Matrix (6 Scenarios)
+
+Every non-trivial service or domain entity must verify:
+1. **Happy Path** (>=2 tests): Normal expected behavior with valid inputs.
+2. **Edge Cases** (>=3 tests): Null, undefined, empty collections, negative numbers, boundary limits.
+3. **Auth & Authorization**: Rejection of missing tokens or insufficient permissions (401/403).
+4. **Resource Teardown**: Proper closing of connections, stream cleanup, listener removal.
+5. **Transactional Integrity / Rollback**: Automatic abort and rollback when downstream operations fail.
+6. **SOLID & Error Handling**: Explicit throwing and mapping of domain exceptions (no uncaught rejections).
+
+---
+
+## 🚀 Execution Commands
+
+```bash
+# Run unit tests in watch/run mode
+pnpm test
+
+# Run tests with strict coverage thresholds (>=80%)
+pnpm test:coverage
+
+# Run a specific focused test file
+pnpm dlx vitest run path/to/service.test.ts
+```
