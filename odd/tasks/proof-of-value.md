@@ -146,3 +146,8 @@ budget (likely at T4). Boundary for review assess: 9556109.
   the exact token; acknowledgement burned (target 3df23459, authority: burned). Artifacts:
   %TEMP%\opencode\rdd2-{lens}-prompt.md, rdd2-{lens}-result.json, rdd2-master-antigravity.md.
   Both adversarial gates (JD dual-blind + native 4R) are now terminal-clean on this range.
+- 2026-10-10: DELIVERED. main fast-forwarded 8449640 -> 29ff5f3 and pushed to origin
+  (merge authorized by user; brings the stacked feat/strategic-improvement base along).
+  Full suite green pre-merge (pnpm test 125/125). CI runs on push (ubuntu+windows, node
+  20/22). Feature branch continues at 29ff5f3 for T4/T5; next slice boundary for review
+  assess advances to 29ff5f3.
