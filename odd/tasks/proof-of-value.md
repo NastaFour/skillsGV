@@ -121,3 +121,13 @@ budget (likely at T4). Boundary for review assess: 9556109.
   `pnpm test` (2 catalog-doctor tests) and `pnpm doctor` remain red ONLY from the
   pre-existing `.atl/skill-registry.md` working-tree diff (external gentle-ai refresh,
   outside allowed edit surfaces); parent decision pending (interaction_required).
+- 2026-10-10: RDD cycle review-b0b8ad5b9505dd1a (tier high, 4 lenses, base-ref
+  ab1a9bf committed-only) closed terminal: 4/4 lenses admitted (reliability relayed
+  manually from Antigravity result — OpenCode Task returned opencode_task_output_empty
+  deterministically for that agent), reduction found CRITICAL R3-INSTALL-DEPRECATED-LEAK
+  (installer never read catalog.json `deprecated` flag), one bounded correction
+  commit 5afcdd6 (+8/−2: collectSkills honors catalog deprecated alongside frontmatter;
+  suites 44/44 green; --tier core plan unchanged at 35 skills), targeted validation
+  passed, approved, exact acknowledgement burned (authority: burned, target 4b4eb8f9).
+  7 advisory follow-ups recorded (R2-001..004, R4-*). Reviewed boundary advances to
+  5afcdd6.
