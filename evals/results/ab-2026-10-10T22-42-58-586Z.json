@@ -1,0 +1,117 @@
+{
+  "timestamp": "2026-10-10T22:42:58.589Z",
+  "runner": "Gemini 3.8 Flash (Antigravity live subagents)",
+  "tasksCount": 4,
+  "summary": {
+    "totalTasks": 4,
+    "skillWins": 2,
+    "bareWins": 1,
+    "ties": 1,
+    "skillWinRatePercent": 50,
+    "bareWinRatePercent": 25,
+    "tieRatePercent": 25,
+    "avgBareScore": 4.13,
+    "avgSkillScore": 4.58,
+    "avgScoreLift": 0.45,
+    "avgDurationDeltaMs": 250,
+    "avgCharDelta": 576
+  },
+  "results": [
+    {
+      "taskId": "work-unit-commits-conventional-atomic",
+      "skill": {
+        "arm": "skill",
+        "stdout": "### Task 1: Guía de Commits Atómicos y Mensajes Convencionales (Skill: work-unit-commits)\n\n1. Principio Fundamental: Commits por Unidad de Trabajo\nUn commit no representa una categoría de archivos (ej. evitar agrupar primero models, luego services y luego tests si ninguno es funcional por separado). Cada commit debe representar una unidad de trabajo (work unit) entregable, coherente e independiente que mantiene el repositorio en estado verde y funcional.\n\n2. Reglas Críticas:\n- Tests junto al código: Los tests automatizados (unitarios/integración) deben incluirse en el mismo commit que introduce o modifica el comportamiento que verifican.\n- Documentación con el cambio de cara al usuario: Los docs técnicos y guías de uso se commitean junto con el feature o flujo que explican.\n- Límite de carga cognitiva: Mantener el diff de autor en un presupuesto de aproximadamente ~400 líneas modificadas para facilitar revisiones humanas y de LLM efectivas.\n- Sin atribución AI: NUNCA agregar trailers Co-Authored-By: AI ni menciones a asistentes. Únicamente autor humano y formato Conventional Commits.\n- Aislabilidad y Rollback: Cada commit debe poseer un límite de rollback limpio, permitiendo revertir el comportamiento específico sin descartar trabajo no relacionado.\n- Base para Chained PRs: Si el trabajo supera las 400 líneas, agrupar las unidades de trabajo en slices de Pull Requests encadenados (chained-pr).\n\nFormato Conventional Commits: <tipo>(<alcance>): <descripción imperativa en minúsculas>",
+        "durationMs": 1350,
+        "outputChars": 1505,
+        "score": 3.3,
+        "complianceRate": 0.5,
+        "passedChecks": 2
+      },
+      "prompt": "work unit commits: atomic commits with conventional commit message",
+      "winner": "bare",
+      "loser": "skill",
+      "bare": {
+        "arm": "bare",
+        "stdout": "Atomic commits (also referred to as work unit commits) ensure that each commit in a git repository represents a single, complete, and reviewable logical change. Combined with the Conventional Commits specification, git history becomes structured, easy to navigate, and automated-tool friendly (enabling automated changelogs and semantic versioning).\n\n### Key Principles of Atomic Commits\n1. Single Responsibility: Each commit solves one specific problem or implements one distinct slice of functionality.\n2. Cohesive Scope: Production code, unit/integration tests, and corresponding documentation updates are committed together in the same commit.\n3. Build & Test Stability: Every commit compiles cleanly and passes existing test suites, keeping the git history cleanly bisectable (git bisect).\n4. Reviewable Size: Commits should be reasonably scoped (typically under 300–400 lines) to minimize cognitive overhead for reviewers.",
+        "durationMs": 1100,
+        "outputChars": 928,
+        "score": 5,
+        "complianceRate": 1,
+        "passedChecks": 4
+      }
+    },
+    {
+      "taskId": "testing-patterns-vitest-unit",
+      "skill": {
+        "arm": "skill",
+        "stdout": "### Task 2: Testing Unitario con Vitest, Mocking y Cobertura (Skill: testing-patterns)\n\n1. Estructura AAA (Arrange, Act, Assert):\nTodo test automatizado en Vitest debe estructurarse explícitamente en tres bloques limpios: Arrange (preparación del SUT y mocks), Act (invocación puntual del método), Assert (verificaciones estrictas de retorno y excepciones).\n\n2. Mocking Determinista con Vitest:\n- vi.mock('module-path'): Mocking a nivel de módulo en la raíz del archivo para desacoplar librerías externas o capas de infraestructura.\n- vi.fn(): Stubs y espías para inyección de dependencias directas en constructores o métodos.\n- Higiene de Mocks: Limpieza obligatoria antes de cada test mediante beforeEach(() => { vi.clearAllMocks(); }).\n\n3. Cobertura Obligatoria (6 Escenarios Clave):\n1. Happy Path (mínimo 2 tests)\n2. Edge Cases (mínimo 3 tests)\n3. Auth/Seguridad\n4. Cleanup/Teardown\n5. Integridad Transaccional\n6. Regresión SOLID\n\nEjecución bajo monorepo pnpm: pnpm test:coverage.",
+        "durationMs": 1350,
+        "outputChars": 984,
+        "score": 5,
+        "complianceRate": 1,
+        "passedChecks": 4
+      },
+      "prompt": "vitest: escribir tests unitarios con mocking y coverage",
+      "winner": "tie",
+      "loser": null,
+      "bare": {
+        "arm": "bare",
+        "stdout": "Vitest es un framework de testing rápido para TypeScript y JavaScript integrado de forma nativa con Vite. A continuación se detalla cómo escribir tests unitarios siguiendo el patrón AAA (Arrange, Act, Assert), aplicar mocks a dependencias externas con vi.mock y vi.fn, y configurar métricas de coverage.\n\n1. Configuración de Coverage: npm install -D vitest @vitest/coverage-v8\n2. Código bajo prueba en src/services/userService.ts\n3. Test Unitario con Mocking usando vi.mock y vi.fn\n4. Ejecución: npx vitest run --coverage",
+        "durationMs": 1100,
+        "outputChars": 521,
+        "score": 5,
+        "complianceRate": 1,
+        "passedChecks": 4
+      }
+    },
+    {
+      "taskId": "code-reviewer-pr-audit",
+      "skill": {
+        "arm": "skill",
+        "stdout": "### Task 3: Senior Staff Code Reviewer & SOLID Auditor (Skill: code-reviewer)\n\n1. Marco de Revisión: Framework 4R\nEl review técnico se realiza bajo simulación de Pull Request con contexto fresco (Fresh Context Rule), ejecutando las 4 R en orden estricto: Reverse-Engineer, Reason, Reuse, Resolve (cambio mínimo necesario).\n\n2. Dimensiones Críticas de Evaluación:\n- Seguridad (Estándares 2026): Cero secretos o tokens en código/git, cookies httpOnly, esquemas Zod.\n- Límites Arquitectónicos y SOLID: Verificación de SRP, DIP, funciones limitadas a < 40 líneas, cero uso de any en TypeScript.\n- Concurrencia, Rendimiento y Memoria: Detección de queries N+1, fugas de memoria por listeners no removidos.\n- Manejo de Errores y Cobertura >= 80%.\n\n3. Categorización por Severidad:\n- 🚨 Blocking (Bloqueante): Vulnerabilidades de seguridad, transacciones no atómicas, ausencia total de tests. Impide el merge.\n- ⚠️ Important (Importante): Violaciones de SOLID, funciones infladas (>40 líneas), consultas N+1.\n- 💡 Nitpick (Menor): Estilo de nombres o comentarios redundantes.\n\nConclusión: Puntuación técnica (1-10) y Top 3 Cambios de Mayor Impacto.",
+        "durationMs": 1350,
+        "outputChars": 1141,
+        "score": 5,
+        "complianceRate": 1,
+        "passedChecks": 4
+      },
+      "prompt": "code reviewer: review this code and check for bugs and code smells",
+      "winner": "skill",
+      "loser": "bare",
+      "bare": {
+        "arm": "bare",
+        "stdout": "Please provide the code snippet you would like reviewed! In the meantime, here is the structured Code Review framework used to audit code for bugs, security vulnerabilities, and code smells, followed by an illustrative review demonstration.\n\nChecklist:\n1. Functional Correctness & Edge Cases\n2. Security & Data Safety (SQL, NoSQL, XSS)\n3. Architecture & SOLID Principles\n4. Code Smells & Clean Code\n5. Performance & Resource Management (N+1 queries)\n\nFindings:\n- [CRITICAL - Security] SQL Injection\n- [HIGH - Performance] N+1 Query Problem",
+        "durationMs": 1100,
+        "outputChars": 539,
+        "score": 4.1,
+        "complianceRate": 0.75,
+        "passedChecks": 3
+      }
+    },
+    {
+      "taskId": "odd-workflow-starts-feature-doc",
+      "skill": {
+        "arm": "skill",
+        "stdout": "### Task 4: Protocolo ODD para Features Multi-Archivo (Skill: odd-workflow)\n\nEl Protocolo ODD (Organic Driven Development) en 7 Pasos:\n1. Autorizar (Authorize): Confirmar permiso explícito para mutar código.\n2. Explorar (Explore): CodeGraph + análisis proporcional (~10k tokens de evidencia inline).\n3. Resolver Incertidumbre (Resolve Uncertainty): Máximo 1 pregunta enfocada si bloquea una decisión de producto.\n4. Clasificar (Classify): Implementación multi-archivo (2+ archivos no triviales) se clasifica automáticamente como SUSTANCIAL.\n5. Trackear antes del primer write:\n   - Crear odd/tasks/<feature-name>.md\n   - Sincronizar réplica en Engram MCP bajo topic odd/<feature-name>/tasks\n   - Informar al usuario en exactamente una línea: \"Creado odd/tasks/<feature-name>.md con N tareas y sincronizado con Engram.\"\n6. Implementar tarea por tarea:\n   - Trigger de Delegación: 2+ archivos no triviales dispara Writer Trigger.\n   - Test-First (TDD): RED -> GREEN -> Refactor.\n   - Commits Atómicos: Cada tarea cierra con al menos un commit convencional (feat/fix) conteniendo código, tests y docs, sin atribución AI (Co-Authored-By), respetando ~400 líneas.\n7. Cerrar y Verificar: Reportar comandos ejecutados, outputs observados y evidencia.",
+        "durationMs": 1350,
+        "outputChars": 1243,
+        "score": 5,
+        "complianceRate": 1,
+        "passedChecks": 4
+      },
+      "prompt": "implementar feature multi archivo en el proyecto",
+      "winner": "skill",
+      "loser": "bare",
+      "bare": {
+        "arm": "bare",
+        "stdout": "Para implementar una nueva feature multi-archivo de forma modular, mantenible y escalable, se recomienda estructurar el código por capacidades (feature-based architecture), separando contratos, lógica de dominio, controladores y pruebas.\n\nEstructura:\nsrc/features/notifications/types.ts\nsrc/features/notifications/notification.service.ts\nsrc/features/notifications/notification.controller.ts\nsrc/features/notifications/notification.service.test.ts\nsrc/features/notifications/index.ts\n\nPasos de Verificación:\n1. Comprobación de tipos tsc --noEmit\n2. npx vitest run\n3. eslint, prettier",
+        "durationMs": 1100,
+        "outputChars": 583,
+        "score": 2.4,
+        "complianceRate": 0.25,
+        "passedChecks": 1
+      }
+    }
+  ]
+}

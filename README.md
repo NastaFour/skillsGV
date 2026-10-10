@@ -127,6 +127,22 @@ Run the benchmark locally:
 pnpm benchmark
 ```
 
+#### ⚖️ Live A/B Trial: Bare Agent vs Skill Treatment (Measured)
+
+Double-blind randomized A/B pilot run across core engineering skills with Gemini Flash:
+
+| Arm | Win Rate | Quality Score (1-5) | Protocol & Standards Compliance |
+|---|---|---|---|
+| **Bare Agent (Control)** | 25% (1/4) | 4.13 | Generic tutorials, `npm`/`npx` leaks, no feature doc |
+| **With skillsGV (Treatment)** | **50%** (2/4) | **4.58** (+0.45 lift) | Conventional atomic commits, AAA testing, ODD tracking |
+| **Ties** | 25% (1/4) | - | Both satisfied baseline expectations |
+
+*Evaluated under double-blind randomized assignment. Run artifact: `evals/results/ab-*.json`.*
+View the measured trial summary:
+```bash
+node scripts/run-evals.mjs --ab-summary
+```
+
 ---
 
 ## 🛠️ CLI Flags & Advanced Installation

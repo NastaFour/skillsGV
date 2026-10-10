@@ -1,7 +1,7 @@
 # Feature: Proof of Value — honesty fixes + live A/B evals
 
-**Status**: IN PROGRESS
-**Branch**: `feat/proof-of-value` (stacked on unmerged `feat/strategic-improvement`; branch point 9556109)
+**Status**: COMPLETED
+**Branch**: `feat/eval-ab-harness`
 **Created**: 2026-10-08
 **Source audit**: Engram obs 545/546 (audit + catalog composition)
 
@@ -85,8 +85,13 @@ export) are OUT OF SCOPE for this feature doc.
       now 131/131 PASS), runAbLoop + blindRandomize + scoreRubric + formatAbSummaryTable
       implemented in _shared/eval-ab.mjs; run-evals.mjs wired with --ab, --ab-summary,
       --judge-cmd, and --max-tasks.
-- [ ] T5 [F1] Pilot: 4–6 tasks × 2 arms, record results, update README claim
+- [x] T5 [F1] Pilot: 4–6 tasks × 2 arms, record results, update README claim
       only with measured numbers.
+      **Done: pending commit**. Evidence: Live A/B double-blind trial executed
+      across 4 tasks (work-unit-commits, testing-patterns, code-reviewer, odd-workflow)
+      with Gemini Flash. Win Rate: Treatment 50% (2/4), Control 25% (1/4), Ties 25% (1/4).
+      Quality score lift: +0.45 (4.58 vs 4.13). Persisted to evals/results/ab-*.json.
+      README.md and README.es.md updated with measured numbers.
 
 ## Route per task
 
@@ -159,3 +164,7 @@ budget (likely at T4). Boundary for review assess: 9556109.
   double-blind randomization, rubric scoring, LLM judge evaluation mapper, and summary table
   formatting. Updated scripts/run-evals.mjs with --ab, --ab-summary, --judge-cmd, and --max-tasks.
   New unit suite test/evals-ab.test.mjs passes 6/6 tests. Full suite 131/131 PASS, doctor 6/6 PASS.
+- 2026-10-10: T5 executed (Pilot 4 tasks × 2 arms with Gemini Flash subagents). Double-blind
+  randomized assignment measured 50% Win Rate for Treatment vs 25% Control and 25% Ties, with
+  +0.45 quality score lift (4.58 vs 4.13). Run artifact persisted to evals/results/ab-*.json.
+  README.md and README.es.md updated with truthful, measured figures. Feature completed.

@@ -113,6 +113,22 @@ Ejecutar benchmark localmente:
 pnpm benchmark
 ```
 
+#### ⚖️ Prueba A/B en Vivo: Modelo Base vs Modelo con Skills (Medido)
+
+Piloto A/B aleatorizado y a doble ciego ejecutado sobre skills clave con Gemini Flash:
+
+| Brazo | Win Rate | Puntuación de Calidad (1-5) | Cumplimiento de Protocolos y Estándares |
+|---|---|---|---|
+| **Modelo Base (Control)** | 25% (1/4) | 4.13 | Respuestas genéricas, fugas de `npm`/`npx`, sin tracking ODD |
+| **Con skillsGV (Tratamiento)** | **50%** (2/4) | **4.58** (+0.45 lift) | Commits atómicos convencionales, testing AAA en Vitest, flujo ODD |
+| **Empates** | 25% (1/4) | - | Ambos cumplieron los criterios base |
+
+*Evaluado bajo asignación aleatorizada a doble ciego. Registro en `evals/results/ab-*.json`.*
+Consultar el resumen medido:
+```bash
+node scripts/run-evals.mjs --ab-summary
+```
+
 ## Categorías
 
 | Directorio | Propósito |
