@@ -81,7 +81,7 @@ export) are OUT OF SCOPE for this feature doc.
       N tasks × {bare agent, agent+relevant core skill}, LLM-judge rubric
       (blind, randomized order), results persisted under evals/results/,
       summary command. Design note approved by parent before build.
-      **Done: pending commit**. Evidence: test/evals-ab.test.mjs (6/6 PASS, suite
+      **Done: 3140d32**. Evidence: test/evals-ab.test.mjs (6/6 PASS, suite
       now 131/131 PASS), runAbLoop + blindRandomize + scoreRubric + formatAbSummaryTable
       implemented in _shared/eval-ab.mjs; run-evals.mjs wired with --ab, --ab-summary,
       --judge-cmd, and --max-tasks.
