@@ -6,7 +6,7 @@
 - **Project**: `skills-catalog`
 - **Branch**: `feat/skill-hardening-eval-lift`
 - **Delivery Strategy**: `ask-on-risk` (target ~400 lines per task)
-- **Status**: IN PROGRESS
+- **Status**: COMPLETED
 
 ## Problem Statement
 The preliminary Gemini Flash A/B trial showed a 50% Win Rate (2 wins, 1 loss, 1 tie) and +0.45 quality lift.
@@ -23,11 +23,21 @@ Harden core skills with Negative Constraints, high context density, and Before/A
 - [x] T1: Harden `work-unit-commits` with Absolute Bans (no AI attribution, no type-based commits, ~400-line budget) and concrete Before/After diffs.
 - [x] T2: Harden `testing-patterns` with Absolute Bans (`pnpm`-only, zero network/db leakage, AAA structure) and Before/After test patterns.
 - [x] T3: Harden `odd-workflow` with strict ODD protocol gates and Before/After execution patterns.
-- [ ] T4: Update `scripts/pilot-eval.mjs` with 5 trap-driven evaluation scenarios.
-- [ ] T5: Execute live Gemini Flash A/B trial, record measured results under `evals/results/`, and update README metrics.
+- [x] T4: Update `scripts/pilot-eval.mjs` with 5 trap-driven evaluation scenarios.
+- [x] T5: Execute live Gemini Flash A/B trial, record measured results under `evals/results/`, and update README metrics.
 
-## Constraints & Gates
-- pnpm only. Zero npm/npx.
-- Conventional commits per task.
-- `pnpm validate:strict`, `pnpm test`, `pnpm doctor` must remain 100% green.
-- Ground all reported metrics in observed results.
+## Observed Verification Evidence
+- **Task T1-T3 Commit**: `4355005`
+- **Engram Memory Sync**: Observation `#554` (`odd/skill-hardening-eval-lift/tasks`)
+- **Live A/B Run Artifact**: `evals/results/ab-2026-10-10T23-10-47-414Z.json`
+- **Measured Metrics**:
+  - Win Rate: 100% (5/5 wins, 0 losses, 0 ties)
+  - Quality Score: 4.72 (Treatment) vs 2.46 (Control)
+  - Score Lift: +2.26
+  - Duration Delta: +170 ms
+  - Output Delta: +777 chars
+- **Gates**:
+  - `pnpm validate:strict`: 229 pass, 0 errors, 0 warnings
+  - `node --test test/**/*.test.mjs`: 131 pass, 0 fail
+  - `pnpm doctor`: 6/6 checks passed
+

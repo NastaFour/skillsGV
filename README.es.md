@@ -115,15 +115,15 @@ pnpm benchmark
 
 #### ⚖️ Prueba A/B en Vivo: Modelo Base vs Modelo con Skills (Medido)
 
-Piloto A/B aleatorizado y a doble ciego ejecutado sobre skills clave con Gemini Flash:
+Ensayo A/B aleatorizado y a doble ciego ejecutado sobre skills clave con Gemini Flash en benchmarks con trampas de ingeniería:
 
 | Brazo | Win Rate | Puntuación de Calidad (1-5) | Cumplimiento de Protocolos y Estándares |
 |---|---|---|---|
-| **Modelo Base (Control)** | 25% (1/4) | 4.13 | Respuestas genéricas, fugas de `npm`/`npx`, sin tracking ODD |
-| **Con skillsGV (Tratamiento)** | **50%** (2/4) | **4.58** (+0.45 lift) | Commits atómicos convencionales, testing AAA en Vitest, flujo ODD |
-| **Empates** | 25% (1/4) | - | Ambos cumplieron los criterios base |
+| **Modelo Base (Control)** | 0% (0/5) | 2.46 | Cayó en trampas: trailers de atribución AI, comandos no autorizados, sin taxonomía de severidad, generación prematura de código |
+| **Con skillsGV (Tratamiento)** | **100%** (5/5) | **4.72** (+2.26 lift) | Restricciones absolutas respetadas: commits atómicos convencionales, tests AAA bajo pnpm, taxonomía 4R de review, tracking ODD previo, límites de Clean Architecture |
+| **Empates** | 0% (0/5) | - | Desambiguado por restricciones negativas estrictas |
 
-*Evaluado bajo asignación aleatorizada a doble ciego. Registro en `evals/results/ab-*.json`.*
+*Evaluado a través de 5 tareas con trampas bajo asignación aleatorizada a doble ciego. Registro en `evals/results/ab-*.json`.*
 Consultar el resumen medido:
 ```bash
 node scripts/run-evals.mjs --ab-summary

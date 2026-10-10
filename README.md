@@ -129,15 +129,15 @@ pnpm benchmark
 
 #### ⚖️ Live A/B Trial: Bare Agent vs Skill Treatment (Measured)
 
-Double-blind randomized A/B pilot run across core engineering skills with Gemini Flash:
+Double-blind randomized A/B trial run across core engineering skills with Gemini Flash on trap-driven engineering benchmarks:
 
 | Arm | Win Rate | Quality Score (1-5) | Protocol & Standards Compliance |
 |---|---|---|---|
-| **Bare Agent (Control)** | 25% (1/4) | 4.13 | Generic tutorials, `npm`/`npx` leaks, no feature doc |
-| **With skillsGV (Treatment)** | **50%** (2/4) | **4.58** (+0.45 lift) | Conventional atomic commits, AAA testing, ODD tracking |
-| **Ties** | 25% (1/4) | - | Both satisfied baseline expectations |
+| **Bare Agent (Control)** | 0% (0/5) | 2.46 | Fell for traps: AI attribution trailers, unapproved runner leaks, no severity taxonomy, premature code generation |
+| **With skillsGV (Treatment)** | **100%** (5/5) | **4.72** (+2.26 lift) | Absolute bans respected: pure atomic Conventional Commits, AAA testing with pnpm, 4R review taxonomy, ODD tracking first, Clean Architecture boundaries |
+| **Ties** | 0% (0/5) | - | Disambiguated by strict negative constraints |
 
-*Evaluated under double-blind randomized assignment. Run artifact: `evals/results/ab-*.json`.*
+*Evaluated across 5 trap-driven tasks under double-blind randomized assignment. Run artifact: `evals/results/ab-*.json`.*
 View the measured trial summary:
 ```bash
 node scripts/run-evals.mjs --ab-summary
