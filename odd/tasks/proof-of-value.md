@@ -77,10 +77,14 @@ export) are OUT OF SCOPE for this feature doc.
       expectations instead of asserting fixed numbers.
       **Done: b4b9b50**. Runtime-derived count is 164 on this tree (audit's
       static "165" was off); all numbers now computed, marketing rows gone.
-- [ ] T4 [F1] Live A/B eval harness: wire run-evals.mjs into a real loop —
+- [x] T4 [F1] Live A/B eval harness: wire run-evals.mjs into a real loop —
       N tasks × {bare agent, agent+relevant core skill}, LLM-judge rubric
       (blind, randomized order), results persisted under evals/results/,
       summary command. Design note approved by parent before build.
+      **Done: pending commit**. Evidence: test/evals-ab.test.mjs (6/6 PASS, suite
+      now 131/131 PASS), runAbLoop + blindRandomize + scoreRubric + formatAbSummaryTable
+      implemented in _shared/eval-ab.mjs; run-evals.mjs wired with --ab, --ab-summary,
+      --judge-cmd, and --max-tasks.
 - [ ] T5 [F1] Pilot: 4–6 tasks × 2 arms, record results, update README claim
       only with measured numbers.
 
@@ -151,3 +155,7 @@ budget (likely at T4). Boundary for review assess: 9556109.
   Full suite green pre-merge (pnpm test 125/125). CI runs on push (ubuntu+windows, node
   20/22). Feature branch continues at 29ff5f3 for T4/T5; next slice boundary for review
   assess advances to 29ff5f3.
+- 2026-10-10: T4 implemented (Live A/B eval harness). Added _shared/eval-ab.mjs with
+  double-blind randomization, rubric scoring, LLM judge evaluation mapper, and summary table
+  formatting. Updated scripts/run-evals.mjs with --ab, --ab-summary, --judge-cmd, and --max-tasks.
+  New unit suite test/evals-ab.test.mjs passes 6/6 tests. Full suite 131/131 PASS, doctor 6/6 PASS.

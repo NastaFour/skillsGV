@@ -7,22 +7,22 @@
  * it is never wired to `pnpm test` or CI and must be run explicitly:
  *
  *   node scripts/run-evals.mjs --live [--skill <name>] [--agent-cmd "<cmd>"] [--timeout <ms>]
+ *   node scripts/run-evals.mjs --ab [--skill <name>] [--agent-cmd "<cmd>"] [--judge-cmd "<cmd>"] [--max-tasks <n>]
+ *   node scripts/run-evals.mjs --ab-summary [file]
  *   node scripts/run-evals.mjs --compare [--skill <name>]
  *
- * --live executes every eval prompt against the configured agent command
- * (--agent-cmd or the EVAL_AGENT_CMD env var; the prompt is appended as the
- * final argument) and records the run in `evals/results/<timestamp>.json`.
- * contains/not-contains/regex check the live stdout; routes-to still invokes
- * the local skill-router (routing is a deterministic local invariant). The
- * exit code reflects the live results for local scripting — no gate depends
- * on it.
+ * --ab executes double-blind randomized A/B evaluation comparing:
+ * - Arm Control (Bare): baseline agent prompt without skill.
+ * - Arm Treatment (Skill): agent prompt with loaded/injected skill instructions.
+ * - Judge: blind evaluation (via --judge-cmd / EVAL_JUDGE_CMD or deterministic rubric).
+ * Results are saved to `evals/results/ab-<timestamp>.json`.
  *
- * --compare reads the two most recent history files and reports regressions
- * (true -> false), fixes (false -> true), and added/removed checks. Exit 1
- * when a regression is found.
+ * --live executes each eval prompt against the configured agent command
+ * (--agent-cmd or EVAL_AGENT_CMD) and records the run in `evals/results/<timestamp>.json`.
  *
- * Never invents an agent command: without --agent-cmd/EVAL_AGENT_CMD the live
- * mode stops with instructions. Node-only, ESM, Windows-first, no deps.
+ * --compare reads the two most recent history files and reports regressions.
+ *
+ * Node-only, ESM, Windows-first, no deps.
  */
 
 import { spawnSync } from "node:child_process";
@@ -36,6 +36,11 @@ import {
   readEvalJson,
   validateEvalSuite,
 } from "../_shared/eval-harness.mjs";
+import {
+  runAbLoop,
+  formatAbSummaryTable,
+  calculateAbSummary,
+} from "../_shared/eval-ab.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HISTORY_DIR = join(REPO_ROOT, "evals", "results");
@@ -48,14 +53,22 @@ function printHelp() {
 
 Usage:
   node scripts/run-evals.mjs --live [--skill <name>] [--agent-cmd "<cmd>"] [--timeout <ms>]
+  node scripts/run-evals.mjs --ab [--skill <name>] [--agent-cmd "<cmd>"] [--judge-cmd "<cmd>"] [--max-tasks <n>]
+  node scripts/run-evals.mjs --ab-summary [file]
   node scripts/run-evals.mjs --compare [--skill <name>]
 
+Modes:
   --live            Execute each eval prompt against the configured agent.
-                    Agent command: --agent-cmd or EVAL_AGENT_CMD (required).
-                    Example: $env:EVAL_AGENT_CMD = "opencode run"; node scripts/run-evals.mjs --live
+  --ab              Execute double-blind randomized A/B trial (Bare vs Skill).
+  --ab-summary      Format and print table from latest (or specified) ab-*.json.
   --compare         Diff the two most recent runs in evals/results/.
-  --skill <name>    Restrict to one skill suite (both modes).
-  --timeout <ms>    Per-eval timeout for --live (default ${DEFAULT_TIMEOUT_MS}).
+
+Options:
+  --agent-cmd <cmd> Command to invoke agent (or set EVAL_AGENT_CMD env var).
+  --judge-cmd <cmd> Optional LLM judge command for A/B (or set EVAL_JUDGE_CMD).
+  --skill <name>    Restrict to one skill suite.
+  --max-tasks <n>   Maximum number of tasks to run (useful for quick pilots).
+  --timeout <ms>    Per-eval timeout in ms (default ${DEFAULT_TIMEOUT_MS}).
 
 This script never runs in pnpm test/CI; the offline gate is test/evals.test.mjs.`);
 }
@@ -64,13 +77,25 @@ const args = process.argv.slice(2);
 let mode = null;
 let skillFilter = null;
 let agentCmd = null;
+let judgeCmd = null;
+let maxTasks = null;
+let summaryFile = null;
 let timeoutMs = DEFAULT_TIMEOUT_MS;
+
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === "--live") mode = "live";
-  else if (a === "--compare") mode = "compare";
+  else if (a === "--ab") mode = "ab";
+  else if (a === "--ab-summary") {
+    mode = "ab-summary";
+    if (args[i + 1] && !args[i + 1].startsWith("--")) {
+      summaryFile = args[++i];
+    }
+  } else if (a === "--compare") mode = "compare";
   else if (a === "--skill") skillFilter = args[++i];
   else if (a === "--agent-cmd") agentCmd = args[++i];
+  else if (a === "--judge-cmd") judgeCmd = args[++i];
+  else if (a === "--max-tasks") maxTasks = parseInt(args[++i], 10);
   else if (a === "--timeout") timeoutMs = parseInt(args[++i], 10);
   else if (a === "--help" || a === "-h") {
     printHelp();
@@ -81,12 +106,14 @@ for (let i = 0; i < args.length; i++) {
     process.exit(2);
   }
 }
+
 if (!mode) {
-  console.error("Usage error: pass --live or --compare.");
+  console.error("Usage error: pass --live, --ab, --ab-summary, or --compare.");
   printHelp();
   process.exit(2);
 }
-if (mode === "live" && (!Number.isInteger(timeoutMs) || timeoutMs <= 0)) {
+
+if ((mode === "live" || mode === "ab") && (!Number.isInteger(timeoutMs) || timeoutMs <= 0)) {
   console.error("Usage error: --timeout must be a positive integer (ms).");
   process.exit(2);
 }
@@ -118,9 +145,8 @@ function assertValidSchemas(suites) {
   }
 }
 
-// --- Live mode ---------------------------------------------------------------
+// --- Tokenizer & Process Spawner ---------------------------------------------
 
-/** Best-effort tokenizer for a command line (double/single quoted segments). */
 function tokenizeCommand(command) {
   const tokens = [];
   let current = "";
@@ -144,7 +170,6 @@ function tokenizeCommand(command) {
   return tokens;
 }
 
-/** cmd.exe quoting fallback for .cmd/.bat launchers (pnpm, etc.) on Windows. */
 const winQuote = (value) => (/[\s"&|<>^]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value);
 
 function spawnAgent(tokens, prompt, timeout) {
@@ -171,6 +196,8 @@ function writeHistory(payload) {
   return `evals/results/${stamp}.json`;
 }
 
+// --- Live Single-Arm Mode ----------------------------------------------------
+
 function runLive() {
   const command = agentCmd ?? process.env.EVAL_AGENT_CMD ?? null;
   if (!command || !command.trim()) {
@@ -192,6 +219,7 @@ function runLive() {
   for (const suite of suites) {
     const { raw } = readEvalJson(suite.evalsPath);
     for (const item of raw.evals) {
+      if (maxTasks && results.length >= maxTasks) break;
       const run = spawnAgent(tokens, item.prompt, timeoutMs);
       const checks = item.expectations.map((exp) =>
         evaluateExpectation(exp, { text: run.stdout, prompt: item.prompt, root: REPO_ROOT })
@@ -243,14 +271,126 @@ function runLive() {
   process.exitCode = failureCount === 0 ? 0 : 1;
 }
 
-// --- Compare mode --------------------------------------------------------------
+// --- Live Double-Blind A/B Mode ----------------------------------------------
+
+function runAb() {
+  const command = agentCmd ?? process.env.EVAL_AGENT_CMD ?? null;
+  if (!command || !command.trim()) {
+    console.error("Missing agent command: pass --agent-cmd \"<cmd>\" or set EVAL_AGENT_CMD.");
+    console.error('Example: $env:EVAL_AGENT_CMD = "opencode run"; node scripts/run-evals.mjs --ab');
+    process.exit(2);
+  }
+  const tokens = tokenizeCommand(command);
+  if (tokens.length === 0) {
+    console.error(`Agent command "${command}" resolved to zero tokens.`);
+    process.exit(2);
+  }
+
+  const suites = selectSuites();
+  assertValidSchemas(suites);
+
+  const judgeCommand = judgeCmd ?? process.env.EVAL_JUDGE_CMD ?? null;
+  const judgeTokens = judgeCommand ? tokenizeCommand(judgeCommand) : null;
+
+  console.log(`Starting Live A/B Trial across ${suites.length} suite(s)...`);
+  console.log(`  Agent runner: ${command}`);
+  console.log(`  Judge runner: ${judgeCommand ? judgeCommand : "Deterministic Rubric (Auto-Score)"}`);
+  console.log("");
+
+  const agentRunner = (prompt) => spawnAgent(tokens, prompt, timeoutMs);
+
+  let judgeRunner = null;
+  if (judgeTokens && judgeTokens.length > 0) {
+    judgeRunner = (c1, c2, item) => {
+      const judgePrompt = [
+        `You are an impartial judge evaluating two candidate AI responses for a task.`,
+        `Task: ${item.prompt}`,
+        ``,
+        `--- Candidate 1 ---`,
+        c1.stdout,
+        `--- Candidate 2 ---`,
+        c2.stdout,
+        ``,
+        `Evaluate both candidates on task completion, correctness, adherence to conventions, and conciseness.`,
+        `Reply ONLY with valid JSON in this exact format:`,
+        `{"winner": "candidate1" | "candidate2" | "tie", "reason": "concise explanation"}`,
+      ].join("\n");
+
+      const run = spawnAgent(judgeTokens, judgePrompt, timeoutMs);
+      try {
+        const parsed = JSON.parse(run.stdout.trim());
+        if (["candidate1", "candidate2", "tie"].includes(parsed.winner)) {
+          return parsed.winner;
+        }
+      } catch {
+        // Fall back to score comparison
+      }
+      return c1.score > c2.score ? "candidate1" : c2.score > c1.score ? "candidate2" : "tie";
+    };
+  }
+
+  const abRun = runAbLoop({
+    root: REPO_ROOT,
+    agentRunner,
+    judgeRunner,
+    skillFilter,
+    maxTasks,
+    persistHistory: true,
+  });
+
+  for (const r of abRun.results) {
+    const icon = r.winner === "skill" ? "🏆 [Skill Win]" : r.winner === "bare" ? "⚠️  [Bare Win]" : "🤝 [Tie]";
+    console.log(`${icon} ${r.skill} :: ${r.taskId}`);
+    console.log(`    Bare: score ${r.bare.score}/5, ${r.bare.outputChars} chars, ${r.bare.durationMs}ms`);
+    console.log(`    Skill: score ${r.skill.score}/5, ${r.skill.outputChars} chars, ${r.skill.durationMs}ms`);
+  }
+
+  console.log("");
+  console.log(formatAbSummaryTable(abRun.summary));
+  if (abRun.historyPath) {
+    console.log(`\nPersisted run artifact: ${abRun.historyPath}`);
+  }
+}
+
+// --- A/B Summary Mode --------------------------------------------------------
+
+function runAbSummary() {
+  let targetPath = null;
+  if (summaryFile) {
+    targetPath = join(REPO_ROOT, summaryFile);
+    if (!existsSync(targetPath)) targetPath = summaryFile;
+  } else {
+    if (!existsSync(HISTORY_DIR)) {
+      console.error(`No history directory found at ${HISTORY_DIR}.`);
+      process.exit(2);
+    }
+    const files = readdirSync(HISTORY_DIR).filter((f) => f.startsWith("ab-") && f.endsWith(".json")).sort();
+    if (files.length === 0) {
+      console.error("No ab-*.json results found in evals/results/. Run --ab first.");
+      process.exit(2);
+    }
+    targetPath = join(HISTORY_DIR, files[files.length - 1]);
+  }
+
+  if (!existsSync(targetPath)) {
+    console.error(`Results file not found: ${targetPath}`);
+    process.exit(2);
+  }
+
+  const payload = JSON.parse(readFileSync(targetPath, "utf8"));
+  const summary = payload.summary ?? calculateAbSummary(payload.results ?? []);
+  console.log(formatAbSummaryTable(summary));
+  console.log(`\nSource: ${targetPath}`);
+}
+
+// --- Compare Mode ------------------------------------------------------------
 
 function runCompare() {
   if (!existsSync(HISTORY_DIR)) {
     console.error(`No history yet: ${HISTORY_DIR} does not exist. Run --live first.`);
     process.exit(2);
   }
-  const files = readdirSync(HISTORY_DIR).filter((f) => f.endsWith(".json")).sort();
+  const files = readdirSync(HISTORY_DIR).filter((f) => !f.startsWith("ab-") && f.endsWith(".json")).sort();
   if (files.length < 2) {
     console.error(`History has ${files.length} run(s); --compare needs at least 2.`);
     process.exit(2);
@@ -297,4 +437,6 @@ function runCompare() {
 }
 
 if (mode === "live") runLive();
+else if (mode === "ab") runAb();
+else if (mode === "ab-summary") runAbSummary();
 else runCompare();
