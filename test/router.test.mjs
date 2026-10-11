@@ -79,3 +79,13 @@ test('router redirects deprecated skills to canonical equivalents', () => {
   assert.equal(resDebugger.primary, 'systematic-debugging');
   assert.equal(resDebugger.deprecatedHit, 'expert-debugger');
 });
+
+test('router automatically detects UI surface tasks and injects design-driven into tier1toLoad', () => {
+  const resUI = runRouter('crear un componente de dashboard en react');
+  assert.equal(resUI.isUiTask, true, 'Visual dashboard query should be detected as UI task');
+  assert.ok(resUI.tier1toLoad.includes('design-driven'), 'tier1toLoad must include design-driven for UI tasks');
+
+  const resBackend = runRouter('database migration with prisma postgres');
+  assert.equal(resBackend.isUiTask, false, 'Database query should not be detected as UI task');
+});
+
