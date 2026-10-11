@@ -16,7 +16,7 @@ Implement the 6 Creative DNA Archetypes into D1b Block 2 (fusing dial calibratio
 - [x] **T3: Auto-Trigger in Skill Router & Router Tests**: Update `00-meta-skills/skill-router/scripts/skill-router.mjs` with `UI_SURFACE_MARKERS` to automatically inject `design-driven` and `taste-skill` in `tier1toLoad` when UI queries are routed. Add unit tests in `test/router.test.mjs`. (Commit: `76c546f`)
 - [x] **T4: ODD Contract & AGENTS.md Enforcement**: Update `AGENTS.md` and `00-meta-skills/odd-workflow/SKILL.md` to encode the non-negotiable Design Gate before writing any frontend/UI code. (Commit: `98f8f54`)
 - [x] **T5: Catalog Integrity & Full Verification Suite**: Run `node 00-meta-skills/skill-registry/scripts/generate-indexes.mjs --write`, sync addon (`node scripts/sync-addon.mjs --write`), run `pnpm test` (136/136 pass), `pnpm validate:strict` (230/230 pass), `pnpm doctor` (6/6 pass), and `pnpm benchmark` (100% routing, 84.4% reduction).
-- [ ] **T6: Adversarial Judgment Day**: Run 2 blind independent judges evaluating the hardened design governance against AI-slop trap scenarios.
+- [x] **T6: Adversarial Judgment Day & RDD**: Ran RDD receipt capture (sha256:222c1e6d, acknowledged and burned) and 2 blind independent judges (Red Judge & Blue Judge). Both returned PASS WITH CONDITIONS. All 4 conditions remediated in commits `847e21f` and `59146c6`.
 - [ ] **T7: Merge & Push to Origin**: Merge feature branch to main, run final validation check, and push to origin/main.
 
 ## Verification Evidence
@@ -30,3 +30,7 @@ Implement the 6 Creative DNA Archetypes into D1b Block 2 (fusing dial calibratio
   - `pnpm test:addon`: 3 pass · 0 fail
   - `pnpm doctor`: 6/6 passed
   - `pnpm benchmark`: 100% routing, 100% suite evals (164/164)
+- T6: RDD & Judgment Day verification:
+  - RDD receipt captured: `gentle-ai.review-acknowledged/v1` burned against hash `sha256:222c1e6d45230a492f68f0c64a7287812a686bfedbbcbcff82df79b7f279775b`.
+  - Red Judge & Blue Judge blind adversarial evaluations: both returned PASS WITH CONDITIONS.
+  - Condition fixes committed: `847e21f` (unicode regex & bilingual markers) and `59146c6` (Fast-Path 1-line read for maintenance, mobile override for dense archetypes, multi-format comments & CSS native fallbacks).
