@@ -259,13 +259,27 @@ const skipJudgmentDay = diffLines !== null && diffLines < 100 && !CRITICAL_MARKE
 const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfall|rfc document)\b/i;
 const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
+// UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
+const UI_SURFACE_MARKERS = /(?:^|[^\p{L}\p{N}])(pantallas?|interfaz|interfaces?|components?|componentes?|dashboard|landing|forms?|formularios?|modals?|vistas?|views?|ui|frontend|diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|look|visual|layouts?|buttons?|botones?|navbars?|sidebars?|screens?|pages?|cards?|widgets?|theme|css|tailwind|estilos?)(?:$|[^\p{L}\p{N}])/iu;
+const isUiTask = UI_SURFACE_MARKERS.test(query);
+
+if (isUiTask && validSkillNames.has("design-driven")) {
+  if (primary !== "design-driven" && !secondary.includes("design-driven")) {
+    secondary = ["design-driven", ...secondary].slice(0, 4);
+  }
+}
+
 const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))];
+if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven") && tier1toLoad.length < 5) {
+  tier1toLoad.push("design-driven");
+}
 
 const output = {
   primary,
   secondary,
   confidence: Math.round(confidence * 100) / 100,
   suggestsStructuredFlow,
+  isUiTask,
   trivial,
   skipJudgmentDay,
   deprecatedHit,
@@ -288,8 +302,10 @@ else {
   console.log(`  Primary:     ${primary || "(none, agent decides)"}`);
   console.log(`  Secondary:   [${secondary.join(", ")}]`);
   console.log(`  Confidence:  ${output.confidence}`);
+  console.log(`  isUiTask:    ${isUiTask}`);
   console.log(`  trivial:     ${trivial}`);
   console.log(`  skipJD:      ${skipJudgmentDay}`);
   if (deprecatedHit) console.log(`  deprecatedHit: ${deprecatedHit} -> redirect to ${primary}`);
   console.log(`  Tier1 load:  [${tier1toLoad.join(", ")}]`);
 }
+
