@@ -36,19 +36,19 @@ Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
 | D5 | design-handoff | Spec visual TEXTUAL + assets exportados | strong | micro-interactions, motion-accessibility, technical-writer |
 | D6 | design-review | Judgment Day visual: 2 jueces ciegos contra el Design DNA | 2× strong | judgment-day, ux-auditor-agent |
 
-## F1 · Cuestionario de Unicidad (D1b — 5 bloques obligatorios secuenciales, sin atajos)
+## F1 · Cuestionario de Unicidad (D1b — Greenfield vs Fast-Path)
 
-> **Auto-Trigger & Vía SDD/ODD**: Toda interacción con superficie visual o código frontend activa obligatoriamente este gate. El brief D1 + el cuestionario D1b los ejecuta el ORQUESTADOR con el usuario en **5 bloques secuenciales (un bloque por turno)** ANTES de generar código UI. Si el usuario no conoce el pipeline o pide "hacé lo que quieras / auto", el orquestador infiere el arquetipo según la entropía de datos, emite el `Design Read` formal y construye sobre el chasis sin improvisar en el vacío.
+> **Auto-Trigger & Scoping**:
+> 1. **Greenfield / Nuevas Pantallas**: El brief D1 + el cuestionario D1b los ejecuta el ORQUESTADOR con el usuario en **5 bloques secuenciales (un bloque por turno)** ANTES de generar código UI. Si el usuario no conoce el pipeline o pide "hacé lo que quieras / auto", el orquestador infiere el arquetipo según la entropía de datos, emite el `Design Read` formal y construye sobre el chasis sin improvisar en el vacío.
+> 2. **Fast-Path (Mantenimiento Incremental)**: Para ajustes menores (diff < 50 líneas, bugfix, o agregar un botón/input a una pantalla existente), **no se corren los 5 bloques**. El orquestador emite un `Design Read` de 1 línea heredando el chasis/tokens del proyecto y procede directamente.
 
-Tras D1, el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales** (un bloque por turno, mínimo 8 preguntas). **Leer [references/d1b-questionnaire.md](references/d1b-questionnaire.md) ANTES de preguntar**.
+Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales** (un bloque por turno, mínimo 8 preguntas). **Leer [references/d1b-questionnaire.md](references/d1b-questionnaire.md) ANTES de preguntar**.
 
 1. **Las 3 P's**: Persona (quién es, 3 adjetivos, tono), Dolor (problema que paga por resolver), Promesa (qué se lleva en 10s).
-2. **ADN Arquetípico y Diales (Chasis)**: Selección de 1 de los 6 Chasis Arquetípicos (*Technical Monograph, Industrial Spec-Sheet, The Gallery, The Kinetic Utility, The Precision Instrument, The Humanist Companion*) que pre-calibra automáticamente los diales triaxiales (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), retícula y física de resortes, más la definición de las **3 Reglas Generativas Mecánicas**.
-3. **Referencias Reales**: 3-5 URLs reales con qué se toma de cada una + 2-3 anti-referencias. Nunca «inspirado en Linear» sin URL.
-4. **Firma, Heartbeat y Suelo A11y**: Elemento inolvidable, 1 acento OKLCH (<80% sat), tipografía por contraste (no Inter default), hero clamp 6rem, suelo WCAG 2.2 a11y min 12px, pantalla corazón crítica.
-5. **Anti-slop, Anti-Faux-Density y Restricciones**: 10 Absolute Bans de `taste-skill` + prohibición de falsa densidad/telemetría decorativa + límites de dependencias + física de resortes cuantitativa (no `transition: all 0.3s ease`).
-
-**Regla dura:** Si responde «lo que quieras / no sé», proponer 2 opciones de ejemplo y esperar. Prohibido asumir o rellenar con defaults.
+2. **ADN Arquetípico y Diales (Chasis)**: Selección de 1 de los 7 Chasis Arquetípicos (*Technical Monograph, Industrial Spec-Sheet, The Gallery, The Kinetic Utility, The Precision Instrument, The Humanist Companion, The System Native*) que pre-calibra automáticamente los diales triaxiales (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), retícula y física de resortes (con fallback CSS nativo), más la definición de las **3 Reglas Generativas Mecánicas**.
+3. **Referencias Reales**: 3-5 URLs reales o productos ancla con qué se toma de cada uno + 2-3 anti-referencias.
+4. **Firma, Heartbeat y Suelo A11y**: Elemento inolvidable, 1 acento OKLCH (<80% sat), tipografía por contraste (Inter permitido si es corporativo preexistente), hero clamp 6rem, suelo WCAG 2.2 a11y min 12px, pantalla corazón crítica.
+5. **Anti-slop, Anti-Faux-Density y Restricciones**: 10 Absolute Bans de `taste-skill` + prohibición de falsa telemetría decorativa + límites de dependencias + física de resortes cuantitativa o fallback cubic-bezier.
 
 ## F2 · Confirmaciones intermedias (mínimo, sin abrumar)
 
@@ -60,7 +60,7 @@ Tras D1, el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales**
 
 - Cada respuesta se consolida en **design-artifacts/<project>/design-dna.md** con los campos:
   - `persona` / `dolor` / `promesa`
-  - `archetype`: `{name, preset, physics_spring}`
+  - `archetype`: `{name, preset, physics_spring, css_fallback}`
   - `generative_rules`: `[rule1_layout, rule2_surface, rule3_type_scale]`
   - `dials`: `{variance, motion, density}`
   - `references`: `[{url, takeaway}]`
@@ -75,9 +75,9 @@ Tras D1, el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales**
 
 ## F4 · Modos y reglas transversales
 
-- Cachear **interactive|auto** por sesión. En auto, mantener SIEMPRE D1b (cuestionario) y D5 (aprobación); omitir solo las confirmaciones intermedias si el usuario lo pide.
+- Cachear **interactive|auto** por sesión. En auto, mantener SIEMPRE D1b (cuestionario o inferencia) y D5 (aprobación); omitir solo las confirmaciones intermedias si el usuario lo pide.
 - Si el usuario manda referencias como imágenes y el modelo no ve → Antigravity/od traduce a spec textual.
-- Preferencias de marca NUNCA se inventan; en ausencia de respuesta, se proponen opciones y se espera elección.
+- Preferencias de marca NUNCA se inventan en vacío; en ausencia de respuesta, se infieren según el dominio del producto o se proponen opciones.
 
 ## Gates
 
@@ -88,7 +88,7 @@ Tras D1, el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales**
 ## Regla anti-slop & Anti-Attention-Decay
 
 1. Nunca entregues una pantalla sin pasar por D3 (tokens) y sin Design DNA. El diseño no se improvisa en el apply.
-2. **Inyección en cabecera**: Todo archivo frontend nuevo generado debe incluir en su primera línea de comentario las directivas del arquetipo y sus 3 reglas generativas (ej: `/* @design-archetype: Technical Monograph | Rules: 1:3 asymmetric grid, 1px hairline dividers, tabular numbers */`) para evitar que el LLM decaiga en su centroide estadístico durante sesiones largas.
+2. **Inyección en cabecera multi-formato**: Todo archivo frontend nuevo generado debe incluir en su primera línea de comentario las directivas del arquetipo y sus 3 reglas generativas usando la sintaxis nativa del archivo (`/* @design-archetype: ... */` en JS/TS/CSS/Dart, `<!-- @design-archetype: ... -->` en HTML/Vue templates, `# @design-archetype: ...` en Python/YAML, y omitir en `.json` estricto) para evitar que el LLM decaiga en su centroide estadístico durante sesiones largas.
 
 ## Persistencia
 
