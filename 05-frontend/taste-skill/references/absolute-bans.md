@@ -64,5 +64,10 @@ Estas directrices no son opcionales; son restricciones de ingeniería frontend:
 - **Ancho de Prosa**: Párrafos y bloques de lectura restringidos a **`65ch - 75ch`**.
 - **Prohibición de Inter como Default**: Prohibido usar la fuente *Inter* como predeterminado perezoso sin justificación de brief. Explorar tipografías con contraste de ejes (Serif+Sans, Geometric+Humanist).
 - **Accesibilidad de Movimiento**: `prefers-reduced-motion` obligatorio siempre que el dial `MOTION_INTENSITY > 3`.
-- **Estabilidad de Viewport**: Usar siempre `min-h-[100dvh]` en lugar de `h-screen` para evitar saltos por barras retráctiles de navegador móvil.
+- **Estabilidad de Viewport**: Usar siempre `min-h-[100dvh]` en lugar de `h-screen` para evitar saltos por barras retráctiles de navegador móvil (salvo en Kinetic Utility que fija `h-[100dvh] overflow-hidden`).
+- **Suelo de Legibilidad WCAG 2.2**: Texto visible con suelo mínimo absoluto de `clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)` (min 12px) con peso $\ge 500$ en metadatos y etiquetas. Prohibido texto inferior a 12px en interfaces operativas.
+- **Zonificación Estricta de Monospace**: Prohibido usar fuentes monoespaciadas para prosa corrida o párrafos largos (degrada lectura un 25-30%). Monospace queda restringido exclusivamente a telemetría, código y números tabulares (`tabular-nums lining-nums`).
+- **Anti-Faux-Density (Tufte)**: Prohibido simular métricas, datos o números de serie falsos (`SYS_STATUS: 0x4F`) cuando el producto carece de entropía real de datos (cosplay técnico decorativo).
+- **Física de Movimiento Explícita**: Prohibido `transition: all 0.3s ease` genérico. Transiciones limitadas a propiedades aceleradas por GPU (`transform`, `opacity`) aplicando el perfil cuantitativo de resortes del chasis arquetípico.
 - **Bento Grids**: Al menos el 30% de las celdas deben contener variación de textura (foto real, patrón abstracto o color sólido contrastante), y tener exactamente $N$ celdas funcionales para $N$ elementos (sin relleno vacío).
+
