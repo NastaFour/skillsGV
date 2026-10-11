@@ -85,7 +85,16 @@ test('router automatically detects UI surface tasks and injects design-driven in
   assert.equal(resUI.isUiTask, true, 'Visual dashboard query should be detected as UI task');
   assert.ok(resUI.tier1toLoad.includes('design-driven'), 'tier1toLoad must include design-driven for UI tasks');
 
+  const resEn = runRouter('create a button component in react');
+  assert.equal(resEn.isUiTask, true, 'English UI component query must be detected as UI task');
+  assert.ok(resEn.tier1toLoad.includes('design-driven'), 'tier1toLoad must include design-driven for English UI tasks');
+
+  const resAccents = runRouter('diseño de login en react');
+  assert.equal(resAccents.isUiTask, true, 'Spanish query with accents (diseño) must be detected as UI task');
+  assert.ok(resAccents.tier1toLoad.includes('design-driven'), 'tier1toLoad must include design-driven for accented UI tasks');
+
   const resBackend = runRouter('database migration with prisma postgres');
   assert.equal(resBackend.isUiTask, false, 'Database query should not be detected as UI task');
 });
+
 

@@ -259,9 +259,10 @@ const skipJudgmentDay = diffLines !== null && diffLines < 100 && !CRITICAL_MARKE
 const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfall|rfc document)\b/i;
 const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
-// UI Surface Markers: auto-trigger design governance for any visual/UI task
-const UI_SURFACE_MARKERS = /\b(pantalla|interfaz|componente|dashboard|landing|formulario|modal|vista|ui|frontend|diseno|redisenar|look|visual|layout)\b/i;
-const isUiTask = UI_SURFACE_MARKERS.test(qLower);
+// UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
+const UI_SURFACE_MARKERS = /(?:^|[^\p{L}\p{N}])(pantallas?|interfaz|interfaces?|components?|componentes?|dashboard|landing|forms?|formularios?|modals?|vistas?|views?|ui|frontend|diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|look|visual|layouts?|buttons?|botones?|navbars?|sidebars?|screens?|pages?|cards?|widgets?|theme|css|tailwind|estilos?)(?:$|[^\p{L}\p{N}])/iu;
+const isUiTask = UI_SURFACE_MARKERS.test(query);
+
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {
     secondary = ["design-driven", ...secondary].slice(0, 4);
