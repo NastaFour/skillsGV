@@ -21,6 +21,8 @@ The universal, disciplined protocol for software delivery across AI agents. Repl
 2. **NO GUESSWORK ON PRODUCT DECISIONS**: Never guess unstated business logic. Ask exactly ONE focused question and STOP until answered.
 3. **NO VERBAL CLAIMS WITHOUT OBSERVED EVIDENCE**: Never output "it works" or mark a task complete without executing and observing the verification command output in the current session.
 4. **NO MONOLITHIC MULTI-TASK COMMITS**: Every task closes with its own atomic work-unit commit on the feature branch with tests and docs included.
+5. **NO UI MUTATION WITHOUT DESIGN GATE (D1b)**: For changes touching frontend or visual surfaces, NEVER emit component markup or styling without executing the Design Read and establishing the Creative DNA Archetype from `design-driven` D1b.
+
 
 ---
 

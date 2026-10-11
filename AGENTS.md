@@ -30,4 +30,5 @@ Gentle-AI 4.0.0 ODD es la única vía de desarrollo autorizada. Todo cambio sigu
 - **TDD aplicable**: Si existe runner determinista, observá RED antes de implementar, GREEN al completar, y refactorizá manteniendo verde.
 - **Memoria persistente**: Si Engram MCP está disponible, guardá decisiones y descubrimientos con `mem_save` y consultá contexto previo con `mem_search`.
 - **Revisión adversarial**: Cambios de alto impacto pasan por `judgment-day` (dos jueces ciegos independientes) antes de entrega final.
-- **Anti-slop frontend**: Toda interfaz web o móvil sigue `impeccable` y `taste-skill` (10 Absolute Bans, diales 1-10).
+- **Anti-slop frontend & Design Gate obligatorio**: Toda tarea con superficie visual o código frontend activa obligatoriamente la fase D1b de `design-driven` antes de escribir código UI. El diseño se ancla en uno de los 6 Chasis Arquetípicos (Monograph, Spec-Sheet, Gallery, Kinetic, Precision, Humanist) y declara sus 3 reglas generativas mecánicas en cabecera (`/* @design-archetype: ... */`). Prohibido generar interfaces sin Design Read previo o inventar estética en el vacío; si el usuario no define estilo, el agente infiere el chasis según la entropía de datos del producto.
+
