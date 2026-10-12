@@ -520,3 +520,38 @@ test("catalog-doctor skill-references: target-project application source roots a
   const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
   assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
 });
+
+test("catalog-doctor skill-references: skill-local scripts/ path does not resolve via an unrelated skill", (t) => {
+  const root = makeFixture(t);
+  const skillA = writeSkillFile(root, join("13-cat", "skill-a"), "skill-a", "Owns [the helper](scripts/helper.mjs).");
+  mkdirSync(join(skillA, "scripts"), { recursive: true });
+  writeFileSync(join(skillA, "scripts", "helper.mjs"), "// helper\n", "utf8");
+  writeSkillFile(root, join("13-cat", "skill-b"), "skill-b", "Run `scripts/helper.mjs` before release.");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0, `Expected a finding for skill-b: ${res.stdout}`);
+  const cause = res.json.checks[0].cause;
+  assert.match(cause, /skill-b\/SKILL\.md -> scripts\/helper\.mjs/);
+  assert.doesNotMatch(cause, /skill-a\/SKILL\.md/, "skill-a referencing its own script must stay clean");
+});
+
+test("catalog-doctor skill-references: dot-relative markdown links are validated locally (code examples still skipped)", (t) => {
+  const root = makeFixture(t);
+  const dir = writeSkillFile(
+    root,
+    join("14-cat", "dot-link-skill"),
+    "dot-link-skill",
+    "See [the sibling](./missing-sibling.md), the [format](./CONTEXT-FORMAT.md), and `import db from './db.js'`."
+  );
+  writeFileSync(join(dir, "CONTEXT-FORMAT.md"), "# Format\n", "utf8");
+  // Suffix decoy: a `./` link must NOT resolve through another skill's file.
+  mkdirSync(join(root, "14-cat", "decoy-skill"), { recursive: true });
+  writeFileSync(join(root, "14-cat", "decoy-skill", "missing-sibling.md"), "# Decoy\n", "utf8");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0, `Expected the missing dot-relative link to fail: ${res.stdout}`);
+  const cause = res.json.checks[0].cause;
+  assert.match(cause, /missing-sibling\.md/);
+  assert.doesNotMatch(cause, /CONTEXT-FORMAT\.md/, "an existing dot-relative sibling must resolve");
+  assert.doesNotMatch(cause, /db\.js/, "dot-relative code examples must stay skipped");
+});

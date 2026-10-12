@@ -14,8 +14,8 @@
  *   - In .css files, hex values on CSS custom-property lines (`--name: ...`)
  *     are token definitions and are exempt.
  *   - A `data-token-audit-ignore` attribute on an element line — or anywhere
- *     in the scanned window of a multiline `class={` / `className="` opening —
- *     suppresses Tailwind literal findings for that element.
+ *     in the opening-tag region of a multiline `class={` / `className="`
+ *     opening — suppresses Tailwind literal findings for that element.
  *   - Hex inside comments is deliberately NOT exempt: slop hides in comments.
  *
  * Usage:
@@ -53,7 +53,9 @@ const CSS_CUSTOM_PROPERTY_RE = /--[\w-]+\s*:/;
 // A class attribute whose value opens on this line and continues below:
 // `class={` / `className={` / `class="` with nothing after the opener.
 const MULTILINE_CLASS_OPEN_RE = /class(?:Name)?\s*=\s*[{"]?\s*$/;
-const MULTILINE_WINDOW_LINES = 5;
+// Hard cap for the opening-tag region scan: malformed input must never read
+// the whole file.
+const MULTILINE_WINDOW_MAX_LINES = 30;
 
 const RULE_HEX = "hardcoded-hex";
 const RULE_TAILWIND = "raw-tailwind-color";
@@ -74,6 +76,42 @@ function collectSourceFiles(dir, out = []) {
     }
   }
   return out;
+}
+
+/**
+ * Region of a multiline opening tag: from the `class=` opener line through
+ * the line holding the `>` that closes the tag. A `>` inside quotes or inside
+ * a `{...}` expression (`=>`, `a > b`) does not close it, and scanning stops
+ * at that closing `>`, so child content is excluded. Hard-capped so malformed
+ * input cannot scan the whole file.
+ */
+function multilineTagWindow(lines, openerIndex) {
+  const window = [];
+  let quote = null;
+  let depth = 0;
+  let escaped = false;
+  for (let i = openerIndex; i < lines.length && window.length < MULTILINE_WINDOW_MAX_LINES; i++) {
+    let text = lines[i];
+    let closed = false;
+    for (let j = 0; j < text.length; j++) {
+      const ch = text[j];
+      if (escaped) escaped = false;
+      else if (quote) {
+        if (ch === "\\") escaped = true;
+        else if (ch === quote) quote = null;
+      } else if (ch === '"' || ch === "'") quote = ch;
+      else if (ch === "{") depth++;
+      else if (ch === "}") depth = Math.max(0, depth - 1);
+      else if (ch === ">" && depth === 0 && text[j - 1] !== "=") {
+        text = text.slice(0, j);
+        closed = true;
+        break;
+      }
+    }
+    if (i > openerIndex) window.push(text);
+    if (closed) break;
+  }
+  return window;
 }
 
 function scanFile(absPath, srcDir, findings) {
@@ -110,11 +148,12 @@ function scanFile(absPath, srcDir, findings) {
       findings.push({ file, line: lineNumber, rule: RULE_TAILWIND, snippet });
     }
 
-    // Multiline class attributes: the opener ends the line, so scan a bounded
-    // look-ahead window for raw literals and report each at its own line.
-    // `data-token-audit-ignore` anywhere in the window suppresses the element.
+    // Multiline class attributes: the opener ends the line, so scan the
+    // opening-tag region (through the closing `>`) for raw literals and report
+    // each at its own line. `data-token-audit-ignore` anywhere in the region
+    // suppresses the element; child content after `>` stays out of scope.
     if (MULTILINE_CLASS_OPEN_RE.test(line)) {
-      const window = lines.slice(i + 1, i + 1 + MULTILINE_WINDOW_LINES);
+      const window = multilineTagWindow(lines, i);
       const ignored =
         line.includes(IGNORE_ATTRIBUTE) || window.some((entry) => entry.includes(IGNORE_ATTRIBUTE));
       if (!ignored) {
@@ -181,7 +220,7 @@ Allowlist:
   - Files whose path matches token|theme|variables are token definitions.
   - In .css files, hex on a CSS custom-property line (--name: ...) is exempt.
   - data-token-audit-ignore on an element line (or anywhere in a multiline
-    class window) suppresses Tailwind findings.
+    opening-tag region) suppresses Tailwind findings.
 
 Exit codes: 0 = clean, 1 = findings, 2 = usage error.`);
 }

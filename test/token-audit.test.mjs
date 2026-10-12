@@ -226,3 +226,46 @@ test("token-audit: data-token-audit-ignore anywhere in the multiline window supp
   const res = runAudit(["--srcDir", dir]);
   assert.equal(res.code, 0, `Expected clean exit: ${res.stdout} ${res.stderr}`);
 });
+
+test("token-audit: flags a literal deep in a long multiline class list beyond the old fixed window", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div className={\n    "flex items-center"\n    + " justify-between gap-4"\n    + " rounded-lg border"\n    + " px-4 py-2 text-sm"\n    + " tracking-tight"\n    + " bg-white"\n  }\n>\n  A\n</div>\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected the deep literal to be flagged: ${res.stdout} ${res.stderr}`);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 1);
+  assert.equal(json.findings[0].line, 7, "the finding must point at the literal's line");
+});
+
+test("token-audit: plain child text after the opening tag closes is not flagged", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div\n  className={\n    "flex p-4"\n  }\n>\n  <span>bg-white</span>\n</div>\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `Expected clean exit for child text: ${res.stdout} ${res.stderr}`);
+  assert.equal(JSON.parse(res.stdout).total, 0);
+});
+
+test("token-audit: a child's data-token-audit-ignore does not suppress the parent element", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div\n  className={\n    "bg-white p-4"\n  }\n>\n  <span data-token-audit-ignore>b</span>\n</div>\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected the parent finding to survive: ${res.stdout} ${res.stderr}`);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 1);
+  assert.equal(json.findings[0].line, 3);
+});

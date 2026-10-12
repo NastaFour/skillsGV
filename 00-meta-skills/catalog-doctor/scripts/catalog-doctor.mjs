@@ -331,6 +331,13 @@ const CODE_PATH_RE = new RegExp(
 const SKIPPED_REFERENCE_PREFIXES = ["design-artifacts/", "odd/", ".atl/"];
 
 /**
+ * Skill-local path shapes: these only make sense relative to the owning skill
+ * directory (or the catalog root), so catalog-wide suffix search must never
+ * let an unrelated skill's same-named file mask a broken reference.
+ */
+const SKILL_LOCAL_PREFIXES = ["references/", "scripts/", "assets/", "docs/"];
+
+/**
  * Directories excluded from every catalog walk: VCS metadata, dependencies,
  * the vendored addon mirror, and shared non-skill resources.
  */
@@ -384,7 +391,6 @@ function isSkippableReference(refPath) {
   if (/^(https?:|mailto:|#|~|\/)/.test(refPath)) return true;
   if (refPath.includes("://") || refPath.startsWith("//")) return true;
   if (/[<>{}]/.test(refPath)) return true;
-  if (refPath.startsWith("./")) return true;
   const firstSegment = refPath.split("/")[0];
   if (TARGET_PROJECT_SOURCE_ROOTS.has(firstSegment)) return true;
   if (hasPlaceholderSegment(refPath)) return true;
@@ -427,11 +433,15 @@ function extractSkillReferences(content) {
  *       repo-relative file path (with leading `../`/`skills/` normalized),
  *       so unique basenames like `project-tracker/SKILL.md` resolve regardless
  *       of depth.
+ * Skill-local shapes (`references/`, `scripts/`, `assets/`, `docs/`) and
+ * dot-relative markdown link targets (`./x.md`) are explicitly local: only
+ * (a) and (b) apply, so suffix collisions cannot mask broken references.
  */
-function resolvesReference(refPath, skillDir, root, suffixIndex) {
+function resolvesReference(refPath, skillDir, root, suffixIndex, localOnly = false) {
   if (existsSync(resolve(skillDir, refPath)) || existsSync(resolve(root, refPath))) {
     return true;
   }
+  if (localOnly) return false;
 
   const strippedSkills = refPath.replace(/^skills\//, "");
   if (strippedSkills !== refPath && existsSync(resolve(root, strippedSkills))) return true;
@@ -477,13 +487,21 @@ export function checkSkillReferences(root) {
     const skillDir = dirname(file);
 
     for (const { ref, context } of extractSkillReferences(content)) {
-      const refPath = ref.split("#")[0].split("?")[0];
+      const rawRef = ref.split("#")[0].split("?")[0];
+      if (!rawRef) continue;
+      // `./` inside a backtick span is a code example (`import db from './db.js'`),
+      // not a reference. A dot-relative markdown link IS a reference and is
+      // explicitly local: skill directory or catalog root only.
+      if (rawRef.startsWith("./") && context === "code") continue;
+      const refPath = rawRef.startsWith("./") ? rawRef.slice(2) : rawRef;
       if (!refPath || isSkippableReference(refPath)) continue;
       const key = `${skill}::${refPath}`;
       if (seen.has(key)) continue;
       seen.add(key);
 
-      if (!resolvesReference(refPath, skillDir, root, suffixIndex)) {
+      const localOnly =
+        refPath !== rawRef || SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix));
+      if (!resolvesReference(refPath, skillDir, root, suffixIndex, localOnly)) {
         findings.push({ skill, path: refPath, context });
       }
     }
