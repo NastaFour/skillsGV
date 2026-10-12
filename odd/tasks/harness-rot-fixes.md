@@ -52,14 +52,25 @@ Direct merge `fix/harness-rot-gates` → `main` + push (user-authorized in-sessi
 
 ## Verification evidence (fill per task)
 
-(to be filled as tasks complete)
+- WU1: RED 11/11 fail (script absent) → GREEN 11/11 pass; commit `3deba18`. token-audit.mjs 204 lines, exit codes 0/1/2, allowlists (token/theme/variables paths, `--*:` CSS lines, data-token-audit-ignore).
+- WU2: RED 8/12 fail (unknown check id) → GREEN 12/12 pass; commit `d163c76`. skill-references check in doctor CHECKS table; real-tree run: 29 dangling refs (token-audit ref resolved by WU1).
+- Full suite after WU1+WU2: 152/152 pass (`pnpm test`).
+- Feature doc committed: `docs(odd): add harness-rot-fixes feature doc`.
 
-## RDD ledger (fill per commit)
+## RDD ledger
 
 | WU | Commit | Assessed tier | Outcome |
 |----|--------|---------------|---------|
-(to be filled)
+| WU1+WU2+doc | 4a02568..HEAD (7 files, 734 lines) | medium (executable_change, slice_budget_reached) | review lineage `review-b3d9138686bbcd47` CONSENT GRANTED → 1 lens review-reliability (relay via Antigravity manual `--input` after OpenCode transport refused) → capture admitted → **escalated** (`native_stop_required`, `unknown_causality` on R3-relaxed-tests-mask-regressions-and-break-ci; location unverifiable by native). Informational for maintainer; both CRITICALs are addressed by WU3. No terminal receipt for this slice. |
+
+### R3 findings to resolve in WU3
+
+1. CRITICAL R3-false-positives-break-catalog-doctor-gate (deterministic, introduced) → WU3a target-project skip rules + resolution ladder.
+2. CRITICAL R3-relaxed-tests-mask-regressions-and-break-ci (escalated/unknown causality; content real) → WU3b repairs + re-tighten tests → `pnpm doctor` 7/7 green.
+3. WARNING R3-nondeterministic-finding-order → sort traversal/findings in WU3a.
+4. SUGGESTION R3-extension-allowlist-false-negatives → extend extensions in WU3a.
+5. SUGGESTION R3-token-audit-multiline-jsx-false-negatives → multiline class tracking in WU3c.
 
 ## Progress / Next step
 
-Next: delegate WU1+WU2 to one bounded writer.
+WU1+WU2 done. Next: delegate WU3 (a: check hardening; b: repairs + strict tests; c: token-audit multiline). Then WU4 docs, WU5 manifest, Judgment Day, merge.
