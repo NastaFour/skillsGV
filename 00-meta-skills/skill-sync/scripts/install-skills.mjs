@@ -832,7 +832,7 @@ function main() {
         }
       });
 
-  const filtered = tools.length ? detected.filter((t) => tools.includes(t.id)) : detected;
+  const filtered = tools.length ? AGENT_TARGETS.filter((t) => tools.includes(t.id)) : detected;
   if (filtered.length === 0) {
     console.log("❌ No matching tools detected.");
     if (tools.length === 0) {

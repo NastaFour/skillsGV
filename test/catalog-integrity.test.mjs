@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { join, basename } from 'node:path';
 
 function walkSkills(dir) {
+  if (!existsSync(dir)) return [];
   let out = [];
   const entries = readdirSync(dir, { withFileTypes: true });
   for (const e of entries) {
@@ -94,6 +95,9 @@ test('residual proyecto.txt does not exist in catalog', () => {
 });
 
 test('zero [APP], barber, or supermarket contamination in gentle-ai-dsh/skills', () => {
+  if (!existsSync('gentle-ai-dsh/skills')) {
+    execFileSync('node', ['scripts/sync-addon.mjs', '--write'], { stdio: 'pipe' });
+  }
   const dshSkills = walkSkills('gentle-ai-dsh/skills');
   const violations = [];
   for (const s of dshSkills) {
