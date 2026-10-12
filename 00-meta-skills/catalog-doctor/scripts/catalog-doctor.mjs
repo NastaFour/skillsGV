@@ -3,13 +3,14 @@
  * catalog-doctor.mjs — Unified Catalog Health Check
  *
  * Requirements (spec: catalog-doctor, change skills-25-upgrade WU5b):
- * - Aggregates 6 diagnostic health checks:
+ * - Aggregates 7 diagnostic health checks:
  *   1. validate-skills.mjs --strict --json
  *   2. install-skills.mjs --dry-run --all-tools
  *   3. skills-loader.mjs --status
  *   4. generate-indexes.mjs --check
  *   5. validate-skills.mjs --check-deps --json
  *   6. MCP manifest and frontmatter bidirectional parity
+ *   7. Skill relative file reference integrity (in-process)
  * - Read-only: MUST NOT mutate filesystem, manifest, or install state.
  * - Constant command table for argv dispatch.
  * - Exit 0 if all checks pass; Exit != 0 with actionable causes if any fails.
@@ -20,7 +21,7 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, resolve, dirname } from "node:path";
+import { join, resolve, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
@@ -145,6 +146,14 @@ export const DOCTOR_COMMAND_TABLE = [
     relScript: null, // executed in-process
     buildArgs: null,
     run: (root) => checkMcpParity(root),
+  },
+  {
+    id: "skill-references",
+    name: "Skill reference integrity",
+    rootScope: ROOT_SCOPE.TARGET,
+    relScript: null, // executed in-process
+    buildArgs: null,
+    run: (root) => checkSkillReferences(root),
   },
 ];
 
@@ -291,6 +300,95 @@ export function checkMcpParity(root) {
   };
 }
 
+const REFERENCE_EXTENSIONS = "(?:md|mjs|js|json|yaml|yml|png)";
+const REFERENCE_FILE_RE = /\.(?:md|mjs|js|json|yaml|yml|png)\b/i;
+const SKILL_LINK_RE = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+const INLINE_CODE_SPAN_RE = /`([^`\n]+)`/g;
+const CODE_PATH_RE = new RegExp(
+  `[A-Za-z0-9_@.~-]+(?:\\/[A-Za-z0-9_@.~-]+)+\\.${REFERENCE_EXTENSIONS}\\b`,
+  "g"
+);
+const SKIPPED_REFERENCE_PREFIXES = ["design-artifacts/", "odd/", ".atl/"];
+
+function isSkippableReference(refPath) {
+  if (/^(https?:|mailto:|#|~|\/)/.test(refPath)) return true;
+  if (refPath.includes("://") || refPath.startsWith("//")) return true;
+  if (/[<>{}]/.test(refPath)) return true;
+  return SKIPPED_REFERENCE_PREFIXES.some((prefix) => refPath.startsWith(prefix));
+}
+
+/**
+ * Extracts candidate relative file references from a SKILL.md body:
+ * markdown link targets and inline-code paths with known file extensions.
+ * Fenced code blocks hold templates/examples, not references.
+ */
+function extractSkillReferences(content) {
+  const withoutFences = content.replace(/```[\s\S]*?```/g, "");
+  const refs = [];
+
+  for (const match of withoutFences.matchAll(SKILL_LINK_RE)) {
+    if (REFERENCE_FILE_RE.test(match[1])) refs.push({ ref: match[1], context: "link" });
+  }
+
+  for (const match of withoutFences.matchAll(INLINE_CODE_SPAN_RE)) {
+    const span = match[1];
+    for (const pathMatch of span.matchAll(CODE_PATH_RE)) {
+      const idx = pathMatch.index ?? 0;
+      if (idx > 0 && span[idx - 1] === "/") continue; // URL or absolute-path tail
+      refs.push({ ref: pathMatch[0], context: "code" });
+    }
+  }
+
+  return refs;
+}
+
+/**
+ * Verifies that every relative file reference in SKILL.md files resolves,
+ * either from the owning skill directory or from the catalog root.
+ */
+export function checkSkillReferences(root) {
+  const skillFiles = walkSkillFiles(root);
+  const findings = [];
+  const seen = new Set();
+
+  for (const file of skillFiles) {
+    let content;
+    try {
+      content = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    const skill = relative(root, file).split(sep).join("/");
+    const skillDir = dirname(file);
+
+    for (const { ref, context } of extractSkillReferences(content)) {
+      const refPath = ref.split("#")[0].split("?")[0];
+      if (!refPath || isSkippableReference(refPath)) continue;
+      const key = `${skill}::${refPath}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const candidates = [resolve(skillDir, refPath), resolve(root, refPath)];
+      if (!candidates.some((candidate) => existsSync(candidate))) {
+        findings.push({ skill, path: refPath, context });
+      }
+    }
+  }
+
+  if (findings.length === 0) {
+    return {
+      pass: true,
+      summary: `All relative file references resolve (${skillFiles.length} SKILL.md file(s) scanned)`,
+    };
+  }
+
+  const details = findings.map((finding) => `${finding.skill} -> ${finding.path}`).join("; ");
+  return {
+    pass: false,
+    cause: `${findings.length} dangling reference(s): ${details}`,
+  };
+}
+
 /**
  * Runs the doctor suite against a catalog root.
  */
@@ -398,10 +496,11 @@ Checks:
   manifest-consistency  Verify catalog.json, SKILLS.md, and AGENTS.md consistency
   dependency-check      Check declared dependencies (bin, env, node)
   mcp-parity            Verify bidirectional parity between mcp-manifest.json and skills
+  skill-references      Verify relative file references in SKILL.md files resolve
 
 Root scope:
   --root is forwarded to validator-strict, manifest-consistency,
-  dependency-check and mcp-parity.
+  dependency-check, mcp-parity and skill-references.
   installer-dryrun and loader-status run the catalog resolved from THIS
   script's location; --root does not relocate them (documented limitation).
 

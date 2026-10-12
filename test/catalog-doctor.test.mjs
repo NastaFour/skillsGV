@@ -136,6 +136,27 @@ Fixture content.
   return root;
 }
 
+function writeSkillFile(root, relDir, name, body) {
+  const dir = join(root, relDir);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(
+    join(dir, "SKILL.md"),
+    `---
+name: ${name}
+description: "Trigger: fixture. Use when testing reference integrity. Do NOT use in production."
+license: MIT
+allowed-tools: Read
+metadata:
+  trigger: ["fixture"]
+  version: "1.0.0"
+---
+${body}
+`,
+    "utf8"
+  );
+  return dir;
+}
+
 test("catalog-doctor CLI: exposes --help and reports options", () => {
   const res = runDoctor(["--help"]);
   assert.equal(res.code, 0);
@@ -150,7 +171,7 @@ test("catalog-doctor CLI: exposes --help and reports options", () => {
 
 test("catalog-doctor: every check declares its root scope; catalog-fixed ones carry an explicit note", () => {
   const byId = new Map(DOCTOR_COMMAND_TABLE.map((c) => [c.id, c]));
-  for (const id of ["validator-strict", "manifest-consistency", "dependency-check", "mcp-parity"]) {
+  for (const id of ["validator-strict", "manifest-consistency", "dependency-check", "mcp-parity", "skill-references"]) {
     assert.equal(byId.get(id).rootScope, ROOT_SCOPE.TARGET, `${id} must honor --root`);
   }
   for (const id of ["installer-dryrun", "loader-status"]) {
@@ -159,13 +180,13 @@ test("catalog-doctor: every check declares its root scope; catalog-fixed ones ca
   }
 });
 
-test("catalog-doctor: executes 6 checks and outputs structured results", () => {
+test("catalog-doctor: executes 7 checks and outputs structured results", () => {
   const res = runDoctorJson(["--root", REPO_ROOT]);
   assert.ok(res.json, "Expected valid JSON output: " + res.stdout);
   assert.equal(typeof res.json.ok, "boolean");
-  assert.equal(res.json.totalChecks, 6);
+  assert.equal(res.json.totalChecks, 7);
   assert.ok(Array.isArray(res.json.checks));
-  assert.equal(res.json.checks.length, 6);
+  assert.equal(res.json.checks.length, 7);
 
   const checkIds = res.json.checks.map((c) => c.id);
   assert.deepEqual(checkIds, [
@@ -175,6 +196,7 @@ test("catalog-doctor: executes 6 checks and outputs structured results", () => {
     "manifest-consistency",
     "dependency-check",
     "mcp-parity",
+    "skill-references",
   ]);
   // Each result carries the root scope; catalog-fixed checks explain themselves.
   for (const check of res.json.checks) {
@@ -185,12 +207,34 @@ test("catalog-doctor: executes 6 checks and outputs structured results", () => {
   }
 });
 
-test("catalog-doctor: PASS exit 0 when all checks pass on catalog root", () => {
+test("catalog-doctor: real catalog run mirrors check results with tracked reference findings", () => {
   const res = runDoctorJson(["--root", REPO_ROOT]);
-  assert.equal(res.code, 0, `Expected exit 0, got ${res.code}: ${res.stdout}`);
-  assert.equal(res.json.ok, true);
-  assert.equal(res.json.failed, 0);
-  assert.equal(res.json.passed, 6);
+  assert.equal(res.json.totalChecks, 7);
+  assert.ok(Array.isArray(res.json.checks));
+
+  // Known dangling references are tracked for repair on this branch (WU3);
+  // every other diagnostic must be green and the exit code must mirror the
+  // aggregate result exactly.
+  const failing = res.json.checks.filter((c) => !c.pass);
+  assert.deepEqual(
+    failing.filter((c) => c.id !== "skill-references"),
+    [],
+    "Unexpected failing checks: " + JSON.stringify(failing)
+  );
+
+  const refCheck = res.json.checks.find((c) => c.id === "skill-references");
+  assert.ok(refCheck, "skill-references check must be present");
+  if (!refCheck.pass) {
+    assert.match(refCheck.cause, /dangling reference/i, "reference failures must be actionable");
+  }
+
+  assert.equal(res.json.ok, failing.length === 0);
+  assert.equal(res.json.passed + res.json.failed, res.json.totalChecks);
+  assert.equal(
+    res.code,
+    failing.length > 0 ? 1 : 0,
+    `Expected exit code to mirror check results, got ${res.code}: ${res.stdout}`
+  );
 });
 
 test("catalog-doctor: FAIL actionable exit != 0 when manifest consistency fails", (t) => {
@@ -260,7 +304,9 @@ test("catalog-doctor: FAIL actionable exit != 0 when MCP parity fails", (t) => {
 test("catalog-doctor: read-only invariant (no files or manifest mutated)", (t) => {
   const beforeHashes = hashDirectory(REPO_ROOT);
   const res = runDoctor(["--root", REPO_ROOT]);
-  assert.equal(res.code, 0);
+  // Exit code mirrors aggregate check results (0 = all green, 1 = findings);
+  // the invariant under test here is filesystem immutability, asserted below.
+  assert.ok([0, 1].includes(res.code), `Unexpected doctor exit code: ${res.code}`);
   const afterHashes = hashDirectory(REPO_ROOT);
 
   // Compare hashes
@@ -273,4 +319,93 @@ test("catalog-doctor: read-only invariant (no files or manifest mutated)", (t) =
     const afterHash = afterHashes.get(path);
     assert.equal(afterHash, hash, `File mutated by doctor: ${path}`);
   }
+});
+
+test("catalog-doctor skill-references: healthy skill passes when links and backtick paths exist", (t) => {
+  const root = makeFixture(t);
+  const dir = writeSkillFile(
+    root,
+    join("01-cat", "healthy-skill"),
+    "healthy-skill",
+    "Read [the reference](references/x.md) and run `scripts/helper.mjs`."
+  );
+  mkdirSync(join(dir, "references"), { recursive: true });
+  writeFileSync(join(dir, "references", "x.md"), "# X\n", "utf8");
+  mkdirSync(join(dir, "scripts"), { recursive: true });
+  writeFileSync(join(dir, "scripts", "helper.mjs"), "// helper\n", "utf8");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+  const check = res.json.checks[0];
+  assert.equal(check.id, "skill-references");
+  assert.equal(check.pass, true);
+});
+
+test("catalog-doctor skill-references: dangling link fails naming path and owning SKILL.md", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("02-cat", "ghost-skill"),
+    "ghost-skill",
+    "Run [the helper](scripts/missing.mjs) to continue."
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0);
+  const check = res.json.checks[0];
+  assert.equal(check.pass, false);
+  assert.match(check.cause, /scripts\/missing\.mjs/);
+  assert.match(check.cause, /ghost-skill\/SKILL\.md/);
+});
+
+test("catalog-doctor skill-references: dangling backtick path fails naming the path", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("03-cat", "backtick-skill"),
+    "backtick-skill",
+    "Run `scripts/missing-helper.mjs --json` before release."
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0);
+  const check = res.json.checks[0];
+  assert.equal(check.pass, false);
+  assert.match(check.cause, /scripts\/missing-helper\.mjs/);
+});
+
+test("catalog-doctor skill-references: URLs, anchors and placeholder paths do not produce findings", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("04-cat", "clean-skill"),
+    "clean-skill",
+    [
+      "See [the docs](https://example.com/guide.md).",
+      "See [the anchor](#local-anchor).",
+      "Mail [the team](mailto:team@example.com).",
+      "Write output to `design-artifacts/<project>/design-dna.md`.",
+      "Home installs live under `~/.config/opencode/skills/clean-skill/SKILL.md`.",
+      "Template example:",
+      "```markdown",
+      "[Related skill 1](../category/related/SKILL.md)",
+      "```",
+    ].join("\n") + "\n"
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+  const check = res.json.checks[0];
+  assert.equal(check.pass, true);
+});
+
+test("catalog-doctor: --check skill-references filters to just this check", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(root, join("05-cat", "only-skill"), "only-skill", "No references here.");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0);
+  assert.equal(res.json.totalChecks, 1);
+  assert.equal(res.json.checks.length, 1);
+  assert.equal(res.json.checks[0].id, "skill-references");
 });

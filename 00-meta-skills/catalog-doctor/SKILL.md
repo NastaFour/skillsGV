@@ -1,6 +1,6 @@
 ---
 name: catalog-doctor
-description: "Trigger: catalog doctor, doctor, check catalog health, diagnostico del catalogo, verificar estado del catalogo. Run unified catalog diagnostic checks: validate --strict, install dry-run, loader status, manifest consistency, dependency check, and MCP parity. Use when verifying catalog consistency, before PRs, or after install. Do NOT use for mutating catalog files or applying changes."
+description: "Trigger: catalog doctor, doctor, check catalog health, diagnostico del catalogo, verificar estado del catalogo. Run unified catalog diagnostic checks: validate --strict, install dry-run, loader status, manifest consistency, dependency check, MCP parity, and skill reference integrity. Use when verifying catalog consistency, before PRs, or after install. Do NOT use for mutating catalog files or applying changes."
 license: MIT
 allowed-tools: Read Bash(node:*)
 metadata:
@@ -32,6 +32,7 @@ Run when the user asks to check catalog health, run diagnostics, or verify envir
 4. **Manifest & index consistency**: `generate-indexes.mjs --check`
 5. **Dependency check**: `validate-skills.mjs --check-deps --json`
 6. **MCP parity check**: Bidirectional verification of `mcp-manifest.json` against frontmatters.
+7. **Skill reference integrity**: Every relative file reference in a `SKILL.md` (markdown links and backtick inline-code paths with file extensions) must resolve from the skill directory or the catalog root.
 
 ## Execution
 
