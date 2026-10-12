@@ -198,3 +198,31 @@ test("token-audit: --help exits 0 and documents the CLI contract", () => {
   assert.match(res.stdout, /--json/);
   assert.match(res.stdout, /0 = clean, 1 = findings, 2 = usage error/);
 });
+
+test("token-audit: flags raw Tailwind literals in multiline class expressions", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div\n  className={\n    "flex bg-white p-4"\n  }\n>\n  A\n</div>\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected findings (exit 1): ${res.stdout} ${res.stderr}`);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 1);
+  assert.equal(json.findings[0].rule, "raw-tailwind-color");
+  assert.equal(json.findings[0].line, 3, "the finding must point at the literal's line");
+});
+
+test("token-audit: data-token-audit-ignore anywhere in the multiline window suppresses the finding", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div\n  className={\n    "bg-white p-4"\n  }\n  data-token-audit-ignore\n>\n  B\n</div>\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir]);
+  assert.equal(res.code, 0, `Expected clean exit: ${res.stdout} ${res.stderr}`);
+});

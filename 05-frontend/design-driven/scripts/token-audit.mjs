@@ -13,8 +13,9 @@
  *   - Files whose path matches /token|theme|variables/i are token definitions.
  *   - In .css files, hex values on CSS custom-property lines (`--name: ...`)
  *     are token definitions and are exempt.
- *   - A `data-token-audit-ignore` attribute on an element line suppresses
- *     Tailwind literal findings for that line.
+ *   - A `data-token-audit-ignore` attribute on an element line — or anywhere
+ *     in the scanned window of a multiline `class={` / `className="` opening —
+ *     suppresses Tailwind literal findings for that element.
  *   - Hex inside comments is deliberately NOT exempt: slop hides in comments.
  *
  * Usage:
@@ -48,6 +49,11 @@ const TAILWIND_NONSEMANTIC_RE = /(?<![\w-])(?:bg|text)-(?:gray|slate)-[\w/]+/;
 
 const IGNORE_ATTRIBUTE = "data-token-audit-ignore";
 const CSS_CUSTOM_PROPERTY_RE = /--[\w-]+\s*:/;
+
+// A class attribute whose value opens on this line and continues below:
+// `class={` / `className={` / `class="` with nothing after the opener.
+const MULTILINE_CLASS_OPEN_RE = /class(?:Name)?\s*=\s*[{"]?\s*$/;
+const MULTILINE_WINDOW_LINES = 5;
 
 const RULE_HEX = "hardcoded-hex";
 const RULE_TAILWIND = "raw-tailwind-color";
@@ -83,6 +89,7 @@ function scanFile(absPath, srcDir, findings) {
   }
 
   const lines = content.split(/\r?\n/);
+  const reportedTailwindLines = new Set();
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const lineNumber = i + 1;
@@ -96,9 +103,38 @@ function scanFile(absPath, srcDir, findings) {
     if (
       CLASS_CONTEXT_RE.test(line) &&
       !line.includes(IGNORE_ATTRIBUTE) &&
+      !reportedTailwindLines.has(lineNumber) &&
       (TAILWIND_ALWAYS_RE.test(line) || TAILWIND_NONSEMANTIC_RE.test(line))
     ) {
+      reportedTailwindLines.add(lineNumber);
       findings.push({ file, line: lineNumber, rule: RULE_TAILWIND, snippet });
+    }
+
+    // Multiline class attributes: the opener ends the line, so scan a bounded
+    // look-ahead window for raw literals and report each at its own line.
+    // `data-token-audit-ignore` anywhere in the window suppresses the element.
+    if (MULTILINE_CLASS_OPEN_RE.test(line)) {
+      const window = lines.slice(i + 1, i + 1 + MULTILINE_WINDOW_LINES);
+      const ignored =
+        line.includes(IGNORE_ATTRIBUTE) || window.some((entry) => entry.includes(IGNORE_ATTRIBUTE));
+      if (!ignored) {
+        for (let j = 0; j < window.length; j++) {
+          const literalLine = window[j];
+          const literalLineNumber = lineNumber + j + 1;
+          if (
+            !reportedTailwindLines.has(literalLineNumber) &&
+            (TAILWIND_ALWAYS_RE.test(literalLine) || TAILWIND_NONSEMANTIC_RE.test(literalLine))
+          ) {
+            reportedTailwindLines.add(literalLineNumber);
+            findings.push({
+              file,
+              line: literalLineNumber,
+              rule: RULE_TAILWIND,
+              snippet: literalLine.trim(),
+            });
+          }
+        }
+      }
     }
   }
 }
@@ -139,11 +175,13 @@ Detected rules:
   hardcoded-hex         Literal #RGB/#RRGGBB/#RRGGBBAA colors in source files
   raw-tailwind-color    bg-white/bg-black/text-white/text-black and
                         bg-gray-*/text-gray-*/bg-slate-*/text-slate-* literals
+                        (single-line and multiline class attributes)
 
 Allowlist:
   - Files whose path matches token|theme|variables are token definitions.
   - In .css files, hex on a CSS custom-property line (--name: ...) is exempt.
-  - data-token-audit-ignore on an element line suppresses Tailwind findings.
+  - data-token-audit-ignore on an element line (or anywhere in a multiline
+    class window) suppresses Tailwind findings.
 
 Exit codes: 0 = clean, 1 = findings, 2 = usage error.`);
 }
