@@ -157,5 +157,5 @@ export function InventoryView() {
 - **Nunca** guardar tokens o datos sensibles en stores persistidos sin cifrar
 - **Siempre** respetar SRP: stores separados por dominio (`cart.store`, `auth.store`, `inventory.store`)
 - **Siempre** invalidar queries tras mutaciones (`queryClient.invalidateQueries`)
-- Consultar `../06-code-quality/solid-clean-code/SKILL.md` para SRP en hooks
-- Consultar `../05-frontend/react-vite/SKILL.md` para patrones de componentes
+- Consultar `../../06-code-quality/solid-clean-code/SKILL.md` para SRP en hooks
+- Consultar `../../05-frontend/react-vite/SKILL.md` para patrones de componentes

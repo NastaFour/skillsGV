@@ -75,7 +75,7 @@ node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs path/to/catalo
 
 ## 🛠️ CI Integration
 
-Add to `.github/workflows/validate-skills.yml`:
+CI runs the validator inside `.github/workflows/ci.yml` (the `Validate catalog specification (Strict)` step, via `pnpm validate:strict`). To adopt the same gate in another repo, add a workflow like:
 
 ```yaml
 name: Validate Skills

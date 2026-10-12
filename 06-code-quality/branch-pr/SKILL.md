@@ -71,7 +71,7 @@ Branch names MUST match this regex:
 
 ## PR Body Format
 
-The PR template is at `.github/PULL_REQUEST_TEMPLATE.md`. Every PR body MUST contain:
+Target repositories following this workflow provide their PR template at `.github/` (the `PULL_REQUEST_TEMPLATE.md` file). Every PR body MUST contain:
 
 ### 1. Linked Issue (REQUIRED)
 

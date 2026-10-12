@@ -123,7 +123,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 | Runtime | Mecanismo | Adapter |
 |---|---|---|
 | OpenCode | `agent.<name>.model` en `opencode.json` (merge quirúrgico de solo esa clave) | incluido |
-| dsh (DeepSeek Harness) | No hay modelo por agente: herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `preset/roster.routing.json` y sincroniza los literales fallback del preset | incluido |
+| dsh (DeepSeek Harness) | No hay modelo por agente: herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `gentle-ai-dsh/preset/roster.routing.json` y sincroniza los literales fallback del preset | incluido |
 | Claude Code | Frontmatter `model: <alias>` por sub-agente en `.claude/agents/*.md` (documentado en references, adaptador futuro) | documentado |
 
 ### Cómo agregar un adaptador de runtime nuevo

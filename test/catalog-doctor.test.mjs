@@ -207,34 +207,17 @@ test("catalog-doctor: executes 7 checks and outputs structured results", () => {
   }
 });
 
-test("catalog-doctor: real catalog run mirrors check results with tracked reference findings", () => {
+test("catalog-doctor: real catalog run passes every check (strict gate)", () => {
   const res = runDoctorJson(["--root", REPO_ROOT]);
+  assert.equal(res.code, 0, `Expected all checks green: ${res.stdout}`);
+  assert.equal(res.json.ok, true);
   assert.equal(res.json.totalChecks, 7);
-  assert.ok(Array.isArray(res.json.checks));
-
-  // Known dangling references are tracked for repair on this branch (WU3);
-  // every other diagnostic must be green and the exit code must mirror the
-  // aggregate result exactly.
-  const failing = res.json.checks.filter((c) => !c.pass);
-  assert.deepEqual(
-    failing.filter((c) => c.id !== "skill-references"),
-    [],
-    "Unexpected failing checks: " + JSON.stringify(failing)
-  );
-
-  const refCheck = res.json.checks.find((c) => c.id === "skill-references");
-  assert.ok(refCheck, "skill-references check must be present");
-  if (!refCheck.pass) {
-    assert.match(refCheck.cause, /dangling reference/i, "reference failures must be actionable");
+  assert.equal(res.json.passed, 7);
+  assert.equal(res.json.failed, 0);
+  for (const check of res.json.checks) {
+    assert.equal(check.pass, true, `${check.id} must pass: ${check.cause || ""}`);
   }
-
-  assert.equal(res.json.ok, failing.length === 0);
   assert.equal(res.json.passed + res.json.failed, res.json.totalChecks);
-  assert.equal(
-    res.code,
-    failing.length > 0 ? 1 : 0,
-    `Expected exit code to mirror check results, got ${res.code}: ${res.stdout}`
-  );
 });
 
 test("catalog-doctor: FAIL actionable exit != 0 when manifest consistency fails", (t) => {
@@ -304,9 +287,8 @@ test("catalog-doctor: FAIL actionable exit != 0 when MCP parity fails", (t) => {
 test("catalog-doctor: read-only invariant (no files or manifest mutated)", (t) => {
   const beforeHashes = hashDirectory(REPO_ROOT);
   const res = runDoctor(["--root", REPO_ROOT]);
-  // Exit code mirrors aggregate check results (0 = all green, 1 = findings);
-  // the invariant under test here is filesystem immutability, asserted below.
-  assert.ok([0, 1].includes(res.code), `Unexpected doctor exit code: ${res.code}`);
+  // The gate is strict: the real catalog must be fully green.
+  assert.equal(res.code, 0, `Expected doctor exit 0 on the real catalog: ${res.stdout}`);
   const afterHashes = hashDirectory(REPO_ROOT);
 
   // Compare hashes
