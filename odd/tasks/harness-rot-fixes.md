@@ -30,11 +30,11 @@ Repair the four defects found in the 2026-10-12 harness audit and land them on `
 
 ## Tasks
 
-- [ ] **WU1 · token-audit gate** (route: delegated writer) — Create `05-frontend/design-driven/scripts/token-audit.mjs` (scan srcDir for hardcoded hex colors, raw `bg-white|text-black|bg-black|text-white` + non-semantic Tailwind palette literals; allowlist token/theme definition files; `--srcDir` + `--json`; exit 0 clean / 1 findings / 2 usage error) + `test/token-audit.test.mjs` (RED first) + fix `allowed-tools` in design-driven SKILL.md to permit running it (`Bash(node:*)`). Commit: `feat(design): add token-audit gate script with tests`.
-- [ ] **WU2 · reference-integrity check** (route: delegated writer) — Add check `skill-references` to `catalog-doctor.mjs` CHECKS table: walk SKILL.md files, extract relative file references (markdown links + backtick paths with known extensions .md/.mjs/.js/.json/.yaml/.yml/.png), verify existence (skill-dir-relative and repo-root-relative), skip URLs/placeholders; document in catalog-doctor SKILL.md; extend `test/catalog-doctor.test.mjs` (RED first). Commit: `feat(meta): add skill reference integrity check to catalog-doctor`.
-- [ ] **WU3 · repair dangling references** (route: parent inline from check output) — Run `pnpm doctor --check skill-references` (or script equivalent), fix every dangling reference surfaced (minimum known: WU1 closes token-audit). Commit: `fix(catalog): repair dangling skill references`.
-- [ ] **WU4 · D1b question floor** (route: parent inline, decision owned by parent) — Define the mandatory 8-question core: #1-#3 (3 P's), #4 (chasis), #6 (reglas generativas), #9 (firma), #13 (heartbeat), #14 (bans); remaining items are calibration. Align SKILL.md F1 text + d1b-questionnaire.md header. Commit: `docs(design): define D1b mandatory question floor`.
-- [ **WU5 · manifest resync** (route: parent inline) — Run `generate-indexes.mjs --check` for verdict, then `--write`; verify `--check` green after. Commit: `chore(catalog): regenerate manifest and indexes after reference repair`.
+- [x] **WU1 · token-audit gate** — DONE `3deba18` (RED 11/11→GREEN 11/11; CLI exit 0/1/2; allowlists; allowed-tools += node:*)
+- [x] **WU2 · reference-integrity check** — DONE `d163c76` (RED 8/12→GREEN 12/12; CHECKS table entry `skill-references`; real tree: 29 findings, 28 false-positive class + 1 resolved by WU1)
+- [x] **WU3 · harden check + repair references** — DONE `bf48dab` + `f782b17` + `6aebf3f` (29→8 true rot→0 findings; 13 SKILL.md repaired; `docs/skill-style-guide.md` created normative; strict doctor gate restored 7/7; token-audit multiline literals; 162/162 tests; determinism byte-identical; disclosed deviation: TARGET_PROJECT_SOURCE_ROOTS skip class added+tested; branch-pr rephrased per git-history evidence)
+- [x] **WU4 · D1b question floor** — DONE (this commit): núcleo duro = #1-#4, #6, #9, #13, #14; rest = calibración heredable del preset; both SKILL.md F1 and questionnaire header aligned.
+- [x] **WU5 · manifest resync** — NO-OP: `generate-indexes.mjs --check` already green (230 skills, SKILLS.md/AGENTS.md/catalog.json consistent). The audit's "231 vs 230" was a parent counting error (included non-catalog SKILL.md fixtures), not manifest drift. Verified twice (writer + parent).
 
 ## Acceptance criteria
 
@@ -73,4 +73,4 @@ Direct merge `fix/harness-rot-gates` → `main` + push (user-authorized in-sessi
 
 ## Progress / Next step
 
-WU1+WU2 done. Next: delegate WU3 (a: check hardening; b: repairs + strict tests; c: token-audit multiline). Then WU4 docs, WU5 manifest, Judgment Day, merge.
+WU1-WU5 done (WU5 no-op, premise was parent miscount). Next: RDD assess of accumulated range (base 4a02568) → native review → Judgment Day (2 blind judges) → merge to main + push (user-authorized).
