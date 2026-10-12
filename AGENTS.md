@@ -8,7 +8,7 @@ Este archivo define el contrato de comportamiento y gobernanza cognitiva para cu
 - **Índice completo**: Consulta [`SKILLS.md`](SKILLS.md) para el árbol de skills y rutas, y [`catalog.json`](catalog.json) para el manifiesto estructurado.
 
 ## 🔄 2. Proceso Exclusivo: ODD (Organic-Driven Development)
-Gentle-AI 4.0.0 ODD es la única vía de desarrollo autorizada. Todo cambio sigue este protocolo:
+Gentle-AI 4.1.x ODD es la única vía de desarrollo autorizada. La delegación es por razón nombrada (presupuesto de evidencia, writers paralelos con superficies disjuntas, o verificador independiente de alto riesgo); el conteo de archivos y el tamaño por sí solos nunca deciden la ruta. El review nativo es proporcionativo: `review assess` solo marca `review_due` para riesgo alto; un candidato medio reporta `under_budget` sin importar las líneas, y el agente selecciona las lentes 4R con `--lenses/--lenses-reason`. Todo cambio sigue este protocolo:
 1. **Authorize**: Establecé si la solicitud autoriza cambios en código. Auditorías, revisiones o consultas son de solo lectura.
 2. **Explore**: Inspeccioná código antes de proponer o escribir.
 3. **Resolve Uncertainty**: Máximo una pregunta enfocada si hay decisiones de producto ambiguas.
