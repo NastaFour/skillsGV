@@ -394,6 +394,10 @@ function isSkippableReference(refPath) {
   const firstSegment = refPath.split("/")[0];
   if (TARGET_PROJECT_SOURCE_ROOTS.has(firstSegment)) return true;
   if (hasPlaceholderSegment(refPath)) return true;
+  // `..` is a parent-relative cross-skill reference, not a target-project
+  // dotdir: it must flow through the normal resolution ladder instead of
+  // being silently skipped by the dot-prefix rule below.
+  if (firstSegment === "..") return false;
   if (firstSegment.startsWith(".") && !CATALOG_OWNED_DOTDIRS.has(firstSegment)) return true;
   return SKIPPED_REFERENCE_PREFIXES.some((prefix) => refPath.startsWith(prefix));
 }

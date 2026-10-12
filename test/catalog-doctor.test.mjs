@@ -555,3 +555,19 @@ test("catalog-doctor skill-references: dot-relative markdown links are validated
   assert.doesNotMatch(cause, /CONTEXT-FORMAT\.md/, "an existing dot-relative sibling must resolve");
   assert.doesNotMatch(cause, /db\.js/, "dot-relative code examples must stay skipped");
 });
+
+test("catalog-doctor skill-references: parent-relative ../ references are validated (broken ones flagged)", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(root, join("15-cat", "skill-a"), "skill-a", "Broken peer [link](../missing-peer/SKILL.md) must be flagged.");
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0, `Expected a finding for the broken ../ reference: ${res.stdout}`);
+  assert.match(res.json.checks[0].cause, /missing-peer/);
+});
+
+test("catalog-doctor skill-references: existing parent-relative ../ peers resolve cleanly", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(root, join("15-cat", "skill-a"), "skill-a", "Valid peer [link](../skill-b/SKILL.md) resolves.");
+  writeSkillFile(root, join("15-cat", "skill-b"), "skill-b", "Peer target.");
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout}`);
+});

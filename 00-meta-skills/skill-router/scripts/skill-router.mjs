@@ -20,7 +20,7 @@
  *             2 = contract violation (JSON output suppressed).
  */
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
-import { join, basename, dirname, resolve } from "node:path";
+import { join, basename, dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateRouterOutput } from "./validate-output.mjs";
 
@@ -106,6 +106,33 @@ function escapeRegex(s) {
 
 const MIN_TRIGGER_LENGTH = 4;
 
+/**
+ * Uppercase acronym triggers (JWT, ORM, E2E, CVE, ADR, ...) shorter than
+ * MIN_TRIGGER_LENGTH carry exact routing intent and must not be silenced.
+ * Mixed-case short tokens (verbs like "go", "add") stay below the floor.
+ */
+function passesTriggerLengthGate(rawTrigger, tLower) {
+  const trimmed = rawTrigger.trim();
+  if (tLower.length >= MIN_TRIGGER_LENGTH) return true;
+  return trimmed.length >= 2 && trimmed === trimmed.toUpperCase() && /[A-Z]/.test(trimmed);
+}
+
+/**
+ * Tier 0 skills are already always-on context; tier1toLoad must never spend
+ * its bounded slots on them. Mirror of TIER0_SKILLS in skills-loader.mjs.
+ */
+const TIER0_SKILLS = new Set([
+  "odd-workflow",
+  "skill-router",
+  "skill-loader",
+  "skill-validator",
+  "testing-patterns",
+  "code-reviewer",
+  "engram-integration",
+  "dod-checker",
+  "decision-gate",
+]);
+
 // Build skill index (deduplicated by name: one skill may never appear twice)
 const files = walkSkills(CATALOG_ROOT);
 const index = [];
@@ -122,8 +149,8 @@ for (const f of files) {
   const depRaw = (getField(fm, "deprecated") || getNestedField(fm, "metadata", "deprecated") || "").replace(/^["']|["']$/g, "").trim();
   const deprecated = depRaw === "true";
   const redirect = (getField(fm, "redirect") || getNestedField(fm, "metadata", "redirect") || "").replace(/^["']|["']$/g, "").trim() || null;
-  const rel = f.replace(CATALOG_ROOT + "\\", "").replace(/\//g, "\\");
-  const catMatch = rel.match(/^(\d{2}-[a-z-]+|professional-planner)\\/i);
+  const rel = relative(CATALOG_ROOT, f).split(sep).join("/");
+  const catMatch = rel.match(/^(\d{2}-[a-z-]+|professional-planner)\//i);
   const category = catMatch ? catMatch[1] : "root";
   index.push({ name, desc, triggers, deprecated, redirect, category, file: f });
 }
@@ -141,7 +168,7 @@ for (const s of index) {
   for (const t of s.triggers) {
     if (!t) continue;
     const tLower = t.toLowerCase().trim();
-    if (tLower.length < MIN_TRIGGER_LENGTH) continue;
+    if (!passesTriggerLengthGate(t, tLower)) continue;
     // Word-boundary regex: full-word/phrase match, no substring traps
     const re = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
     if (re.test(qLower)) {
@@ -233,7 +260,7 @@ if (!primary) {
         for (const t of s.triggers) {
           if (!t) continue;
           const tLower = t.toLowerCase().trim();
-          if (tLower.length < MIN_TRIGGER_LENGTH) continue;
+          if (!passesTriggerLengthGate(t, tLower)) continue;
           const tRe = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
           if (tRe.test(qLower)) {
             triggerHit = true;
@@ -269,7 +296,9 @@ if (isUiTask && validSkillNames.has("design-driven")) {
   }
 }
 
-const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))];
+const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))].filter(
+  (name) => !TIER0_SKILLS.has(name)
+);
 if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven") && tier1toLoad.length < 5) {
   tier1toLoad.push("design-driven");
 }
