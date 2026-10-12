@@ -2,7 +2,7 @@
 name: design-driven
 description: "Trigger: design driven, DDD, pipeline de diseno, design-driven development, disenar pantalla, rediseno, design system, brief de diseno, prototipo formal, entrevista de diseno, design DNA. Formal design pipeline (D1 brief → D1b uniqueness questionnaire → D2 explore → D3 design-system → D4 prototype → D5 handoff → D6 design-review) — a unique design is INTERVIEWED, not drawn. Decision gates + Design DNA artifact + anti-AI-slop rule."
 license: MIT
-allowed-tools: Read Task Bash(git:*,gh:*,od:*)
+allowed-tools: Read Task Bash(git:*,gh:*,od:*,node:*)
 metadata:
   author: gentleman-programming
   version: "2.1.0"
