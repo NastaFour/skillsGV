@@ -40,19 +40,20 @@ const SOURCE_EXTENSIONS = new Set([
 
 const TOKEN_FILE_RE = /(token|theme|variables)/i;
 
-// #RGB / #RRGGBB / #RRGGBBAA, never a prefix of a longer hex run.
-const HEX_COLOR_RE = /#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})(?![0-9a-fA-F])/;
+// #RGB / #RGBA / #RRGGBB / #RRGGBBAA, never a prefix of a longer hex run.
+const HEX_COLOR_RE = /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})(?![0-9a-fA-F])/;
 
 const CLASS_CONTEXT_RE = /\bclass(?:Name)?\s*=/;
-const TAILWIND_ALWAYS_RE = /(?<![\w-])(?:bg|text)-(?:white|black)(?![\w-])/;
-const TAILWIND_NONSEMANTIC_RE = /(?<![\w-])(?:bg|text)-(?:gray|slate)-[\w/]+/;
+const TAILWIND_ALWAYS_RE = /(?<![\w-])(?:bg|text|border|ring|divide|fill|stroke)-(?:white|black)(?![\w-])/;
+const TAILWIND_NONSEMANTIC_RE = /(?<![\w-])(?:bg|text|border|ring|divide)-(?:gray|slate|zinc|neutral|stone)-[\w/]+/;
 
 const IGNORE_ATTRIBUTE = "data-token-audit-ignore";
 const CSS_CUSTOM_PROPERTY_RE = /--[\w-]+\s*:/;
 
-// A class attribute whose value opens on this line and continues below:
-// `class={` / `className={` / `class="` with nothing after the opener.
-const MULTILINE_CLASS_OPEN_RE = /class(?:Name)?\s*=\s*[{"]?\s*$/;
+// A class attribute whose value opens on this line and may continue below:
+// `class="flex items-center` / `className={` / className={`...`} / className={clsx( —
+// any quote, brace, backtick, or helper-call opener starts the tag region.
+const MULTILINE_CLASS_OPEN_RE = /class(?:Name)?\s*=\s*(?:["'`{]|(?:clsx|cn|cva)\s*\()/;
 // Hard cap for the opening-tag region scan: malformed input must never read
 // the whole file.
 const MULTILINE_WINDOW_MAX_LINES = 30;
@@ -99,7 +100,7 @@ function multilineTagWindow(lines, openerIndex) {
       else if (quote) {
         if (ch === "\\") escaped = true;
         else if (ch === quote) quote = null;
-      } else if (ch === '"' || ch === "'") quote = ch;
+      } else if (ch === '"' || ch === "'" || ch === "`") quote = ch;
       else if (ch === "{") depth++;
       else if (ch === "}") depth = Math.max(0, depth - 1);
       else if (ch === ">" && depth === 0 && text[j - 1] !== "=") {

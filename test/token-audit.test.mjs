@@ -269,3 +269,61 @@ test("token-audit: a child's data-token-audit-ignore does not suppress the paren
   assert.equal(json.total, 1);
   assert.equal(json.findings[0].line, 3);
 });
+
+test("token-audit: flags literals when the class value starts on the opener line and continues below", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<div className="flex items-center
+  bg-white
+  p-4">
+  <span>x</span>
+</div>
+`,
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected bg-white flagged: ${res.stdout} ${res.stderr}`);
+  assert.equal(JSON.parse(res.stdout).total, 1);
+});
+
+test("token-audit: flags literals inside template literal class values", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    "<div className={`\n  bg-white p-4\n`}>\n  <span>x</span>\n</div>\n",
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected template literal flagged: ${res.stdout}`);
+});
+
+test("token-audit: flags literals inside multiline clsx calls", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    "<div className={clsx(\n  \"p-4\",\n  \"bg-white\"\n)}>\n  <span>x</span>\n</div>\n",
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected clsx literal flagged: ${res.stdout}`);
+});
+
+test("token-audit: flags modern neutral palettes and non-bg/text prefixes", (t) => {
+  const cases = ["bg-zinc-900", "text-neutral-500", "border-white", "ring-gray-200", "bg-stone-200", "divide-slate-300"];
+  for (const literal of cases) {
+    const dir = makeFixture(t);
+    writeFileSync(join(dir, "Card.tsx"), `<div class="${literal}">x</div>\n`, "utf8");
+    const res = runAudit(["--srcDir", dir, "--json"]);
+    assert.equal(res.code, 1, `Expected "${literal}" flagged: ${res.stdout} ${res.stderr}`);
+    assert.equal(JSON.parse(res.stdout).total, 1);
+  }
+});
+
+test("token-audit: detects 4-digit hex colors", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(join(dir, "Card.tsx"), "const c = \"#0008\";\n", "utf8");
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `Expected #0008 flagged: ${res.stdout}`);
+});
+
