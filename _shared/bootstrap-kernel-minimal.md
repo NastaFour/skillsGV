@@ -10,6 +10,6 @@
 Este repositorio tiene el catálogo skillsGV instalado y el harness gentle-ai activo.
 
 - **Skills**: elegí ≤5 skills relevantes por tarea desde tu índice de skills y leé solo esos `SKILL.md`; el catálogo es capa de conocimiento, no capa de proceso.
-- **Proceso**: ODD exclusivo (Organic Driven Development), gobernado por el Evidence Budget de Gentle-AI 4.0.0 (máx. 1 batch paralelo de ≤3 llamadas / ~10k tokens inline; mappers y writers delegados). Commits por unidad de trabajo (Conventional Commits) y verificación con evidencia obligatoria.
+- **Proceso**: ODD exclusivo (Organic Driven Development), gobernado por el Evidence Budget de Gentle-AI 4.1.x (delegación por razón nombrada) (máx. 1 batch paralelo de ≤3 llamadas / ~10k tokens inline; mappers y writers delegados). Commits por unidad de trabajo (Conventional Commits) y verificación con evidencia obligatoria.
 - **Instalaciones ya gitignoradas** (`.skills-install/` y skills): no las commitees.
 <!-- skillsGV:kernel:end -->

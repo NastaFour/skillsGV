@@ -115,7 +115,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 - **Backup antes de escribir**: `apply.mjs` crea `<target>.roster.bak-<timestamp>` antes de tocar una configuración existente.
 - **Merge quirúrgico**: en OpenCode solo se parchea `agent.<name>.model` de los 21 agentes; toda otra clave queda byte a byte intacta.
 - **Regla de prueba**: NO ejecutar `--apply` contra el `opencode.json` global real en tests; usar una copia temporal con `apply.mjs --config <copia>`.
-- **Regenerar, no editar**: `gentle-ai-dsh/preset/roster.routing.json` es un artefacto derivado del roster; se regenera con `--runtime dsh --apply`.
+- **Regenerar, no editar**: `preset/roster.routing.json` es un artefacto derivado del roster; se regenera con `--runtime dsh --apply`.
 - **Sin dependencias**: todos los scripts son Node puro (Windows-first, sin paquetes externos).
 
 ## 🧩 Adaptadores por runtime

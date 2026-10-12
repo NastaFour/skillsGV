@@ -33,12 +33,12 @@
    - Confirmar si se adoptan los diales del preset elegido (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`) o si se fuerza un valor puntual.
    - ¿La página tiene cadencia narrativa con scroll fluido o funciona como una aplicación densa fija / viewport lock (`100dvh`)?
 
-6. **Las 3 Reglas Generativas Mecánicas**:
+6. **Las 3 Reglas Generativas Mecánicas** *(directiva derivada por el agente, no una pregunta al usuario — el agente la deriva del arquetipo elegido en #4 y la confirma)*:
    - El agente DEBE derivar del arquetipo exactamente **3 directivas técnicas de CSS/Layout inmutables** (1 de retícula/layout, 1 de división/superficie, 1 de escala tipográfica) para registrarlas en `design-dna.md` y en el header del archivo visual antes de codificar.
 
 ---
 
-## Bloque 3 · Referencias Reales y Anti-Referencias
+## Bloque 3 · Referencias Reales y Anti-Referencias *(bloque de calibración — sus preguntas #7 y #8 no pertenecen al núcleo duro; con referencias provistas por el usuario o presets del dominio se resuelven sin bloquear)*
 
 7. **Referencias Positivas**: Proporcionar 3-5 URLs reales (Godly, Awwwards, 21st.dev, Dribbble, Figma o producto vivo) indicando qué se toma exactamente de cada una (paleta, tipografía, retícula o micro-interacción). *En modo terminal o backend sin URLs, indicar nombres de productos referentes concretos*.
 8. **Anti-Referencias**: Proporcionar 2-3 ejemplos de productos, sitios o patrones que NO gustan y por qué, para prohibirlos explícitamente.
