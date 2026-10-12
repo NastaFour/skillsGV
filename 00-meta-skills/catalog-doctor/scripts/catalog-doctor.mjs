@@ -197,12 +197,32 @@ function parseListValue(raw) {
 function walkSkillFiles(dir) {
   const out = [];
   try {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.name === ".git" || entry.name === "node_modules" || entry.name === "gentle-ai-dsh" || entry.name === "_shared") continue;
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
+      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
         out.push(...walkSkillFiles(full));
       } else if (entry.isFile() && entry.name === "SKILL.md") {
+        out.push(full);
+      }
+    }
+  } catch {}
+  return out;
+}
+
+/**
+ * Walks every file (not only SKILL.md) for the catalog-wide suffix index used
+ * as the last resolution step. Same deterministic order and exclusions as
+ * walkSkillFiles.
+ */
+function walkCatalogFiles(dir, out = []) {
+  try {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
+      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walkCatalogFiles(full, out);
+      } else if (entry.isFile()) {
         out.push(full);
       }
     }
@@ -300,8 +320,8 @@ export function checkMcpParity(root) {
   };
 }
 
-const REFERENCE_EXTENSIONS = "(?:md|mjs|js|json|yaml|yml|png)";
-const REFERENCE_FILE_RE = /\.(?:md|mjs|js|json|yaml|yml|png)\b/i;
+const REFERENCE_EXTENSIONS = "(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)";
+const REFERENCE_FILE_RE = /\.(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)\b/i;
 const SKILL_LINK_RE = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 const INLINE_CODE_SPAN_RE = /`([^`\n]+)`/g;
 const CODE_PATH_RE = new RegExp(
@@ -310,10 +330,65 @@ const CODE_PATH_RE = new RegExp(
 );
 const SKIPPED_REFERENCE_PREFIXES = ["design-artifacts/", "odd/", ".atl/"];
 
+/**
+ * Directories excluded from every catalog walk: VCS metadata, dependencies,
+ * the vendored addon mirror, and shared non-skill resources.
+ */
+const EXCLUDED_DIR_NAMES = new Set([".git", "node_modules", "gentle-ai-dsh", "_shared"]);
+
+/**
+ * Dot-directories owned by this catalog (validated like any other path).
+ * Every other dot-prefixed first segment denotes target-project layout
+ * (`.cursor/`, `.changeset/`, `.sessions/`, ...) and is skipped.
+ */
+const CATALOG_OWNED_DOTDIRS = new Set([".github", ".atl"]);
+
+/**
+ * Target-application source roots (Expo/Next/Vite monorepos and their
+ * conventional layout). These first segments belong to the projects the
+ * skills are applied to, never to this catalog (which keeps sources inside
+ * numbered category folders, `00-meta-skills/`, and `scripts/`), so
+ * references into them are target layouts rather than catalog files.
+ */
+const TARGET_PROJECT_SOURCE_ROOTS = new Set([
+  "app",
+  "components",
+  "hooks",
+  "lib",
+  "packages",
+  "pages",
+  "public",
+  "src",
+  "styles",
+]);
+
+/**
+ * All-caps placeholder segments such as `YYYY-MM-DD` or `PROJECT_TRACKER`:
+ * document templates, not concrete catalog files.
+ */
+const PLACEHOLDER_SEGMENT_RE = /^[A-Z]{2,}(?:[-_][A-Z0-9]+)+$/;
+
+/** Byte-stable directory-entry ordering (code-unit compare, locale-independent). */
+function byEntryName(a, b) {
+  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+}
+
+function hasPlaceholderSegment(refPath) {
+  return refPath.split("/").some((segment) => {
+    if (!segment || !/^[A-Z]/.test(segment)) return false;
+    return PLACEHOLDER_SEGMENT_RE.test(segment.replace(/\.[A-Za-z0-9]+$/, ""));
+  });
+}
+
 function isSkippableReference(refPath) {
   if (/^(https?:|mailto:|#|~|\/)/.test(refPath)) return true;
   if (refPath.includes("://") || refPath.startsWith("//")) return true;
   if (/[<>{}]/.test(refPath)) return true;
+  if (refPath.startsWith("./")) return true;
+  const firstSegment = refPath.split("/")[0];
+  if (TARGET_PROJECT_SOURCE_ROOTS.has(firstSegment)) return true;
+  if (hasPlaceholderSegment(refPath)) return true;
+  if (firstSegment.startsWith(".") && !CATALOG_OWNED_DOTDIRS.has(firstSegment)) return true;
   return SKIPPED_REFERENCE_PREFIXES.some((prefix) => refPath.startsWith(prefix));
 }
 
@@ -343,11 +418,51 @@ function extractSkillReferences(content) {
 }
 
 /**
- * Verifies that every relative file reference in SKILL.md files resolves,
- * either from the owning skill directory or from the catalog root.
+ * Resolution ladder for a reference candidate. A path is OK if ANY step resolves:
+ *   (a) relative to the owning skill directory;
+ *   (b) relative to the catalog root;
+ *   (c) install layout: strip a leading `skills/` segment, then (b) again
+ *       (installed trees place the whole catalog under `skills/`);
+ *   (d) catalog-wide suffix search: segment-aligned match against every
+ *       repo-relative file path (with leading `../`/`skills/` normalized),
+ *       so unique basenames like `project-tracker/SKILL.md` resolve regardless
+ *       of depth.
+ */
+function resolvesReference(refPath, skillDir, root, suffixIndex) {
+  if (existsSync(resolve(skillDir, refPath)) || existsSync(resolve(root, refPath))) {
+    return true;
+  }
+
+  const strippedSkills = refPath.replace(/^skills\//, "");
+  if (strippedSkills !== refPath && existsSync(resolve(root, strippedSkills))) return true;
+
+  const variants = new Set([
+    refPath,
+    strippedSkills,
+    refPath.replace(/^(?:\.\.\/)+/, ""),
+    strippedSkills.replace(/^(?:\.\.\/)+/, ""),
+  ]);
+  for (const variant of variants) {
+    if (!variant) continue;
+    if (suffixIndex.has(variant)) return true;
+    for (const file of suffixIndex) {
+      if (file.endsWith(`/${variant}`)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Verifies that every relative file reference in SKILL.md files resolves
+ * through the documented resolution ladder. Findings are sorted by
+ * (skill, path) so the reported cause is byte-stable across runs and
+ * filesystems.
  */
 export function checkSkillReferences(root) {
   const skillFiles = walkSkillFiles(root);
+  const suffixIndex = new Set(
+    walkCatalogFiles(root).map((file) => relative(root, file).split(sep).join("/"))
+  );
   const findings = [];
   const seen = new Set();
 
@@ -368,12 +483,15 @@ export function checkSkillReferences(root) {
       if (seen.has(key)) continue;
       seen.add(key);
 
-      const candidates = [resolve(skillDir, refPath), resolve(root, refPath)];
-      if (!candidates.some((candidate) => existsSync(candidate))) {
+      if (!resolvesReference(refPath, skillDir, root, suffixIndex)) {
         findings.push({ skill, path: refPath, context });
       }
     }
   }
+
+  findings.sort((a, b) =>
+    a.skill < b.skill ? -1 : a.skill > b.skill ? 1 : a.path < b.path ? -1 : a.path > b.path ? 1 : 0
+  );
 
   if (findings.length === 0) {
     return {

@@ -409,3 +409,132 @@ test("catalog-doctor: --check skill-references filters to just this check", (t) 
   assert.equal(res.json.checks.length, 1);
   assert.equal(res.json.checks[0].id, "skill-references");
 });
+
+test("catalog-doctor skill-references: dot-relative code examples are skipped", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("06-cat", "dot-relative-skill"),
+    "dot-relative-skill",
+    "Import the pool first: `import db from './db.js'` before querying."
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+});
+
+test("catalog-doctor skill-references: target-project dotdirs and placeholder segments are skipped", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("07-cat", "target-layout-skill"),
+    "target-layout-skill",
+    [
+      "Register the server in `.cursor/mcp.json` for Cursor.",
+      "Add a release entry under `.changeset/config.json`.",
+      "Write daily notes to `.sessions/YYYY-MM-DD.md`.",
+      "Archive review copies under `archive/YYYY-MM-DD/review.md`.",
+    ].join("\n") + "\n"
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+});
+
+test("catalog-doctor skill-references: catalog-owned .github paths are still validated", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("08-cat", "workflow-skill"),
+    "workflow-skill",
+    "The gate runs in `.github/workflows/ci.yml`."
+  );
+
+  const bad = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(bad.code, 0, "a missing file under the catalog-owned .github must still fail");
+  assert.match(bad.json.checks[0].cause, /\.github\/workflows\/ci\.yml/);
+
+  mkdirSync(join(root, ".github", "workflows"), { recursive: true });
+  writeFileSync(join(root, ".github", "workflows", "ci.yml"), "name: CI\n", "utf8");
+
+  const good = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(good.code, 0, `Expected clean pass: ${good.stdout} ${good.stderr}`);
+});
+
+test("catalog-doctor skill-references: install-layout skills/ prefix resolves from repo root", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("09-cat", "install-layout-skill"),
+    "install-layout-skill",
+    "Shared resolver contract: `skills/_shared/skill-resolver.md`."
+  );
+  mkdirSync(join(root, "_shared"), { recursive: true });
+  writeFileSync(join(root, "_shared", "skill-resolver.md"), "# Resolver\n", "utf8");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+});
+
+test("catalog-doctor skill-references: catalog-wide suffix search resolves unique basenames", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("10-cat", "professional-planner"),
+    "professional-planner",
+    "See `project-tracker/SKILL.md` for the ledger format."
+  );
+  writeSkillFile(root, join("10-cat", "project-tracker"), "project-tracker", "Ledger structure.");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+});
+
+test("catalog-doctor skill-references: dangling TypeScript reference is detected (extended extensions)", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("11-cat", "ts-ref-skill"),
+    "ts-ref-skill",
+    "Run `scripts/missing-helper.ts` before release."
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0);
+  assert.match(res.json.checks[0].cause, /scripts\/missing-helper\.ts/);
+});
+
+test("catalog-doctor skill-references: two runs produce byte-identical output with sorted findings", (t) => {
+  const root = makeFixture(t);
+  // Created in reverse order on purpose: reported findings must be sorted, not filesystem-ordered.
+  writeSkillFile(root, join("20-cat", "z-skill"), "z-skill", "Missing `scripts/zz.mjs`.");
+  writeSkillFile(root, join("10-cat", "a-skill"), "a-skill", "Missing `scripts/aa.mjs`.");
+
+  const first = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  const second = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(first.code, 0);
+  assert.equal(first.stdout, second.stdout, "consecutive runs must be byte-identical");
+
+  const cause = first.json.checks[0].cause;
+  assert.ok(
+    cause.indexOf("a-skill/SKILL.md") < cause.indexOf("z-skill/SKILL.md"),
+    `findings must be sorted by skill then path: ${cause}`
+  );
+});
+
+test("catalog-doctor skill-references: target-project application source roots are skipped", (t) => {
+  const root = makeFixture(t);
+  writeSkillFile(
+    root,
+    join("12-cat", "app-layout-skill"),
+    "app-layout-skill",
+    [
+      "Define the contract in `packages/contracts/src/location.ts` (Zod schema + inferred type).",
+      "Keep the root route in `app/page.tsx`.",
+      "Check a single file with `src/lib/api.ts`.",
+    ].join("\n") + "\n"
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass: ${res.stdout} ${res.stderr}`);
+});
