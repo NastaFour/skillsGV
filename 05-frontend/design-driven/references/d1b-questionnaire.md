@@ -1,6 +1,6 @@
 # Cuestionario de Unicidad D1b (5 Bloques Obligatorios) — design-driven
 
-> **Regla de oro**: Un bloque por turno para diseño formal de pantallas completas o greenfield (mínimo 8 preguntas en total). Desacoplar siempre el **Chasis Composicional** (retícula, relaciones de escala y física) del **Livery** (fuentes, colores y logotipo corporativos del cliente).
+> **Regla de oro**: Un bloque por turno para diseño formal de pantallas completas o greenfield. El piso obligatorio son las **8 preguntas del núcleo duro** — #1 Persona, #2 Dolor, #3 Promesa, #4 Chasis Arquetípico, #6 Reglas Generativas, #9 Firma, #13 Pantalla Corazón, #14 Bans — que siempre deben quedar respondidas (en modo interactivo con respuesta del usuario; en modo auto, por inferencia documentada). Las demás preguntas son calibración y pueden heredarse del preset del chasis. Desacoplar siempre el **Chasis Composicional** (retícula, relaciones de escala y física) del **Livery** (fuentes, colores y logotipo corporativos del cliente).
 > 
 > **Fast-Path (Mantenimiento Incremental)**: En tareas de mantenimiento o ajustes menores (diff < 50 líneas, bugfix o agregado de un botón/control a pantalla existente), NO ejecutar los 5 bloques. El agente ejecuta el **Fast-Path**: hereda el chasis y tokens existentes emitiendo un único `Design Read` de 1 línea.
 > 
