@@ -34,7 +34,7 @@ Esta skill no decide por el humano. Le da **exactamente lo que necesita decidir 
 
 `metadata.time_budget_sec: 180` (3 min) es **declarativo** — la skill avisa
 del budget pero el **abort real requiere un orchestrator externo**
-(`professional-planner`, `judgment-day`, o el host agent). Esta skill no mata
+(`odd-workflow`, `judgment-day`, o el host agent). Esta skill no mata
 el proceso al llegar al límite; el router y el orchestrator deben:
 1. Surfacear el budget al cargar la skill (vía `skill-router --query`).
 2. Si el humano no responde a los 3 min, decidir si aceptar default silencioso

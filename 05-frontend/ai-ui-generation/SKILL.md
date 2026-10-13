@@ -21,7 +21,7 @@ Genera UI distintiva con herramientas de IA (Google Stitch, v0, Lovable, Claude 
 - El usuario pide una landing, dashboard, o componente "en vivo" desde un prompt.
 - Hay que iterar visuales rápido (3+ variantes en una sesión).
 - El deploy es parte del requisito (Vercel/Netlify/EAS).
-- **Do NOT use** para lógica de negocio compleja, auth, DB, o APIs — estas herramientas generan UI, no backends. Usa `professional-planner` para lo otro.
+- **Do NOT use** para lógica de negocio compleja, auth, DB, o APIs — estas herramientas generan UI, no backends. Usa `odd-workflow` para lo otro.
 
 ## The AI Slop Problem (y cómo evitarlo)
 

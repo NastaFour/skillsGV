@@ -15,12 +15,12 @@ metadata:
 
 Replaces ~80% of stochastic "which skill do I load?" reasoning with **exact trigger matching**. The agent only decides for the ~20% of cases where the router returns low confidence.
 
-> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 210 skills × ~150 tokens.
+> Two-tier loading: this skill is **Tier 0** (always loaded, ~2K tokens). It tells the agent which **Tier 1** skills to load on-demand, so Tier 0 stays small instead of inflating to 230 skills × ~150 tokens.
 
 ## When to Use
 
 - **Before any turn** that might invoke a skill: run `skill-router.mjs` first.
-- When you want to know if a diff is **trivial** (skip SDD) or **needs SDD** (invoke `sdd-orchestrator`; `professional-planner` remains the reference methodology).
+- When you want to classify a task route: trivial changes stay inline; substantial changes take the tracked ODD workflow (`odd-workflow`).
 - When 2+ skills have semantic overlap (e.g. `nextjs` deprecated vs `nextjs-15`, `engram` vs `mcp-integration`) — the router resolves it deterministically via `deprecated` flag.
 - When new skills overlap semantically (pilot `figma-implement`/`figma-mcp`, `nano-banana`/`banana-claude`, MCP hybrids) — the router de-ties via `references/overlap-matrix.json` (D4): `primary = canonical` only when the group leads the scoring (current top-1 is a member) AND the canonical itself has a trigger hit (`triggerScore >= 1`); a keyword-only canonical never displaces the leader.
 

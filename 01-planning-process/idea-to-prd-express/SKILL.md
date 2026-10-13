@@ -1,11 +1,11 @@
 ---
 name: idea-to-prd-express
-description: Compress Briefing→Spec→PRD into a 20-minute session for technical decisions that need fast turnaround. Use when the user has a concrete technical decision to make (not a full feature) and full 6-phase SDD is overkill.
+description: Compress Briefing→Spec→PRD into a 20-minute session for technical decisions that need fast turnaround. Use when the user has a concrete technical decision to make (not a full feature) and tracked multi-task ODD is overkill.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["idea to prd", "prd express", "express sdd", "fast prd", "20 minute prd", "comprimir sdd", "idea a prd", "briefing express"]
+  trigger: ["idea to prd", "prd express", "fast prd", "20 minute prd", "idea a prd", "briefing express"]
   scope: [global, project]
   version: "1.0.1"
   time_budget_sec: 1200
@@ -13,9 +13,9 @@ metadata:
 
 # Idea → PRD Express (20 min)
 
-Modo comprimido de [`professional-planner`](../../professional-planner/SKILL.md) para **decisiones técnicas concretas** que no necesitan el SDD de 6 fases completo. Mueve el briefing, spec y PRD a una sola sesión tight.
+Modo comprimido para **decisiones técnicas concretas** que no necesitan el flujo completo de múltiples tareas ODD. Mueve el briefing, spec y PRD a una sola sesión tight.
 
-> **No reemplaza** `professional-planner`. Lo **complementa**: úsalo cuando el SDD full sea overkill (1 decisión, no una feature). Si la decisión se complica → escala a SDD completo.
+> **Complementa** a `odd-workflow`: úsalo cuando la planificación completa sea overkill (1 decisión técnica puntual, no una feature). Si la decisión se complica → escala a ODD completo.
 
 ## When to Use
 
@@ -23,20 +23,20 @@ Modo comprimido de [`professional-planner`](../../professional-planner/SKILL.md)
 - ✅ Spike: validar factibilidad antes de comprometerse.
 - ✅ "De idea a PRD en 20 min" — cuando el usuario tiene una idea y requiere un PRD rápido para decidir.
 - ✅ ADR que justifica R&D con compressed paths.
-- ❌ **Do NOT use** para features que tocan 2+ dominios o 5+ archivos → usa `professional-planner` (SDD 6 fases).
+- ❌ **Do NOT use** para features que tocan 2+ dominios o 5+ archivos → usa `odd-workflow`.
 - ❌ **Do NOT use** para decisiones de arquitectura mayor (nuevo servicio, nueva DB) → [`tech-escalation-adr`](../tech-escalation-adr/SKILL.md).
 
 ## The 20-Minute Budget
 
 `metadata.time_budget_sec: 1200` (20 min) es **declarativo** — la skill avisa
 del budget pero el **abort real requiere un orchestrator externo**
-(`professional-planner`, `judgment-day`, o el host agent). Esta skill no mata
+(`odd-workflow`, `judgment-day`, o el host agent). Esta skill no mata
 el proceso al llegar al límite; el router y el orchestrator deben:
 1. Surfacear el budget al cargar la skill (vía `skill-router --query`).
-2. Decidir a los 18 min si abortar, extender, o escalar a SDD full.
+2. Decidir a los 18 min si abortar, extender, o escalar a ODD full (`odd-workflow`).
 3. Si el host no provee orchestrator, este budget es solo informativo.
 
-Express mode es **cronometrado**. Si pasas los 20 min sin PRD → escala a SDD full.
+Express mode es **cronometrado**. Si pasas los 20 min sin PRD → escala a `odd-workflow`.
 
 | Min | Phase | Output |
 |---|---|---|
@@ -140,8 +140,8 @@ Approve? (go / no go / change X)
 
 ## Rules
 
-1. **20 min hard cap.** Si te pasas, escala a `professional-planner` — express mode que degrada a full SDD no es express.
-2. **Una decisión por sesión.** Multi-decision → `professional-planner`.
+1. **20 min hard cap.** Si te pasas, escala a `odd-workflow` — express mode que se desborda requiere tracking estructurado.
+2. **Una decisión por sesión.** Multi-decision → `odd-workflow`.
 3. **No implementes.** El output es un PRD, no código. Implementation va en sesión/phase siguiente.
 4. **Recomienda, no te escondas.** Un PRD sin recomendación es un survey, no una decisión.
 5. **Constraints hardcoded.** Asumir constraints es la causa #1 de PRDs express que fallan en implementación.
@@ -151,8 +151,8 @@ Approve? (go / no go / change X)
 
 | Síntoma | Escala a |
 |---|---|
-| Te pasaste de 20 min | `professional-planner` (SDD 6 fases) |
-| Specs toca 2+ dominios | `professional-planner` |
+| Te pasaste de 20 min | `odd-workflow` |
+| Specs toca 2+ dominios | `odd-workflow` |
 | Opciones compiten a nivel arquitectura | `tech-escalation-adr` |
 | Necesitas research antes de decidir | `research-first` |
 | Humano quiere validar visualmente | `ai-ui-generation` (si es UI) |
@@ -161,11 +161,11 @@ Approve? (go / no go / change X)
 
 ## Integration
 
-- [`professional-planner`](../../professional-planner/SKILL.md) — el SDD full del que este es un modo comprimido.
+- [`odd-workflow`](../../00-meta-skills/odd-workflow/SKILL.md) — flujo estructurado para features y trabajo sustancial.
 - [`tech-escalation-adr`](../tech-escalation-adr/SKILL.md) — cuando la decisión es arquitectónica mayor.
 - [`research-first`](../../03-ai-ml/research-first/SKILL.md) — cuando necesitas investigar antes.
 - [`engram-integration`](../engram-integration/SKILL.md) — buscar decisiones previas relacionadas.
 - [`session-notes`](../session-notes/SKILL.md) — guardar el PRD express en memoria.
 
 ## Keywords
-idea to prd, prd express, express sdd, fast prd, technical decision, 20 minute prd, compressed sdd, decisión técnica
+idea to prd, prd express, fast prd, technical decision, 20 minute prd, decisión técnica

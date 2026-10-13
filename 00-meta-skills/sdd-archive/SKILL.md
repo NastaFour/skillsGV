@@ -1,6 +1,6 @@
 ---
 name: sdd-archive
-description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Archive a completed SDD change by syncing delta specs. Trigger: orchestrator launches archive after implementation and verification."
+description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Archive a completed SDD change by syncing delta specs. Trigger: orchestrator launches archive after implementation and verification."
 license: MIT
 allowed-tools: Read Write Edit Bash(git:*,node:*)
 metadata:
@@ -11,6 +11,8 @@ metadata:
   trigger: ["archive sdd", "archivar cambio", "sincronizar deltas specs"]
   scope: [global, project]
   delegate_only: true
+deprecated: "true"
+redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

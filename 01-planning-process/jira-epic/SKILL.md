@@ -179,4 +179,4 @@ After creating, update description:
 
 ## Integration con skillsGV
 
-Combinar con: `jira-task` (para los child tasks de cada epic), `professional-planner` (SDD antes de crear epics), `project-tracker` (tracking del roadmap), `github-pr` (PRs vinculados al epic).
+Combinar con: `jira-task` (para los child tasks de cada epic), `odd-workflow` (planificación ODD antes de crear epics), `project-tracker` (tracking del roadmap), `github-pr` (PRs vinculados al epic).

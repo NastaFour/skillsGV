@@ -102,20 +102,20 @@ After research is complete, add an entry to `project-tracker` Decision Log:
 - [2026-06-14] Research completed: <topic>. Decision: <recommendation>. See `openspec/changes/<feature>/research.md`.
 ```
 
-## 🔗 Integration with SDD Flow
+## 🔗 Integration with ODD Flow
 
 ```
-Research ──► Proposal ──► Spec ──► Design ──► Tasks ──► Apply
-   │
-   │ (professional-planner Phase 1)
-   │
-   └── Research feeds into PRD and Design
-       No code until research is complete
+Explore / Research ──► Specs (S#) ──► Tasks ──► Implementation ──► Close & Verify
+       │
+       │ (odd-workflow Explore phase)
+       │
+       └── Research feeds into Specs and Design
+           No mutation code until research is complete
 ```
 
 ## 📚 References
 
 - [ECC Research-First Pattern](https://github.com/affaan-m/ECC/blob/main/the-longform-guide.md)
-- `professional-planner/SKILL.md` — SDD Phase 1 (Briefing)
+- `00-meta-skills/odd-workflow/SKILL.md` — ODD Explore & Resolve Uncertainty
 - `01-planning-process/project-tracker/SKILL.md` — Decision Log
 - `03-ai-ml/llm-integration/SKILL.md` — if researching LLM providers

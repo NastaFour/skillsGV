@@ -1,6 +1,6 @@
 ---
 name: speckit-integration
-description: Integrates GitHub Spec Kit (specify CLI) with the existing skill ecosystem. Maps speckit commands to professional-planner phases and existing skills. Use when setting up SDD with spec-kit, running speckit commands, or bridging spec-kit artifacts with project-tracker.
+description: DEPRECATED. Use odd-workflow instead. Integrates GitHub Spec Kit (specify CLI) with the existing skill ecosystem. Maps speckit commands to professional-planner phases and existing skills. Use when setting up SDD with spec-kit, running speckit commands, or bridging spec-kit artifacts with project-tracker.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Python 3.11+ and uv for spec-kit CLI."
 allowed-tools: Bash(node:*) Read
@@ -8,6 +8,8 @@ metadata:
   trigger: ["speckit", "specify", "spec-kit", "specify init", "speckit.constitution", "speckit.specify", "speckit.plan", "speckit.tasks", "speckit.implement"]
   scope: [global, project]
   version: "1.0.0"
+deprecated: "true"
+redirect: "odd-workflow"
 ---
 
 # 🔗 Spec Kit Integration
@@ -19,7 +21,7 @@ Bridges GitHub's [Spec Kit](https://github.com/github/spec-kit) (112k stars) wit
 - Use when bootstrapping a new project with `specify init`
 - Use when running `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, or `/speckit.implement`
 - Use when you want spec-kit's file scaffold but guided by your existing skills
-- Do NOT use for single-file changes (use `professional-planner` directly)
+- Do NOT use for single-file changes (use `odd-workflow` directly)
 
 ## 🚦 Hard Rules
 
@@ -96,5 +98,5 @@ specify init  →  /speckit.constitution  →  /speckit.specify  →  /speckit.p
 
 - [Spec Kit GitHub](https://github.com/github/spec-kit)
 - [Spec Kit Docs](https://github.github.io/spec-kit/)
-- `professional-planner/SKILL.md` — your native SDD orchestrator
+- `00-meta-skills/odd-workflow/SKILL.md` — ODD workflow orchestrator
 - `06-code-quality/pnpm-workspaces/SKILL.md` — monorepo conventions

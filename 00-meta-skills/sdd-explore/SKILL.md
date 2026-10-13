@@ -1,6 +1,6 @@
 ---
 name: sdd-explore
-description: "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Explore SDD ideas before committing to a change. Trigger: orchestrator launches exploration or requirement clarification."
+description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Explore SDD ideas before committing to a change. Trigger: orchestrator launches exploration or requirement clarification."
 license: MIT
 allowed-tools: Read
 metadata:
@@ -11,6 +11,8 @@ metadata:
   trigger: ["explorar", "explore sdd", "investigar idea", "clarificar requisito"]
   scope: [global, project]
   delegate_only: true
+deprecated: "true"
+redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

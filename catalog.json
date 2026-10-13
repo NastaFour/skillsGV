@@ -199,7 +199,7 @@
       "tier0": false,
       "deprecated": true,
       "note": "← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup",
-      "autoInvoke": true
+      "autoInvoke": false
     },
     {
       "name": "sdd-propose",
@@ -537,9 +537,9 @@
       "category": "01-planning-process",
       "tier": "full",
       "tier0": false,
-      "deprecated": false,
+      "deprecated": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": false
     },
     {
       "name": "storybrand-messaging",
@@ -639,7 +639,7 @@
       "tier0": false,
       "deprecated": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": false
     },
     {
       "name": "feature-implementer",
@@ -1289,7 +1289,7 @@
       "tier0": false,
       "deprecated": true,
       "note": null,
-      "autoInvoke": true
+      "autoInvoke": false
     },
     {
       "name": "emil-kowalski",
@@ -2369,7 +2369,7 @@
       "tier0": false,
       "deprecated": true,
       "note": "← `references/sdd-methodology.md`, `references/templates.md`",
-      "autoInvoke": true
+      "autoInvoke": false
     }
   ]
 }

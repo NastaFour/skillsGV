@@ -10,6 +10,8 @@ metadata:
   trigger: ["planificar una nueva funcionalidad", "crear especificaciones", "iniciar arquitectura", "analizar requerimientos", "diseñar sistema", "PRD", "documento de requerimientos", "sdd flow", "spec-driven", "planning"]
   scope: [global, project]
   version: "2.0.0"
+deprecated: "true"
+redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../00-meta-skills/odd-workflow/SKILL.md) en su lugar.

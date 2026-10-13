@@ -221,4 +221,4 @@ Update work item description (Jira Wiki format):
 
 ## Integration con skillsGV
 
-Combinar con: `jira-epic` (para epics padre), `professional-planner` (SDD antes de las tasks), `github-pr` (PR vinculado a la task), `project-tracker` (tracking de sprint), `dod-checker` (definition of done antes de cerrar).
+Combinar con: `jira-epic` (para epics padre), `odd-workflow` (ODD specs antes de las tasks), `github-pr` (PR vinculado a la task), `project-tracker` (tracking de sprint), `dod-checker` (definition of done antes de cerrar).

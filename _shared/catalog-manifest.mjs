@@ -267,15 +267,16 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
   const skills = walkSkillPaths(root).map((path) => {
     const name = readSkillName(root, path);
     const prev = prevSkills.get(name);
+    const deprecated = readSkillDeprecated(root, path);
     return {
       name,
       path,
       category: path.includes("/") ? path.split("/")[0] : "(root)",
       tier: prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full"),
       tier0: tier0.has(name),
-      deprecated: readSkillDeprecated(root, path),
+      deprecated,
       note: prev ? (prev.note ?? null) : (notes.get(name) ?? null),
-      autoInvoke: prev ? Boolean(prev.autoInvoke) : autoInvoke.has(name),
+      autoInvoke: deprecated ? false : (prev ? Boolean(prev.autoInvoke) : autoInvoke.has(name)),
     };
   });
   const counts = new Map();

@@ -398,12 +398,15 @@ function emptyManifest(mode) {
  * untouched and never recorded as owned. Overwritten files get their previous
  * content backed up so --rollback can restore it.
  */
+const EXCLUDED_SHARED_FILES = new Set(["sdd-phase-common.md", "sdd-status-contract.md"]);
+
 function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc) {
   const skillName = basename(srcSkillDir);
+  const isShared = skillName === "_shared";
   const dest = join(destSkillsDir, skillName);
   if (dryRun) {
     for (const f of walkFiles(srcSkillDir)) {
-      if (f.symlink) continue; // source symlinks are never dereferenced into owned copies
+      if (f.symlink || (isShared && EXCLUDED_SHARED_FILES.has(f.rel))) continue; // source symlinks are never dereferenced into owned copies
       const d = join(dest, f.rel);
       console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
     }
@@ -413,7 +416,7 @@ function installSkillTracked(srcSkillDir, destSkillsDir, generation, entriesAcc)
     const stat = lstatSync(dest);
     if (stat.isSymbolicLink()) rmSync(dest, { force: true, recursive: true }); // swap old link; real dirs are copied over
   }
-  const files = walkFiles(srcSkillDir).filter((f) => !f.symlink); // never dereference source symlinks into owned copies
+  const files = walkFiles(srcSkillDir).filter((f) => !f.symlink && (!isShared || !EXCLUDED_SHARED_FILES.has(f.rel))); // never dereference source symlinks into owned copies
   const firstOwn = entriesAcc.length;
   for (const f of files) {
     const d = join(dest, f.rel);
@@ -880,7 +883,7 @@ function main() {
         const sharedDest = join(installPath, "_shared");
         if (dryRun) {
           for (const f of walkFiles(sharedSrc)) {
-            if (f.symlink) continue;
+            if (f.symlink || EXCLUDED_SHARED_FILES.has(f.rel)) continue;
             const d = join(sharedDest, f.rel);
             console.log(`  [dry-run] ${existsSync(d) ? "overwrite" : "create"} ${d}`);
           }
