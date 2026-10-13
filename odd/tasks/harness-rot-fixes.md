@@ -92,4 +92,4 @@ Direct merge `fix/harness-rot-gates` → `main` + push (user-authorized in-sessi
 
 ## Progress / Next step
 
-WU1-WU5 done (WU5 no-op, premise was parent miscount). Next: RDD assess of accumulated range (base 4a02568) → native review → Judgment Day (2 blind judges) → merge to main + push (user-authorized).
+**FEATURE COMPLETE — merged to main.** Round-2 fixes (`949e705`) verified by final closing verifier: SHIP (0 blocking; all Red findings + blind spots resolved with adversarial repros; gates 183/183 tests, doctor 7/7, validator 0 errors, mirror parity, references clean). Dual Judgment Day closed: 4/4 FIX → round-1 fixes → split verdict (Blue SHIP / Red FIX) → round-2 fixes → SHIP. RDD: review-2 terminal approved receipt burned; post-receipt deltas all under_budget. Deferred items live in the ledger above for the next iteration.
