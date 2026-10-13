@@ -118,5 +118,5 @@ gga run --ci
 ## Resources
 
 - Repo: https://github.com/Gentleman-Programming/gentleman-guardian-angel
-- Providers docs: `docs/providers.md` in the repo
-- Config reference: `docs/configuration.md` in the repo
+- Providers docs: [docs/providers.md](https://github.com/Gentleman-Programming/gentleman-guardian-angel/blob/main/docs/providers.md) in the upstream repo
+- Config reference: [docs/configuration.md](https://github.com/Gentleman-Programming/gentleman-guardian-angel/blob/main/docs/configuration.md) in the upstream repo

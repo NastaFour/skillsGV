@@ -32,7 +32,7 @@ Run when the user asks to check catalog health, run diagnostics, or verify envir
 4. **Manifest & index consistency**: `generate-indexes.mjs --check`
 5. **Dependency check**: `validate-skills.mjs --check-deps --json`
 6. **MCP parity check**: Bidirectional verification of `mcp-manifest.json` against frontmatters.
-7. **Skill reference integrity**: Every relative file reference in a `SKILL.md` (markdown links and backtick inline-code paths with file extensions) must resolve from the skill directory or the catalog root.
+7. **Skill reference integrity**: Every relative file reference in `SKILL.md` and `references/*.md` files (markdown links and backtick inline-code paths with file extensions) must resolve through the resolution ladder (anchored at the file directory, catalog root, or catalog-wide unique suffix).
 
 ## Execution
 

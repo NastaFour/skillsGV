@@ -23,7 +23,7 @@ Evidencia mínima para bloquear: el hallazgo debe poder señalarse en el diff (c
 
 ## Uso con los lentes de esta skill
 
-Los lentes 4R (`references/4r-framework.md`) producen hallazgos; esta política decide cuáles bloquean:
+Los lentes 4R ([`4R framework`](4r-framework.md)) producen hallazgos; esta política decide cuáles bloquean:
 
 1. Correr el lente correspondiente al riesgo dominante del diff.
 2. Clasificar cada hallazgo con la tabla causal de arriba.

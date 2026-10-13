@@ -576,11 +576,79 @@ test("catalog-doctor skill-references: parent-relative refs with skill-local tai
   const root = makeFixture(t);
   const owner = writeSkillFile(root, join("16-cat", "owner"), "owner", "Run [helper](../other-skill/scripts/helper.mjs) first.");
   mkdirSync(join(owner), { recursive: true });
-  // Decoy: an unrelated skill owns scripts/helper.mjs — suffix search must NOT resolve the ../ ref through it.
+  // Decoy: an unrelated skill owns scripts/helper.mjs  -  suffix search must NOT resolve the ../ ref through it.
   const decoy = writeSkillFile(root, join("17-cat", "other-skill"), "other-skill", "Decoy.");
   mkdirSync(join(decoy, "scripts"), { recursive: true });
   writeFileSync(join(decoy, "scripts", "helper.mjs"), "// decoy\n", "utf8");
   const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
   assert.notEqual(res.code, 0, `Expected the broken ../other-skill/scripts/helper.mjs to be flagged: ${res.stdout}`);
   assert.match(res.json.checks[0].cause, /other-skill\/scripts\/helper\.mjs/);
+});
+
+test("catalog-doctor skill-references: healthy references/*.md files pass across resolution ladder", (t) => {
+  const root = makeFixture(t);
+  const skillDir = writeSkillFile(
+    root,
+    join("18-cat", "doc-skill"),
+    "doc-skill",
+    "Parent skill body."
+  );
+  // Add references directory with a healthy doc and sibling
+  const refDir = join(skillDir, "references");
+  mkdirSync(refDir, { recursive: true });
+  writeFileSync(join(refDir, "sibling.md"), "# Sibling\n", "utf8");
+  writeFileSync(
+    join(refDir, "guide.md"),
+    [
+      "# Guide",
+      "See [the sibling](sibling.md).",
+      "See [the owning skill](../SKILL.md).",
+      "Run [the helper](../scripts/helper.mjs).",
+      "Uses [shared resolver](../../../_shared/skill-resolver.md).",
+      "Also resolves from root via `_shared/skill-resolver.md`.",
+    ].join("\n") + "\n",
+    "utf8"
+  );
+  mkdirSync(join(skillDir, "scripts"), { recursive: true });
+  writeFileSync(join(skillDir, "scripts", "helper.mjs"), "// helper\n", "utf8");
+  mkdirSync(join(root, "_shared"), { recursive: true });
+  writeFileSync(join(root, "_shared", "skill-resolver.md"), "# Shared\n", "utf8");
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.equal(res.code, 0, `Expected clean pass for healthy references: ${res.stdout} ${res.stderr}`);
+});
+
+test("catalog-doctor skill-references: broken ../../ from references/ is flagged (pre-commit-gga class)", (t) => {
+  const root = makeFixture(t);
+  const skillA = writeSkillFile(
+    root,
+    join("19-cat", "skill-a"),
+    "skill-a",
+    "Skill A body."
+  );
+  // Decoy/peer skill in another category
+  writeSkillFile(
+    root,
+    join("20-cat", "skill-b"),
+    "skill-b",
+    "Skill B body."
+  );
+
+  // In skill-a/references/guide.md:
+  // From references/, ../.. reaches 19-cat, NOT the repo root.
+  // So ../../skill-b/SKILL.md is broken (needs ../../../20-cat/skill-b/SKILL.md).
+  // Suffix search must NOT forgive this broken relative navigation.
+  const refDir = join(skillA, "references");
+  mkdirSync(refDir, { recursive: true });
+  writeFileSync(
+    join(refDir, "guide.md"),
+    "Broken link: [skill-b](../../skill-b/SKILL.md).\n",
+    "utf8"
+  );
+
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0, `Expected broken ../../ in references/ to fail: ${res.stdout}`);
+  const cause = res.json.checks[0].cause;
+  assert.match(cause, /skill-a\/references\/guide\.md/);
+  assert.match(cause, /skill-b\/SKILL\.md/);
 });

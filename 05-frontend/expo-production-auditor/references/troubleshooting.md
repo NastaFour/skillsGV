@@ -6,7 +6,7 @@
 - **Solution**: `pnpm dlx expo install --fix`
 
 ### 2. PNPM Monorepo Resolution Conflicts with Metro
-- **Symptoms**: `Error: Cannot find module 'metro-runtime/package.json'`
+- **Symptoms**: "Error: Cannot find module 'metro-runtime/package.json'"
 - **Solution**: Switch pnpm to hoisted node_modules:
   1. Add `node-linker=hoisted` to `.npmrc`
   2. Clear `node_modules` recursively

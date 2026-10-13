@@ -76,7 +76,7 @@ DON'T:
 ## 7. References inside skills
 
 - Reference local files only; prefer paths relative to the skill directory (`references/x.md`, `scripts/helper.mjs`).
-- Relative references are validated by `catalog-doctor` (`skill-references` check) through the resolution ladder: skill directory, catalog root, `skills/` install prefix, then catalog-wide suffix match.
+- Relative references in `SKILL.md` and `references/*.md` files are validated by `catalog-doctor` (`skill-references` check) through the resolution ladder: file directory, catalog root, `skills/` install prefix, then catalog-wide suffix match. Explicit parent traversals (`../`) resolve strictly against the file directory or catalog root.
 - Target-project paths (`.cursor/mcp.json`, `src/lib/api.ts`), upstream repository paths, and output templates (`<filename>.png`, `YYYY-MM-DD`, `PROJECT_NAME`) are prose or placeholders, never resolvable catalog references.
 
 ## 8. Validation and gates

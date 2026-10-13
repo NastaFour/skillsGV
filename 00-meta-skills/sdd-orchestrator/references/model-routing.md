@@ -82,5 +82,5 @@ Si el runtime **no expone catálogo de modelos**, el sistema degrada de forma de
 ## Relación con el resto del harness
 
 - Delta `model-routing-hooks`: el requisito «Perfiles por fase diferidos» pasa de DIFERIDO a ACTIVADO por esta capability (ver `openspec/specs/model-routing-hooks/spec.md` tras el merge del cambio).
-- Fila «Model Routing» en la tabla de harnesses extendidos de `harness-map.md`.
-- La política de review causal está en `harness-map.md` («Política de review») — independiente de qué modelo ejecute cada fase.
+- Fila «Model Routing» en la tabla de harnesses extendidos de `00-meta-skills/harness-map.md`.
+- La política de review causal está en `00-meta-skills/harness-map.md` («Política de review») — independiente de qué modelo ejecute cada fase.

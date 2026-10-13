@@ -231,6 +231,41 @@ function walkCatalogFiles(dir, out = []) {
 }
 
 /**
+ * Recursively walks markdown files within a directory in deterministic order.
+ */
+function walkMarkdownFiles(dir) {
+  const out = [];
+  try {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
+      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        out.push(...walkMarkdownFiles(full));
+      } else if (entry.isFile() && entry.name.endsWith(".md")) {
+        out.push(full);
+      }
+    }
+  } catch {}
+  return out;
+}
+
+/**
+ * Discovers all SKILL.md and references/*.md files inside skill directories.
+ */
+function walkSkillDocFiles(dir) {
+  const out = [];
+  const skillFiles = walkSkillFiles(dir);
+  for (const skillFile of skillFiles) {
+    out.push(skillFile);
+    const refDir = join(dirname(skillFile), "references");
+    if (existsSync(refDir)) {
+      out.push(...walkMarkdownFiles(refDir));
+    }
+  }
+  return out;
+}
+
+/**
  * Checks bidirectional parity between mcp-manifest.json and skill frontmatters.
  */
 export function checkMcpParity(root) {
@@ -362,6 +397,7 @@ const TARGET_PROJECT_SOURCE_ROOTS = new Set([
   "components",
   "hooks",
   "lib",
+  "node_modules",
   "packages",
   "pages",
   "public",
@@ -467,20 +503,20 @@ function resolvesReference(refPath, skillDir, root, suffixIndex, localOnly = fal
 }
 
 /**
- * Verifies that every relative file reference in SKILL.md files resolves
+ * Verifies that every relative file reference in SKILL.md and references/*.md files resolves
  * through the documented resolution ladder. Findings are sorted by
  * (skill, path) so the reported cause is byte-stable across runs and
  * filesystems.
  */
 export function checkSkillReferences(root) {
-  const skillFiles = walkSkillFiles(root);
+  const docFiles = walkSkillDocFiles(root);
   const suffixIndex = new Set(
     walkCatalogFiles(root).map((file) => relative(root, file).split(sep).join("/"))
   );
   const findings = [];
   const seen = new Set();
 
-  for (const file of skillFiles) {
+  for (const file of docFiles) {
     let content;
     try {
       content = readFileSync(file, "utf8");
@@ -488,7 +524,7 @@ export function checkSkillReferences(root) {
       continue;
     }
     const skill = relative(root, file).split(sep).join("/");
-    const skillDir = dirname(file);
+    const fileDir = dirname(file);
 
     for (const { ref, context } of extractSkillReferences(content)) {
       const rawRef = ref.split("#")[0].split("?")[0];
@@ -505,17 +541,10 @@ export function checkSkillReferences(root) {
 
       const localOnly =
         refPath !== rawRef ||
-        SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix)) ||
-        // A parent-relative ref whose tail (after stripping leading ../)
-        // contains a skill-local segment boundary is a cross-skill-local
-        // reference: catalog-wide suffix search must not mask it with an
-        // unrelated skill's same-named file (JD round-2 finding).
-        (refPath.startsWith("../") &&
-          /(?:^|\/)(?:references|scripts|assets|docs)\//.test(
-            refPath.replace(/^(?:\.\.\/)+/, "")
-          ));
-      if (!resolvesReference(refPath, skillDir, root, suffixIndex, localOnly)) {
-        findings.push({ skill, path: refPath, context });
+        refPath.startsWith("../") ||
+        SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix));
+      if (!resolvesReference(refPath, fileDir, root, suffixIndex, localOnly)) {
+        findings.push({ skill, file: skill, path: refPath, context });
       }
     }
   }
@@ -527,7 +556,7 @@ export function checkSkillReferences(root) {
   if (findings.length === 0) {
     return {
       pass: true,
-      summary: `All relative file references resolve (${skillFiles.length} SKILL.md file(s) scanned)`,
+      summary: `All relative file references resolve (${docFiles.length} file(s) scanned across skills and references)`,
     };
   }
 

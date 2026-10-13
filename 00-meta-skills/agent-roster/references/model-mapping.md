@@ -1,6 +1,6 @@
 # Model Mapping — semántica tier / effort / delegate_only por runtime
 
-> Explicación de cómo el roster declarativo (`_shared/agent-roster/roster.json`) se traduce en cada runtime. Este documento es la referencia canónica para agregar adaptadores nuevos; el comportamiento exacto de cada adaptador vive en `scripts/apply.mjs`.
+> Explicación de cómo el roster declarativo (`_shared/agent-roster/roster.json`) se traduce en cada runtime. Este documento es la referencia canónica para agregar adaptadores nuevos; el comportamiento exacto de cada adaptador vive en `../scripts/apply.mjs`.
 
 ## Los tres campos del roster
 
