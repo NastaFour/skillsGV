@@ -30,6 +30,7 @@ import { join, basename, dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 import { findProjectRoot } from "../../../_shared/script-utils.mjs";
+import { parseFrontmatter, getField, getNestedField, parseList } from "../../../_shared/frontmatter.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -172,52 +173,9 @@ function walkSkills(dir, out = []) {
   return out;
 }
 
-function parseFrontmatter(content) {
-  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-  if (!m) return null;
-  return m[1];
-}
-function getField(fm, field) {
-  const re = new RegExp(`^[ \\t]*${field}:\\s*(.+?)(?:\\r?\\n[a-z-]+:|$)`, "ms");
-  const m = fm.match(re);
-  if (!m) return null;
-  let value = m[1].trim();
-  // YAML block scalar (">" or "|"): fold the following indented lines.
-  if (value === ">" || value === "|") {
-    const rest = fm.slice(m.index + m[0].length);
-    const parts = [];
-    for (const line of rest.split(/\r?\n/)) {
-      if (line.trim() === "") { if (value === "|") parts.push(""); continue; }
-      if (!/^\s/.test(line)) break; // next top-level key
-      parts.push(line.trim());
-    }
-    return (value === ">" ? parts.join(" ") : parts.join("\n")).trim();
-  }
-  // Quoted YAML string: strip surrounding quotes.
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-    value = value.slice(1, -1);
-  }
-  return value;
-}
 function getMetadataScope(fm) {
-  // metadata.scope is a YAML array inside the metadata: block; default "project".
-  const startRe = /^[ \t]*metadata:\s*$/m;
-  const startMatch = fm.match(startRe);
-  if (!startMatch) return "project";
-  const rest = fm.slice(startMatch.index + startMatch[0].length);
-  const blockLines = [];
-  for (const line of rest.split(/\r?\n/)) {
-    if (line.trim() === "") { blockLines.push(line); continue; }
-    if (!/^\s/.test(line)) break; // next top-level key
-    blockLines.push(line);
-  }
-  const block = blockLines.join("\n");
-  const scopeRe = /^[ \t]*scope:\s*(.+)$/m;
-  const m = block.match(scopeRe);
-  if (!m) return "project";
-  const inner = m[1].trim().replace(/^\[/, "").replace(/\]$/, "").trim();
-  if (!inner) return "project";
-  const items = inner.split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+  const raw = getNestedField(fm, "metadata", "scope");
+  const items = parseList(raw);
   return items.length > 0 ? items.join(", ") : "project";
 }
 function readFileUtf8(p) {

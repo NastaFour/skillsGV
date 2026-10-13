@@ -17,6 +17,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, basename, relative, resolve, sep, dirname, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPO_ROOT, checkCatalog, readTier0Set, walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
+import { splitFrontmatter as parseFrontmatter, getField, getNestedField, parseList } from "../../../_shared/frontmatter.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -102,46 +103,6 @@ function walkSkills(dir) {
   return out;
 }
 
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!match) return null;
-  return { front: match[1], body: match[2] };
-}
-
-function getField(front, field) {
-  const re = new RegExp(`^${field}:\\s*(.+?)(?:\\r?\\n[a-z-]+:|$)`, "ms");
-  const m = front.match(re);
-  return m ? m[1].trim() : null;
-}
-
-/**
- * Read a field nested inside a top-level block (e.g. metadata: { field: ... }).
- * Handles 2-space YAML indentation. Returns trimmed string value or null.
- */
-function getNestedField(front, parent, field) {
-  // Find the parent's start line and capture everything up to the next
-  // non-indented line (column 0 key) or end of frontmatter.
-  const startRe = new RegExp(`^${parent}:\\s*$`, "m");
-  const startMatch = front.match(startRe);
-  if (!startMatch) return null;
-  const startIdx = startMatch.index + startMatch[0].length;
-  // Take everything from startIdx onward, but stop at the first line that
-  // has no leading whitespace (i.e. next top-level key) or end of string.
-  const rest = front.slice(startIdx);
-  const lines = rest.split(/\r?\n/);
-  const blockLines = [];
-  for (const line of lines) {
-    if (line === "") { blockLines.push(line); continue; }
-    if (!/^\s/.test(line)) break; // next top-level key
-    blockLines.push(line);
-  }
-  const block = blockLines.join("\n");
-  // Now find the field inside the block
-  const fieldRe = new RegExp(`^\\s+${field}:\\s*(.+?)(?:\\r?\\n\\s+[a-z_-]+:|\\r?\\n[\\S]|$)`, "ms");
-  const fm = block.match(fieldRe);
-  if (!fm) return null;
-  return fm[1].trim();
-}
 
 function validate(file, catalogNames) {
   const issues = [];

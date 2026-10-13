@@ -23,6 +23,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, basename, dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateRouterOutput } from "./validate-output.mjs";
+import { parseFrontmatter, getField, getNestedField, parseTriggers } from "../../../_shared/frontmatter.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -63,42 +64,7 @@ function walkSkills(dir, out = []) {
   return out;
 }
 
-function parseFrontmatter(content) {
-  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-  if (!m) return null;
-  return m[1];
-}
-function getField(fm, field) {
-  const re = new RegExp(`^[ \\t]*${field}:\\s*(.+?)(?:\\r?\\n[a-z-]+:|$)`, "ms");
-  const m = fm.match(re);
-  return m ? m[1].trim() : null;
-}
-function getNestedField(front, parent, field) {
-  const startRe = new RegExp(`^${parent}:\\s*$`, "m");
-  const startMatch = front.match(startRe);
-  if (!startMatch) return null;
-  const startIdx = startMatch.index + startMatch[0].length;
-  const rest = front.slice(startIdx);
-  const lines = rest.split(/\r?\n/);
-  const blockLines = [];
-  for (const line of lines) {
-    if (line === "") { blockLines.push(line); continue; }
-    if (!/^\s/.test(line)) break;
-    blockLines.push(line);
-  }
-  const block = blockLines.join("\n");
-  const fieldRe = new RegExp(`^\\s+${field}:\\s*(.+?)(?:\\r?\\n\\s+[a-z_-]+:|\\r?\\n[\\S]|$)`, "ms");
-  const fmMatch = block.match(fieldRe);
-  if (!fmMatch) return null;
-  return fmMatch[1].trim();
-}
-function getTriggerArray(fm) {
-  const t = getField(fm, "trigger") || getNestedField(fm, "metadata", "trigger");
-  if (!t) return [];
-  const inner = t.replace(/^\[/, "").replace(/\]$/, "").trim();
-  if (!inner) return [];
-  return inner.split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
-}
+const getTriggerArray = parseTriggers;
 
 function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

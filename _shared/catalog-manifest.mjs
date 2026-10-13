@@ -28,7 +28,9 @@
 import { existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseFrontmatter, readFileUtf8 } from "./script-utils.mjs";
+import { readFileUtf8 } from "./script-utils.mjs";
+import { parseFrontmatter, getField, getNestedField } from "./frontmatter.mjs";
+export { getField } from "./frontmatter.mjs";
 
 export const MANIFEST_VERSION = 1;
 export const MANIFEST_FILE = "catalog.json";
@@ -92,23 +94,11 @@ export function walkSkillPaths(root) {
   return out.sort();
 }
 
-/** First top-level `field:` value of a frontmatter block (quotes stripped). */
-export function getField(front, field) {
-  const re = new RegExp(`^${field}:\\s*(.+?)(?:\\r?\\n[a-z-]+:|$)`, "ms");
-  const m = front.match(re);
-  if (!m) return null;
-  let value = m[1].trim();
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-    value = value.slice(1, -1);
-  }
-  return value;
-}
-
 /** Declared skill name (frontmatter `name`, folder name as fallback). */
 export function readSkillName(root, relPath) {
   try {
-    const parsed = parseFrontmatter(readFileUtf8(join(root, relPath)));
-    const name = parsed ? getField(parsed.front, "name") : null;
+    const fm = parseFrontmatter(readFileUtf8(join(root, relPath)));
+    const name = fm ? getField(fm, "name") : null;
     if (name) return name;
   } catch {
     /* fall through to the folder name */
@@ -123,10 +113,10 @@ export function readSkillName(root, relPath) {
  */
 export function readSkillDeprecated(root, relPath) {
   try {
-    const parsed = parseFrontmatter(readFileUtf8(join(root, relPath)));
-    if (!parsed) return false;
-    const m = parsed.front.match(/^[ \t]*deprecated:\s*"?([a-zA-Z]+)"?\s*$/m);
-    return m ? m[1].toLowerCase() === "true" : false;
+    const fm = parseFrontmatter(readFileUtf8(join(root, relPath)));
+    if (!fm) return false;
+    const depRaw = (getField(fm, "deprecated") || getNestedField(fm, "metadata", "deprecated") || "").trim();
+    return depRaw.toLowerCase() === "true";
   } catch {
     return false;
   }
