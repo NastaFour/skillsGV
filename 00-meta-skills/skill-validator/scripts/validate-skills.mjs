@@ -836,8 +836,17 @@ function runRegistryConsistencyCheck(skills, targetPath) {
   const skillsMdEntries = parseSkillsMdEntries(readFileSync(skillsMdPath, "utf8"));
   const registryEntries = parseRegistryEntries(readFileSync(registryPath, "utf8"));
 
-  // 1. Every registry entry must exist in SKILLS.md with the same path.
+  const ABSOLUTE_PATH_RE = /^[A-Za-z]:[\\/]|^\\\\|^\/(?:home|Users)/i;
+
+  // 1. Every registry entry must exist in SKILLS.md with the same path and be repo-relative.
   for (const [name, path] of registryEntries) {
+    if (ABSOLUTE_PATH_RE.test(path)) {
+      issues.push({
+        severity: "error",
+        check: "registry-entry-absolute-path",
+        msg: `Registry entry "${name}" contains absolute path "${path}"; all paths in .atl/skill-registry.md must be repo-relative`,
+      });
+    }
     const skillsPath = skillsMdEntries.get(name);
     if (skillsPath === undefined) {
       issues.push({ severity: "error", check: "registry-entry-missing-in-skills", msg: `Registry entry "${name}" is missing in SKILLS.md` });

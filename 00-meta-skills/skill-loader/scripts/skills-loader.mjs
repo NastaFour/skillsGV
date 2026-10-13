@@ -132,6 +132,7 @@ let query = null;
 let diffLines = null;
 let checkName = null;
 let turnCache = null; // path to current-turn cache file (for --check)
+let customRoot = null;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--emit-tier0") mode = "emit-tier0";
   else if (args[i] === "--emit-tier1") mode = "emit-tier1";
@@ -141,8 +142,9 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--status") mode = "status";
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--turn-cache") turnCache = args[++i];
+  else if (args[i] === "--root") customRoot = args[++i];
   else if (args[i] === "--help" || args[i] === "-h") {
-    console.log("Usage: skills-loader.mjs --emit-tier0 | --turn \"<q>\" [--diff <n>] --emit-tier1 | --check <name> | --emit-registry | --status");
+    console.log("Usage: skills-loader.mjs --emit-tier0 | --turn \"<q>\" [--diff <n>] --emit-tier1 | --check <name> | --emit-registry [--root <dir>] | --status");
     process.exit(0);
   }
 }
@@ -237,12 +239,12 @@ function saveCache(cache) {
 }
 
 // Build (or refresh) the index of all SKILL.md files with mtime.
-function buildIndex(cache) {
-  const files = walkSkills(CATALOG_ROOT);
+function buildIndex(cache, root = CATALOG_ROOT) {
+  const files = walkSkills(root);
   const index = [];
   for (const f of files) {
     const mtime = statSync(f).mtimeMs;
-    const rel = relative(CATALOG_ROOT, f);
+    const rel = relative(root, f);
     const cached = cache.files[rel];
     let name, desc, scope;
     if (cached && cached.mtime === mtime && cached.scope !== undefined) {
@@ -416,11 +418,7 @@ function modeStatus() {
   }
 }
 
-// ---------- Mode: --emit-registry ----------
-// Regenerate .atl/skill-registry.md from the catalog walk + mtime cache.
-// Excludes _shared, skill-registry and sdd-* skills (skill-registry-protocol).
-// The registry is an index, not a summary: exact SKILL.md path per skill.
-const REGISTRY_PATH = join(CATALOG_ROOT, ".atl", "skill-registry.md");
+const ABSOLUTE_PATH_RE = /^[A-Za-z]:[\\/]|^\\\\|^\/(?:home|Users)/i;
 
 // Category display titles (top-level catalog folders → human-readable section).
 const CATEGORY_TITLES = {
@@ -444,9 +442,11 @@ function isRegistryExcluded(name) {
 }
 
 function modeEmitRegistry() {
-  const cache = loadCache();
-  const index = buildIndex(cache);
-  saveCache(cache);
+  const targetRoot = customRoot ? resolve(customRoot) : CATALOG_ROOT;
+  const registryPath = join(targetRoot, ".atl", "skill-registry.md");
+  const cache = customRoot ? { version: 1, files: {}, lastTier0Emit: 0 } : loadCache();
+  const index = buildIndex(cache, targetRoot);
+  if (!customRoot) saveCache(cache);
 
   // Index only skills that belong in the registry (exclude _shared, skill-registry, sdd-*)
   const indexed = index
@@ -491,6 +491,11 @@ function modeEmitRegistry() {
     const sorted = [...skills].sort((a, b) => a.name.localeCompare(b.name));
     for (const s of sorted) {
       const path = s.rel.replace(/\\/g, "/");
+      if (ABSOLUTE_PATH_RE.test(path)) {
+        throw new Error(
+          `Absolute path detected in registry entry "${s.name}": "${path}". All registry paths must be repo-relative.`
+        );
+      }
       lines.push(`| \`${s.name}\` | ${s.desc} | \`${s.scope}\` | \`${path}\` |`);
     }
     lines.push("");
@@ -503,8 +508,8 @@ function modeEmitRegistry() {
   lines.push("- **Regeneración**: ejecutar `node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --emit-registry` tras agregar, renombrar o eliminar skills.");
   lines.push("");
 
-  mkdirSync(dirname(REGISTRY_PATH), { recursive: true });
-  writeFileSync(REGISTRY_PATH, lines.join("\n"), "utf8");
+  mkdirSync(dirname(registryPath), { recursive: true });
+  writeFileSync(registryPath, lines.join("\n"), "utf8");
   console.log(`✅ Emitted .atl/skill-registry.md (${indexed.length} skills indexed, ${groups.size} categories)`);
 }
 

@@ -18,7 +18,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const VALIDATOR = join(ROOT, "00-meta-skills", "skill-validator", "scripts", "validate-skills.mjs");
 const GENERATOR = join(ROOT, "00-meta-skills", "skill-registry", "scripts", "generate-indexes.mjs");
+const LOADER = join(ROOT, "00-meta-skills", "skill-loader", "scripts", "skills-loader.mjs");
 
 function makeRoot(t) {
   const root = mkdtempSync(join(tmpdir(), "wu3a-gates-"));
@@ -313,6 +314,39 @@ test("catalog-sync-missing-skill: skill present in catalog but missing in catalo
   assert.equal(r.code, 1, r.stdout);
   const hits = findIssues(r.json, "catalog-sync-missing-skill");
   assert.ok(hits.some((h) => /domain-skill/.test(h.msg)));
+});
+
+test("registry-entry-absolute-path: absolute paths in .atl/skill-registry.md fail with descriptive error", (t) => {
+  const root = makeRoot(t);
+  skillFixture(root, { dir: "my-domain", name: "domain-skill" });
+  skillFixture(root, { dir: "my-domain", name: "posix-skill" });
+  write(join(root, "SKILLS.md"), "# SKILLS\n\n| domain-skill | [my-domain/domain-skill/SKILL.md](my-domain/domain-skill/SKILL.md) |\n| posix-skill | [my-domain/posix-skill/SKILL.md](my-domain/posix-skill/SKILL.md) |\n");
+  write(join(root, "AGENTS.md"), "# AGENTS\n\n| Categoría | Path | Skills |\n|---|---|---|\n| Domain | `my-domain/` | domain-skill, posix-skill |\n");
+  write(join(root, ".atl", "skill-registry.md"), "# Registry\n\n| `domain-skill` | Fixture | `root-only` | `C:/Users/test/my-domain/domain-skill/SKILL.md` |\n| `posix-skill` | Fixture | `root-only` | `/home/runner/my-domain/posix-skill/SKILL.md` |\n");
+
+  const r = runValidator(root);
+  assert.equal(r.code, 1, r.stdout);
+  const hits = findIssues(r.json, "registry-entry-absolute-path");
+  assert.equal(hits.length, 2, "must flag both windows and posix absolute paths");
+  assert.ok(hits.some((h) => h.msg.includes("domain-skill") && h.msg.includes("C:/Users/test")));
+  assert.ok(hits.some((h) => h.msg.includes("posix-skill") && h.msg.includes("/home/runner")));
+});
+
+test("registry-emitter: skills-loader --emit-registry --root writes strictly repo-relative paths", (t) => {
+  const root = makeRoot(t);
+  skillFixture(root, { dir: "my-domain", name: "domain-skill" });
+  write(join(root, "SKILLS.md"), "# SKILLS\n\n| domain-skill | [my-domain/domain-skill/SKILL.md](my-domain/domain-skill/SKILL.md) |\n");
+  write(join(root, "AGENTS.md"), "# AGENTS\n\n| Categoría | Path | Skills |\n|---|---|---|\n| Domain | `my-domain/` | domain-skill |\n");
+
+  const out = execFileSync("node", [LOADER, "--emit-registry", "--root", root], { encoding: "utf8" });
+  assert.match(out, /\.atl\/skill-registry\.md/);
+
+  const registryContent = readFileSync(join(root, ".atl", "skill-registry.md"), "utf8");
+  assert.match(registryContent, /`my-domain\/domain-skill\/SKILL\.md`/);
+
+  // Check 0 absolute paths matching C:/ or /home/ or /Users/
+  const absoluteMatches = registryContent.match(/^[A-Za-z]:[\\/]|^\\\\|^\/(?:home|Users)/gim) || [];
+  assert.equal(absoluteMatches.length, 0, "registry must not contain absolute paths");
 });
 
 
