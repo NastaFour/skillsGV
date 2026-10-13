@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["prompt engineering", "CoT", "RTCRO", "plantilla de prompt"]
+  trigger: ["prompt engineering", "chain of thought", "RTCRO", "plantilla de prompt"]
   scope: [global, project]
   version: "1.0.0"
 ---

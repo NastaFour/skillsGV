@@ -8,7 +8,7 @@ license: MIT
 compatibility: "Works with Claude Code, Cursor, Gemini, and any other agentskills.io compatible agent. Requires Python 3.8+."
 allowed-tools: Read
 metadata:
-  trigger: ["django","django rest framework","drf","python backend","serializers django"]
+  trigger: ["django","django rest framework","DRF","python backend","serializers django"]
   author: gentleman-programming
   version: "1.0.0"
   category: 04-backend

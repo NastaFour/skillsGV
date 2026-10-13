@@ -320,10 +320,70 @@ test("token-audit: flags modern neutral palettes and non-bg/text prefixes", (t) 
   }
 });
 
-test("token-audit: detects 4-digit hex colors", (t) => {
+test("token-audit: pure-digit 4-hex is treated as a numeric reference, not a color", (t) => {
+  // Tradeoff (JD round 2): #0008-style all-digit 4-hex is indistinguishable from
+  // issue references like #1234, so the letter requirement drops it. Use #f008.
   const dir = makeFixture(t);
   writeFileSync(join(dir, "Card.tsx"), "const c = \"#0008\";\n", "utf8");
   const res = runAudit(["--srcDir", dir, "--json"]);
-  assert.equal(res.code, 1, `Expected #0008 flagged: ${res.stdout}`);
+  assert.equal(res.code, 0, `#0008 must not be flagged (numeric ref tradeoff): ${res.stdout}`);
+});
+
+
+test("token-audit: child text on a class-bearing line is not flagged (round-2 red repro)", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<button className="p-4"> <span>text-white</span></button>\n`,
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `Child text must not be flagged: ${res.stdout}`);
+});
+
+test("token-audit: non-class attributes in multiline tags are not flagged (round-2 red repro)", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<button
+  className={"p-2"}
+  title="border-white"
+  aria-label="bg-stone-500">
+  x
+</button>\n`,
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `title/aria-label must not be flagged: ${res.stdout}`);
+});
+
+test("token-audit: class literals inside the value region ARE still flagged", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `<button
+  className="p-2 bg-white"
+  title="border-white">
+  x
+</button>\n`,
+    "utf8"
+  );
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `bg-white inside the class value must be flagged: ${res.stdout}`);
+  assert.equal(JSON.parse(res.stdout).total, 1);
+});
+
+test("token-audit: decimal issue references are not 4-digit hex colors", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(join(dir, "notes.ts"), "// Fixes issue #1234 and see #9999\nconst c = 1;\n", "utf8");
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `#1234 must not be flagged: ${res.stdout}`);
+});
+
+test("token-audit: 4-digit hex WITH a letter is still flagged", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(join(dir, "Card.tsx"), `const c = "#f008";\n`, "utf8");
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1, `#f008 must be flagged: ${res.stdout}`);
 });
 

@@ -504,7 +504,16 @@ export function checkSkillReferences(root) {
       seen.add(key);
 
       const localOnly =
-        refPath !== rawRef || SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix));
+        refPath !== rawRef ||
+        SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix)) ||
+        // A parent-relative ref whose tail (after stripping leading ../)
+        // contains a skill-local segment boundary is a cross-skill-local
+        // reference: catalog-wide suffix search must not mask it with an
+        // unrelated skill's same-named file (JD round-2 finding).
+        (refPath.startsWith("../") &&
+          /(?:^|\/)(?:references|scripts|assets|docs)\//.test(
+            refPath.replace(/^(?:\.\.\/)+/, "")
+          ));
       if (!resolvesReference(refPath, skillDir, root, suffixIndex, localOnly)) {
         findings.push({ skill, path: refPath, context });
       }

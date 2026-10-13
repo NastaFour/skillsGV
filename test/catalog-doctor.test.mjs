@@ -571,3 +571,16 @@ test("catalog-doctor skill-references: existing parent-relative ../ peers resolv
   const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
   assert.equal(res.code, 0, `Expected clean pass: ${res.stdout}`);
 });
+
+test("catalog-doctor skill-references: parent-relative refs with skill-local tails do not suffix-resolve", (t) => {
+  const root = makeFixture(t);
+  const owner = writeSkillFile(root, join("16-cat", "owner"), "owner", "Run [helper](../other-skill/scripts/helper.mjs) first.");
+  mkdirSync(join(owner), { recursive: true });
+  // Decoy: an unrelated skill owns scripts/helper.mjs — suffix search must NOT resolve the ../ ref through it.
+  const decoy = writeSkillFile(root, join("17-cat", "other-skill"), "other-skill", "Decoy.");
+  mkdirSync(join(decoy, "scripts"), { recursive: true });
+  writeFileSync(join(decoy, "scripts", "helper.mjs"), "// decoy\n", "utf8");
+  const res = runDoctorJson(["--root", root, "--check", "skill-references"]);
+  assert.notEqual(res.code, 0, `Expected the broken ../other-skill/scripts/helper.mjs to be flagged: ${res.stdout}`);
+  assert.match(res.json.checks[0].cause, /other-skill\/scripts\/helper\.mjs/);
+});

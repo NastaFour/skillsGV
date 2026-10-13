@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["escribir tests", "crear pruebas", "unit test", "integration test", "e2e", "vitest", "jest", "supertest", "coverage"]
+  trigger: ["escribir tests", "crear pruebas", "unit test", "integration test", "E2E", "vitest", "jest", "supertest", "coverage"]
   scope: [global, project]
   version: "1.1.0"
 ---

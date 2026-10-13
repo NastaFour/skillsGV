@@ -40,12 +40,14 @@ const SOURCE_EXTENSIONS = new Set([
 
 const TOKEN_FILE_RE = /(token|theme|variables)/i;
 
-// #RGB / #RGBA / #RRGGBB / #RRGGBBAA, never a prefix of a longer hex run.
-const HEX_COLOR_RE = /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})(?![0-9a-fA-F])/;
+// #RGB / #RRGGBB / #RRGGBBAA, never a prefix of a longer hex run.
+// The 4-digit #RGBA form must contain at least one hex letter so decimal
+// issue/ticket references like `#1234` are not reported as colors.
+const HEX_COLOR_RE = /#(?:(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-fA-F])|(?=[0-9a-fA-F]{4}(?![0-9a-fA-F]))[0-9a-fA-F]*[a-fA-F][0-9a-fA-F]*)/;
 
 const CLASS_CONTEXT_RE = /\bclass(?:Name)?\s*=/;
 const TAILWIND_ALWAYS_RE = /(?<![\w-])(?:bg|text|border|ring|divide|fill|stroke)-(?:white|black)(?![\w-])/;
-const TAILWIND_NONSEMANTIC_RE = /(?<![\w-])(?:bg|text|border|ring|divide)-(?:gray|slate|zinc|neutral|stone)-[\w/]+/;
+const TAILWIND_NONSEMANTIC_RE = /(?<![\w-])(?:bg|text|border|ring|divide|fill|stroke)-(?:gray|slate|zinc|neutral|stone)-[\w/]+/;
 
 const IGNORE_ATTRIBUTE = "data-token-audit-ignore";
 const CSS_CUSTOM_PROPERTY_RE = /--[\w-]+\s*:/;
@@ -86,8 +88,59 @@ function collectSourceFiles(dir, out = []) {
  * at that closing `>`, so child content is excluded. Hard-capped so malformed
  * input cannot scan the whole file.
  */
-function multilineTagWindow(lines, openerIndex) {
-  const window = [];
+/**
+ * Extracts ONLY the class/className attribute value region, line by line.
+ * Literals are judged inside this region alone, so other attributes
+ * (title=, aria-label=, alt=) and child text after the closing `>` can never
+ * produce findings. Handles ", ', `{`, and helper-call openers; nested
+ * braces/parens are tracked so `className={clsx("bg-white")}` works.
+ */
+function classValueSegments(lines, openerIndex) {
+  const opener = lines[openerIndex];
+  const m = opener.match(/\bclass(?:Name)?\s*=\s*/);
+  if (!m) return [];
+  let pos = m.index + m[0].length;
+  const rest = opener.slice(pos);
+  const qi = rest.search(/["'`{(]/);
+  if (qi < 0) return [];
+  const open = rest[qi];
+  pos += qi + 1;
+  const closeCh = open === "{" ? "}" : open === "(" ? ")" : open;
+  const nested = open === "{" || open === "(";
+  let depth = nested ? 1 : 0;
+  const segments = [];
+  let cur = opener.slice(pos);
+  for (
+    let idx = openerIndex;
+    idx < lines.length && idx < openerIndex + MULTILINE_WINDOW_MAX_LINES;
+    idx++
+  ) {
+    let out = "";
+    let done = false;
+    for (let j = 0; j < cur.length; j++) {
+      const ch = cur[j];
+      if (nested && (ch === "{" || ch === "(")) {
+        depth++;
+      } else if (nested && (ch === "}" || ch === ")")) {
+        depth--;
+        if (depth === 0) {
+          done = true;
+          break;
+        }
+      } else if (!nested && ch === closeCh) {
+        done = true;
+        break;
+      }
+      out += ch;
+    }
+    if (out.trim()) segments.push({ lineIndex: idx, text: out });
+    if (done) break;
+    cur = lines[idx + 1] ?? "";
+  }
+  return segments;
+}
+
+function multilineTagWindow(lines, openerIndex) {  const window = [];
   let quote = null;
   let depth = 0;
   let escaped = false;
@@ -142,35 +195,23 @@ function scanFile(absPath, srcDir, findings) {
     if (
       CLASS_CONTEXT_RE.test(line) &&
       !line.includes(IGNORE_ATTRIBUTE) &&
-      !reportedTailwindLines.has(lineNumber) &&
-      (TAILWIND_ALWAYS_RE.test(line) || TAILWIND_NONSEMANTIC_RE.test(line))
+      !reportedTailwindLines.has(lineNumber)
     ) {
-      reportedTailwindLines.add(lineNumber);
-      findings.push({ file, line: lineNumber, rule: RULE_TAILWIND, snippet });
-    }
-
-    // Multiline class attributes: the opener ends the line, so scan the
-    // opening-tag region (through the closing `>`) for raw literals and report
-    // each at its own line. `data-token-audit-ignore` anywhere in the region
-    // suppresses the element; child content after `>` stays out of scope.
-    if (MULTILINE_CLASS_OPEN_RE.test(line)) {
-      const window = multilineTagWindow(lines, i);
-      const ignored =
-        line.includes(IGNORE_ATTRIBUTE) || window.some((entry) => entry.includes(IGNORE_ATTRIBUTE));
+      const window = MULTILINE_CLASS_OPEN_RE.test(line) ? multilineTagWindow(lines, i) : [];
+      const ignored = window.some((entry) => entry.includes(IGNORE_ATTRIBUTE));
       if (!ignored) {
-        for (let j = 0; j < window.length; j++) {
-          const literalLine = window[j];
-          const literalLineNumber = lineNumber + j + 1;
+        for (const seg of classValueSegments(lines, i)) {
+          const segLineNumber = seg.lineIndex + 1;
           if (
-            !reportedTailwindLines.has(literalLineNumber) &&
-            (TAILWIND_ALWAYS_RE.test(literalLine) || TAILWIND_NONSEMANTIC_RE.test(literalLine))
+            !reportedTailwindLines.has(segLineNumber) &&
+            (TAILWIND_ALWAYS_RE.test(seg.text) || TAILWIND_NONSEMANTIC_RE.test(seg.text))
           ) {
-            reportedTailwindLines.add(literalLineNumber);
+            reportedTailwindLines.add(segLineNumber);
             findings.push({
               file,
-              line: literalLineNumber,
+              line: segLineNumber,
               rule: RULE_TAILWIND,
-              snippet: literalLine.trim(),
+              snippet: seg.text.trim(),
             });
           }
         }

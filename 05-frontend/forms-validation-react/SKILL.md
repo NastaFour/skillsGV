@@ -4,7 +4,7 @@ description: Patterns for form validation using React Hook Form + Zod with share
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
-  trigger: ["form validation", "react hook form", "rhf", "zod resolver", "form schema", "multi step form", "wizard form", "login form", "register form", "booking form", "shared schema"]
+  trigger: ["form validation", "react hook form", "RHF", "zod resolver", "form schema", "multi step form", "wizard form", "login form", "register form", "booking form", "shared schema"]
   scope: [global, project]
   version: "1.0.0"
 allowed-tools: Bash(node:*) Read
