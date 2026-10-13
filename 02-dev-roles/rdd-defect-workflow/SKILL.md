@@ -31,7 +31,7 @@ This skill guides public collaboration. It does not grant issue approval, label,
 
 ## ODD Integration Points (native review lifecycle)
 
-The catalog integrates with the native review lifecycle for each candidate unit; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, gentle-ai 4.0):
+The catalog integrates with the native review lifecycle for each candidate unit; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, gentle-ai 4.1.x, provider contract 1.3.0). Under 4.1.x the review is proportionate: `review assess` reports `review_due: true` only for high-risk candidates (a medium candidate reports `under_budget` regardless of line count), and the agent selects the fitting 4R lenses at START via `--lenses <r,...> --lenses-reason <text>`:
 
 1. **Per work-unit commit**: at the close of each work-unit commit on the feature branch, the harness runs the selectorless STATUS preflight over the candidate diff and routes only from the returned `next_transition` (an exact START freezes lineage, target, lenses, and budgets); it never opens a review budget on its own.
 2. **Per PR slice**: when preparing a PR slice or closing a feature branch; same preflight, same routing. An already-acknowledged target is consumed and is not re-reviewed.

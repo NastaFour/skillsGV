@@ -142,5 +142,5 @@ Lista de secrets requeridos:
 2. **Migraciones en producción**: solo `prisma migrate deploy`, nunca `prisma migrate dev`
 3. **Rollback**: tener `pg_dump` del día anterior antes de cualquier deploy
 4. **Healthcheck post-deploy**: `GET /api/health` debe devolver 200 en < 5s
-5. Consultar `../04-backend/docker/SKILL.md` para configuración de contenedores
-6. Consultar `../08-devops/monitoring/SKILL.md` para healthchecks y alertas
+5. Consultar `../../04-backend/docker/SKILL.md` para configuración de contenedores
+6. Consultar `../../08-devops/monitoring/SKILL.md` para healthchecks y alertas

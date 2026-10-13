@@ -11,7 +11,7 @@ metadata:
 
 # Nano Banana Image Generation
 
-> **Atribución (contenido vendored)**: adaptación catálogo-nativa de la skill `nano-banana` de [cc-nano-banana](https://github.com/kkoppenhaver/cc-nano-banana) (kkoppenhaver), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io). Fuente: `skills/banana/SKILL.md` de `kkoppenhaver/cc-nano-banana`.
+> **Atribución (contenido vendored)**: adaptación catálogo-nativa de la skill `nano-banana` de [cc-nano-banana](https://github.com/kkoppenhaver/cc-nano-banana) (kkoppenhaver), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io). Fuente: el `SKILL.md` de la skill `banana` en el repositorio upstream.
 
 ## Activation Contract
 
@@ -56,7 +56,7 @@ ALWAYS use this skill when the user asks for any image, graphic, illustration, o
 |---|---|
 | Higher quality needed | `export NANOBANANA_MODEL=gemini-3-pro-image-preview` |
 | "Try again / give me options" | Regenerate with `--count=3` |
-| "Edit this one" | `/edit nanobanana-output/filename.png 'adjustment'` |
+| "Edit this one" | `/edit nanobanana-output/<filename>.png 'adjustment'` |
 
 ## Prompt Tips
 

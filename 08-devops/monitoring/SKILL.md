@@ -43,7 +43,7 @@ export const logger = pino({
 - Todo log debe incluir `correlationId`
 - Redactar tokens, passwords, cookies
 - En producción: salida JSON estructurada (sin pretty-print)
-- Consultar `../04-backend/expressjs/SKILL.md` para el middleware de error global
+- Consultar `../../04-backend/expressjs/SKILL.md` para el middleware de error global
 
 ---
 
@@ -104,7 +104,7 @@ export function correlationMiddleware(req: Request, res: Response, next: NextFun
 }
 ```
 
-Consultar `../04-backend/microservices/SKILL.md` para tracing entre servicios.
+Consultar `../../04-backend/microservices/SKILL.md` para tracing entre servicios.
 
 ---
 
@@ -130,4 +130,4 @@ Consultar `../04-backend/microservices/SKILL.md` para tracing entre servicios.
 // - db_query_duration_seconds{query_type}
 ```
 
-Consultar `../03-ai-ml/ai-scalability-mlops/SKILL.md` para telemetría específica de modelos AI.
+Consultar `../../03-ai-ml/ai-scalability-mlops/SKILL.md` para telemetría específica de modelos AI.

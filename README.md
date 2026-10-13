@@ -42,12 +42,9 @@ Install using your preferred agent's native ecosystem:
 # Via Skills CLI (Vercel Labs / skills.sh)
 pnpm dlx skills add NastaFour/skillsGV
 
-# In Claude Code chat interface
-/plugin marketplace add NastaFour/skillsGV
-/plugin install skillsgv@skillsgv-marketplace
-
-# In Gemini CLI
-gemini extensions install https://github.com/NastaFour/skillsGV
+# In Claude Code / OpenCode / Cursor and other agents: use the manual
+# clone & install below. Plugin-marketplace and `gemini extensions`
+# commands are NOT available; do not rely on them.
 ```
 
 ### 2. Manual Clone & Install
@@ -104,7 +101,7 @@ flowchart TD
 |---|:---:|:---:|:---:|
 | **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
 | **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
-| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.0 alignment) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.1.x alignment) |
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
 | **Anti-Slop Design System** | ❌ | ❌ | ✅ (`impeccable` + `taste-skill`) |

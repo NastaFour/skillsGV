@@ -11,7 +11,7 @@ metadata:
 
 # Banana Claude — Creative Director for AI Image Generation
 
-> **Atribución (contenido vendored)**: adaptación catálogo-nativa de la skill `banana` de [banana-claude](https://github.com/AgriciDaniel/banana-claude) (AgriciDaniel), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io). Fuente: `skills/banana/SKILL.md` de `AgriciDaniel/banana-claude`.
+> **Atribución (contenido vendored)**: adaptación catálogo-nativa de la skill `banana` de [banana-claude](https://github.com/AgriciDaniel/banana-claude) (AgriciDaniel), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io). Fuente: el `SKILL.md` de la skill `banana` en el repositorio upstream.
 
 ## Activation Contract
 

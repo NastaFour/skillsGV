@@ -1,6 +1,6 @@
 # Cuestionario de Unicidad D1b (5 Bloques Obligatorios) — design-driven
 
-> **Regla de oro**: Un bloque por turno para diseño formal de pantallas completas o greenfield (mínimo 8 preguntas en total). Desacoplar siempre el **Chasis Composicional** (retícula, relaciones de escala y física) del **Livery** (fuentes, colores y logotipo corporativos del cliente).
+> **Regla de oro**: Un bloque por turno para diseño formal de pantallas completas o greenfield. El piso obligatorio son las **8 preguntas del núcleo duro** — #1 Persona, #2 Dolor, #3 Promesa, #4 Chasis Arquetípico, #6 Reglas Generativas, #9 Firma, #13 Pantalla Corazón, #14 Bans — que siempre deben quedar respondidas (en modo interactivo con respuesta del usuario; en modo auto, por inferencia documentada). Las demás preguntas son calibración y pueden heredarse del preset del chasis. Desacoplar siempre el **Chasis Composicional** (retícula, relaciones de escala y física) del **Livery** (fuentes, colores y logotipo corporativos del cliente).
 > 
 > **Fast-Path (Mantenimiento Incremental)**: En tareas de mantenimiento o ajustes menores (diff < 50 líneas, bugfix o agregado de un botón/control a pantalla existente), NO ejecutar los 5 bloques. El agente ejecuta el **Fast-Path**: hereda el chasis y tokens existentes emitiendo un único `Design Read` de 1 línea.
 > 
@@ -33,12 +33,12 @@
    - Confirmar si se adoptan los diales del preset elegido (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`) o si se fuerza un valor puntual.
    - ¿La página tiene cadencia narrativa con scroll fluido o funciona como una aplicación densa fija / viewport lock (`100dvh`)?
 
-6. **Las 3 Reglas Generativas Mecánicas**:
+6. **Las 3 Reglas Generativas Mecánicas** *(directiva derivada por el agente, no una pregunta al usuario — el agente la deriva del arquetipo elegido en #4 y la confirma)*:
    - El agente DEBE derivar del arquetipo exactamente **3 directivas técnicas de CSS/Layout inmutables** (1 de retícula/layout, 1 de división/superficie, 1 de escala tipográfica) para registrarlas en `design-dna.md` y en el header del archivo visual antes de codificar.
 
 ---
 
-## Bloque 3 · Referencias Reales y Anti-Referencias
+## Bloque 3 · Referencias Reales y Anti-Referencias *(bloque de calibración — sus preguntas #7 y #8 no pertenecen al núcleo duro; con referencias provistas por el usuario o presets del dominio se resuelven sin bloquear)*
 
 7. **Referencias Positivas**: Proporcionar 3-5 URLs reales (Godly, Awwwards, 21st.dev, Dribbble, Figma o producto vivo) indicando qué se toma exactamente de cada una (paleta, tipografía, retícula o micro-interacción). *En modo terminal o backend sin URLs, indicar nombres de productos referentes concretos*.
 8. **Anti-Referencias**: Proporcionar 2-3 ejemplos de productos, sitios o patrones que NO gustan y por qué, para prohibirlos explícitamente.

@@ -115,7 +115,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 - **Backup antes de escribir**: `apply.mjs` crea `<target>.roster.bak-<timestamp>` antes de tocar una configuración existente.
 - **Merge quirúrgico**: en OpenCode solo se parchea `agent.<name>.model` de los 21 agentes; toda otra clave queda byte a byte intacta.
 - **Regla de prueba**: NO ejecutar `--apply` contra el `opencode.json` global real en tests; usar una copia temporal con `apply.mjs --config <copia>`.
-- **Regenerar, no editar**: `gentle-ai-dsh/preset/roster.routing.json` es un artefacto derivado del roster; se regenera con `--runtime dsh --apply`.
+- **Regenerar, no editar**: `preset/roster.routing.json` es un artefacto derivado del roster; se regenera con `--runtime dsh --apply`.
 - **Sin dependencias**: todos los scripts son Node puro (Windows-first, sin paquetes externos).
 
 ## 🧩 Adaptadores por runtime
@@ -123,7 +123,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 | Runtime | Mecanismo | Adapter |
 |---|---|---|
 | OpenCode | `agent.<name>.model` en `opencode.json` (merge quirúrgico de solo esa clave) | incluido |
-| dsh (DeepSeek Harness) | No hay modelo por agente: herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `preset/roster.routing.json` y sincroniza los literales fallback del preset | incluido |
+| dsh (DeepSeek Harness) | No hay modelo por agente: herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `gentle-ai-dsh/preset/roster.routing.json` y sincroniza los literales fallback del preset | incluido |
 | Claude Code | Frontmatter `model: <alias>` por sub-agente en `.claude/agents/*.md` (documentado en references, adaptador futuro) | documentado |
 
 ### Cómo agregar un adaptador de runtime nuevo

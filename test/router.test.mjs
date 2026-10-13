@@ -39,6 +39,28 @@ test('routes two judges to judgment-day skill', () => {
   assert.equal(res.confidence, 1);
 });
 
+test('uppercase acronym triggers shorter than MIN_TRIGGER_LENGTH still route (jwt)', () => {
+  const res = runRouter('implement jwt authentication and login flow');
+  assert.equal(res.primary, 'jwt-bcrypt');
+});
+
+test('uppercase acronym triggers shorter than MIN_TRIGGER_LENGTH still route (orm)', () => {
+  const res = runRouter('setup the orm for the database layer');
+  assert.ok(
+    res.tier1toLoad.includes('prisma-orm') || res.secondary.includes('prisma-orm'),
+    `expected prisma-orm routed for orm query, got ${JSON.stringify(res)}`
+  );
+});
+
+test('tier1toLoad never cannibalizes slots with Tier 0 always-on skills', () => {
+  const res = runRouter('write unit tests with vitest');
+  const TIER0 = ['odd-workflow','skill-router','skill-loader','skill-validator','testing-patterns','code-reviewer','engram-integration','dod-checker','decision-gate'];
+  for (const t0 of TIER0) {
+    assert.ok(!res.tier1toLoad.includes(t0), `tier1toLoad must not include Tier 0 skill ${t0}: ${JSON.stringify(res.tier1toLoad)}`);
+  }
+  assert.ok(res.tier1toLoad.length > 0, 'tier1toLoad should still carry domain skills');
+});
+
 test('deprecated skills are skipped from primary assignment', () => {
   const res = runRouter('nextjs legacy');
   assert.notEqual(res.primary, 'nextjs');

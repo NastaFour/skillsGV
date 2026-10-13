@@ -3,13 +3,14 @@
  * catalog-doctor.mjs — Unified Catalog Health Check
  *
  * Requirements (spec: catalog-doctor, change skills-25-upgrade WU5b):
- * - Aggregates 6 diagnostic health checks:
+ * - Aggregates 7 diagnostic health checks:
  *   1. validate-skills.mjs --strict --json
  *   2. install-skills.mjs --dry-run --all-tools
  *   3. skills-loader.mjs --status
  *   4. generate-indexes.mjs --check
  *   5. validate-skills.mjs --check-deps --json
  *   6. MCP manifest and frontmatter bidirectional parity
+ *   7. Skill relative file reference integrity (in-process)
  * - Read-only: MUST NOT mutate filesystem, manifest, or install state.
  * - Constant command table for argv dispatch.
  * - Exit 0 if all checks pass; Exit != 0 with actionable causes if any fails.
@@ -20,7 +21,7 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, resolve, dirname } from "node:path";
+import { join, resolve, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 
@@ -146,6 +147,14 @@ export const DOCTOR_COMMAND_TABLE = [
     buildArgs: null,
     run: (root) => checkMcpParity(root),
   },
+  {
+    id: "skill-references",
+    name: "Skill reference integrity",
+    rootScope: ROOT_SCOPE.TARGET,
+    relScript: null, // executed in-process
+    buildArgs: null,
+    run: (root) => checkSkillReferences(root),
+  },
 ];
 
 /**
@@ -188,12 +197,32 @@ function parseListValue(raw) {
 function walkSkillFiles(dir) {
   const out = [];
   try {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.name === ".git" || entry.name === "node_modules" || entry.name === "gentle-ai-dsh" || entry.name === "_shared") continue;
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
+      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
         out.push(...walkSkillFiles(full));
       } else if (entry.isFile() && entry.name === "SKILL.md") {
+        out.push(full);
+      }
+    }
+  } catch {}
+  return out;
+}
+
+/**
+ * Walks every file (not only SKILL.md) for the catalog-wide suffix index used
+ * as the last resolution step. Same deterministic order and exclusions as
+ * walkSkillFiles.
+ */
+function walkCatalogFiles(dir, out = []) {
+  try {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
+      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walkCatalogFiles(full, out);
+      } else if (entry.isFile()) {
         out.push(full);
       }
     }
@@ -288,6 +317,224 @@ export function checkMcpParity(root) {
   return {
     pass: true,
     summary: `mcp-manifest.json in bidirectional parity with skill frontmatters (${serverMap.size} server(s))`,
+  };
+}
+
+const REFERENCE_EXTENSIONS = "(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)";
+const REFERENCE_FILE_RE = /\.(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)\b/i;
+const SKILL_LINK_RE = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
+const INLINE_CODE_SPAN_RE = /`([^`\n]+)`/g;
+const CODE_PATH_RE = new RegExp(
+  `[A-Za-z0-9_@.~-]+(?:\\/[A-Za-z0-9_@.~-]+)+\\.${REFERENCE_EXTENSIONS}\\b`,
+  "g"
+);
+const SKIPPED_REFERENCE_PREFIXES = ["design-artifacts/", "odd/", ".atl/"];
+
+/**
+ * Skill-local path shapes: these only make sense relative to the owning skill
+ * directory (or the catalog root), so catalog-wide suffix search must never
+ * let an unrelated skill's same-named file mask a broken reference.
+ */
+const SKILL_LOCAL_PREFIXES = ["references/", "scripts/", "assets/", "docs/"];
+
+/**
+ * Directories excluded from every catalog walk: VCS metadata, dependencies,
+ * the vendored addon mirror, and shared non-skill resources.
+ */
+const EXCLUDED_DIR_NAMES = new Set([".git", "node_modules", "gentle-ai-dsh", "_shared"]);
+
+/**
+ * Dot-directories owned by this catalog (validated like any other path).
+ * Every other dot-prefixed first segment denotes target-project layout
+ * (`.cursor/`, `.changeset/`, `.sessions/`, ...) and is skipped.
+ */
+const CATALOG_OWNED_DOTDIRS = new Set([".github", ".atl"]);
+
+/**
+ * Target-application source roots (Expo/Next/Vite monorepos and their
+ * conventional layout). These first segments belong to the projects the
+ * skills are applied to, never to this catalog (which keeps sources inside
+ * numbered category folders, `00-meta-skills/`, and `scripts/`), so
+ * references into them are target layouts rather than catalog files.
+ */
+const TARGET_PROJECT_SOURCE_ROOTS = new Set([
+  "app",
+  "components",
+  "hooks",
+  "lib",
+  "packages",
+  "pages",
+  "public",
+  "src",
+  "styles",
+]);
+
+/**
+ * All-caps placeholder segments such as `YYYY-MM-DD` or `PROJECT_TRACKER`:
+ * document templates, not concrete catalog files.
+ */
+const PLACEHOLDER_SEGMENT_RE = /^[A-Z]{2,}(?:[-_][A-Z0-9]+)+$/;
+
+/** Byte-stable directory-entry ordering (code-unit compare, locale-independent). */
+function byEntryName(a, b) {
+  return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+}
+
+function hasPlaceholderSegment(refPath) {
+  return refPath.split("/").some((segment) => {
+    if (!segment || !/^[A-Z]/.test(segment)) return false;
+    return PLACEHOLDER_SEGMENT_RE.test(segment.replace(/\.[A-Za-z0-9]+$/, ""));
+  });
+}
+
+function isSkippableReference(refPath) {
+  if (/^(https?:|mailto:|#|~|\/)/.test(refPath)) return true;
+  if (refPath.includes("://") || refPath.startsWith("//")) return true;
+  if (/[<>{}]/.test(refPath)) return true;
+  const firstSegment = refPath.split("/")[0];
+  if (TARGET_PROJECT_SOURCE_ROOTS.has(firstSegment)) return true;
+  if (hasPlaceholderSegment(refPath)) return true;
+  // `..` is a parent-relative cross-skill reference, not a target-project
+  // dotdir: it must flow through the normal resolution ladder instead of
+  // being silently skipped by the dot-prefix rule below.
+  if (firstSegment === "..") return false;
+  if (firstSegment.startsWith(".") && !CATALOG_OWNED_DOTDIRS.has(firstSegment)) return true;
+  return SKIPPED_REFERENCE_PREFIXES.some((prefix) => refPath.startsWith(prefix));
+}
+
+/**
+ * Extracts candidate relative file references from a SKILL.md body:
+ * markdown link targets and inline-code paths with known file extensions.
+ * Fenced code blocks hold templates/examples, not references.
+ */
+function extractSkillReferences(content) {
+  const withoutFences = content.replace(/```[\s\S]*?```/g, "");
+  const refs = [];
+
+  for (const match of withoutFences.matchAll(SKILL_LINK_RE)) {
+    if (REFERENCE_FILE_RE.test(match[1])) refs.push({ ref: match[1], context: "link" });
+  }
+
+  for (const match of withoutFences.matchAll(INLINE_CODE_SPAN_RE)) {
+    const span = match[1];
+    for (const pathMatch of span.matchAll(CODE_PATH_RE)) {
+      const idx = pathMatch.index ?? 0;
+      if (idx > 0 && span[idx - 1] === "/") continue; // URL or absolute-path tail
+      refs.push({ ref: pathMatch[0], context: "code" });
+    }
+  }
+
+  return refs;
+}
+
+/**
+ * Resolution ladder for a reference candidate. A path is OK if ANY step resolves:
+ *   (a) relative to the owning skill directory;
+ *   (b) relative to the catalog root;
+ *   (c) install layout: strip a leading `skills/` segment, then (b) again
+ *       (installed trees place the whole catalog under `skills/`);
+ *   (d) catalog-wide suffix search: segment-aligned match against every
+ *       repo-relative file path (with leading `../`/`skills/` normalized),
+ *       so unique basenames like `project-tracker/SKILL.md` resolve regardless
+ *       of depth.
+ * Skill-local shapes (`references/`, `scripts/`, `assets/`, `docs/`) and
+ * dot-relative markdown link targets (`./x.md`) are explicitly local: only
+ * (a) and (b) apply, so suffix collisions cannot mask broken references.
+ */
+function resolvesReference(refPath, skillDir, root, suffixIndex, localOnly = false) {
+  if (existsSync(resolve(skillDir, refPath)) || existsSync(resolve(root, refPath))) {
+    return true;
+  }
+  if (localOnly) return false;
+
+  const strippedSkills = refPath.replace(/^skills\//, "");
+  if (strippedSkills !== refPath && existsSync(resolve(root, strippedSkills))) return true;
+
+  const variants = new Set([
+    refPath,
+    strippedSkills,
+    refPath.replace(/^(?:\.\.\/)+/, ""),
+    strippedSkills.replace(/^(?:\.\.\/)+/, ""),
+  ]);
+  for (const variant of variants) {
+    if (!variant) continue;
+    if (suffixIndex.has(variant)) return true;
+    for (const file of suffixIndex) {
+      if (file.endsWith(`/${variant}`)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Verifies that every relative file reference in SKILL.md files resolves
+ * through the documented resolution ladder. Findings are sorted by
+ * (skill, path) so the reported cause is byte-stable across runs and
+ * filesystems.
+ */
+export function checkSkillReferences(root) {
+  const skillFiles = walkSkillFiles(root);
+  const suffixIndex = new Set(
+    walkCatalogFiles(root).map((file) => relative(root, file).split(sep).join("/"))
+  );
+  const findings = [];
+  const seen = new Set();
+
+  for (const file of skillFiles) {
+    let content;
+    try {
+      content = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    const skill = relative(root, file).split(sep).join("/");
+    const skillDir = dirname(file);
+
+    for (const { ref, context } of extractSkillReferences(content)) {
+      const rawRef = ref.split("#")[0].split("?")[0];
+      if (!rawRef) continue;
+      // `./` inside a backtick span is a code example (`import db from './db.js'`),
+      // not a reference. A dot-relative markdown link IS a reference and is
+      // explicitly local: skill directory or catalog root only.
+      if (rawRef.startsWith("./") && context === "code") continue;
+      const refPath = rawRef.startsWith("./") ? rawRef.slice(2) : rawRef;
+      if (!refPath || isSkippableReference(refPath)) continue;
+      const key = `${skill}::${refPath}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      const localOnly =
+        refPath !== rawRef ||
+        SKILL_LOCAL_PREFIXES.some((prefix) => refPath.startsWith(prefix)) ||
+        // A parent-relative ref whose tail (after stripping leading ../)
+        // contains a skill-local segment boundary is a cross-skill-local
+        // reference: catalog-wide suffix search must not mask it with an
+        // unrelated skill's same-named file (JD round-2 finding).
+        (refPath.startsWith("../") &&
+          /(?:^|\/)(?:references|scripts|assets|docs)\//.test(
+            refPath.replace(/^(?:\.\.\/)+/, "")
+          ));
+      if (!resolvesReference(refPath, skillDir, root, suffixIndex, localOnly)) {
+        findings.push({ skill, path: refPath, context });
+      }
+    }
+  }
+
+  findings.sort((a, b) =>
+    a.skill < b.skill ? -1 : a.skill > b.skill ? 1 : a.path < b.path ? -1 : a.path > b.path ? 1 : 0
+  );
+
+  if (findings.length === 0) {
+    return {
+      pass: true,
+      summary: `All relative file references resolve (${skillFiles.length} SKILL.md file(s) scanned)`,
+    };
+  }
+
+  const details = findings.map((finding) => `${finding.skill} -> ${finding.path}`).join("; ");
+  return {
+    pass: false,
+    cause: `${findings.length} dangling reference(s): ${details}`,
   };
 }
 
@@ -398,10 +645,11 @@ Checks:
   manifest-consistency  Verify catalog.json, SKILLS.md, and AGENTS.md consistency
   dependency-check      Check declared dependencies (bin, env, node)
   mcp-parity            Verify bidirectional parity between mcp-manifest.json and skills
+  skill-references      Verify relative file references in SKILL.md files resolve
 
 Root scope:
   --root is forwarded to validator-strict, manifest-consistency,
-  dependency-check and mcp-parity.
+  dependency-check, mcp-parity and skill-references.
   installer-dryrun and loader-status run the catalog resolved from THIS
   script's location; --root does not relocate them (documented limitation).
 

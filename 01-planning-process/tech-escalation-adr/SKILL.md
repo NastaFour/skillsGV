@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["proponer tecnologia", "sugerir libreria", "cambiar stack", "proponer framework", "adr", "architectural decision record", "escalacion tecnica"]
+  trigger: ["proponer tecnologia", "sugerir libreria", "cambiar stack", "proponer framework", "ADR", "architectural decision record", "escalacion tecnica"]
   scope: [global, project]
   version: "1.0.0"
 ---

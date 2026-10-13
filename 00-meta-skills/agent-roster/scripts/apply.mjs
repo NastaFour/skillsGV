@@ -43,6 +43,13 @@ const CATALOG_ROOT = resolve(SKILL_DIR, "../..");
 const ROSTER_PATH = join(CATALOG_ROOT, "_shared", "agent-roster", "roster.json");
 const PROFILES_PATH = join(CATALOG_ROOT, "_shared", "agent-roster", "profiles.json");
 const DSH_PRESET_PATH = join(CATALOG_ROOT, "gentle-ai-dsh", "preset", "agent.cordis.yml");
+const CANONICAL_ROUTING_PATH = join(
+  CATALOG_ROOT,
+  "00-meta-skills",
+  "agent-roster",
+  "preset",
+  "roster.routing.json"
+);
 const DSH_ROUTING_PATH = join(CATALOG_ROOT, "gentle-ai-dsh", "preset", "roster.routing.json");
 
 const DEFAULT_OPENCODE_CONFIG = join(
@@ -789,9 +796,12 @@ function runDsh(opts, roster, profile, providers) {
 
   // Sync state of an existing routing file.
   let routingState = "missing";
-  let routingExists = existsSync(DSH_ROUTING_PATH);
+  // Canonical preset is the source of truth; the dsh mirror copy is consulted
+  // only as a legacy fallback and is kept byte-identical after every write.
+  const routingReadPath = existsSync(CANONICAL_ROUTING_PATH) ? CANONICAL_ROUTING_PATH : DSH_ROUTING_PATH;
+  let routingExists = existsSync(routingReadPath);
   if (routingExists) {
-    const existing = loadJson(DSH_ROUTING_PATH);
+    const existing = loadJson(routingReadPath);
     if (existing && existing.version === 1 && existing.routing) {
       let same = true;
       for (const a of roster.agents) {
@@ -863,13 +873,17 @@ function runDsh(opts, roster, profile, providers) {
   }
 
   if (opts.apply) {
-    // 1. routing.json (derived artifact, regenerated freely)
+    // 1. routing.json (derived artifact, regenerated freely). The canonical
+    // preset is the source of truth; the dsh mirror copy stays byte-identical.
     if (routingDiffers) {
+      mkdirSync(dirname(CANONICAL_ROUTING_PATH), { recursive: true });
+      const routingBytes = JSON.stringify(routing, null, 2) + "\n";
+      writeFileSync(CANONICAL_ROUTING_PATH, routingBytes);
       mkdirSync(dirname(DSH_ROUTING_PATH), { recursive: true });
-      writeFileSync(DSH_ROUTING_PATH, JSON.stringify(routing, null, 2) + "\n");
-      console.log(`\n✅ Wrote ${DSH_ROUTING_PATH}`);
+      writeFileSync(DSH_ROUTING_PATH, routingBytes);
+      console.log(`\n✅ Wrote ${CANONICAL_ROUTING_PATH} (+ dsh mirror copy)`);
     } else {
-      console.log(`\n✅ ${DSH_ROUTING_PATH} already in sync.`);
+      console.log(`\n✅ ${CANONICAL_ROUTING_PATH} already in sync.`);
     }
     // 2. preset fallback literals (backup first, only when a literal changes)
     if (changedLiterals.length > 0) {

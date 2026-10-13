@@ -5,8 +5,6 @@ mio/
 .skills-used.json
 
 # Archivos de caché del router (generados en runtime)
-~/.skill-router-cache.json
-~/.skill-router-turn.json
 
 # Backup del .git corrupto (recuperación 2026-08-24)
 .git.corrupt-*/
@@ -41,3 +39,4 @@ pr-body-*.md
 # Addon build artifact (generated on-demand by scripts/sync-addon.mjs)
 gentle-ai-dsh/skills/
 
+00-meta-skills/skill-loader/tier1-instructions.txt

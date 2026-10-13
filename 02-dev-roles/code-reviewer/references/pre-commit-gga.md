@@ -99,7 +99,7 @@ pnpm typecheck
 pnpm test
 ```
 
-Pull rules from [`solid-clean-code`](../../06-code-quality/solid-clean-code/SKILL.md), [`typescript`](../../06-code-quality/typescript/SKILL.md), [`jwt-bcrypt`](../../04-backend/jwt-bcrypt/SKILL.md) — gga then enforces them automatically on every commit.
+Pull rules from [`solid-clean-code`](../../../06-code-quality/solid-clean-code/SKILL.md), [`typescript`](../../../06-code-quality/typescript/SKILL.md), [`jwt-bcrypt`](../../../04-backend/jwt-bcrypt/SKILL.md) — gga then enforces them automatically on every commit.
 
 ## CI / CD integration
 

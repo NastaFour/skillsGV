@@ -16,6 +16,8 @@ Use this meta-skill to add new skills to the catalog in a spec-compliant way. Ru
 
 ## 🚦 Spec Constraints (agentskills.io)
 
+> Authoring norm: follow `docs/skill-style-guide.md` (repo-root, normative) as the single source for style and structure; the bundled copy at `00-meta-skills/skill-improver/references/skill-style-guide.md` mirrors it for installed contexts.
+
 | Field | Rule | Example |
 |---|---|---|
 | `name` | 1-64 chars, `[a-z0-9-]`, no start/end `-`, no `--` | `prisma-orm` |
