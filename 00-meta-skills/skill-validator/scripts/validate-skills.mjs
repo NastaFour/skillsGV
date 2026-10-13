@@ -481,9 +481,21 @@ function validateQualityGates(file, mcpServers) {
  * Estimated Tier 0 context tokens: `tier0-context.md` when present, else the
  * TIER0_SKILLS set rebuilt with the loader formula (`## name\n description`).
  */
-function estimateTier0Tokens(root) {
+export function estimateTier0Tokens(root) {
   const contextPath = join(root, TIER0_CONTEXT_MD);
-  if (existsSync(contextPath)) return { tokens: estTokens(readFileSync(contextPath, "utf8")), source: TIER0_CONTEXT_MD };
+  if (existsSync(contextPath)) {
+    const raw = readFileSync(contextPath, "utf8");
+    const perSkill = [];
+    const sections = raw.split(/^## /m).filter(Boolean);
+    for (const sec of sections) {
+      const [name, ...rest] = sec.split("\n");
+      const trimmedName = name.trim();
+      const body = rest.join("\n").trim();
+      const tokens = estTokens(`## ${trimmedName}\n${body}`);
+      perSkill.push({ name: trimmedName, tokens });
+    }
+    return { tokens: estTokens(raw), source: TIER0_CONTEXT_MD, perSkill };
+  }
   const tier0 = readTier0Set(root);
   if (!tier0.ok || tier0.names.size === 0) return null;
   const descriptions = new Map();
@@ -494,19 +506,35 @@ function estimateTier0Tokens(root) {
     const name = getField(parsed.front, "name");
     if (name && !descriptions.has(name)) descriptions.set(name, getField(parsed.front, "description") || "");
   }
-  const plainText = [...tier0.names].filter((n) => descriptions.has(n)).map((n) => `## ${n}\n${descriptions.get(n)}`).join("\n\n");
+  const perSkill = [];
+  for (const name of tier0.names) {
+    if (descriptions.has(name)) {
+      const desc = descriptions.get(name);
+      perSkill.push({ name, tokens: estTokens(`## ${name}\n${desc}`) });
+    }
+  }
+  const plainText = perSkill.map((s) => `## ${s.name}\n${descriptions.get(s.name)}`).join("\n\n");
   if (!plainText) return null;
-  return { tokens: estTokens(plainText), source: "TIER0_SKILLS set" };
+  return { tokens: estTokens(plainText), source: "TIER0_SKILLS set", perSkill };
 }
 
-function runTier0TokenCheck(root) {
+export function runTier0TokenCheck(root) {
   const issues = [];
   const tier0 = estimateTier0Tokens(root);
   if (tier0 && tier0.tokens > TIER0_TOKEN_BUDGET) {
-    issues.push({ severity: "warning", check: "tier0-token-budget", msg: `Tier 0 context is ~${tier0.tokens} estimated tokens > ${TIER0_TOKEN_BUDGET} budget (${tier0.source})` });
+    const countsMsg = tier0.perSkill && tier0.perSkill.length > 0
+      ? `\nToken breakdown per Tier 0 skill:\n${tier0.perSkill.map((s) => `  - ${s.name}: ~${s.tokens} tokens`).join("\n")}`
+      : "";
+    const remediation = "\nActionable remediation: Demote candidate skills to Tier 1 on-demand (e.g., decision-gate, dod-checker) or shorten skill descriptions to bring Tier 0 context under 2048 tokens.";
+    issues.push({
+      severity: "warning",
+      check: "tier0-token-budget",
+      msg: `Tier 0 context is ~${tier0.tokens} estimated tokens > ${TIER0_TOKEN_BUDGET} budget (${tier0.source}).${countsMsg}${remediation}`,
+    });
   }
   return issues;
 }
+export const checkTier0TokenBudget = runTier0TokenCheck;
 
 // Prose totals (change design, WU3a): a declared catalog total that does not
 // match the manifest is drift. Counts below PROSE_TOTAL_MIN are tier/wave

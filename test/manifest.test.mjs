@@ -18,7 +18,7 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { writeAtomic } from "../_shared/catalog-manifest.mjs";
+import { writeAtomic, formatDescriptionNote } from "../_shared/catalog-manifest.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CLI = join(ROOT, "00-meta-skills", "skill-registry", "scripts", "generate-indexes.mjs");
@@ -278,5 +278,47 @@ test("manifest: generateIndexes uses atomic writes leaving no lingering .tmp fil
   assert.equal(existsSync(join(root, "catalog.json.tmp")), false);
   assert.equal(existsSync(join(root, "SKILLS.md.tmp")), false);
   assert.equal(existsSync(join(root, "AGENTS.md.tmp")), false);
+});
+
+test("manifest: SKILLS.md table generation populates empty note from skill description", (t) => {
+  const root = catalogFixture(t);
+  const w = runCli(root, ["--write"]);
+  assert.equal(w.code, 0);
+
+  const skillsOut = readFileSync(join(root, "SKILLS.md"), "utf8");
+  // skill-a has an explicit note in skillsMd fixture ("← nota de a"), must be preserved
+  assert.match(skillsOut, /\| skill-a \| \[00-alpha\/skill-a\/SKILL\.md\]\(00-alpha\/skill-a\/SKILL\.md\) ← nota de a \|/);
+  // skill-b has no note in fixture, must be populated from description's first sentence
+  assert.match(skillsOut, /\| skill-b \| \[00-alpha\/skill-b\/SKILL\.md\]\(00-alpha\/skill-b\/SKILL\.md\) ← Fixture skill skill-b \|/);
+  // skill-c has no note in fixture, must be populated from description's first sentence
+  assert.match(skillsOut, /\| skill-c \| \[01-beta\/skill-c\/SKILL\.md\]\(01-beta\/skill-c\/SKILL\.md\) ← Fixture skill skill-c \|/);
+
+  // Check gate passes cleanly with populated notes
+  const c = runCli(root, ["--check"]);
+  assert.equal(c.code, 0);
+  assert.deepEqual(c.json.issues, []);
+});
+
+test("manifest: formatDescriptionNote cleans and truncates long descriptions at ~80 chars with '…'", () => {
+  assert.equal(formatDescriptionNote(null), null);
+  assert.equal(formatDescriptionNote(""), null);
+  assert.equal(
+    formatDescriptionNote("Short sentence. Second sentence here."),
+    "← Short sentence"
+  );
+  assert.equal(
+    formatDescriptionNote("Trigger: some triggers here. Real purpose of the skill goes here."),
+    "← Real purpose of the skill goes here"
+  );
+  assert.equal(
+    formatDescriptionNote("DEPRECATED. Use odd-workflow instead. Old legacy details."),
+    "← DEPRECATED. Use odd-workflow instead."
+  );
+  const longDesc = "This is a very long description that exceeds eighty characters and must be truncated with an ellipsis cleanly.";
+  const note = formatDescriptionNote(longDesc);
+  assert.ok(note.startsWith("← "));
+  assert.ok(note.endsWith("…"));
+  const clause = note.replace(/^← /, "");
+  assert.ok(clause.length <= 80, `Expected <= 80 chars, got ${clause.length}`);
 });
 

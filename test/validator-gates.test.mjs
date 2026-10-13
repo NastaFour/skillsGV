@@ -93,6 +93,25 @@ test("tier0-token-budget: over ~2K estimated tokens warns without failing the ru
   assert.match(hit.msg, /2048/);
 });
 
+test("tier0-token-budget: remediation advice and per-skill token counts when budget exceeded", (t) => {
+  const root = makeRoot(t);
+  skillFixture(root);
+  write(
+    join(root, "00-meta-skills", "skill-loader", "tier0-context.md"),
+    `## decision-gate\nUse when reviewing decisions. ${"x".repeat(4500)}\n\n## dod-checker\nAct as gatekeeper for DoD. ${"y".repeat(4500)}\n`
+  );
+  const r = runValidator(root, ["--skip-index-sync"]);
+  assert.equal(r.code, 0, r.stdout);
+  const hit = findIssue(r.json, "tier0-token-budget");
+  assert.ok(hit, "over-budget Tier 0 context must emit warning");
+  assert.match(hit.msg, /Token breakdown per Tier 0 skill:/);
+  assert.match(hit.msg, /decision-gate:\s*~\d+\s*tokens/);
+  assert.match(hit.msg, /dod-checker:\s*~\d+\s*tokens/);
+  assert.match(hit.msg, /Actionable remediation/);
+  assert.match(hit.msg, /decision-gate/);
+  assert.match(hit.msg, /dod-checker/);
+});
+
 test("skill-token-guidance: SKILL.md over ~5K tokens is non-blocking guidance", (t) => {
   const root = makeRoot(t);
   skillFixture(root, { body: `${"z".repeat(21000)}\n` });

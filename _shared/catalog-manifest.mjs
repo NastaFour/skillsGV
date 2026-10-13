@@ -122,6 +122,46 @@ export function readSkillDeprecated(root, relPath) {
   }
 }
 
+/** Declared skill description (frontmatter `description`). */
+export function readSkillDescription(root, relPath) {
+  try {
+    const fm = parseFrontmatter(readFileUtf8(join(root, relPath)));
+    const desc = fm ? getField(fm, "description") : null;
+    return desc || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Clean and format the first clause/sentence of a skill's description into a
+ * note string (`← ...`), truncated up to ~80 chars with '…' if longer.
+ */
+export function formatDescriptionNote(desc) {
+  if (!desc || typeof desc !== "string") return null;
+  let clean = desc.replace(/\r?\n/g, " ").replace(/\s+/g, " ").trim();
+  clean = clean.replace(/^["']|["']$/g, "").trim();
+  if (!clean) return null;
+  clean = clean.replace(/^Trigger:\s*[^.]+\.\s*/i, "").trim();
+  if (!clean) return null;
+
+  if (/^DEPRECATED\.\s+Use\s+/i.test(clean)) {
+    const depMatch = clean.match(/^(DEPRECATED\.\s+Use\s+[^.]+\.)/i);
+    if (depMatch) return `← ${depMatch[1]}`;
+  }
+
+  const m = clean.match(/^(.+?)(?:[.!?](?:\s|$)|$)/);
+  let clause = (m ? m[1] : clean).trim();
+  clause = clause.replace(/[.,;:]+$/, "").trim();
+  if (!clause) return null;
+
+  if (clause.length > 80) {
+    clause = clause.slice(0, 79).trimEnd() + "…";
+  }
+
+  return `← ${clause}`;
+}
+
 /** Tier 0 set derived from the loader script (single source: TIER0_SKILLS). */
 export function readTier0Set(root) {
   const content = readIfExists(join(root, TIER0_SOURCE));
@@ -281,7 +321,14 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
 
 // --- Render (generated indexes) ---------------------------------------------
 
-const skillRow = (s) => `| ${s.name} | [${s.path}](${s.path})${s.note ? ` ${s.note}` : ""} |`;
+const skillRow = (s, root) => {
+  let note = s.note;
+  if (!note) {
+    const desc = s.description || (root && s.path ? readSkillDescription(root, s.path) : null);
+    note = formatDescriptionNote(desc);
+  }
+  return `| ${s.name} | [${s.path}](${s.path})${note ? ` ${note}` : ""} |`;
+};
 
 function orderSkills(skills, existingNames) {
   const byName = new Map(skills.map((s) => [s.name, s]));
@@ -304,7 +351,7 @@ function orderSkills(skills, existingNames) {
 }
 
 /** Regenerate SKILLS.md: category tables, missing sections, prose count. */
-export function renderSkillsMd(text, manifest) {
+export function renderSkillsMd(text, manifest, root = REPO_ROOT) {
   const parsed = parseSkillsMd(text);
   const eol = eolOf(text);
   const lines = [...parsed.lines];
@@ -314,6 +361,7 @@ export function renderSkillsMd(text, manifest) {
     byCategory.get(s.category).push(s);
   }
   const categoryIds = new Set(manifest.categories.map((c) => c.id));
+  const renderRow = (s) => skillRow(s, root);
 
   // Existing sections: regenerate tables, drop stale category sections.
   for (const section of [...parsed.sections].reverse()) {
@@ -330,7 +378,7 @@ export function renderSkillsMd(text, manifest) {
       continue;
     }
     const existing = parsed.rows.filter((r) => r.sectionId === section.id).map((r) => r.name);
-    const table = ["| Skill | Path |", "|---|---|", ...orderSkills(byCategory.get(section.id) ?? [], existing).map(skillRow)];
+    const table = ["| Skill | Path |", "|---|---|", ...orderSkills(byCategory.get(section.id) ?? [], existing).map(renderRow)];
     if (section.tableStart >= 0) {
       lines.splice(section.tableStart, section.tableEnd - section.tableStart + 1, ...table);
     } else {
@@ -343,7 +391,7 @@ export function renderSkillsMd(text, manifest) {
   for (const id of categoryIds) {
     if (present.has(id)) continue;
     if (lines.length > 0 && lines[lines.length - 1] !== "") lines.push("");
-    lines.push(`## ${id}`, "", "| Skill | Path |", "|---|---|", ...(byCategory.get(id) ?? []).map(skillRow), "");
+    lines.push(`## ${id}`, "", "| Skill | Path |", "|---|---|", ...(byCategory.get(id) ?? []).map(renderRow), "");
   }
 
   return lines.join(eol).replace(COUNT_PROSE, `Catálogo de **${manifest.totals.skills} skills**`);
@@ -510,7 +558,7 @@ export function checkCatalog(root) {
       }
     }
     if (catalog) {
-      const diff = diffText(renderSkillsMd(skillsText, expected), skillsText);
+      const diff = diffText(renderSkillsMd(skillsText, expected, root), skillsText);
       if (diff.changed) issues.push({ code: "index-drift", detail: `${SKILLS_INDEX_FILE}: ${diff.summary}` });
     }
   }
@@ -597,7 +645,7 @@ export function generateIndexes(root) {
   }
 
   const catalogOut = `${JSON.stringify(manifest, null, 2)}\n`;
-  const skillsOut = renderSkillsMd(skillsText, manifest);
+  const skillsOut = renderSkillsMd(skillsText, manifest, root);
   const agentsOut = parsedAgents.table ? renderAgentsMd(agentsText, manifest) : agentsText;
   const written = [];
   if (catalogText !== catalogOut) {
