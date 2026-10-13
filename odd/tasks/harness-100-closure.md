@@ -47,3 +47,13 @@ Direct merge `fix/harness-100-closure` â†’ `main` + push (same user authorizatio
 - WU-G: completed (`eb91250`).
 - WU-H: completed (`6d6241e`).
 All 8 work units (WU-A through WU-H) completed. 100% of deferred ledger items closed. Ready for final review / verification / delivery.
+
+## Post-merge verification ledger (parent, 2026-10-13)
+
+- Parent spot-check on main `5cb222b`: origin/main in sync, branch deleted, 17 commits verified.
+- Substance checks: `_shared/frontmatter.mjs` imported by all 4 consumers; skill-references now scans 340 files (SKILL.md + references/*.md); token-audit `raw-color-function` rule present; 20 deprecated skills, 0 with autoInvoke; `_shared/sdd-*` excluded from target installs.
+- Router smoke: "sdd init new feature" -> deprecatedHit sdd-init, primary odd-workflow (redirect works from frontmatter; catalog.json redirect:null is cosmetic - manifest schema carries no redirect field).
+- Gates re-run by parent on main: pnpm test exit 0, pnpm validate:strict exit 0, pnpm doctor 7/7.
+- RDD post-hoc assess (base 640c560, committed-only): risk medium, 51 paths, 2102 lines, review_due FALSE (under_budget). Recorded honestly: no per-boundary assess ran during execution (Antigravity-driven); post-hoc tier under 4.1.x semantics requires no review for this slice.
+
+**FEATURE COMPLETE — 100% of deferred items closed. Merged and pushed (5cb222b).**
