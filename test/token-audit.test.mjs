@@ -413,3 +413,108 @@ test("token-audit: ignores build and output directories (dist, build, out, cover
   assert.equal(json.total, 0, "Violations in build directories must be ignored");
 });
 
+test("token-audit: flags raw color functions (rgb, rgba, hsl, hsla, oklch) in source files", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Component.tsx"),
+    `export const A = () => <div style={{ color: "rgb(255, 0, 0)" }}>red</div>;\n` +
+      `export const B = () => <div style={{ background: "rgba(0, 0, 0, 0.5)" }}>alpha</div>;\n` +
+      `export const C = () => <div style={{ color: "hsl(200, 50%, 50%)" }}>hsl</div>;\n` +
+      `export const D = () => <div style={{ color: "hsla(200, 50%, 50%, 0.8)" }}>hsla</div>;\n` +
+      `export const E = () => <div style={{ color: "oklch(0.6 0.25 25)" }}>oklch</div>;\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 5);
+  for (const finding of json.findings) {
+    assert.equal(finding.file, "Component.tsx");
+    assert.equal(finding.rule, "raw-color-function");
+  }
+  assert.deepEqual(
+    json.findings.map((f) => f.line),
+    [1, 2, 3, 4, 5]
+  );
+});
+
+test("token-audit: does not flag color functions in token/theme/variables definition files", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "tokens.css"),
+    `:root {\n  --brand: rgb(124, 58, 237);\n  --accent: oklch(0.7 0.2 140);\n}\n`,
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "theme.ts"),
+    `export const theme = { brand: "rgba(124, 58, 237, 1)", accent: "hsl(280, 80%, 60%)" };\n`,
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "variables.css"),
+    `:root {\n  --primary: hsla(200, 100%, 50%, 0.5);\n}\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `Expected clean exit: ${res.stdout} ${res.stderr}`);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 0);
+});
+
+test("token-audit: exempts color functions on CSS custom-property lines in .css files but flags regular CSS declarations", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "styles.css"),
+    `:root {\n  --primary: rgb(10, 20, 30);\n  --accent: oklch(0.6 0.2 25);\n}\n.card {\n  background: rgba(0, 0, 0, 0.5);\n  border-color: hsl(120, 100%, 25%);\n}\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 2);
+  assert.equal(json.findings[0].file, "styles.css");
+  assert.equal(json.findings[0].line, 6);
+  assert.equal(json.findings[0].rule, "raw-color-function");
+  assert.equal(json.findings[1].file, "styles.css");
+  assert.equal(json.findings[1].line, 7);
+  assert.equal(json.findings[1].rule, "raw-color-function");
+});
+
+test("token-audit: flags raw color functions inside comments in non-token files", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "notes.ts"),
+    `// TODO: replace rgb(255, 0, 0) and oklch(0.5 0.2 30) with semantic tokens\nexport const x = 1;\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 1);
+  assert.equal(json.findings[0].file, "notes.ts");
+  assert.equal(json.findings[0].line, 1);
+  assert.equal(json.findings[0].rule, "raw-color-function");
+});
+
+test("token-audit: flags uppercase or capitalized color functions (RGB, OKLCH, etc.)", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "Card.tsx"),
+    `const a = "RGB(255, 255, 255)";\nconst b = "OKLCH(0.7 0.1 120)";\nconst c = "Hsla(100, 50%, 50%, 0.5)";\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 1);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 3);
+  for (const finding of json.findings) {
+    assert.equal(finding.rule, "raw-color-function");
+  }
+});
+
+

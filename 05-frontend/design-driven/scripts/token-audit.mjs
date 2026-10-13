@@ -4,19 +4,20 @@
  *
  * Scans a project source directory for anti-slop token violations:
  *   1. hardcoded-hex        literal #RGB/#RRGGBB/#RRGGBBAA colors in source files
- *   2. raw-tailwind-color   raw Tailwind palette literals (bg-white, bg-black,
+ *   2. raw-color-function   raw rgb()/rgba()/hsl()/hsla()/oklch() calls in source files
+ *   3. raw-tailwind-color   raw Tailwind palette literals (bg-white, bg-black,
  *                           text-white, text-black, and the non-semantic
  *                           bg-gray-N / text-gray-N / bg-slate-N / text-slate-N
  *                           families) used in class contexts
  *
  * Allowlist:
  *   - Files whose path matches /token|theme|variables/i are token definitions.
- *   - In .css files, hex values on CSS custom-property lines (`--name: ...`)
+ *   - In .css files, hex and color function values on CSS custom-property lines (`--name: ...`)
  *     are token definitions and are exempt.
  *   - A `data-token-audit-ignore` attribute on an element line — or anywhere
  *     in the opening-tag region of a multiline `class={` / `className="`
  *     opening — suppresses Tailwind literal findings for that element.
- *   - Hex inside comments is deliberately NOT exempt: slop hides in comments.
+ *   - Hex and color functions inside comments are deliberately NOT exempt: slop hides in comments.
  *
  * Usage:
  *   node 05-frontend/design-driven/scripts/token-audit.mjs --srcDir <project-dir> [--json]
@@ -44,6 +45,7 @@ const TOKEN_FILE_RE = /(token|theme|variables)/i;
 // The 4-digit #RGBA form must contain at least one hex letter so decimal
 // issue/ticket references like `#1234` are not reported as colors.
 const HEX_COLOR_RE = /#(?:(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-fA-F])|(?=[0-9a-fA-F]{4}(?![0-9a-fA-F]))[0-9a-fA-F]*[a-fA-F][0-9a-fA-F]*)/;
+const COLOR_FUNCTION_RE = /(?<![\w-])(?:rgba?|hsla?|oklch)\s*\(/i;
 
 const CLASS_CONTEXT_RE = /\bclass(?:Name)?\s*=/;
 const TAILWIND_ALWAYS_RE = /(?<![\w-])(?:bg|text|border|ring|divide|fill|stroke)-(?:white|black)(?![\w-])/;
@@ -61,6 +63,7 @@ const MULTILINE_CLASS_OPEN_RE = /class(?:Name)?\s*=\s*(?:["'`{]|(?:clsx|cn|cva)\
 const MULTILINE_WINDOW_MAX_LINES = 30;
 
 const RULE_HEX = "hardcoded-hex";
+const RULE_COLOR_FUNCTION = "raw-color-function";
 const RULE_TAILWIND = "raw-tailwind-color";
 
 const IGNORED_DIRECTORIES = new Set([
@@ -200,6 +203,9 @@ function scanFile(absPath, srcDir, findings) {
     if (!isTokenFile && !exemptCssTokenLine && HEX_COLOR_RE.test(line)) {
       findings.push({ file, line: lineNumber, rule: RULE_HEX, snippet });
     }
+    if (!isTokenFile && !exemptCssTokenLine && COLOR_FUNCTION_RE.test(line)) {
+      findings.push({ file, line: lineNumber, rule: RULE_COLOR_FUNCTION, snippet });
+    }
 
     if (
       CLASS_CONTEXT_RE.test(line) &&
@@ -236,7 +242,7 @@ function printHumanReport(findings, srcDir) {
   }
 
   console.log(`\ntoken-audit — ${findings.length} finding(s) in ${srcDir}\n`);
-  for (const rule of [RULE_HEX, RULE_TAILWIND]) {
+  for (const rule of [RULE_HEX, RULE_COLOR_FUNCTION, RULE_TAILWIND]) {
     const ruleFindings = findings.filter((f) => f.rule === rule);
     if (ruleFindings.length === 0) continue;
     console.log(`${rule} (${ruleFindings.length}):`);
@@ -263,15 +269,18 @@ Options:
 
 Detected rules:
   hardcoded-hex         Literal #RGB/#RRGGBB/#RRGGBBAA colors in source files
+  raw-color-function    Raw rgb()/rgba()/hsl()/hsla()/oklch() calls in source files
   raw-tailwind-color    bg-white/bg-black/text-white/text-black and
                         bg-gray-*/text-gray-*/bg-slate-*/text-slate-* literals
                         (single-line and multiline class attributes)
 
 Allowlist:
   - Files whose path matches token|theme|variables are token definitions.
-  - In .css files, hex on a CSS custom-property line (--name: ...) is exempt.
+  - In .css files, hex and color functions on CSS custom-property lines (--name: ...)
+    are exempt.
   - data-token-audit-ignore on an element line (or anywhere in a multiline
     opening-tag region) suppresses Tailwind findings.
+  - Hex and color functions inside comments in non-token files are NOT exempt.
 
 Exit codes: 0 = clean, 1 = findings, 2 = usage error.`);
 }
