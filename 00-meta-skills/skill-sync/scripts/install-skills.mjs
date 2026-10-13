@@ -895,6 +895,64 @@ function main() {
     }
   }
 
+function injectActivationLayer({ target, filtered, home, nextGen, dryRun }) {
+  const variant = detectVariant({ home, target, hasBinaryFn: hasBinary });
+  const skillDirs = [...new Set(filtered.map((a) => relative(target, a.projectInstallPath(target)).split(sep).join("/")))];
+  let kernelIdx = 0;
+  const backupFn = (f) => backupPrevFile(f, nextGen, "kernel-" + ++kernelIdx);
+  try {
+    const injectResults = injectKernel({
+      root: target,
+      agentIds: filtered.map((a) => a.id),
+      variant,
+      catalogRoot: CATALOG_ROOT,
+      dryRun,
+      backupFn,
+    });
+    const giResult = guardGitignore({ root: target, skillDirs, dryRun });
+    const kernelRecord = dryRun ? null : summarizeKernel(variant, injectResults, giResult);
+    console.log(`\n🧠 Activation kernel (${variant})${dryRun ? " — dry-run preview" : " →"}`);
+    for (const r of injectResults) {
+      const icon =
+        r.status === "injected" || r.status === "create" ? "✨" : r.status === "updated" || r.status === "update" ? "♻️" : r.status === "error" ? "❌" : "✔️";
+      console.log(`  ${icon} ${join(target, r.file)} [${r.status}]${r.message ? ` — ${r.message}` : ""}`);
+    }
+    console.log(`🛡️  .gitignore guard [${giResult.status}]: ${(giResult.entries || []).join(", ")}`);
+    return { injectResults, giResult, kernelRecord };
+  } catch (err) {
+    // Skills are already copied; a channel problem must not orphan the install.
+    console.warn(`\n⚠️  activation kernel skipped (error): ${err.message}`);
+    return { injectResults: [], giResult: null, kernelRecord: null };
+  }
+}
+
+function verifyActivation(target, injectResults, dryRun) {
+  if (dryRun) {
+    for (const r of injectResults) {
+      if (r.status !== "error" && !r.status?.startsWith("skipped")) {
+        console.log(`  [dry-run] verify planned for ${r.file}`);
+      }
+    }
+    return;
+  }
+  for (const r of injectResults) {
+    if (["injected", "updated", "unchanged"].includes(r.status)) {
+      const filePath = join(target, r.file);
+      try {
+        const content = existsSync(filePath) ? readFileSync(filePath, "utf8") : "";
+        if (content.includes("skillsGV:kernel")) {
+          console.log(`  [verify] ${r.file}: kernel marker verified`);
+        } else {
+          console.warn(`  [verify] ${r.file}: kernel marker missing`);
+        }
+      } catch (err) {
+        console.warn(`  [verify] ${r.file}: error reading file (${err.message})`);
+      }
+    }
+  }
+  console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
+}
+
   // Activation layer (project installs): always-on kernel + .gitignore guard.
   // Runs BEFORE the dry-run early return so --dry-run previews it (judgment-day F:
   // the docs promise "dry-run shows what would happen" — that includes activation).
@@ -903,34 +961,9 @@ function main() {
   // injects context (AGENTS.md / GEMINI.md / CLAUDE.md).
   let kernelRecord = null;
   if (!noKernel && target) {
-    const variant = detectVariant({ home, target, hasBinaryFn: hasBinary });
-    const skillDirs = [...new Set(filtered.map((a) => relative(target, a.projectInstallPath(target)).split(sep).join("/")))];
-    let kernelIdx = 0;
-    const backupFn = (f) => backupPrevFile(f, nextGen, "kernel-" + ++kernelIdx);
-    try {
-      const injectResults = injectKernel({
-        root: target,
-        agentIds: filtered.map((a) => a.id),
-        variant,
-        catalogRoot: CATALOG_ROOT,
-        dryRun,
-        backupFn,
-      });
-      const giResult = guardGitignore({ root: target, skillDirs, dryRun });
-      kernelRecord = dryRun ? null : summarizeKernel(variant, injectResults, giResult);
-      console.log(`\n🧠 Activation kernel (${variant})${dryRun ? " — dry-run preview" : " →"}`);
-      for (const r of injectResults) {
-        const icon =
-          r.status === "injected" || r.status === "create" ? "✨" : r.status === "updated" || r.status === "update" ? "♻️" : r.status === "error" ? "❌" : "✔️";
-        console.log(`  ${icon} ${join(target, r.file)} [${r.status}]${r.message ? ` — ${r.message}` : ""}`);
-      }
-      console.log(`🛡️  .gitignore guard [${giResult.status}]: ${(giResult.entries || []).join(", ")}`);
-      if (!dryRun) console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
-    } catch (err) {
-      // Skills are already copied; a channel problem must not orphan the install.
-      console.warn(`\n⚠️  activation kernel skipped (error): ${err.message}`);
-      kernelRecord = null;
-    }
+    const activation = injectActivationLayer({ target, filtered, home, nextGen, dryRun });
+    kernelRecord = activation.kernelRecord;
+    verifyActivation(target, activation.injectResults, dryRun);
   } else if (noKernel) {
     console.log(`\n🧠 Activation kernel skipped (--no-kernel).`);
   }

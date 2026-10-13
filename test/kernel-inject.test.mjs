@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join, resolve } from "node:path";
@@ -19,6 +19,7 @@ import {
   unguardGitignore,
   summarizeKernel,
   collectKernelOwned,
+  ANTIGRAVITY_WORKSPACE_WARNING,
 } from "../_shared/kernel-inject.mjs";
 
 const CATALOG_ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -537,5 +538,76 @@ test("R3: orphan start marker (no end) → guard and unguard refuse to touch the
   const un = unguardGitignore(root, { created: false });
   assert.equal(un.status, "skipped-corrupt-block");
   assert.equal(readFileSync(join(root, ".gitignore"), "utf8"), content, "file untouched by unguard");
+  rmSync(root, { recursive: true, force: true });
+});
+
+// --- WU-E: Honest channel warnings & post-install verification ---
+
+test("WU-E: injectKernel emits explicit warning for antigravity workspace channel (canary evidence)", () => {
+  const root = tmpRoot();
+  const warnings = [];
+  const results = injectKernel({
+    root,
+    agentIds: ["antigravity"],
+    variant: "minimal",
+    catalogRoot: CATALOG_ROOT,
+    warnFn: (msg) => warnings.push(msg),
+  });
+  assert.equal(warnings.length, 1);
+  assert.ok(warnings[0].includes("Antigravity workspace channel (GEMINI.md) is not autoloaded natively by agy CLI"));
+  assert.ok(warnings[0].includes("canary-activation.md"));
+  const geminiResult = results.find((r) => r.file === "GEMINI.md");
+  assert.ok(geminiResult);
+  assert.equal(geminiResult.warning, warnings[0]);
+
+  // Non-antigravity runtime should NOT trigger the warning
+  const nonAgWarnings = [];
+  const nonAgResults = injectKernel({
+    root,
+    agentIds: ["opencode"],
+    variant: "full",
+    catalogRoot: CATALOG_ROOT,
+    warnFn: (msg) => nonAgWarnings.push(msg),
+  });
+  assert.equal(nonAgWarnings.length, 0);
+  const agentsResult = nonAgResults.find((r) => r.file === "AGENTS.md");
+  assert.ok(agentsResult);
+  assert.equal(agentsResult.warning, undefined);
+
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("WU-E: install-skills CLI reports post-install verification and dry-run preview", { timeout: 60000 }, () => {
+  const root = tmpRoot();
+  const script = join(CATALOG_ROOT, "00-meta-skills", "skill-sync", "scripts", "install-skills.mjs");
+
+  // 1. Dry run reports "[dry-run] verify planned for <file>"
+  const dryOut = execFileSync(
+    process.execPath,
+    [script, "--target", root, "--tool", "claude-code", "--dry-run", "--only", "09-media-graphics"],
+    { cwd: CATALOG_ROOT, encoding: "utf8" }
+  );
+  assert.ok(dryOut.includes("[dry-run] verify planned for CLAUDE.md"), "dry-run must report planned verification");
+
+  // 2. Real install verifies kernel marker present: "[verify] <file>: kernel marker verified"
+  const installOut = execFileSync(
+    process.execPath,
+    [script, "--target", root, "--tool", "claude-code", "--only", "09-media-graphics"],
+    { cwd: CATALOG_ROOT, encoding: "utf8" }
+  );
+  assert.ok(installOut.includes("[verify] CLAUDE.md: kernel marker verified"), "install must verify kernel marker in file");
+  const claudeMd = readFileSync(join(root, "CLAUDE.md"), "utf8");
+  assert.ok(claudeMd.includes("skillsGV:kernel"), "CLAUDE.md must contain the kernel marker");
+
+  // 3. Antigravity target emits honest warning in install CLI output
+  const agRes = spawnSync(
+    process.execPath,
+    [script, "--target", root, "--tool", "antigravity", "--dry-run", "--only", "09-media-graphics"],
+    { cwd: CATALOG_ROOT, encoding: "utf8" }
+  );
+  const agCombined = (agRes.stdout || "") + (agRes.stderr || "");
+  assert.ok(agCombined.includes("⚠️ Antigravity workspace channel (GEMINI.md) is not autoloaded natively by agy CLI"), "antigravity install must output canary warning");
+  assert.ok(agCombined.includes("[dry-run] verify planned for GEMINI.md"), "antigravity install plans verification for GEMINI.md");
+
   rmSync(root, { recursive: true, force: true });
 });

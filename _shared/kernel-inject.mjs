@@ -58,6 +58,10 @@ export const KERNEL_CHANNELS = {
   dsh: "AGENTS.md",
 };
 
+export const ANTIGRAVITY_WORKSPACE_WARNING =
+  "⚠️ Antigravity workspace channel (GEMINI.md) is not autoloaded natively by agy CLI (canary-activation.md). For always-on activation, install to global ~/.gemini/antigravity or invoke via skills catalog.";
+
+
 const GITIGNORE_MARK_START = "# >>> skillsGV install (generated - do not edit) >>>";
 const GITIGNORE_MARK_END = "# <<< skillsGV install <<<";
 const GITIGNORE_MARK_START_LEGACY = "# >>> skillsGV install (generated \u2014 do not edit) >>>"; // 2.1.0 em-dash form
@@ -210,31 +214,41 @@ function stripBlockOnce(content) {
  * the manifest lifecycle stays symmetric. Per-channel failures are captured as
  * { status: "error" } instead of aborting the whole install.
  */
-export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = false, backupFn = null }) {
+export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = false, backupFn = null, warnFn = console.warn }) {
   const blockLf = templateBlock(catalogRoot, variant);
   const blockSha256 = sha256(blockLf);
   const results = [];
+  const hasAntigravity = Array.isArray(agentIds) && agentIds.includes("antigravity");
+  if (hasAntigravity && typeof warnFn === "function") {
+    warnFn(ANTIGRAVITY_WORKSPACE_WARNING);
+  }
+  const pushResult = (res) => {
+    if (hasAntigravity && res.file === "GEMINI.md") {
+      res.warning = ANTIGRAVITY_WORKSPACE_WARNING;
+    }
+    results.push(res);
+  };
   for (const rel of channelFilesFor(agentIds)) {
     try {
       const file = join(root, rel);
       if (lstatExists(file) && isSymlink(file)) {
-        results.push({ file: rel, status: "skipped-symlink" });
+        pushResult({ file: rel, status: "skipped-symlink" });
         continue;
       }
       const buf = existsSync(file) ? readFileSync(file) : null;
       if (buf !== null && isBinaryOrUtf16(buf)) {
-        results.push({ file: rel, status: "skipped-encoding" });
+        pushResult({ file: rel, status: "skipped-encoding" });
         continue;
       }
       const prev = buf === null ? null : buf.toString("utf8");
       const eol = prev === null ? "\n" : detectEol(prev);
       const existing = prev === null ? null : extractBlock(prev);
       if (existing !== null && toLf(existing) === blockLf) {
-        results.push({ file: rel, status: "unchanged", blockSha256, wroteSha256: prev === null ? null : sha256(prev) });
+        pushResult({ file: rel, status: "unchanged", blockSha256, wroteSha256: prev === null ? null : sha256(prev) });
         continue;
       }
       if (dryRun) {
-        results.push({ file: rel, status: existing ? "update" : "create" });
+        pushResult({ file: rel, status: existing ? "update" : "create" });
         continue;
       }
       let prevBackup = null;
@@ -252,7 +266,7 @@ export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = fa
             ? adapted + eol
             : prev.replace(/(\r?\n)*$/, "") + eol + eol + adapted + eol;
       writeFileSync(file, next, "utf8");
-      results.push({
+      pushResult({
         file: rel,
         status: existing ? "updated" : "injected",
         blockSha256,
@@ -261,7 +275,7 @@ export function injectKernel({ root, agentIds, variant, catalogRoot, dryRun = fa
         createdFile,
       });
     } catch (err) {
-      results.push({ file: rel, status: "error", message: err.message });
+      pushResult({ file: rel, status: "error", message: err.message });
     }
   }
   return results;
