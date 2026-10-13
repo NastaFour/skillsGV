@@ -26,7 +26,7 @@ Close 100% of the deferred items from `odd/tasks/harness-rot-fixes.md` (its ledg
 - [x] **WU-E · installer honesty + verify** — kernel-inject: for antigravity workspace injection emit an explicit warning citing canary evidence (GEMINI.md not autoloaded) instead of silent success; bootstrap-kernel-full.md: replace stochastic "elegí hasta 5 skills" guidance with router-aware instruction (use the router when available; manifest fallback documented); install-skills.mjs: lightweight post-install verification (re-read injected files, confirm kernel marker present, report per-runtime). Tests where feasible (kernel-inject is testable; install verify via temp dir fixture). Commit: `6b41e30` (`feat(install): honest channel warnings and post-install verification`).
 - [x] **WU-F · robustness batch** — catalog-manifest: atomic writes (write `.tmp` + renameSync for catalog.json/SKILLS.md/AGENTS.md); skill-router turn cache: key per workspace (hash of cwd) instead of one global `~/.skill-router-turn.json`; token-audit collectSourceFiles: ignore `dist/`, `build/`, `out/`, `coverage/`. TDD each. Commit: `fbeaadd` (`fix(harness): atomic index writes, workspace-scoped turn cache, build-dir ignores`).
 - [x] **WU-G · docs/budget batch** — SKILLS.md: generate-indexes fills empty notes with the description's first clause (truncate ~80 chars) — regen; evals: add `evals/LIMITATIONS.md` documenting A/B bias (trap prompts penalize compliance; HISTORICAL_KERNEL_BYTES=24667 magic constant; n=5) honestly; Tier0 CI trap: validator emits explicit remediation text when tier0 tokens exceed budget (which skills to move down). Commit: `eb91250` (`docs(harness): index notes, eval limitations, tier0 remediation guidance`).
-- [ ] **WU-H · token-audit color functions** — flag raw `rgb(`/`rgba(`/`hsl(`/`oklch(` literals in non-token source files (same allowlists: token/theme/variables files exempt; CSS custom-property lines exempt). TDD. Commit: `feat(design): audit raw color functions in token-audit`.
+- [x] **WU-H · token-audit color functions** — flag raw `rgb(`/`rgba(`/`hsl(`/`oklch(` literals in non-token source files (same allowlists: token/theme/variables files exempt; CSS custom-property lines exempt). TDD. Commit: `6d6241e` (`feat(design): audit raw color functions in token-audit`).
 
 ## Verification (per work unit)
 
@@ -45,4 +45,5 @@ Direct merge `fix/harness-100-closure` → `main` + push (same user authorizatio
 - WU-E: completed (`6b41e30`).
 - WU-F: completed (`fbeaadd`).
 - WU-G: completed (`eb91250`).
-Next: WU-H · token-audit color functions.
+- WU-H: completed (`6d6241e`).
+All 8 work units (WU-A through WU-H) completed. 100% of deferred ledger items closed. Ready for final review / verification / delivery.
