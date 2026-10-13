@@ -1,9 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getTurnCachePath } from '../_shared/script-utils.mjs';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(__dirname, '..');
 
 function runRouter(query) {
-  const stdout = execFileSync('node', ['00-meta-skills/skill-router/scripts/skill-router.mjs', '--query', query, '--json'], {
+  const stdout = execFileSync('node', [join(REPO_ROOT, '00-meta-skills/skill-router/scripts/skill-router.mjs'), '--query', query, '--json'], {
     encoding: 'utf8'
   });
   return JSON.parse(stdout);
@@ -118,5 +126,78 @@ test('router automatically detects UI surface tasks and injects design-driven in
   const resBackend = runRouter('database migration with prisma postgres');
   assert.equal(resBackend.isUiTask, false, 'Database query should not be detected as UI task');
 });
+
+test('router: getTurnCachePath derives workspace-scoped paths using cwd hash', () => {
+  const p1 = getTurnCachePath("C:/workspace/project-a");
+  const p2 = getTurnCachePath("C:/workspace/project-b");
+  assert.notEqual(p1, p2);
+  assert.match(p1, /\.skill-router-turn-[a-f0-9]{12}\.json$/);
+  assert.match(p2, /\.skill-router-turn-[a-f0-9]{12}\.json$/);
+});
+
+test('router: getTurnCachePath respects custom override path', () => {
+  const custom = join(tmpdir(), "custom-turn-cache.json");
+  const resolved = getTurnCachePath("C:/workspace/project-a", custom);
+  assert.equal(resolved, resolve(custom));
+});
+
+test('router: derives workspace-scoped turn cache file based on cwd', (t) => {
+  const dir1 = mkdtempSync(join(tmpdir(), "router-ws1-"));
+  const dir2 = mkdtempSync(join(tmpdir(), "router-ws2-"));
+  const cache1 = getTurnCachePath(dir1);
+  const cache2 = getTurnCachePath(dir2);
+  t.after(() => {
+    try { rmSync(dir1, { recursive: true, force: true }); } catch {}
+    try { rmSync(dir2, { recursive: true, force: true }); } catch {}
+    try { if (existsSync(cache1)) rmSync(cache1); } catch {}
+    try { if (existsSync(cache2)) rmSync(cache2); } catch {}
+  });
+
+  assert.notEqual(cache1, cache2);
+
+  execFileSync('node', [join(REPO_ROOT, '00-meta-skills/skill-router/scripts/skill-router.mjs'), '--query', 'chained pr', '--json'], {
+    cwd: dir1,
+    encoding: 'utf8'
+  });
+
+  assert.equal(existsSync(cache1), true, 'Cache 1 should exist');
+  assert.equal(existsSync(cache2), false, 'Cache 2 should not exist yet');
+
+  const data1 = JSON.parse(readFileSync(cache1, 'utf8'));
+  assert.equal(data1.query, 'chained pr');
+  assert.ok(Array.isArray(data1.tier1));
+  assert.ok(data1.tier1.includes('chained-pr'));
+
+  execFileSync('node', [join(REPO_ROOT, '00-meta-skills/skill-router/scripts/skill-router.mjs'), '--query', 'two judges', '--json'], {
+    cwd: dir2,
+    encoding: 'utf8'
+  });
+
+  assert.equal(existsSync(cache2), true, 'Cache 2 should exist');
+  const data2 = JSON.parse(readFileSync(cache2, 'utf8'));
+  assert.equal(data2.query, 'two judges');
+  assert.ok(data2.tier1.includes('judgment-day'));
+});
+
+test('router: respects explicit --turn-cache CLI override', (t) => {
+  const customCache = join(tmpdir(), `custom-turn-${Date.now()}.json`);
+  t.after(() => {
+    try { if (existsSync(customCache)) rmSync(customCache); } catch {}
+  });
+
+  execFileSync('node', [
+    join(REPO_ROOT, '00-meta-skills/skill-router/scripts/skill-router.mjs'),
+    '--query', 'chained pr',
+    '--json',
+    '--turn-cache', customCache
+  ], {
+    encoding: 'utf8'
+  });
+
+  assert.equal(existsSync(customCache), true);
+  const data = JSON.parse(readFileSync(customCache, 'utf8'));
+  assert.equal(data.query, 'chained pr');
+});
+
 
 

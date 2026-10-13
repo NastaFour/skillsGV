@@ -63,6 +63,15 @@ const MULTILINE_WINDOW_MAX_LINES = 30;
 const RULE_HEX = "hardcoded-hex";
 const RULE_TAILWIND = "raw-tailwind-color";
 
+const IGNORED_DIRECTORIES = new Set([
+  "node_modules",
+  "dist",
+  "build",
+  "out",
+  "coverage",
+  "storybook-static",
+]);
+
 function collectSourceFiles(dir, out = []) {
   let entries;
   try {
@@ -72,7 +81,7 @@ function collectSourceFiles(dir, out = []) {
   }
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      if (entry.name === "node_modules" || entry.name.startsWith(".")) continue;
+      if (IGNORED_DIRECTORIES.has(entry.name) || entry.name.startsWith(".")) continue;
       collectSourceFiles(join(dir, entry.name), out);
     } else if (entry.isFile() && SOURCE_EXTENSIONS.has(extname(entry.name).toLowerCase())) {
       out.push(join(dir, entry.name));

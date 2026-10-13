@@ -29,7 +29,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, readdirSy
 import { join, basename, dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
-import { findProjectRoot } from "../../../_shared/script-utils.mjs";
+import { findProjectRoot, getTurnCachePath } from "../../../_shared/script-utils.mjs";
 import { parseFrontmatter, getField, getNestedField, parseList } from "../../../_shared/frontmatter.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -277,8 +277,9 @@ async function modeEmitTier1() {
 
   // Invoke skill-router.mjs as a child process (uses the actual router with validator).
   // Use spawn with args array to avoid Windows cmd.exe space-in-path issues.
+  const turnCacheFile = getTurnCachePath(process.cwd(), turnCache);
   const { spawn } = await import("node:child_process");
-  const routerArgs = ["00-meta-skills/skill-router/scripts/skill-router.mjs", "--query", query, "--json"];
+  const routerArgs = ["00-meta-skills/skill-router/scripts/skill-router.mjs", "--query", query, "--json", "--turn-cache", turnCacheFile];
   if (diffLines !== null) routerArgs.push("--diff", String(diffLines));
   const routerResult = await new Promise((resolveP) => {
     const child = spawn(process.execPath, routerArgs, { cwd: CATALOG_ROOT, stdio: ["ignore", "pipe", "pipe"] });
@@ -306,7 +307,6 @@ async function modeEmitTier1() {
   const tier1 = routerOutput.tier1toLoad || [];
 
   // Write per-turn cache so --check can read it
-  const turnCacheFile = join(homedir(), ".skill-router-turn.json");
   writeFileSync(turnCacheFile, JSON.stringify({ query, diffLines, tier1, ts: Date.now() }, null, 2), "utf8");
 
   // Record turn in session telemetry log
@@ -343,7 +343,7 @@ function modeCheck() {
     return;
   }
   // Otherwise require a turn cache that lists this name in tier1toLoad
-  const cacheFile = turnCache || join(homedir(), ".skill-router-turn.json");
+  const cacheFile = getTurnCachePath(process.cwd(), turnCache);
   if (!existsSync(cacheFile)) {
     console.log(JSON.stringify({ allowed: false, tier: null, name: checkName, reason: "route-first", hint: "run --turn first" }));
     process.exit(1);

@@ -25,7 +25,7 @@
  * Node-only, ESM, Windows-first. No external dependencies.
  */
 
-import { existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFileUtf8 } from "./script-utils.mjs";
@@ -537,6 +537,18 @@ export function checkCatalog(root) {
 // --- Generate (--write) ------------------------------------------------------
 
 /**
+ * Atomic file write: writes content to a temporary `.tmp` sibling file first,
+ * then atomically renames it over the target path.
+ * @param {string} targetPath
+ * @param {string} content
+ */
+export function writeAtomic(targetPath, content) {
+  const tmpPath = `${targetPath}.tmp`;
+  writeFileSync(tmpPath, content, "utf8");
+  renameSync(tmpPath, targetPath);
+}
+
+/**
  * Regenerate `catalog.json`, `SKILLS.md` and `AGENTS.md` in `root`.
  * Validates Tier 0 and Auto-Invoke references BEFORE writing anything; fails
  * closed without touching files. Writes a file only when its content changes.
@@ -589,16 +601,17 @@ export function generateIndexes(root) {
   const agentsOut = parsedAgents.table ? renderAgentsMd(agentsText, manifest) : agentsText;
   const written = [];
   if (catalogText !== catalogOut) {
-    writeFileSync(catalogPath, catalogOut, "utf8");
+    writeAtomic(catalogPath, catalogOut);
     written.push(MANIFEST_FILE);
   }
   if (skillsOut !== skillsText) {
-    writeFileSync(skillsMdPath, skillsOut, "utf8");
+    writeAtomic(skillsMdPath, skillsOut);
     written.push(SKILLS_INDEX_FILE);
   }
   if (agentsOut !== agentsText) {
-    writeFileSync(agentsMdPath, agentsOut, "utf8");
+    writeAtomic(agentsMdPath, agentsOut);
     written.push(AGENTS_FILE);
   }
   return { ok: true, issues: [], written, skills: manifest.totals.skills, categories: manifest.categories.length };
 }
+

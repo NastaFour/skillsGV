@@ -5,8 +5,23 @@
  *          check-module-level-loads.mjs, validate-build-config.mjs
  */
 
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { homedir } from "node:os";
 import { join, relative, resolve, dirname } from "node:path";
+
+/**
+ * Derive the workspace-scoped turn cache file path.
+ * Uses a 12-char SHA256 hex digest of resolved cwd, or returns overridePath if given.
+ * @param {string} [cwd]
+ * @param {string | null} [overridePath]
+ * @returns {string}
+ */
+export function getTurnCachePath(cwd = process.cwd(), overridePath = null) {
+  if (overridePath) return resolve(overridePath);
+  const cwdHash = createHash("sha256").update(resolve(cwd)).digest("hex").slice(0, 12);
+  return join(homedir(), `.skill-router-turn-${cwdHash}.json`);
+}
 
 /**
  * @typedef {Object} Issue

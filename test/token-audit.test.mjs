@@ -9,7 +9,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -385,5 +385,31 @@ test("token-audit: 4-digit hex WITH a letter is still flagged", (t) => {
   writeFileSync(join(dir, "Card.tsx"), `const c = "#f008";\n`, "utf8");
   const res = runAudit(["--srcDir", dir, "--json"]);
   assert.equal(res.code, 1, `#f008 must be flagged: ${res.stdout}`);
+});
+
+test("token-audit: ignores build and output directories (dist, build, out, coverage, storybook-static)", (t) => {
+  const dir = makeFixture(t);
+  const ignoredDirs = ["dist", "build", "out", "coverage", "storybook-static"];
+  for (const d of ignoredDirs) {
+    const sub = join(dir, d);
+    mkdirSync(sub, { recursive: true });
+    writeFileSync(
+      join(sub, "bundle.js"),
+      `const color = "#ff00aa";\nexport const html = '<div class="bg-white">test</div>';\n`,
+      "utf8"
+    );
+  }
+
+  mkdirSync(join(dir, "src"), { recursive: true });
+  writeFileSync(
+    join(dir, "src", "CleanComponent.tsx"),
+    `export const CleanComponent = () => <div className="p-4">Clean</div>;\n`,
+    "utf8"
+  );
+
+  const res = runAudit(["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0, `Expected 0 exit, got ${res.code}: ${res.stdout} ${res.stderr}`);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.total, 0, "Violations in build directories must be ignored");
 });
 

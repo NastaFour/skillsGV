@@ -14,10 +14,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeAtomic } from "../_shared/catalog-manifest.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CLI = join(ROOT, "00-meta-skills", "skill-registry", "scripts", "generate-indexes.mjs");
@@ -254,3 +255,28 @@ test("manifest: missing catalog.json and missing AGENTS.md fail closed", (t) => 
   assert.ok(c.json.issues.some((i) => i.code === "agents-index-missing"));
   assert.ok(c.json.issues.some((i) => i.code === "skills-index-missing"));
 });
+
+test("manifest: writeAtomic writes target atomically via .tmp and leaves no temp file", (t) => {
+  const dir = mkdtempSync(join(tmpdir(), "wu1a-atomic-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const target = join(dir, "atomic-test.txt");
+
+  writeAtomic(target, "first-content");
+  assert.equal(readFileSync(target, "utf8"), "first-content");
+  assert.equal(existsSync(`${target}.tmp`), false);
+
+  writeAtomic(target, "second-content");
+  assert.equal(readFileSync(target, "utf8"), "second-content");
+  assert.equal(existsSync(`${target}.tmp`), false);
+});
+
+test("manifest: generateIndexes uses atomic writes leaving no lingering .tmp files", (t) => {
+  const root = catalogFixture(t);
+  const w = runCli(root, ["--write"]);
+  assert.equal(w.code, 0);
+  assert.equal(w.json.ok, true);
+  assert.equal(existsSync(join(root, "catalog.json.tmp")), false);
+  assert.equal(existsSync(join(root, "SKILLS.md.tmp")), false);
+  assert.equal(existsSync(join(root, "AGENTS.md.tmp")), false);
+});
+

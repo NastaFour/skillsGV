@@ -19,25 +19,27 @@
  * Exit codes: 0 = routed (primary may be null if confidence <0.6),
  *             2 = contract violation (JSON output suppressed).
  */
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync, writeFileSync } from "node:fs";
 import { join, basename, dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateRouterOutput } from "./validate-output.mjs";
 import { parseFrontmatter, getField, getNestedField, parseTriggers } from "../../../_shared/frontmatter.mjs";
+import { getTurnCachePath } from "../../../_shared/script-utils.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
 const args = process.argv.slice(2);
-let query = null, diffLines = null, jsonOut = false;
+let query = null, diffLines = null, jsonOut = false, turnCache = null;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--") continue;
   if (args[i] === "--query") query = args[++i];
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--json") jsonOut = true;
+  else if (args[i] === "--turn-cache") turnCache = args[++i];
   else if (args[i] === "--help" || args[i] === "-h") {
-    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json]");
+    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json] [--turn-cache <path>]");
     process.exit(0);
   }
 }
@@ -288,6 +290,28 @@ if (!validation.ok) {
   if (jsonOut) console.log(JSON.stringify(envelope, null, 2));
   else console.error("❌ skill-router contract violation:", validation.violations.join("; "));
   process.exit(2);
+}
+
+// Write workspace-scoped turn cache so skills-loader --check can read it
+const turnCacheFile = getTurnCachePath(process.cwd(), turnCache);
+try {
+  writeFileSync(
+    turnCacheFile,
+    JSON.stringify(
+      {
+        query,
+        diffLines,
+        tier1: output.tier1toLoad,
+        primary: output.primary,
+        ts: Date.now(),
+      },
+      null,
+      2
+    ),
+    "utf8"
+  );
+} catch {
+  // Gracefully ignore write failures in read-only / restricted environments
 }
 
 if (jsonOut) console.log(JSON.stringify(output, null, 2));
