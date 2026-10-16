@@ -1,6 +1,6 @@
 # Feature: skills-v3-harmonization (Floor, Not Ceiling & Canonical Pipeline)
 
-- **Status**: IN_PROGRESS
+- **Status**: COMPLETED
 - **Branch**: feat/skills-v3-harmonization
 - **Engram Topic**: odd/skills-v3-harmonization/tasks
 - **Route**: Delegated Direct (System-wide multi-unit refactor)
@@ -56,9 +56,16 @@
 - [x] **T2: WU-2 Armonización Creativa Frontend (Floor, Not Ceiling)** (Spec: S2, Route: inline) - Commit: `3c09a0d`
 - [x] **T3: WU-3 Pipeline Canónico 4 Documentos (PRD, APP_FLOW, TRD, DESIGN_SYSTEM)** (Spec: S3, Route: inline) - Commit: `97aca7e`
 - [x] **T4: WU-4 Descontaminación de Dominio Project-Agnostic** (Spec: S4, Route: inline) - Commit: `49dd5d6`
-- [x] **T5: WU-5 Compresión Flash-Ready y Limpieza de Enlaces** (Spec: S5, Route: inline) - Commit: pending
-- [ ] **T6: WU-6 Sincronización 4-Way del Catálogo y Validación Estricta** (Spec: S6, Route: inline) - Commit: pending
+- [x] **T5: WU-5 Compresión Flash-Ready y Limpieza de Enlaces** (Spec: S5, Route: inline) - Commit: `f604701`
+- [x] **T6: WU-6 Sincronización 4-Way del Catálogo y Validación Estricta** (Spec: S6, Route: inline) - Commit: pending
 
 ## Log
 
 - **L1** (2026-10-15): Solicitud inicial recibida para refactorización mayor ODD (WU-1 a WU-6): armonización de gobernanza/kernel, Floor Not Ceiling, pipeline 4 documentos, descontaminación de dominio, compresión Flash-Ready y validación estricta con sincronización 4-way.
+- **L2** (2026-10-15): WU-1 completado y verificado (commit `13e4a63`). Cláusula Floor, Not Ceiling inyectada en kernel y AGENTS.md; 11 sub-skills de SDD deprecadas con redirect a odd-workflow; Matt Pocock skills armonizadas; overlap-matrix actualizada; perfil gemini agregado.
+- **L3** (2026-10-15): WU-2 completado y verificado (commit `3c09a0d`). Contrato de tokens unificado (semánticos CSS, OKLCH por defecto, HSL permitido); 8 chasis arquetípicos sincronizados; Design Read unificado de 3 líneas; reglas de taste-skill divididas en Nivel 1 (Hard Anti-Slop) y Nivel 2 (Heurísticas contextuales).
+- **L4** (2026-10-15): WU-3 completado y verificado (commit `97aca7e`). Pipeline de 4 artefactos canónicos activo: `PRD.md` (`idea-to-prd-express`), `APP_FLOW.md` (`app-flow-spec`), `TRD.md` (`architecture-designer`), y `DESIGN_SYSTEM.md` (`design-driven`, `design-system-tokens`). Conexión trazable en `odd-workflow`.
+- **L5** (2026-10-15): WU-4 completado y verificado (commit `49dd5d6`). Descontaminación de dominio: arquitectura universal de pagos (adaptadores e idempotencia) + referencia regional Venezuela; PostgreSQL y Prisma ORM desacoplados a modelado relacional profesional; push-notifications y booking generalizados; application-workflow modularizado en doble patrón (directo vs reactivo).
+- **L6** (2026-10-15): WU-5 completado y verificado (commit `f604701`). Compresión Flash-Ready de `interface-design` a 67 líneas (<3k tokens) extrayendo `craft-principles.md`; enlaces deprecados limpiados (`tailwindcss` -> `tailwind-4`, `expert-debugger` -> `systematic-debugging`).
+- **L7** (2026-10-15): WU-6 completado y verificado. Sincronización 4-way del catálogo (231 skills). Batería determinista 100% verde: `validate-skills.mjs --strict` (0 errores, 0 warnings), `catalog-doctor.mjs` (7/7 checks passed), y `test/**/*.test.mjs` (218/218 tests passed).
+

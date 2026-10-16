@@ -151,7 +151,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | expo-production-auditor | [05-frontend/expo-production-auditor/SKILL.md](05-frontend/expo-production-auditor/SKILL.md) ← `references/troubleshooting.md` |
 | maps-gps | [05-frontend/maps-gps/SKILL.md](05-frontend/maps-gps/SKILL.md) ← Implements real-time GPS delivery tracking |
 | nextjs | [05-frontend/nextjs/SKILL.md](05-frontend/nextjs/SKILL.md) ← DEPRECATED. Use nextjs-15 instead. |
-| push-notifications | [05-frontend/push-notifications/SKILL.md](05-frontend/push-notifications/SKILL.md) ← Guía para implementar push notifications en la app móvil Expo del proyecto |
+| push-notifications | [05-frontend/push-notifications/SKILL.md](05-frontend/push-notifications/SKILL.md) ← Implementation of mobile push notifications across Expo, React Native, APNs, an… |
 | pwa-capacitor | [05-frontend/pwa-capacitor/SKILL.md](05-frontend/pwa-capacitor/SKILL.md) ← Standards for Progressive Web Apps (PWA) and Capacitor builds |
 | react-native | [05-frontend/react-native/SKILL.md](05-frontend/react-native/SKILL.md) ← Guidelines for cross-platform React Native development |
 | react-vite | [05-frontend/react-vite/SKILL.md](05-frontend/react-vite/SKILL.md) ← Standards and guidelines for React and Vite development |

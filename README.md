@@ -5,7 +5,7 @@
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-230-purple.svg)](#categories)
+[![Skills Count](https://img.shields.io/badge/skills-231-purple.svg)](#categories)
 [![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.0)-brightgreen.svg)](#organic-driven-development)
 
 > **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
@@ -22,7 +22,7 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **230 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- 🎯 **231 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
 - 🔄 **ODD-Exclusive Workflow**: Authorize → Explore → Classify → Task File + Engram Mirror → Atomic Work-Unit Commits on feature branch.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
@@ -175,7 +175,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **230 skills** distributed across structured domains:
+The catalog contains **231 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|
