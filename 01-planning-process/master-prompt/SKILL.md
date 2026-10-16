@@ -36,7 +36,7 @@ Para codificar esta aplicación, aplica y respeta las directrices especificadas 
    - **Aplicación:** Usa `FlatList` con optimizaciones de renderizado (`React.memo`). Interfaz fluida, segura y libre de bloqueos de hilo principal.
 
 3. **Flujos de Pago y Checkout:**
-   - **Skill:** `04-backend/payments-stripe/SKILL.md`
+   - **Skill:** `04-backend/payments/SKILL.md`
    - **Opcional (LATAM / Multi-moneda):** Consulta `references/latam-payments-demo.md` para simulaciones de pagos locales (Pago Móvil, BNPL, doble moneda).
 
 4. **Tracking de Geolocalización y Mapas:**

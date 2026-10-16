@@ -54,8 +54,8 @@
 
 - [x] **T1: WU-1 Gobernanza, Kernel y Orquestadores** (Spec: S1, Route: inline) - Commit: `13e4a63`
 - [x] **T2: WU-2 Armonización Creativa Frontend (Floor, Not Ceiling)** (Spec: S2, Route: inline) - Commit: `3c09a0d`
-- [x] **T3: WU-3 Pipeline Canónico 4 Documentos (PRD, APP_FLOW, TRD, DESIGN_SYSTEM)** (Spec: S3, Route: inline) - Commit: `4ffb43c` (staged)
-- [ ] **T4: WU-4 Descontaminación de Dominio Project-Agnostic** (Spec: S4, Route: inline) - Commit: pending
+- [x] **T3: WU-3 Pipeline Canónico 4 Documentos (PRD, APP_FLOW, TRD, DESIGN_SYSTEM)** (Spec: S3, Route: inline) - Commit: `97aca7e`
+- [x] **T4: WU-4 Descontaminación de Dominio Project-Agnostic** (Spec: S4, Route: inline) - Commit: pending
 - [ ] **T5: WU-5 Compresión Flash-Ready y Limpieza de Enlaces** (Spec: S5, Route: inline) - Commit: pending
 - [ ] **T6: WU-6 Sincronización 4-Way del Catálogo y Validación Estricta** (Spec: S6, Route: inline) - Commit: pending
 
