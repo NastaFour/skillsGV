@@ -19,7 +19,7 @@
 
 ## Bloque 2 · ADN Arquetípico, Diales y Gramática Generativa (Fusión de Chasis)
 
-4. **Selección de Chasis Arquetípico** (Elegir 1 de los 7 o definir Custom):
+4. **Selección de Chasis Arquetípico** (Elegir 1 de los 8 Chasis Arquetípicos):
    - **A · Technical Monograph** (Reporte académico / Bell Labs 1974): Retícula asimétrica 1:3 (`main` + marginalia en `<aside>`), hairlines 1D continuos (`border-b`), cero tarjetas contenedoras en caja. *Preset: `DV: 7, MI: 2, VD: 8` | Física sobre-amortiguada.*
    - **B · Industrial Spec-Sheet** (Telemetría analítica / Manual NASA): Matriz de 12/16 columnas con hairlines de 1px, `tabular-nums lining-nums`, monospace estrictamente zonificado a métricas y tablas (prohibido en prosa). *Preset: `DV: 3, MI: 1, VD: 9` | Física mecánica instantánea (colapso a lista en móvil).*
    - **C · The Gallery / Space Tension** (Catálogo de arte / Prada): Vacío activo masivo (≥45% viewport), escala tipográfica bipolar (Display ≥3:1 vs micro) con escalón intermedio obligatorio (eyebrow de 18-24px). *Preset: `DV: 9, MI: 4, VD: 2` | Alta inercia con stagger.*
@@ -35,7 +35,7 @@
    - ¿La página tiene cadencia narrativa con scroll fluido o funciona como una aplicación densa fija / viewport lock (`100dvh`)?
 
 6. **Las 3 Reglas Generativas Mecánicas** *(directiva derivada por el agente, no una pregunta al usuario — el agente la deriva del arquetipo elegido en #4 y la confirma)*:
-   - El agente DEBE derivar del arquetipo exactamente **3 directivas técnicas de CSS/Layout inmutables** (1 de retícula/layout, 1 de división/superficie, 1 de escala tipográfica) para registrarlas en `design-dna.md` y en el header del archivo visual antes de codificar.
+   - El agente DEBE derivar del arquetipo exactamente **3 directivas técnicas de CSS/Layout inmutables** (1 de retícula/layout, 1 de división/superficie, 1 de escala tipográfica) para registrarlas en `DESIGN_SYSTEM.md` (y/o `design-dna.md`) y en el header del archivo visual antes de codificar.
 
 ---
 
@@ -58,7 +58,7 @@
 
 ## Bloque 5 · Anti-Slop Negativo, Anti-Faux-Density y Restricciones Reales
 
-14. **Lista de Prohibiciones (Bans)**: Confirmar la aplicación de los 10 Absolute Bans (cero em-dashes en UI, no gradientes violeta neón, no beige/brass cliché, no fake product divs, no scroll cues) más los odios estéticos específicos del usuario.
+14. **Lista de Prohibiciones (Bans)**: Confirmar Nivel 1 (Hard Anti-Slop Invariants: cero Lorem ipsum/datos falsos, cero telemetría decorativa falsa, estados interactivos completos, contraste WCAG) y evaluar Nivel 2 (Heurísticas contextuales overrideables según el dominio/marca o `[Beyond-Baseline]`), más los odios estéticos específicos del usuario.
 15. **Anti-Faux-Density (Tufte)**: Si el proyecto carece de entropía real de datos, prohibir la simulación artificial de números de serie, métricas falsas (`SYS_STATUS: 0x4F`) o falsos LEDs decorativos (cosplay de telemetría). *(Mocks funcionales de prototipado en Fase D4 están permitidos si representan datos reales futuros).*
 16. **Límites de Dependencias y Física**: ¿Hasta dónde se puede implementar? (Solo CSS nativo con curvas cúbicas vs librerías aprobadas como GSAP, Motion o componentes curados de 21st.dev). Prohibido `transition: all 0.3s ease` genérico; usar la física de resortes o el fallback CSS nativo del arquetipo.
 17. **Restricciones de Entrega**: Nivel de accesibilidad requerido (WCAG AA), idioma/localización y fecha límite.

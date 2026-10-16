@@ -115,7 +115,7 @@ El deploy es parte del loop — si no deployas, no cerraste el ciclo. La demo en
 | Necesidad | Skill |
 |---|---|
 | Dirección visual/paleta/signature | [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) |
-| Implementación React premium | [`frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) |
+| Implementación React premium | [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) |
 | React 19 (Compiler, use()) | [`react-19`](../react-19/SKILL.md) |
 | Tailwind 4 (cn, theme) | [`tailwind-4`](../tailwind-4/SKILL.md) |
 | Next.js 15 App Router | [`nextjs-15`](../nextjs-15/SKILL.md) |

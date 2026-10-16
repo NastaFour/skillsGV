@@ -18,18 +18,18 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | skill-sync | [00-meta-skills/skill-sync/SKILL.md](00-meta-skills/skill-sync/SKILL.md) ← Distributes skills from this catalog to multiple AI agent configurations using… |
 | skill-validator | [00-meta-skills/skill-validator/SKILL.md](00-meta-skills/skill-validator/SKILL.md) ← Validates that all SKILL.md files in the catalog comply with the agentskills.io… |
 | skill-router | [00-meta-skills/skill-router/SKILL.md](00-meta-skills/skill-router/SKILL.md) ← deterministic routing, replaces ~80% of LLM skill selection |
-| sdd-orchestrator | [00-meta-skills/sdd-orchestrator/SKILL.md](00-meta-skills/sdd-orchestrator/SKILL.md) ← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup |
-| sdd-init | [00-meta-skills/sdd-init/SKILL.md](00-meta-skills/sdd-init/SKILL.md) ← SDD init: stack/testing capabilities, registry and persistence |
-| sdd-explore | [00-meta-skills/sdd-explore/SKILL.md](00-meta-skills/sdd-explore/SKILL.md) ← SDD exploration before committing to a change |
-| sdd-research | [00-meta-skills/sdd-research/SKILL.md](00-meta-skills/sdd-research/SKILL.md) ← SDD research: source-backed evidence lanes before propose |
-| sdd-propose | [00-meta-skills/sdd-propose/SKILL.md](00-meta-skills/sdd-propose/SKILL.md) ← SDD change proposal: intent, scope, approach |
-| sdd-spec | [00-meta-skills/sdd-spec/SKILL.md](00-meta-skills/sdd-spec/SKILL.md) ← SDD delta specs with requirements and scenarios |
-| sdd-design | [00-meta-skills/sdd-design/SKILL.md](00-meta-skills/sdd-design/SKILL.md) ← SDD technical design and architecture approach |
-| sdd-tasks | [00-meta-skills/sdd-tasks/SKILL.md](00-meta-skills/sdd-tasks/SKILL.md) ← SDD task breakdown with review workload forecast |
-| sdd-apply | [00-meta-skills/sdd-apply/SKILL.md](00-meta-skills/sdd-apply/SKILL.md) ← SDD implementation with apply-progress merge |
-| sdd-verify | [00-meta-skills/sdd-verify/SKILL.md](00-meta-skills/sdd-verify/SKILL.md) ← SDD verification against specs with compliance matrix |
-| sdd-archive | [00-meta-skills/sdd-archive/SKILL.md](00-meta-skills/sdd-archive/SKILL.md) ← SDD archive: sync delta specs and close the change |
-| sdd-onboard | [00-meta-skills/sdd-onboard/SKILL.md](00-meta-skills/sdd-onboard/SKILL.md) ← SDD walkthrough onboarding on the real codebase |
+| sdd-orchestrator | [00-meta-skills/sdd-orchestrator/SKILL.md](00-meta-skills/sdd-orchestrator/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-init | [00-meta-skills/sdd-init/SKILL.md](00-meta-skills/sdd-init/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-explore | [00-meta-skills/sdd-explore/SKILL.md](00-meta-skills/sdd-explore/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-research | [00-meta-skills/sdd-research/SKILL.md](00-meta-skills/sdd-research/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-propose | [00-meta-skills/sdd-propose/SKILL.md](00-meta-skills/sdd-propose/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-spec | [00-meta-skills/sdd-spec/SKILL.md](00-meta-skills/sdd-spec/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-design | [00-meta-skills/sdd-design/SKILL.md](00-meta-skills/sdd-design/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-tasks | [00-meta-skills/sdd-tasks/SKILL.md](00-meta-skills/sdd-tasks/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-apply | [00-meta-skills/sdd-apply/SKILL.md](00-meta-skills/sdd-apply/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-verify | [00-meta-skills/sdd-verify/SKILL.md](00-meta-skills/sdd-verify/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-archive | [00-meta-skills/sdd-archive/SKILL.md](00-meta-skills/sdd-archive/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
+| sdd-onboard | [00-meta-skills/sdd-onboard/SKILL.md](00-meta-skills/sdd-onboard/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
 | skill-harvest | [00-meta-skills/skill-harvest/SKILL.md](00-meta-skills/skill-harvest/SKILL.md) ← post-project: draft new-skill proposals into _inbox from Engram, never auto-create |
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
@@ -125,7 +125,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | jwt-bcrypt | [04-backend/jwt-bcrypt/SKILL.md](04-backend/jwt-bcrypt/SKILL.md) ← Security standards for User Authentication |
 | microservices | [04-backend/microservices/SKILL.md](04-backend/microservices/SKILL.md) ← Guidelines for Microservice architectures |
 | nodejs | [04-backend/nodejs/SKILL.md](04-backend/nodejs/SKILL.md) ← Guidelines for backend Node.js development |
-| payments | [04-backend/payments/SKILL.md](04-backend/payments/SKILL.md) ← `references/bcv-integration.md`, `pago-movil-flows.md`, `cashea-bnpl.md` |
+| payments | [04-backend/payments/SKILL.md](04-backend/payments/SKILL.md) ← Universal payment processing architecture covering checkout sessions, payment i… |
 | postgresql | [04-backend/postgresql/SKILL.md](04-backend/postgresql/SKILL.md) ← `references/schema-reference.md` |
 | prisma-orm | [04-backend/prisma-orm/SKILL.md](04-backend/prisma-orm/SKILL.md) ← `references/schema-template.md` |
 | socketio | [04-backend/socketio/SKILL.md](04-backend/socketio/SKILL.md) ← Real-time event communication with Socket.io (v4.7+) |
@@ -266,7 +266,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 
 | Skill | Path |
 |---|---|
-| professional-planner | [professional-planner/SKILL.md](professional-planner/SKILL.md) ← `references/sdd-methodology.md`, `references/templates.md` |
+| professional-planner | [professional-planner/SKILL.md](professional-planner/SKILL.md) ← DEPRECATED |
 
 ## 🔗 Referencias
 

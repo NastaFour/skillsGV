@@ -34,7 +34,7 @@ Explains the evaluation order of ES module imports in Node.js. Prevents bug #8 w
 1. Read the ESM evaluation order guide: [esm-evaluation-order.md](references/esm-evaluation-order.md)
 2. Run the checker to detect late dotenv loading:
    ```bash
-   node ./.opencode/skills/nodejs-module-loading/scripts/check-env-loading.mjs
+   node 04-backend/nodejs-module-loading/scripts/check-env-loading.mjs
    ```
 3. Fix by moving `import "dotenv/config"` to the top of `env.ts`
 4. Re-run to confirm

@@ -37,7 +37,7 @@ Scroll-driven motion: parallax, reveals, pin sections, scroll progress. Covers M
 3. Read GSAP ScrollTrigger: [gsap-scrolltrigger.md](references/gsap-scrolltrigger.md)
 4. Run the checker:
    ```bash
-   node ./.opencode/skills/scroll-animations/scripts/check-scroll.mjs
+   node 05-frontend/scroll-animations/scripts/check-scroll.mjs
    ```
 
 ## 📚 References

@@ -25,7 +25,7 @@ Herramienta y guía estilística para desintoxicar textos de las firmas sintéti
 **No usar para**:
 - Formateo de código fuente, linters o esquemas JSON/YAML (usar `06-code-quality/biome` o `06-code-quality/typescript`).
 - Redacción publicitaria de respuesta directa pura (usar `01-planning-process/copywriting`).
-- Corrección de bugs o depuración lógica de software (usar `02-dev-roles/expert-debugger`).
+- Corrección de bugs o depuración lógica de software (usar `02-dev-roles/systematic-debugging`).
 
 ---
 

@@ -176,7 +176,7 @@
     {
       "name": "sdd-apply",
       "group": "sdd",
-      "role": "SDD implementation by task batches (apply-progress merge)",
+      "role": "[Legacy SDD — use odd-workflow] SDD implementation by task batches (apply-progress merge)",
       "tier": "mid",
       "effort": "high",
       "delegate_only": true
@@ -240,7 +240,7 @@
     {
       "name": "sdd-init",
       "group": "sdd",
-      "role": "SDD bootstrap: stack detection, testing capabilities, persistence",
+      "role": "[Legacy SDD — use odd-workflow] SDD bootstrap: stack detection, testing capabilities, persistence",
       "tier": "cheap",
       "effort": "high",
       "delegate_only": true
@@ -248,7 +248,7 @@
     {
       "name": "sdd-explore",
       "group": "sdd",
-      "role": "SDD exploration before committing to a change",
+      "role": "[Legacy SDD — use odd-workflow] SDD exploration before committing to a change",
       "tier": "cheap",
       "effort": "high",
       "delegate_only": true
@@ -256,7 +256,7 @@
     {
       "name": "sdd-research",
       "group": "sdd",
-      "role": "SDD external evidence: collect source-backed findings for selected research lanes",
+      "role": "[Legacy SDD — use odd-workflow] SDD external evidence: collect source-backed findings for selected research lanes",
       "tier": "strong",
       "effort": "high",
       "delegate_only": true
@@ -264,7 +264,7 @@
     {
       "name": "sdd-propose",
       "group": "sdd",
-      "role": "SDD change proposal: intent, scope, approach",
+      "role": "[Legacy SDD — use odd-workflow] SDD change proposal: intent, scope, approach",
       "tier": "strong",
       "effort": "high",
       "delegate_only": true
@@ -272,7 +272,7 @@
     {
       "name": "sdd-spec",
       "group": "sdd",
-      "role": "SDD delta specs with requirements and scenarios",
+      "role": "[Legacy SDD — use odd-workflow] SDD delta specs with requirements and scenarios",
       "tier": "mid",
       "effort": "high",
       "delegate_only": true
@@ -280,7 +280,7 @@
     {
       "name": "sdd-design",
       "group": "sdd",
-      "role": "SDD technical design and architecture approach",
+      "role": "[Legacy SDD — use odd-workflow] SDD technical design and architecture approach",
       "tier": "strong",
       "effort": "high",
       "delegate_only": true
@@ -288,7 +288,7 @@
     {
       "name": "sdd-tasks",
       "group": "sdd",
-      "role": "SDD task breakdown with review workload forecast",
+      "role": "[Legacy SDD — use odd-workflow] SDD task breakdown with review workload forecast",
       "tier": "cheap",
       "effort": "high",
       "delegate_only": true
@@ -296,7 +296,7 @@
     {
       "name": "sdd-verify",
       "group": "sdd",
-      "role": "SDD verification against specs with compliance evidence",
+      "role": "[Legacy SDD — use odd-workflow] SDD verification against specs with compliance evidence",
       "tier": "mid",
       "effort": "high",
       "delegate_only": true
@@ -304,7 +304,7 @@
     {
       "name": "sdd-archive",
       "group": "sdd",
-      "role": "SDD close: sync delta specs and archive the change",
+      "role": "[Legacy SDD — use odd-workflow] SDD close: sync delta specs and archive the change",
       "tier": "cheap",
       "effort": "high",
       "delegate_only": true
@@ -312,7 +312,7 @@
     {
       "name": "sdd-onboard",
       "group": "sdd",
-      "role": "Interactive SDD walkthrough on the real codebase (runs inline, not delegated)",
+      "role": "[Legacy SDD — use odd-workflow] Interactive SDD walkthrough on the real codebase (runs inline, not delegated)",
       "tier": "cheap",
       "effort": "high",
       "delegate_only": false

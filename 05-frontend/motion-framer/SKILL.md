@@ -39,7 +39,7 @@ The default animation library for React. Covers web (Motion/framer-motion) and m
 4. Read mobile (Reanimated 3): [mobile-reanimated.md](references/mobile-reanimated.md)
 5. Run the checker:
    ```bash
-   node ./.opencode/skills/motion-framer/scripts/check-motion.mjs
+   node 05-frontend/motion-framer/scripts/check-motion.mjs
    ```
 
 ## 📚 References

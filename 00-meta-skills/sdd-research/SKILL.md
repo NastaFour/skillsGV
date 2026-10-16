@@ -1,6 +1,6 @@
 ---
 name: sdd-research
-description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar research-first. Collect auditable, source-backed evidence for the research lanes the orchestrator selected after sdd-explore; mandatory before sdd-propose when selected. Trigger: orchestrator launches SDD research, research lanes, external evidence, source-backed."
+description: "DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Collect auditable, source-backed evidence for the research lanes the orchestrator selected after sdd-explore; mandatory before sdd-propose when selected. Trigger: orchestrator launches SDD research, research lanes, external evidence, source-backed."
 license: MIT
 allowed-tools: Read Grep Glob
 metadata:

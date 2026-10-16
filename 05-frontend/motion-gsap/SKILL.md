@@ -41,7 +41,7 @@ For cases that exceed Motion: complex timelines, SVG morphing, text splitting, l
 4. Read React integration: [gsap-react.md](references/gsap-react.md)
 5. Run the checker:
    ```bash
-   node ./.opencode/skills/motion-gsap/scripts/check-gsap.mjs
+   node 05-frontend/motion-gsap/scripts/check-gsap.mjs
    ```
 
 ## 📚 References

@@ -133,15 +133,20 @@ for (const s of index) {
   if (s.deprecated) continue;
   let triggerScore = 0; // from word-boundary exact trigger matches
   let exactHit = false;
+  const seenTriggers = new Set();
+  const matchedTriggers = [];
   for (const t of s.triggers) {
     if (!t) continue;
     const tLower = t.toLowerCase().trim();
+    if (seenTriggers.has(tLower)) continue;
+    seenTriggers.add(tLower);
     if (!passesTriggerLengthGate(t, tLower)) continue;
     // Word-boundary regex: full-word/phrase match, no substring traps
     const re = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
     if (re.test(qLower)) {
       triggerScore += 1.0;
       exactHit = true;
+      matchedTriggers.push(tLower);
     }
   }
   // Description keyword overlap (subordinate — caps confidence <1.0)
@@ -155,10 +160,29 @@ for (const s of index) {
   const kwScore = Math.min(kwHits / 3, 0.5);
   const totalScore = triggerScore + kwScore;
   if (totalScore > 0) {
-    scored.push({ name: s.name, score: totalScore, triggerScore, kwScore, exactHit, category: s.category });
+    scored.push({ name: s.name, score: totalScore, triggerScore, kwScore, exactHit, matchedTriggers, category: s.category });
   }
 }
 scored.sort((a, b) => b.score - a.score);
+
+// When a multi-intent query hits ≥3 distinct exact triggers (e.g. PRD.md +
+// APP_FLOW.md + TRD.md + DESIGN_SYSTEM.md), ensure skills that cover a new
+// exact trigger rank ahead of skills that duplicate an already-covered trigger
+// at the same triggerScore, so one shared trigger doesn't starve another intent.
+const coveredExactTriggers = new Set();
+const distinctExact = [];
+const duplicateExactOrKw = [];
+for (const entry of scored) {
+  if (entry.triggerScore >= 1 && entry.matchedTriggers.some((t) => !coveredExactTriggers.has(t))) {
+    for (const t of entry.matchedTriggers) coveredExactTriggers.add(t);
+    distinctExact.push(entry);
+  } else {
+    duplicateExactOrKw.push(entry);
+  }
+}
+if (distinctExact.length >= 3) {
+  scored = [...distinctExact, ...duplicateExactOrKw];
+}
 
 // === Overlap-matrix resolution (D4, overlap-matrix spec) ===
 // Load references/overlap-matrix.json and break semantic ties: if ≥2 members
@@ -269,7 +293,8 @@ if (isUiTask && validSkillNames.has("design-driven")) {
   }
 }
 
-const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, 2)] : secondary.slice(0, 3))].filter(
+const secondarySliceCount = distinctExact.length >= 4 ? Math.min(distinctExact.length - 1, 4) : 2;
+const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, secondarySliceCount)] : secondary.slice(0, 3))].filter(
   (name) => !TIER0_SKILLS.has(name)
 );
 if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven") && tier1toLoad.length < 5) {

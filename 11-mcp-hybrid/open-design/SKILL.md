@@ -30,7 +30,7 @@ rather than hand-coded UI.
 - OpenDesign produce archivos reales (HTML/PDF/PPTX/MP4). Recolectá las rutas y
   reportalas al usuario.
 - Usá OpenDesign para deliverables generados/"vibe"; para UI hecha a mano usá
-  frontend-design / frontend-designer.
+  `frontend-design`.
 
 ## Execution Steps
 

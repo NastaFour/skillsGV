@@ -39,13 +39,14 @@ Every interactive element and data container MUST implement all applicable state
 
 ---
 
-## ⚡ Pre-Code Ceremony: Unified `Design Read`
+## ⚡ Pre-Code Ceremony & System Persistence
 
-Before writing or mutating UI code, declare the standard 3-line check (or 1-line Fast-Path for minor maintenance):
+1. **Read & Persist in `DESIGN_SYSTEM.md`**: Before writing UI code, check the project root for the canonical **`DESIGN_SYSTEM.md`** (falling back to legacy `.interface-design/system.md` if present) to load existing tokens, chassis, spacing rhythm, and depth rules. When establishing or evolving system-wide patterns, persist them back to **`DESIGN_SYSTEM.md`**.
+2. **Unified `Design Read`**: Declare the standard 3-line check before mutating UI (or 1-line Fast-Path for minor maintenance):
 
 ```
 1. Direction / Chassis: [Archetype] — [Why it fits the domain]
-2. Hierarchy & Tokens:  [Hero element, --surface-*, --accent-*]
+2. Hierarchy & Tokens:  [Hero element, --surface-*, --accent-* from DESIGN_SYSTEM.md]
 3. Craft Signature:     [Fine detail, micro-interaction, or [Beyond-Baseline: <reason>]]
 ```
 
@@ -60,4 +61,4 @@ Before writing or mutating UI code, declare the standard 3-line check (or 1-line
 
 ## 📚 In-Depth Craft Reference
 
-For extended essays on overcoming AI defaults, domain color world exploration, motion timing curves, and deep-dive design examples, consult [`references/craft-principles.md`](references/craft-principles.md).
+For extended essays on overcoming AI defaults, domain color world exploration, motion timing curves, `DESIGN_SYSTEM.md` persistence, and deep-dive design examples, consult [`references/craft-principles.md`](references/craft-principles.md).

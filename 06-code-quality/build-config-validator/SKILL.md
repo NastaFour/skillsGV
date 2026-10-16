@@ -33,12 +33,12 @@ Verifies that build configuration files exist and are correctly structured befor
 
 1. Run the validator script:
    ```bash
-   node ./.opencode/skills/build-config-validator/scripts/validate-build-config.mjs
+   node 06-code-quality/build-config-validator/scripts/validate-build-config.mjs
    ```
 2. If errors, review the missing/misconfigured file + suggested fix
 3. Auto-fix missing files with `--fix` flag:
    ```bash
-   node ./.opencode/skills/build-config-validator/scripts/validate-build-config.mjs --fix
+   node 06-code-quality/build-config-validator/scripts/validate-build-config.mjs --fix
    ```
 4. Re-run without `--fix` to confirm all checks pass
 

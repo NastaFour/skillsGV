@@ -1,10 +1,10 @@
 # Feature: skills-v3-harmonization (Floor, Not Ceiling & Canonical Pipeline)
 
-- **Status**: COMPLETED
+- **Status**: IN_PROGRESS
 - **Branch**: feat/skills-v3-harmonization
 - **Engram Topic**: odd/skills-v3-harmonization/tasks
-- **Route**: Delegated Direct (System-wide multi-unit refactor)
-- **Forecast Lines**: ~1200 authored lines across 6 work units
+- **Route**: Delegated Direct (Parallel writers with disjoint edit surfaces for T7 adversarial remediation)
+- **Forecast Lines**: ~1500 authored lines across 7 work units
 
 ## Specs
 
@@ -58,6 +58,7 @@
 - [x] **T4: WU-4 Descontaminación de Dominio Project-Agnostic** (Spec: S4, Route: inline) - Commit: `49dd5d6`
 - [x] **T5: WU-5 Compresión Flash-Ready y Limpieza de Enlaces** (Spec: S5, Route: inline) - Commit: `f604701`
 - [x] **T6: WU-6 Sincronización 4-Way del Catálogo y Validación Estricta** (Spec: S6, Route: inline) - Commit: `e3637a9`
+- [ ] **T7: WU-7 Remediación de Auditoría Adversarial Post-Flash (15 hallazgos)** (Spec: S1-S6, Route: delegated — Writer trigger: 2 parallel writers with disjoint edit surfaces)
 
 ## Log
 
@@ -68,4 +69,5 @@
 - **L5** (2026-10-15): WU-4 completado y verificado (commit `49dd5d6`). Descontaminación de dominio: arquitectura universal de pagos (adaptadores e idempotencia) + referencia regional Venezuela; PostgreSQL y Prisma ORM desacoplados a modelado relacional profesional; push-notifications y booking generalizados; application-workflow modularizado en doble patrón (directo vs reactivo).
 - **L6** (2026-10-15): WU-5 completado y verificado (commit `f604701`). Compresión Flash-Ready de `interface-design` a 67 líneas (<3k tokens) extrayendo `craft-principles.md`; enlaces deprecados limpiados (`tailwindcss` -> `tailwind-4`, `expert-debugger` -> `systematic-debugging`).
 - **L7** (2026-10-15): WU-6 completado y verificado. Sincronización 4-way del catálogo (231 skills). Batería determinista 100% verde: `validate-skills.mjs --strict` (0 errores, 0 warnings), `catalog-doctor.mjs` (7/7 checks passed), y `test/**/*.test.mjs` (218/218 tests passed).
+- **L8** (2026-10-15): Solicitud de evaluación final: "ya queda evaluar si verdaderamente soluciono todos los problemas y con una ejecucion impecable, cuando termines y este todo bien al 100% indicame en una lista todo lo nuevo , lo que se mejoro y arreglo". La auditoría adversarial independiente detectó 15 brechas residuales dejadas por Flash (referencias a `writing-plans`, `Skill tool` y `/setup-matt-pocock-skills` restantes, omisión de `The Humanist Companion` en `dials.md`, doble conteo de triggers en `skill-router.mjs`, 24 rutas `.opencode/skills/` hardcodeadas, enlaces deprecados residuales y notas SDD en `catalog-manifest.mjs`). Se abre T7 con 2 writers paralelos de superficie disjunta para llevar la ejecución al 100% real.
 

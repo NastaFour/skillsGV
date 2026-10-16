@@ -70,3 +70,13 @@ A single font size (e.g. 14px) provides three distinct tiers using weight and op
 - Missing interactive states (`hover`, `focus-visible`, `active`, `disabled`, `empty`, `loading`, `error`).
 - Mixing multiple unrelated accent colors without functional meaning.
 - Purely decorative gradients that distract from content legibility.
+
+---
+
+## 7. Canonical `DESIGN_SYSTEM.md` Persistence & Legacy Fallback
+
+To maintain visual consistency across sessions without fragmenting project documentation:
+
+1. **Read First**: Always inspect `DESIGN_SYSTEM.md` at the repository root before designing or modifying views. If `DESIGN_SYSTEM.md` does not exist yet, check for a legacy `.interface-design/system.md` file as a backward-compatible fallback.
+2. **Persist Decisions**: Whenever a new semantic token (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`), typographic scale, elevation rule, or component pattern is established, record it in the canonical **`DESIGN_SYSTEM.md`** (or migrate `.interface-design/system.md` into `DESIGN_SYSTEM.md`).
+3. **Single Source of Truth**: Keep token definitions, archetype selection, and spacing rhythm unified in `DESIGN_SYSTEM.md` so `design-driven`, `design-system-tokens`, `taste-skill`, and `interface-design` operate on the same contract.

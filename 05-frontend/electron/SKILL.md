@@ -269,6 +269,6 @@ ipcMain.handle('file:delete', (event, filePath) => {
 
 ## Integration con skillsGV
 
-Combinar con: `electronjs` (skill base de skillsGV), `react-vite` (renderer con React), `typescript` (tipado del bridge), `solid-clean-code` (arquitectura main/renderer separada).
+Combinar con: `react-vite` (renderer con React), `typescript` (tipado del bridge), `solid-clean-code` (arquitectura main/renderer separada), `pwa-capacitor` (cuando se evalúe alternativa híbrida web/móvil).
 
-> **Nota:** skillsGV tiene `electronjs` en `05-frontend/electronjs`. Esta skill aporta los patrones de seguridad (contextBridge, sandbox, IPC validation) de Gentleman Programming que complementan la skill base.
+> **Nota:** Esta skill es auto-contenida para aplicaciones de escritorio con Electron y consolida la arquitectura `main`/`preload`/`renderer` y los patrones de seguridad (`contextBridge`, sandbox, validación de IPC).

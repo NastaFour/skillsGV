@@ -35,7 +35,7 @@ Deploy Expo apps to App Store and Play Store using EAS. Covers build, submit, OT
 2. Read release process: [release-process.md](references/release-process.md)
 3. Run the checker to verify EAS config:
    ```bash
-   node ./.opencode/skills/store-deployment-eas/scripts/check-eas-config.mjs
+   node 08-devops/store-deployment-eas/scripts/check-eas-config.mjs
    ```
 
 ## 📚 References

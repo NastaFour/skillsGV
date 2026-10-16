@@ -36,7 +36,7 @@ Patterns for uploading files (media gallery, avatars, service images) with valid
 3. Read validation rules: [validation-rules.md](references/validation-rules.md)
 4. Run the checker to verify upload endpoints have validation:
    ```bash
-   node ./.opencode/skills/file-uploads-storage/scripts/check-uploads.mjs
+   node 04-backend/file-uploads-storage/scripts/check-uploads.mjs
    ```
 
 ## 📚 References

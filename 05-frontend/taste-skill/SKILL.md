@@ -1,6 +1,6 @@
 ---
 name: taste-skill
-description: "Trigger: taste-skill, anti-slop, design read, AI slop, lila rule, DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY. Aesthetic governance framework with 3-dial calibration and 10 absolute bans. Use when auditing or enforcing anti-slop rules."
+description: "Trigger: taste-skill, anti-slop, design read, AI slop, lila rule, DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY. Aesthetic governance framework with 3-dial calibration and 2-tier anti-slop rules (Nivel 1 Hard Invariants + Nivel 2 Context-Aware Heuristics). Use when auditing or enforcing anti-slop rules."
 license: MIT
 compatibility: Requires Node 20+ and pnpm 9+. Compatible with modern CSS, Tailwind and React ecosystems.
 metadata:
@@ -15,7 +15,7 @@ allowed-tools: Read Write Edit Bash(git:*,pnpm:*)
 
 > **Atribución (contenido adaptado)**: adaptación catálogo-nativa del framework [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (Leonxlnx), licencia MIT. Adaptada a las convenciones del catálogo (español neutral, frontmatter agentskills.io, estructura references/). Fuente: el `SKILL.md` de la skill `taste-skill` en el repositorio upstream.
 
-Framework de control de calidad visual y erradicación determinista de "AI slop". Audita interfaces mediante la declaración previa del Design Read, calibración triaxial de diales numéricos (1-10) vinculados a Chasis Arquetípicos y 10 Absolute Bans de fallo automático con Locks de Diseño.
+Framework de control de calidad visual y erradicación determinista de "AI slop". Audita interfaces mediante la declaración previa del Design Read, calibración triaxial de diales numéricos (1-10) vinculados a Chasis Arquetípicos y gobernanza en 2 niveles: **Nivel 1 (Hard Anti-Slop Invariants)** + **Nivel 2 (Context-Aware Heuristics)** con Locks de Diseño.
 
 ## 📋 Cuándo Usar
 
@@ -63,11 +63,11 @@ $$\vec{T} = \begin{bmatrix} \text{DESIGN\_VARIANCE} \\ \text{MOTION\_INTENSITY} 
 
 - Declaración de Design Read visible en chat.
 - Valores calibrados de diales triaxiales y arquetipo.
-- Verificación de 10 Absolute Bans y Locks de diseño cumplida (0 violaciones).
+- Verificación de Nivel 1 (Hard Invariants) con 0 violaciones + evaluación contextual de Nivel 2 (Heuristics) y Locks de diseño cumplida.
 
 ## 📚 Referencias
 
 - [Calibración de Diales y Chasis Arquetípicos](references/dials.md)
-- [Matriz de 10 Absolute Bans y Locks](references/absolute-bans.md)
+- [Invariantes Nivel 1, Heurísticas Nivel 2 y Locks de Diseño](references/absolute-bans.md)
 - [Pre-Flight Check Mecánico](references/preflight.md)
 - [Guía Completa de Referencia UI](references/full-guide.md)

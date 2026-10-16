@@ -1,6 +1,6 @@
 ---
 name: i18n-localization
-description: Internationalization patterns for the application using i18next with Spanish (primary) and English (secondary) support. Covers web (react-i18next) and mobile (expo-localization + i18next) setup, translation file structure, and locale-aware formatting (dates, currencies). Use when adding multi-language support or localizing notification templates.
+description: Internationalization patterns using i18next with configurable primary and secondary locales (e.g., `es`/`en`). Covers web (react-i18next) and mobile (expo-localization + i18next) setup, translation file structure, and locale-aware formatting (dates, currencies). Use when adding multi-language support or localizing notification templates.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
@@ -12,14 +12,14 @@ allowed-tools: Bash(node:*) Read
 
 # 🌐 i18n & Localization
 
-Multi-language support for the application using i18next. Spanish is primary (Venezuela market), English secondary.
+Multi-language support for web and mobile applications using i18next with a configurable primary and fallback locale strategy (e.g., `es` primary / `en` secondary, or as defined by the target market).
 
 ## 📋 When to Use
 
 - Use when adding multi-language support to web or mobile
 - Use when localizing notification templates (email, SMS, push)
 - Use when formatting dates, currencies, or numbers per locale
-- Do NOT use before MVP is complete in primary language (Spanish)
+- Do NOT use before MVP is complete in the project's primary locale (e.g., `es` or `en`)
 
 ## 🚦 Hard Rules
 
@@ -34,7 +34,7 @@ Multi-language support for the application using i18next. Spanish is primary (Ve
 2. Read formatting patterns: [formatting.md](references/formatting.md)
 3. Run the checker to detect hardcoded strings:
    ```bash
-   node ./.opencode/skills/i18n-localization/scripts/check-hardcoded-strings.mjs
+   node 05-frontend/i18n-localization/scripts/check-hardcoded-strings.mjs
    ```
 
 ## 📚 References

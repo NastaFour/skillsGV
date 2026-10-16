@@ -36,7 +36,7 @@ Patterns for form validation with React Hook Form + Zod. Uses shared schemas fro
 3. Read shared schema convention: [shared-schemas.md](references/shared-schemas.md)
 4. Run the checker to verify forms use zodResolver + shared schemas:
    ```bash
-   node ./.opencode/skills/forms-validation-react/scripts/check-forms.mjs
+   node 05-frontend/forms-validation-react/scripts/check-forms.mjs
    ```
 
 ## 📚 References

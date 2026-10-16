@@ -36,7 +36,7 @@ Unifies push (Expo), email (Resend), and SMS (Twilio) into a single `Notificatio
 3. Read provider config: [provider-config.md](references/provider-config.md)
 4. Run the checker to verify no direct provider calls bypass NotificationService:
    ```bash
-   node ./.opencode/skills/notifications-multichannel/scripts/check-notifications.mjs
+   node 04-backend/notifications-multichannel/scripts/check-notifications.mjs
    ```
 
 ## 📚 References

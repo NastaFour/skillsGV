@@ -36,7 +36,7 @@ Smooth transitions between routes/pages. Covers web (React Router + AnimatePrese
 3. Read transition pattern guide: [transition-patterns.md](references/transition-patterns.md)
 4. Run the checker:
    ```bash
-   node ./.opencode/skills/page-transitions/scripts/check-transitions.mjs
+   node 05-frontend/page-transitions/scripts/check-transitions.mjs
    ```
 
 ## 📚 References

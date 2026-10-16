@@ -37,7 +37,7 @@ Illustrated vector animations for onboarding, empty states, success, and loading
 3. Read optimization: [lottie-optimization.md](references/lottie-optimization.md)
 4. Run the checker:
    ```bash
-   node ./.opencode/skills/lottie-animations/scripts/check-lottie.mjs
+   node 05-frontend/lottie-animations/scripts/check-lottie.mjs
    ```
 
 ## 📚 References

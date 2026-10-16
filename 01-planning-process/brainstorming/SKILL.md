@@ -52,7 +52,7 @@ override it:
 - **Architectural** — new projects, new subsystems, changes that
   restructure how components fit together or alter interfaces others
   depend on. Follow the full process: questions, approaches, sectioned
-  design, written spec, then the writing-plans skill.
+  design, written spec, then transition to PRD.md (idea-to-prd-express), DESIGN_SYSTEM.md (design-driven), or ODD task tracking (odd-workflow).
 
 When in doubt between two paths, take the heavier one. The ratchet is
 one-way: hidden complexity discovered mid-task upgrades the path —

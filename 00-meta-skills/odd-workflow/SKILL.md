@@ -17,7 +17,7 @@ The universal, disciplined protocol for software delivery across AI agents. Repl
 
 ## 🚫 ABSOLUTE BANS (Non-Negotiable)
 
-1. **NO WRITING BEFORE TRACKING**: For substantial work (2+ files or steps), NEVER touch a source code file before creating `odd/tasks/<feature>.md` and its Engram mirror under `odd/<feature>/tasks`.
+1. **NO WRITING BEFORE TRACKING**: For substantial/large work (where the resume test fails or risk is not contained), NEVER touch a source code file before creating `odd/tasks/<feature>.md` and its Engram mirror under `odd/<feature>/tasks`.
 2. **NO GUESSWORK ON PRODUCT DECISIONS**: Never guess unstated business logic. Ask exactly ONE focused question and STOP until answered.
 3. **NO VERBAL CLAIMS WITHOUT OBSERVED EVIDENCE**: Never output "it works" or mark a task complete without executing and observing the verification command output in the current session.
 4. **NO MONOLITHIC MULTI-TASK COMMITS**: Every task closes with its own atomic work-unit commit on the feature branch with tests and docs included.
@@ -33,7 +33,7 @@ The universal, disciplined protocol for software delivery across AI agents. Repl
 flowchart TD
   A[1. Authorize: Explicit user permission] --> B[2. Explore: CodeGraph & proportionate inspection]
   B --> C[3. Resolve Uncertainty: Max 1 question if blocked]
-  C --> D[4. Classify: 2+ non-trivial steps = Substantial]
+  C --> D[4. Classify: Understood + Contained risk + Resumable from diff?]
   D --> E[5. Track: odd/tasks/feature.md + Engram mirror BEFORE first write]
   E --> F[6. Implement: Task-by-task + TDD + Work-unit commits]
   F --> G[7. Close: Verification with observed output]
@@ -42,7 +42,7 @@ flowchart TD
 1. **Authorize**: Verify explicit authorization for code mutation. Audits and explorations remain read-only.
 2. **Explore**: Read existing codebase proportionately before designing or proposing code.
 3. **Resolve Uncertainty**: Ask at most ONE focused question if blocked by an unresolved product decision.
-4. **Classify**: Mark as *Substantial* if the change touches 2+ non-trivial files or has progress worth recovering.
+4. **Classify**: Size by ODD's 3 criteria (**Understood**, **Contained risk**, **Resumable from `git diff` alone**). Never classify by counting files, commands, or tests; mark as *Substantial/Large* when the resume test fails or multiple deliverables/sessions are involved.
 5. **Track before first write**: Create `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks`. Tell user in exactly one line: `"Created odd/tasks/<feature>.md with N tasks."`
 6. **Implement task-by-task**: Route each task (inline or delegated writer), apply TDD (RED -> GREEN), close with a work-unit commit on the feature branch, and record the commit hash in the feature doc.
 7. **Close & Verify**: Run all gates, report observed evidence, detail passed/skipped checks, and define next step.

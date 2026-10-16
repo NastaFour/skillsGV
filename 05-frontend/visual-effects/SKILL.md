@@ -38,7 +38,7 @@ The difference between "AI slop" and premium design. Covers glassmorphism (real 
 3. Read shadow/elevation system: [shadow-elevation.md](references/shadow-elevation.md)
 4. Run the checker to detect missing fallbacks:
    ```bash
-   node ./.opencode/skills/visual-effects/scripts/check-effects.mjs
+   node 05-frontend/visual-effects/scripts/check-effects.mjs
    ```
 
 ## 📚 References

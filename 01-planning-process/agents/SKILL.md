@@ -24,8 +24,8 @@ Cuando un asistente de IA asume el desarrollo de este proyecto, puede invocar y 
 |---|---|---|
 | **Diseñador de Arquitectura** | [`architecture-designer`](../../02-dev-roles/architecture-designer/SKILL.md) | Diseñar modelos de datos en Prisma, contratos de API REST, estructuras de carpetas en el monorepo y flujos de Socket.io. |
 | **Implementador de Características** | [`feature-implementer`](../../02-dev-roles/feature-implementer/SKILL.md) | Escribir código modular en TypeScript, crear controladores Express, hooks de React Native y controladores de base de datos. |
-| **Diseñador de Interfaces (Frontend)** | [`frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) | Maquetar pantallas con estética premium, esquemas de color HSL, micro-animaciones fluidas en carritos de compra y layouts responsivos. |
-| **Probador de Calidad (QA)** | [`qa-tester`](../../02-dev-roles/qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de pasarelas de pago. |
+| **Diseñador de Interfaces (Frontend)** | [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) | Maquetar pantallas con estética de nivel de estudio, tokens semánticos OKLCH/HSL, micro-interacciones fluidas y layouts responsivos. |
+| **Probador de Calidad (QA)** | [`qa-tester`](../../02-dev-roles/qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de flujos críticos. |
 | **Revisor de Código** | [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) | Auditar el código generado antes de confirmarlo, buscando violaciones de SOLID, código duplicado (DRY) y exceso de complejidad (KISS). |
 | **Verificador de Definición de Listo (DoD)** | [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) | Actuar como puerta de calidad definitiva, bloqueando o aprobando la finalización de fases en base a auditorías estrictas de cumplimiento. |
 | **Depurador Experto** | [`systematic-debugging`](../../02-dev-roles/systematic-debugging/SKILL.md) | Rastrear y solventar bugs complejos, fugas de sockets, bloqueos transaccionales de PostgreSQL y cuellos de botella en APIs. |
@@ -64,21 +64,21 @@ flowchart TD
 
 ## 🧯 Delegation Triggers (cuándo delegar, cuándo reauditar)
 
-Gentle-AI keeps the parent/orchestrator thread thin. Once a task stops being small, **delegation or an explicit SDD phase boundary is expected rather than optional**. Use these triggers to know when to stop monologuing and hand off:
+Gentle-AI keeps the parent/orchestrator thread thin. Once a task stops being small or hits an ODD delegation trigger, **delegation or tracked ODD task boundaries (`odd/tasks/<feature>.md`) are expected rather than optional**. Use these triggers to know when to stop monologuing and hand off:
 
 | Trigger | Expected behavior |
 |---|---|
-| Reading 4+ files to understand a flow | Delegate exploration or run an exploration phase |
-| Touching 2+ non-trivial files | Use one writer or require fresh review before completion |
-| Commit, push, or PR after code changes | Run fresh review unless the diff is trivial docs/text |
+| Understanding exceeds inline batch budget (>3 calls / >10k tokens / >5 lookups) | Delegate one read-only explorer (Mapping trigger) |
+| Parallel independent units with disjoint edit surfaces, or ~150k context backstop | Delegate bounded writer(s) per unit (Writer trigger) |
+| High-risk change (data migrations, auth/security, public contracts, concurrency, CI/deploy) | Run an independent verifier after checks (Verification trigger) |
 | Wrong cwd, worktree/git accident, merge recovery, confusing test/env issue | Stop and run a fresh audit before continuing |
-| Long monolithic session with accumulating complexity | Pause and delegate, re-plan, or justify why not |
+| Long monolithic session with accumulating complexity | Pause and delegate, track in `odd/tasks/<feature>.md`, or justify why not |
 | Adversarial review of diffs, conflicts, PR readiness, or incidents | Use fresh context when the agent platform supports it |
 
-The goal is **not ceremony**. The goal is to avoid accidental chaos while preserving **one responsible orchestrator and one writer thread**. Use [`kill-switches`](../../08-devops/kill-switches/SKILL.md) to abort when a loop exceeds budget.
+The goal is **not ceremony**. The goal is to avoid accidental chaos while preserving **one responsible orchestrator and clear edit surfaces**. Use [`kill-switches`](../../08-devops/kill-switches/SKILL.md) to abort when a loop exceeds budget.
 
 ### When NOT to delegate
-- Single-file edit under ~40 lines with a clear spec → finish in-place, no delegation.
+- Contained, understood task that is resumable from `git diff` alone → finish inline, no writer delegation (file count alone never forces delegation).
 - Cosmetic / docs / formatting → finish in-place.
 - A task so small that delegation setup costs more than the task itself.
 
@@ -91,6 +91,6 @@ delegate → [`judgment-day`](../../02-dev-roles/judgment-day/SKILL.md) (paralle
 
 al presentar esta propuesta a un cliente, incluir la sección **"Agentes de Desarrollo de Software"** (o "Fábrica de Software Automatizada") aporta un valor diferencial gigante frente a programadores independientes o agencias tradicionales:
 
-* **Ingeniería sin Errores Humanos:** Demuestra al cliente que el software no lo programa una sola mente que puede cometer omisiones. Se programa a través de una **factoría de 9 agentes virtuales especializados** donde cada línea de código es auditada de forma cruzada en cuanto a seguridad de pagos, robustez ante caídas y rendimiento de base de datos.
-* **Garantía de Calidad Permanente:** Puedes prometer que la aplicación nunca sufrirá de caídas por falta de stock mal procesada o fraudes de Pago Móvil, ya que el agente de QA y el DoD Checker prueban y bloquean cualquier regresión técnica automáticamente antes de subir la app a producción.
+* **Ingeniería sin Errores Humanos:** Demuestra al cliente que el software no lo programa una sola mente que puede cometer omisiones. Se programa a través de una **factoría de 9 agentes virtuales especializados** donde cada línea de código es auditada de forma cruzada en cuanto a seguridad transaccional, robustez ante caídas y rendimiento de base de datos.
+* **Garantía de Calidad Permanente:** Puedes prometer que la aplicación estará protegida frente a condiciones de carrera, inconsistencias de estado o vulnerabilidades en pasarelas de pago, ya que el agente de QA y el DoD Checker prueban y bloquean cualquier regresión técnica automáticamente antes de subir la app a producción.
 * **Trazabilidad y Documentación de Nivel Corporativo:** El cliente recibirá un manual de operaciones de su software completamente estructurado y actualizado en tiempo real por un agente documentador experto, facilitando futuras expansiones del negocio.

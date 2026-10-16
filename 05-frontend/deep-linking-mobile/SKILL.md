@@ -34,7 +34,7 @@ Deep linking for Expo. Enables sharing booking links, opening specific provider 
 2. Read routing patterns: [routing-patterns.md](references/routing-patterns.md)
 3. Run the checker to verify deep link config:
    ```bash
-   node ./.opencode/skills/deep-linking-mobile/scripts/check-deep-links.mjs
+   node 05-frontend/deep-linking-mobile/scripts/check-deep-links.mjs
    ```
 
 ## 📚 References

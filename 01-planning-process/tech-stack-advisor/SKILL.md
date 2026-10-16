@@ -17,7 +17,7 @@ This skill acts as an architectural advisor. It guides the AI to propose, select
 The developer (Nasta) is highly proficient in the following domains. **ONLY** select technologies from this list when architecting solutions, unless the user explicitly asks to explore something completely new:
 
 ### 🎨 Frontend
-- **Frameworks**: [React / Vite](../../05-frontend/react-vite/SKILL.md), [Next.js](../../05-frontend/nextjs/SKILL.md)
+- **Frameworks**: [React / Vite](../../05-frontend/react-vite/SKILL.md), [Next.js](../../05-frontend/nextjs-15/SKILL.md)
 - **Languages**: [TypeScript](../../06-code-quality/typescript/SKILL.md)
 - **Styling**: [Tailwind CSS](../../05-frontend/tailwind-4/SKILL.md) (or Vanilla CSS depending on instructions)
 
@@ -38,7 +38,7 @@ The developer (Nasta) is highly proficient in the following domains. **ONLY** se
 
 ### 📱 Apps Multiplataforma
 - **Mobile Native**: [React Native](../../05-frontend/react-native/SKILL.md), [Expo](../../05-frontend/expo-production-auditor/SKILL.md)
-- **Desktop**: [Electron.js](../../05-frontend/electronjs/SKILL.md)
+- **Desktop**: [Electron.js](../../05-frontend/electron/SKILL.md)
 - **Web App**: [PWA / Capacitor](../../05-frontend/pwa-capacitor/SKILL.md)
 
 ## Tech Selection Guidelines

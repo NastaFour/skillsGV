@@ -40,7 +40,7 @@ The difference between "dead" UI and "alive" UI. A catalog of copy-paste micro-i
 4. Read advanced effects (magnetic cursor, count pulse): [advanced-effects.md](references/advanced-effects.md)
 5. Run the checker to detect dead buttons:
    ```bash
-   node ./.opencode/skills/micro-interactions/scripts/check-interactions.mjs
+   node 02-dev-roles/micro-interactions/scripts/check-interactions.mjs
    ```
 
 ## 📚 References

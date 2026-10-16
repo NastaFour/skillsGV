@@ -35,7 +35,7 @@ Unifies data shapes across API endpoints. Prevents bugs where the frontend acces
 1. Consult the envelope convention: [envelope-convention.md](references/envelope-convention.md)
 2. Run the ID consistency checker:
    ```bash
-   node ./.opencode/skills/api-response-normalizer/scripts/check-id-consistency.mjs
+   node 04-backend/api-response-normalizer/scripts/check-id-consistency.mjs
    ```
 3. Fix any ID mismatch (e.g., `req.params.id` used in `where: { userId: id }`)
 4. Apply helper functions for nested/flat field access

@@ -36,7 +36,7 @@ Patterns for scheduled and asynchronous jobs using BullMQ + Redis. Covers remind
 2. Read the BullMQ setup: [bullmq-setup.md](references/bullmq-setup.md)
 3. Run the checker to verify jobs have retry + idempotency:
    ```bash
-   node ./.opencode/skills/background-jobs-queues/scripts/check-jobs.mjs
+   node 04-backend/background-jobs-queues/scripts/check-jobs.mjs
    ```
 
 ## 📚 References

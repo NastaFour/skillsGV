@@ -298,6 +298,12 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
     const name = readSkillName(root, path);
     const prev = prevSkills.get(name);
     const deprecated = readSkillDeprecated(root, path);
+    let note = prev ? (prev.note ?? null) : (notes.get(name) ?? null);
+    if (deprecated && note && !/DEPRECATED/i.test(note)) {
+      note = formatDescriptionNote(readSkillDescription(root, path));
+    } else if (name === "payments" && note && /bcv-integration/i.test(note)) {
+      note = null;
+    }
     return {
       name,
       path,
@@ -305,7 +311,7 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
       tier: prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full"),
       tier0: tier0.has(name),
       deprecated,
-      note: prev ? (prev.note ?? null) : (notes.get(name) ?? null),
+      note,
       autoInvoke: deprecated ? false : (prev ? Boolean(prev.autoInvoke) : autoInvoke.has(name)),
     };
   });

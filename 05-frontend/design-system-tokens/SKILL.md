@@ -40,10 +40,11 @@ The foundation of any non-generic visual system. Without tokens, every component
    ```bash
    node 05-frontend/design-system-tokens/scripts/check-tokens.mjs
    ```
-5. Set up tokens in your project (`DESIGN_SYSTEM.md`, CSS variables, or Tailwind config)
+5. Set up tokens in your project (`DESIGN_SYSTEM.md` using [design-system-template.md](../design-driven/references/design-system-template.md), CSS variables, or Tailwind config)
 
 ## 📚 References
 
+- [Canonical `DESIGN_SYSTEM.md` Template](../design-driven/references/design-system-template.md) — unified template for tokens, chassis, and UI rules
 - [Token Taxonomy](references/token-taxonomy.md) — all token categories with examples
 - [Color Scales](references/color-scales.md) — HSL/OKLCH scale generation, semantic tokens
 - [Motion Tokens](references/motion-tokens.md) — duration, easing, stagger scales

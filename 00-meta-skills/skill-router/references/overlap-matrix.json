@@ -23,7 +23,7 @@
       "id": "hybrid-oklch-theme",
       "canonical": "oklch-theme-injector",
       "members": ["oklch-theme-injector"],
-      "note": "Grupo unitario de delimitación: oklch-theme-injector complementa design-system-tokens (taxonomía HSL) añadiendo la capa de color perceptivo OKLCH/OKHSL. Sus triggers (oklch, perceptual color, color space) evitan falsos primarios contra design-system-tokens."
+      "note": "Grupo unitario de delimitación: oklch-theme-injector complementa design-system-tokens (tokens semánticos CSS OKLCH/HSL) añadiendo la capa de color perceptivo OKLCH/OKHSL. Sus triggers (oklch, perceptual color, color space) evitan falsos primarios contra design-system-tokens."
     },
     {
       "id": "hybrid-motion-video",

@@ -15,7 +15,7 @@ Captures a real UI component, section, or page pattern from a live source throug
 
 ## Activation Contract
 
-Run when the user wants to reuse an existing component or UI pattern from another site or design file. Do NOT use for brand-new designs from scratch (that is `frontend-design` / `frontend-designer`).
+Run when the user wants to reuse an existing component or UI pattern from another site or design file. Do NOT use for brand-new designs from scratch (that is `frontend-design`).
 
 ## Hard Rules
 

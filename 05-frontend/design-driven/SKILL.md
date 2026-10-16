@@ -31,7 +31,7 @@ Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
 | D1 | design-brief | Objetivo, audiencia, moodboard de referencias visuales (imágenes vía Antigravity/od), restricciones (tokens, stack, a11y) | strong | frontend-design, brainstorming |
 | **D1b** | **Cuestionario de Unicidad** | Design DNA (3 P's, chasis arquetípico, diales pre-calibrados, 3 reglas generativas mecánicas, referencias, firma, anti-slop) | strong | taste-skill, impeccable (ver F1) |
 | D2 | design-explore | Auditoría visual de la UI actual + inventario de componentes + problemas | strong | interface-design, web-design-guidelines |
-| D3 | design-system | Tokens (HSL/OKLCH + dark, tipografía, 8pt, elevación, motion) + primitivas | strong | design-system-tokens, oklch-theme-injector, tailwind-4 |
+| D3 | design-system | **`DESIGN_SYSTEM.md`** canónico ([plantilla](references/design-system-template.md)): tokens semánticos (OKLCH/HSL + dark, tipografía, 8pt, elevación, motion) + primitivas | strong | design-system-tokens, oklch-theme-injector, tailwind-4 |
 | D4 | design-prototype | Prototipo de 1-3 pantallas clave (HTML/React o **od**) | flash + od | open-design, interface-design, micro-interactions |
 | D5 | design-handoff | Spec visual TEXTUAL + assets exportados | strong | micro-interactions, motion-accessibility, technical-writer |
 | D6 | design-review | Judgment Day visual: 2 jueces ciegos contra el Design DNA | 2× strong | judgment-day, ux-auditor-agent |
@@ -56,9 +56,10 @@ Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligat
 - **Tras D4 prototype**: 1 crítica guiada — "¿qué 3 cosas cambiarías del prototipo?" (reacciona, no diseña).
 - **Tras D5 handoff**: aprobación explícita antes de implementar.
 
-## F3 · El artefacto Design DNA
+## F3 · El artefacto canónico `DESIGN_SYSTEM.md` y Design DNA
 
-- Cada respuesta se consolida en **design-artifacts/<project>/design-dna.md** con los campos:
+- El artefacto primario y fuente de verdad canónica del proyecto es **`DESIGN_SYSTEM.md`** en la raíz del repositorio, estructurado según la plantilla oficial [**`references/design-system-template.md`**](references/design-system-template.md) (con **`design-artifacts/<project>/design-dna.md`** soportado como artefacto complementario o de compatibilidad retroactiva).
+- Consolida tanto los tokens semánticos CSS (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) como los campos del Design DNA:
   - `persona` / `dolor` / `promesa`
   - `archetype`: `{name, preset, physics_spring, css_fallback}`
   - `generative_rules`: `[rule1_layout, rule2_surface, rule3_type_scale]`
@@ -71,7 +72,7 @@ Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligat
   - `bans[]`
   - `heartbeat_screen`
 - Se persiste en Engram con topic key **design/<project>/dna**.
-- **D6 evalúa contra el DNA**: ¿tiene la firma elegida? ¿cumple las 3 reglas generativas? ¿evita faux-density y TODOS los anti-slop? ¿parece un dashboard genérico? — respuesta textual con evidencia. Si falla → vuelve a D3/D4 (máx 2 rondas).
+- **D6 evalúa contra `DESIGN_SYSTEM.md` / Design DNA**: ¿tiene la firma elegida? ¿cumple las 3 reglas generativas? ¿evita faux-density y TODOS los invariantes anti-slop? ¿parece un dashboard genérico? — respuesta textual con evidencia. Si falla → vuelve a D3/D4 (máx 2 rondas).
 
 ## F4 · Modos y reglas transversales
 

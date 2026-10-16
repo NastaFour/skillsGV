@@ -33,7 +33,7 @@ Prevents the bug where an auth rate limiter (5 req/15min) is applied to ALL auth
 1. Consult the tier table to assign limiters: [tier-table.md](references/tier-table.md)
 2. Run the checker to detect shared limiters:
    ```bash
-   node ./.opencode/skills/rate-limiting-design/scripts/check-limiters.mjs
+   node 04-backend/rate-limiting-design/scripts/check-limiters.mjs
    ```
 3. Fix any shared limiter by splitting into the appropriate tier
 4. Re-run to confirm

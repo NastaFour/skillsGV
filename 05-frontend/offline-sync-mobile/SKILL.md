@@ -33,13 +33,13 @@ Offline-first patterns for Expo mobile. Bookings created offline are queued and 
 2. Read conflict resolution: [conflict-resolution.md](references/conflict-resolution.md)
 3. Run the checker to verify sync implementation:
    ```bash
-   node ./.opencode/skills/offline-sync-mobile/scripts/check-offline-sync.mjs
+   node 05-frontend/offline-sync-mobile/scripts/check-offline-sync.mjs
    ```
 
 ## 📚 References
 
 - [Sync Patterns](references/sync-patterns.md) — local queue + background sync
 - [Conflict Resolution](references/conflict-resolution.md) — 409 handling + user choice
-- [`state-management`](../state-management/SKILL.md) — Zustand persist for offline store
+- [`zustand-5`](../zustand-5/SKILL.md) — Zustand persist for offline store
 - [`booking-scheduling-domain`](../../04-backend/booking-scheduling-domain/SKILL.md) — server-side conflict check
 - [`background-jobs-queues`](../../04-backend/background-jobs-queues/SKILL.md) — retry strategy

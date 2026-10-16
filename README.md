@@ -180,8 +180,8 @@ The catalog contains **231 skills** distributed across structured domains:
 | Category | Path | Key Skills & Focus |
 |---|---|---|
 | **Meta-Skills** | `00-meta-skills/` | `skill-router`, `skill-validator`, `skill-loader`, `skill-creator`, `agent-roster`, `odd-workflow` |
-| **Planning & Process** | `01-planning-process/` | `project-tracker`, `engram-integration`, `brainstorming`, `session-notes`, `tech-escalation-adr` |
-| **Dev Roles** | `02-dev-roles/` | `code-reviewer`, `expert-debugger`, `judgment-day`, `security-audit`, `dod-checker`, `archify` |
+| **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr` |
+| **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `dod-checker` |
 | **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `api-ai-billing`, `prompt-engineering` |
 | **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
 | **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `angular-core`, `tailwind-4`, `react-native`, `impeccable`, `taste-skill` |

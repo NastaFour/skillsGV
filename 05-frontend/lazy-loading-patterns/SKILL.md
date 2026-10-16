@@ -34,7 +34,7 @@ Prevents bug #9 where `loadStripe()` was called at module level in `StripeChecko
 1. Consult the lazy patterns guide: [lazy-patterns.md](references/lazy-patterns.md)
 2. Run the checker to detect module-level heavy loads:
    ```bash
-   node ./.opencode/skills/lazy-loading-patterns/scripts/check-module-level-loads.mjs
+   node 05-frontend/lazy-loading-patterns/scripts/check-module-level-loads.mjs
    ```
 3. Fix by wrapping in a singleton lazy or moving to a hook
 4. Re-run to confirm

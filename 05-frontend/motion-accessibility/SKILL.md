@@ -39,7 +39,7 @@ Ensures animations are accessible (respect reduced-motion) and performant (60fps
 3. Read audit checklist: [audit-checklist.md](references/audit-checklist.md)
 4. Run the checker:
    ```bash
-   node ./.opencode/skills/motion-accessibility/scripts/check-motion-a11y.mjs
+   node 05-frontend/motion-accessibility/scripts/check-motion-a11y.mjs
    ```
 
 ## 📚 References

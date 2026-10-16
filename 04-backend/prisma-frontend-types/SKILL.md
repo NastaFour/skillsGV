@@ -34,7 +34,7 @@ Maps Prisma models to frontend-safe TypeScript types. Prevents bug #6 where `Use
 1. Consult the type mapping rules: [type-mapping-rules.md](references/type-mapping-rules.md)
 2. Generate types from schema.prisma:
    ```bash
-   node ./.opencode/skills/prisma-frontend-types/scripts/generate-frontend-types.mjs
+   node 04-backend/prisma-frontend-types/scripts/generate-frontend-types.mjs
    ```
 3. Import generated types in `packages/shared-types` and frontend components
 4. Run `pnpm --filter @scope/web typecheck` to verify

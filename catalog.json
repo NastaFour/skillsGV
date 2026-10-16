@@ -138,7 +138,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD implementation with apply-progress merge",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -148,7 +148,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD archive: sync delta specs and close the change",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -158,7 +158,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD technical design and architecture approach",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -168,7 +168,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD exploration before committing to a change",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -178,7 +178,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD init: stack/testing capabilities, registry and persistence",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -188,7 +188,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD walkthrough onboarding on the real codebase",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -198,7 +198,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← thin SDD orchestrator: routes phases without executing them, DAG, auto/interactive modes, gatekeeper, dedup",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -208,7 +208,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD change proposal: intent, scope, approach",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -218,7 +218,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD research: source-backed evidence lanes before propose",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -228,7 +228,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD delta specs with requirements and scenarios",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -238,7 +238,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD task breakdown with review workload forecast",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -248,7 +248,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← SDD verification against specs with compliance matrix",
+      "note": "← DEPRECATED. Use odd-workflow instead.",
       "autoInvoke": false
     },
     {
@@ -1128,7 +1128,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": false,
-      "note": "← `references/bcv-integration.md`, `pago-movil-flows.md`, `cashea-bnpl.md`",
+      "note": null,
       "autoInvoke": false
     },
     {
@@ -2378,7 +2378,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
-      "note": "← `references/sdd-methodology.md`, `references/templates.md`",
+      "note": "← DEPRECATED",
       "autoInvoke": false
     }
   ]

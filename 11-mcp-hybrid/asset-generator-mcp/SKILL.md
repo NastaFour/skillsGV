@@ -30,7 +30,7 @@ Run when the user wants generated image assets at scale with a coherent style (i
 |---|---|
 | Single icon/logo | Generate 3+ directions from the same brief, pick one, refine |
 | Full asset pack | Define the set list + shared style, generate per asset, batch export |
-| Precise geometric SVG needed | Hand-code SVG with `frontend-designer` instead of generation |
+| Precise geometric SVG needed | Hand-code SVG with `frontend-design` instead of generation |
 
 ## Execution Steps
 
@@ -49,4 +49,4 @@ Run when the user wants generated image assets at scale with a coherent style (i
 ## References
 
 - [`05-frontend/design-system-tokens`](../../05-frontend/design-system-tokens/SKILL.md) — palette and token alignment for generated assets.
-- [`02-dev-roles/frontend-designer`](../../02-dev-roles/frontend-designer/SKILL.md) — hand-coded SVG when generation is not the right tool.
+- [`02-dev-roles/frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) — hand-coded SVG when generation is not the right tool.

@@ -34,7 +34,7 @@ Generate and export reports: PDF receipts, CSV revenue reports, booking summarie
 2. Read generation patterns: [generation-patterns.md](references/generation-patterns.md)
 3. Run the checker to verify report endpoints are async:
    ```bash
-   node ./.opencode/skills/reports-exports/scripts/check-reports.mjs
+   node 04-backend/reports-exports/scripts/check-reports.mjs
    ```
 
 ## 📚 References

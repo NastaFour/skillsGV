@@ -1,6 +1,6 @@
 ---
 name: sdd-onboard
-description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar catalog-usage. Walk users through the SDD workflow on the real codebase. Trigger: orchestrator launches onboarding for the full SDD cycle."
+description: "DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Walk users through the SDD workflow on the real codebase. Trigger: orchestrator launches onboarding for the full SDD cycle."
 license: MIT
 allowed-tools: Read Write Edit Bash(node:*)
 metadata:

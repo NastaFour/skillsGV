@@ -34,7 +34,7 @@ Audits consistency between the auth store, App.tsx, the API, and cookies/tokens.
 
 1. Run the audit script to detect anti-patterns:
    ```bash
-   node ./.opencode/skills/auth-flow-audit/scripts/audit-auth.mjs
+   node 02-dev-roles/auth-flow-audit/scripts/audit-auth.mjs
    ```
 2. Review the audit checklist for manual checks: [audit-checklist.md](references/audit-checklist.md)
 3. Fix each anti-pattern found
