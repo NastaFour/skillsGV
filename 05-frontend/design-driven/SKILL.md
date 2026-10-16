@@ -1,13 +1,13 @@
 ---
 name: design-driven
-description: "Trigger: design driven, DDD, pipeline de diseno, design-driven development, disenar pantalla, rediseno, design system, brief de diseno, prototipo formal, entrevista de diseno, design DNA. Formal design pipeline (D1 brief → D1b uniqueness questionnaire → D2 explore → D3 design-system → D4 prototype → D5 handoff → D6 design-review) — a unique design is INTERVIEWED, not drawn. Decision gates + Design DNA artifact + anti-AI-slop rule."
+description: "Trigger: DESIGN_SYSTEM.md, design system, sistema de diseno, design driven, DDD, pipeline de diseno, design-driven development, disenar pantalla, rediseno, design DNA. Formal design pipeline that outputs the canonical DESIGN_SYSTEM.md specification. Decision gates + Design DNA + anti-AI-slop rule."
 license: MIT
 allowed-tools: Read Task Bash(git:*,gh:*,od:*,node:*)
 metadata:
   author: gentleman-programming
   version: "2.1.0"
   delegate_only: true
-  trigger: ["design driven", "pipeline de diseno", "design-driven development", "disenar pantalla", "rediseno", "design system", "brief de diseno", "prototipo formal", "entrevista de diseno", "design dna"]
+  trigger: ["DESIGN_SYSTEM.md", "design_system.md", "sistema de diseno", "design driven", "pipeline de diseno", "design-driven development", "disenar pantalla", "rediseno", "design system", "brief de diseno", "prototipo formal", "entrevista de diseno", "design dna"]
 ---
 
 # design-driven — Pipeline de Diseño formal (DDD)

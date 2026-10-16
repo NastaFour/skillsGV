@@ -5,138 +5,104 @@ license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["idea to prd", "prd express", "fast prd", "20 minute prd", "idea a prd", "briefing express"]
+  trigger: ["PRD.md", "product requirements document", "crear PRD", "idea to prd", "prd express", "fast prd", "20 minute prd", "idea a prd", "briefing express"]
   scope: [global, project]
-  version: "1.0.1"
+  version: "2.0.0"
   time_budget_sec: 1200
 ---
 
-# Idea → PRD Express (20 min)
+# Idea → PRD Express (Generador Canónico de PRD.md)
 
-Modo comprimido para **decisiones técnicas concretas** que no necesitan el flujo completo de múltiples tareas ODD. Mueve el briefing, spec y PRD a una sola sesión tight.
+Modo ágil para estructurar requerimientos de producto y sintetizarlos en el artefacto canónico **`PRD.md`** en la raíz del proyecto.
 
-> **Complementa** a `odd-workflow`: úsalo cuando la planificación completa sea overkill (1 decisión técnica puntual, no una feature). Si la decisión se complica → escala a ODD completo.
+> **Integración ODD**: Genera la especificación funcional canónica (`PRD.md`) que alimenta el flujo de pantallas (`APP_FLOW.md`), la especificación técnica (`TRD.md`) y las tareas rastreadas en `odd/tasks/<feature>.md`.
 
 ## When to Use
 
-- ✅ Decisión técnica única (elegir librería, patrón de estado, esquema de DB para una tabla).
-- ✅ Spike: validar factibilidad antes de comprometerse.
-- ✅ "De idea a PRD en 20 min" — cuando el usuario tiene una idea y requiere un PRD rápido para decidir.
-- ✅ ADR que justifica R&D con compressed paths.
-- ❌ **Do NOT use** para features que tocan 2+ dominios o 5+ archivos → usa `odd-workflow`.
-- ❌ **Do NOT use** para decisiones de arquitectura mayor (nuevo servicio, nueva DB) → [`tech-escalation-adr`](../tech-escalation-adr/SKILL.md).
+- ✅ Generación del documento maestro de requerimientos de producto (`PRD.md`).
+- ✅ Decisión técnica o funcional rápida: pasar de idea a PRD estructurado en 20 minutos.
+- ✅ Spike: validar factibilidad y definir criterios de aceptación verificables antes de codificar.
+- ❌ **Do NOT use** para arquitectura técnica profunda de sistemas (usar `architecture-designer` para `TRD.md`).
+- ❌ **Do NOT use** para modelado de pantallas y navegación (usar `app-flow-spec` para `APP_FLOW.md`).
 
 ## The 20-Minute Budget
 
-`metadata.time_budget_sec: 1200` (20 min) es **declarativo** — la skill avisa
-del budget pero el **abort real requiere un orchestrator externo**
-(`odd-workflow`, `judgment-day`, o el host agent). Esta skill no mata
-el proceso al llegar al límite; el router y el orchestrator deben:
-1. Surfacear el budget al cargar la skill (vía `skill-router --query`).
-2. Decidir a los 18 min si abortar, extender, o escalar a ODD full (`odd-workflow`).
-3. Si el host no provee orchestrator, este budget es solo informativo.
-
-Express mode es **cronometrado**. Si pasas los 20 min sin PRD → escala a `odd-workflow`.
-
 | Min | Phase | Output |
 |---|---|---|
-| 0-3 | **Brief** | Una frase de subject + una de target user + una de "what does success look like" |
-| 3-8 | **Constraints surface** | Lista hardcoded de constraints (stack fijo, integraciones, performance budget, security) |
-| 8-14 | **Options sketch** | 2-3 opciones con trade-offs explícitos + recomendación |
-| 14-18 | **Spec delta** | Qué cambia en el codebase si se acepta la opción recomendada (archivos touch, migrations, API surface) |
-| 18-20 | **PRD one-pager** | Markdownpegable que el humano puede leer y aprobar/rechazar en 2 min |
+| 0-3 | **Brief** | Una frase de objetivo + una de persona objetivo + una de criterio observable de éxito |
+| 3-8 | **Constraints surface** | Lista de restricciones técnicas, seguridad y presupuesto operativo |
+| 8-14 | **Options sketch** | 2-3 opciones de solución con trade-offs explícitos y recomendación fundamentada |
+| 14-18 | **Spec delta** | Alcance de cambios (requisitos funcionales `FR-01..FR-n`, APIs y contratos) |
+| 18-20 | **PRD output** | Generación de `PRD.md` siguiendo la plantilla canónica [references/prd-template.md](references/prd-template.md) |
 
 ## Phase 1 — Brief (3 min)
 
 Responde en texto, **no más de 3 frases**:
 
 ```
-Idea:      <qué se quiere construir/decidir>
-Target:    <para quién / qué sistema afecta>
+Idea:      <qué se quiere construir o resolver>
+Target:    <para quién / qué roles o sistemas afecta>
 Success:   <cómo se ve el "done" — observable, no ambiguo>
 ```
 
 Reglas:
-- Si no puedes expresar la idea en una frase, la idea no está lista para PRD — escala a SDD.
-- "Success" debe ser observable ("latencia < 200ms en p95", no "rápido").
-- No te permite hacer brainstorming largo — el reloj corre.
+- Si no puedes expresar la idea en una frase, aclárala primero con `brainstorming`.
+- "Success" debe ser observable ("latencia < 200ms en p95", "tasa de error < 0.1%").
 
 ## Phase 2 — Constraints surface (5 min)
 
-Lista **hardcoded** (no Allowed myself options todavía):
+Lista de restricciones y condiciones de contorno:
 
 ```
-Stack fijo:    Node/Express/Prisma/PostgreSQL + React/Vite/Tailwind + Expo
-Forbidden:     any, npm/npx, secrets en código, LocalStorage para tokens
-Integraciones: <existente: socketio, engram, etc.>
-Budget:        <latencia, bundle size, DB queries>
-Security:      <Zod en payloads, httpOnly cookies, etc.>
+Stack:         <el del proyecto o propuesto según tech-stack-advisor>
+Forbidden:     any, secrets en código, bypass de seguridad, datos falsos
+Integraciones: <APIs de terceros, eventos, colas, base de datos>
+Budget:        <latencia p95, bundle size, límites de concurrencia>
+Security:      <validación de esquemas con Zod, tokens httpOnly, auth>
 ```
 
-Si una constraint es ambigua → **pregunta al humano**, no inventes. El express mode falla cuando se asumen constraints.
+Si una restricción es ambigua → **pregunta al humano**, no inventes.
 
 ## Phase 3 — Options sketch (6 min)
 
-Dos o tres opciones **máximo**. Una sola opción no es una decisión, es un diktat. Cuatro+ es análisis paralysis.
-
-Para cada opción:
+Dos o tres opciones **máximo**. Para cada opción:
 
 ```
 Option A: <nombre>
-  What:     <qué cambiar / adoptar>
-  Pros:     <2-3 bullets concretos>
-  Cons:     <2-3 bullets concretos — incluye "no resuelve X">
-  Cost:     <horas estimadas / dependencias nuevas / migraciones>
-  Risk:     <bajo|medio|alto> + una frase de por qué
+  What:     <qué enfoque adoptar>
+  Pros:     <2-3 puntos fuertes concretos>
+  Cons:     <2-3 desventajas o trade-offs>
+  Cost:     <tiempo estimado / dependencias / migraciones>
+  Risk:     <bajo|medio|alto> + justificación
 ```
 
-Después de las opciones, **recomienda una** con reasoning. El humano decide, pero tú no te escondas — si no das recomendación, no agregas valor.
+Recomienda una opción justificando por qué es superior para el objetivo.
 
 ## Phase 4 — Spec delta (4 min)
 
-Si la opción recomendada se acepta, **qué cambia en el codebase**:
+Identifica los requisitos funcionales (`FR-01..FR-n`) y no funcionales (`NFR-01..NFR-n`):
 
 ```
-Files touched:   <lista de archivos nuevos/modificados>
-Migrations:      <si toca DB>
-API surface:     <endpoints nuevos/cambiados>
-Types:           <Zod schemas / TS types nuevos>
-Tests:           <qué cubrir — ver testing-patterns o playwright>
+FRs:             <lista de requerimientos numerados y verificables>
+Files touched:   <lista de componentes, rutas o módulos afectados>
+Migrations:      <si toca esquemas de persistencia>
+API surface:     <contratos de endpoints o eventos>
 ```
 
-No escribas código todavía — esto es **scope del cambio**, no implementación.
+## Phase 5 — PRD Canónico (`PRD.md`) (2 min)
 
-## Phase 5 — PRD one-pager (2 min)
+Genera el archivo canónico **`PRD.md`** en la raíz del proyecto basándote en la plantilla:
+👉 [Plantilla Canónica de PRD](references/prd-template.md)
 
-Markdownpegable que el humano lee en < 2 min y responde "go" / "no go" / "changeme X":
+Estructura requerida de `PRD.md`:
+1. **Resumen Ejecutivo**: problema, valor y métricas de éxito.
+2. **Personas y Dolores**: perfiles de usuario y necesidades insatisfechas.
+3. **Alcance**: `IN-SCOPE` y `OUT-OF-SCOPE`.
+4. **Requisitos Funcionales**: `FR-01..FR-n` numerados con criterios de aceptación verificables.
+5. **Requisitos No Funcionales**: `NFR-01..NFR-n` (rendimiento, seguridad, a11y).
+6. **Criterios de Aceptación Globales**: Definition of Done.
+7. **Riesgos y Preguntas Abiertas**: supuestos explícitos.
 
-```markdown
-# PRD — <Idea>
-
-## Problem
-<1-2 frases del Brief>
-
-## Constraints
-- <las del Phase 2>
-
-## Recommendation
-**Option <X>** because <reasoning>.
-
-## Scope
-- Files: <lista>
-- Migrations: <sí/no + cuáles>
-- API: <cambios>
-- Tests: <cobertura>
-
-## Cost / Risk
-- ~<horas> horas · Risk: <bajo/medio/alto>
-
-## Open questions
-1. <pregunta al humano si queda alguna>
-
----
-Approve? (go / no go / change X)
-```
 
 ## Rules
 

@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **230 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -63,12 +63,13 @@ Catálogo de **230 skills** compatible con [agentskills.io](https://agentskills.
 | humanizer | [01-planning-process/humanizer/SKILL.md](01-planning-process/humanizer/SKILL.md) ← Elimina clichés sintéticos y patrones robóticos de IA para recuperar un tono hu… |
 | storybrand-messaging | [01-planning-process/storybrand-messaging/SKILL.md](01-planning-process/storybrand-messaging/SKILL.md) ← Estructuración de narrativa de producto y mensajería usando el marco StoryBrand… |
 | content-studio | [01-planning-process/content-studio/SKILL.md](01-planning-process/content-studio/SKILL.md) ← Generación modular de piezas multicanal (artículos, hilos, notas) desde una ide… |
+| app-flow-spec | [01-planning-process/app-flow-spec/SKILL.md](01-planning-process/app-flow-spec/SKILL.md) ← Generates the canonical APP_FLOW.md specification: route maps, role permissions… |
 
 ## 02-dev-roles
 
 | Skill | Path |
 |---|---|
-| architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Design comprehensive technical architectures for new projects or major features |
+| architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Generates the canonical TRD.md (Technical Requirements Document): module archit… |
 | code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, professional-grade code review (Pull Request simulation) on… |
 | dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the "Definition of Done" (DoD) |
 | expert-debugger | [02-dev-roles/expert-debugger/SKILL.md](02-dev-roles/expert-debugger/SKILL.md) ← DEPRECATED. Use systematic-debugging instead. |

@@ -68,14 +68,32 @@ flowchart TD
 - **Status**: IN PROGRESS
 - **Branch**: feat/<feature-name>
 - **Engram Topic**: odd/<feature-name>/tasks
+- **Canonical References**: PRD.md (FR-01..FR-n) | APP_FLOW.md (Routes) | TRD.md (Traceability Matrix) | DESIGN_SYSTEM.md (Tokens/Chassis)
 
 ## Objective
 Concrete, testable outcome.
 
+## Specs
+- S1: Target FR-01 and FR-02 from PRD.md / APP_FLOW.md screen /auth/login.
+- S2: Technical contract per TRD.md §3 and design tokens per DESIGN_SYSTEM.md.
+
 ## Tasks
-- [ ] T1: Task title and deliverable outcome
-- [ ] T2: Task title and deliverable outcome
+- [ ] T1 (S1) [inline]: Task title, deliverable outcome, commit hash
+- [ ] T2 (S2) [inline]: Task title, deliverable outcome, commit hash
 
 ## Progress & Verification
 - Record observed command runs and commit hashes per task.
+
+## Log
+- L1: Initial requirement verbatim.
 ```
+
+### 🔗 Canonical Document Pipeline Integration (`PRD.md`, `APP_FLOW.md`, `TRD.md`, `DESIGN_SYSTEM.md`)
+
+When working on projects with canonical architectural artifacts, `odd/tasks/<feature-name>.md` references them directly instead of duplicating specifications:
+- **`PRD.md`** (`idea-to-prd-express`): Link specs directly to Functional Requirements (`FR-01`, `FR-02`...) and Acceptance Criteria.
+- **`APP_FLOW.md`** (`app-flow-spec`): Link specs to verified routes, role guards, and Mermaid state machine transitions.
+- **`TRD.md`** (`architecture-designer`): Map directly to the Traceability Matrix (`FR-# -> Route -> Component -> Task T#`), API endpoints, and schema models.
+- **`DESIGN_SYSTEM.md`** (`design-driven`, `design-system-tokens`): Reference semantic CSS tokens (`--surface-*`, `--text-*`, `--accent-*`), chassis archetype, and component state invariants.
+- **Zero Duplication**: Reference identifiers (`Spec: PRD.md#FR-03`, `Route: /checkout/pay`, `Token: --accent-primary`); do not re-transcribe entire documents.
+

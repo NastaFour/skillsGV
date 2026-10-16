@@ -1,12 +1,12 @@
 ---
 name: design-system-tokens
-description: Design token taxonomy for consistent visual systems — color scales (HSL 50-950), typography scales, 8pt spacing system, elevation/shadow tokens, border radii, z-index layers, and motion tokens (duration/easing/stagger). Use when setting up a new project's design system, auditing token consistency, or eliminating hardcoded colors/spacing from components.
+description: Design token taxonomy for consistent visual systems — color scales (OKLCH/HSL 50-950), typography scales, 8pt spacing system, elevation/shadow tokens, border radii, z-index layers, and motion tokens. Outputs the canonical DESIGN_SYSTEM.md specification. Trigger: DESIGN_SYSTEM.md, design_system.md, sistema de diseno, design tokens, design system.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:
-  trigger: ["design tokens", "design system", "color scale", "hsl palette", "8pt spacing", "typography scale", "shadow system", "elevation", "motion tokens", "css variables", "tailwind theme", "z-index", "design tokens setup"]
+  trigger: ["DESIGN_SYSTEM.md", "design_system.md", "sistema de diseno", "design tokens", "design system", "color scale", "hsl palette", "oklch tokens", "8pt spacing", "typography scale", "shadow system", "elevation", "motion tokens", "css variables", "tailwind theme", "z-index", "design tokens setup"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "2.0.0"
 allowed-tools: Bash(node:*) Read
 ---
 

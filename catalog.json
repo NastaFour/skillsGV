@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 230
+    "skills": 231
   },
   "categories": [
     {
@@ -12,7 +12,7 @@
     {
       "id": "01-planning-process",
       "title": "Planning & Process",
-      "count": 22
+      "count": 23
     },
     {
       "id": "02-dev-roles",
@@ -356,6 +356,16 @@
       "path": "01-planning-process/agents/SKILL.md",
       "category": "01-planning-process",
       "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "app-flow-spec",
+      "path": "01-planning-process/app-flow-spec/SKILL.md",
+      "category": "01-planning-process",
+      "tier": "full",
       "tier0": false,
       "deprecated": false,
       "note": null,
