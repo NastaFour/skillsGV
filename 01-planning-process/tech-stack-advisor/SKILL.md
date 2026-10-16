@@ -19,7 +19,7 @@ The developer (Nasta) is highly proficient in the following domains. **ONLY** se
 ### 🎨 Frontend
 - **Frameworks**: [React / Vite](../../05-frontend/react-vite/SKILL.md), [Next.js](../../05-frontend/nextjs/SKILL.md)
 - **Languages**: [TypeScript](../../06-code-quality/typescript/SKILL.md)
-- **Styling**: [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md) (or Vanilla CSS depending on instructions)
+- **Styling**: [Tailwind CSS](../../05-frontend/tailwind-4/SKILL.md) (or Vanilla CSS depending on instructions)
 
 ### ⚙️ Backend
 - **Core**: [Node.js](../../04-backend/nodejs/SKILL.md), [Express.js](../../04-backend/expressjs/SKILL.md)

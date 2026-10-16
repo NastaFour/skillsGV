@@ -32,7 +32,7 @@ Focus on:
 - **Typography**: Choose elegant Google Fonts (Inter, Outfit, Roboto). Pair a distinctive header font with a clean body font.
 - **Color & Theme**: Maintain theme keys via CSS variables. Commit to dark-mode biased palettes with bright accents.
 - **Motion**: Use animations for micro-interactions (staggered catalog lists loading, shopping cart count pulse). Use CSS animations or React motion libraries.
-- **Dynamic Tailwind Classes**: Never use string interpolation (e.g. `bg-${color}-500`). Always define complete classes or object mappings to ensure correct compilation (see [Tailwind Skill](../../05-frontend/tailwindcss/SKILL.md)).
+- **Dynamic Tailwind Classes**: Never use string interpolation (e.g. `bg-${color}-500`). Always define complete classes or object mappings to ensure correct compilation (see [Tailwind Skill](../../05-frontend/tailwind-4/SKILL.md)).
 - **Component Isolation**: Separate presentational components from the live data stream. Socket feeds or API calls must be handled in container wrappers to keep visual components easily reusable. This enforces the **Single Responsibility Principle** — see [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
 - **Sanitización de Datos**: Escapar cualquier string dinámico o JSON proveniente de WebSockets o APIs antes de renderizarlo en tablas, utilizando [React/Vite DOMPurify rules](../../05-frontend/react-vite/SKILL.md).
 

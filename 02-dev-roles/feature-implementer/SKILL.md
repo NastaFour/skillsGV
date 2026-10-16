@@ -24,7 +24,7 @@ Before coding, rely on existing context:
 - Map code logic to the specific [the application Business Workflow](../../01-planning-process/application-workflow/SKILL.md).
 - Prioritize technology guidelines:
   - **Backend APIs**: Refer to [Node.js](../../04-backend/nodejs/SKILL.md), [Express.js](../../04-backend/expressjs/SKILL.md), [Prisma ORM](../../04-backend/prisma-orm/SKILL.md), [Socket.io](../../04-backend/socketio/SKILL.md), and [JWT/Bcrypt](../../04-backend/jwt-bcrypt/SKILL.md).
-  - **Admin Web Panel**: Refer to [React/Vite](../../05-frontend/react-vite/SKILL.md) and [Tailwind CSS](../../05-frontend/tailwindcss/SKILL.md).
+  - **Admin Web Panel**: Refer to [React/Vite](../../05-frontend/react-vite/SKILL.md) and [Tailwind CSS](../../05-frontend/tailwind-4/SKILL.md).
   - **Mobile Client**: Refer to [React Native](../../05-frontend/react-native/SKILL.md) and [Expo](../../05-frontend/expo-production-auditor/SKILL.md).
 
 ## Delivery Format

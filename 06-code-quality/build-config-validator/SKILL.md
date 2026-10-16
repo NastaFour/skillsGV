@@ -54,6 +54,6 @@ Verifies that build configuration files exist and are correctly structured befor
 
 ## 📚 References
 
-- [`tailwindcss`](../../05-frontend/tailwindcss/SKILL.md) — Tailwind config standards
+- [`tailwind-4`](../../05-frontend/tailwind-4/SKILL.md) — Tailwind config standards
 - [`react-vite`](../../05-frontend/react-vite/SKILL.md) — Vite config for Admin Panel
 - [`frontend-debugging-protocol`](../../02-dev-roles/frontend-debugging-protocol/SKILL.md) — diagnostic tree for "CSS not loading"

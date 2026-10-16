@@ -1,13 +1,13 @@
 ---
 name: frontend-debugging-protocol
-description: Systematic diagnostic checklist for frontend visual symptoms like "page renders without CSS", "components show no data", "map has no markers", or "redirect loop on public pages". Use when debugging visual bugs in the React/Vite Admin Panel or Expo mobile apps where the symptom's cause is not obvious.
+description: Systematic diagnostic checklist for frontend visual symptoms like "page renders without CSS", "components show no data", "map has no markers", or "redirect loop on public pages". Use when debugging visual bugs in the React/Vite Admin Panel or Expo mobile apps where the symptom's cause is not obvious. Do NOT use for backend API errors or server crashes.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["se ve sin css", "css not loading", "no data", "no markers", "redirect loop", "frontend debug", "debug visual", "pantalla en blanco", "componentes sin data"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # 🔍 Frontend Debugging Protocol
@@ -21,7 +21,7 @@ A systematic decision tree for diagnosing frontend visual bugs where the symptom
 - Use when "the map shows no markers"
 - Use when "images show [object Object] or broken"
 - Use when "unauthenticated users can't see public pages (redirect loop)"
-- Do NOT use for backend API errors (use `expert-debugger` instead)
+- Do NOT use for backend API errors (use `systematic-debugging` instead)
 
 ## 🚦 Hard Rules
 
@@ -43,4 +43,4 @@ A systematic decision tree for diagnosing frontend visual bugs where the symptom
 - [`build-config-validator`](../../06-code-quality/build-config-validator/SKILL.md) — for CSS-related symptoms
 - [`api-response-normalizer`](../../04-backend/api-response-normalizer/SKILL.md) — for data shape mismatch symptoms
 - [`auth-flow-audit`](../auth-flow-audit/SKILL.md) — for redirect loop symptoms
-- [`expert-debugger`](../expert-debugger/SKILL.md) — if root cause is deeper
+- [`systematic-debugging`](../systematic-debugging/SKILL.md) — if root cause is deeper

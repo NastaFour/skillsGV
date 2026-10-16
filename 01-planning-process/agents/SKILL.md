@@ -28,7 +28,7 @@ Cuando un asistente de IA asume el desarrollo de este proyecto, puede invocar y 
 | **Probador de Calidad (QA)** | [`qa-tester`](../../02-dev-roles/qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de pasarelas de pago. |
 | **Revisor de Código** | [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) | Auditar el código generado antes de confirmarlo, buscando violaciones de SOLID, código duplicado (DRY) y exceso de complejidad (KISS). |
 | **Verificador de Definición de Listo (DoD)** | [`dod-checker`](../../02-dev-roles/dod-checker/SKILL.md) | Actuar como puerta de calidad definitiva, bloqueando o aprobando la finalización de fases en base a auditorías estrictas de cumplimiento. |
-| **Depurador Experto** | [`expert-debugger`](../../02-dev-roles/expert-debugger/SKILL.md) | Rastrear y solventar bugs complejos, fugas de sockets, bloqueos transaccionales de PostgreSQL y cuellos de botella en APIs. |
+| **Depurador Experto** | [`systematic-debugging`](../../02-dev-roles/systematic-debugging/SKILL.md) | Rastrear y solventar bugs complejos, fugas de sockets, bloqueos transaccionales de PostgreSQL y cuellos de botella en APIs. |
 | **Refactorizador de Rendimiento** | [`performance-refactor`](../../02-dev-roles/performance-refactor/SKILL.md) | Optimizar consultas Prisma, configurar índices en BD, reducir el peso de bundles móviles y configurar caches en memoria. |
 | **Escritor Técnico (Documentador)** | [`technical-writer`](../../02-dev-roles/technical-writer/SKILL.md) | Generar la documentación de endpoints de API (Zod schemas), diagramas de arquitectura de base de datos y guías de despliegue Docker. |
 

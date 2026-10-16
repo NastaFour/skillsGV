@@ -102,7 +102,7 @@ For each dimension, report:
 | Security-sensitive code | `02-dev-roles/security-audit/SKILL.md` |
 | New library/dependency | `06-code-quality/dependency-guardian/SKILL.md` |
 | Pre-production | `02-dev-roles/dod-checker/SKILL.md` |
-| Post-bugfix | `02-dev-roles/expert-debugger/SKILL.md` |
+| Post-bugfix | `02-dev-roles/systematic-debugging/SKILL.md` |
 | Performance concerns | `02-dev-roles/performance-refactor/SKILL.md` |
 
 ## 📚 References
