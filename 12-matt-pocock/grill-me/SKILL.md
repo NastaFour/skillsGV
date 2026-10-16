@@ -10,4 +10,4 @@ metadata:
 disable-model-invocation: true
 ---
 
-Call the Skill tool with "grilling".
+Read and follow [../grilling/SKILL.md](../grilling/SKILL.md).

@@ -107,7 +107,7 @@ your path and complete them in order.
 6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+9. **Transition to downstream pipeline** — hand off to `idea-to-prd-express` (`PRD.md`), `design-driven` (`DESIGN_SYSTEM.md`), or `odd-workflow` (`odd/tasks/<feature>.md`)
 
 ## Process Flow
 
@@ -128,7 +128,7 @@ digraph brainstorming {
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Invoke writing-plans skill" [shape=doublecircle];
+    "Hand off to PRD / Design / ODD" [shape=doublecircle];
     "Hidden complexity? Upgrade path" [shape=box];
 
     "Classify: spike / bounded / architectural" -> "Present question + probe (2-3 sentences)" [label="spike"];
@@ -149,16 +149,17 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "User reviews spec?" -> "Hand off to PRD / Design / ODD" [label="approved"];
 }
 ```
 
-**Terminal states are path-bound.** Architectural: the ONLY skill you
-invoke after brainstorming is writing-plans — never frontend-design,
-mcp-builder, or any other implementation skill. Bounded: after
-approval, implementation proceeds directly through the normal
-development workflow; no plan document. Spike: the terminal state is a
-reported recommendation.
+**Terminal states are path-bound.** Architectural: upon spec approval,
+hand off organically to the relevant downstream skill: `idea-to-prd-express`
+for `PRD.md`, `design-driven` for `DESIGN_SYSTEM.md`, or `odd-workflow`
+for `odd/tasks/<feature>.md`. Bounded: after approval, implementation
+proceeds directly through the normal development workflow (ODD inline);
+no separate plan document. Spike: the terminal state is a reported
+recommendation.
 
 ## The Process
 
@@ -232,10 +233,11 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
-**Implementation:**
+**Transition to Downstream Pipeline:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- For product requirements, invoke `idea-to-prd-express` to synthesize into `PRD.md`.
+- For UI direction and tokens, invoke `design-driven` to produce `DESIGN_SYSTEM.md`.
+- For execution under ODD, initialize `odd-workflow` creating `odd/tasks/<feature>.md`.
 
 ## Visual Companion
 

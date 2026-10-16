@@ -545,6 +545,7 @@ const PROSE_COUNT_DOCS = [
   "AGENTS.md",
   "README.md",
   "00-meta-skills/harness-map.md",
+  "00-meta-skills/skill-loader/tier0-context.md",
   "gentle-ai-dsh/AGENTS.md",
   "gentle-ai-dsh/README.md",
   "gentle-ai-dsh/ISSUES.md",

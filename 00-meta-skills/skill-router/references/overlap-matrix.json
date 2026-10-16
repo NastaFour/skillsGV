@@ -76,8 +76,14 @@
     {
       "id": "debugging-workflow",
       "canonical": "systematic-debugging",
-      "members": ["systematic-debugging", "diagnosing-bugs"],
-      "note": "systematic-debugging es el protocolo canónico de 4 fases para investigación de causa raíz; diagnosing-bugs (12-matt-pocock) se enfoca en construcción y aceleración de feedback loops específicos para bugs difíciles. Si ambas puntúan, gana systematic-debugging como primario y diagnosing-bugs queda secondary/tier1toLoad."
+      "members": ["systematic-debugging", "diagnosing-bugs", "rdd-defect-workflow"],
+      "note": "systematic-debugging es el protocolo canónico de 4 fases para investigación de causa raíz; diagnosing-bugs (12-matt-pocock) se enfoca en feedback loops rápidos para bugs complejos; rdd-defect-workflow gestiona el ciclo formal de defectos bajo RDD. Si puntúan concurrentemente, gana systematic-debugging como primario y las demás quedan secondary/tier1toLoad."
+    },
+    {
+      "id": "ideation-interview",
+      "canonical": "brainstorming",
+      "members": ["brainstorming", "grilling", "grill-me", "grill-with-docs"],
+      "note": "brainstorming es el proceso canónico colaborativo de exploración de ideas antes de la implementación; grilling y sus variantes (grill-me, grill-with-docs) proveen entrevistas implacables de cuestionamiento socrático. Si puntúan concurrentemente para ideación o exploración inicial, gana brainstorming como primario y las variantes de grilling quedan secondary/tier1toLoad."
     },
     {
       "id": "research-workflow",

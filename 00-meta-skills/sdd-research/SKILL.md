@@ -5,7 +5,7 @@ license: MIT
 allowed-tools: Read Grep Glob
 metadata:
   deprecated: "true"
-  redirect: "research-first"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["research lanes", "external evidence", "source-backed", "sdd research"]
@@ -15,7 +15,8 @@ deprecated: "true"
 redirect: "odd-workflow"
 ---
 
-> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`research-first`](../../03-ai-ml/research-first/SKILL.md) en su lugar.
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
+
 
 # sdd-research — Evidencia externa SDD
 

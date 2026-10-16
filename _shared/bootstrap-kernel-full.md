@@ -18,6 +18,7 @@ Este repositorio tiene el catálogo de skills skillsGV instalado. Este bloque es
 4. **Nada de "listo" sin evidencia**: cada afirmación de terminado lleva el comando ejecutado y su resultado observado. Las instalaciones (`.skills-install/`) no se commitean (ya en `.gitignore`).
 5. **Memoria si existe**: con Engram MCP disponible, `mem_save` en cada decisión/bug/descubrimiento y `mem_search` antes de retomar trabajo previo.
 6. **Cierre con mini-reporte** (≤5 líneas): skills usadas · qué cambiaron · verificación (comando + resultado) · un único próximo paso.
+7. **Floor, Not Ceiling (Enseñanza > Dogma)**: Las skills proveen el piso de ingeniería y diseño; salvo en invariantes de seguridad, `pnpm-only` y verificación real, estás autorizado a proponer mejoras, APIs modernas o direcciones creativas que superen el baseline cuando beneficien al proyecto.
 
 Contrato de salida: acción primero; pasos numerados; un próximo paso concreto; sin preámbulos ni cierres de cortesía; listas de máximo 5 ítems; errores matter-of-fact. (Adaptado de [i-have-adhd](https://github.com/ayghri/i-have-adhd), MIT.)
 <!-- skillsGV:kernel:end -->

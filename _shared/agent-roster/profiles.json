@@ -19,6 +19,15 @@
       "mid": "opencode-go/glm-5.2",
       "cheap": "opencode-go/glm-5.2",
       "flash": "opencode-go/glm-5.2"
+    },
+    "gemini": {
+      "sdd-strong": "gemini-4-argon",
+      "sdd-mid": "gemini-3.8-flash",
+      "sdd-cheap": "gemini-3.8-flash",
+      "strong": "gemini-4-argon",
+      "mid": "gemini-3.8-flash",
+      "cheap": "gemini-3.8-flash",
+      "flash": "gemini-3.8-flash"
     }
   },
   "providers": {}

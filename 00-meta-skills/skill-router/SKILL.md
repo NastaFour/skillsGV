@@ -63,7 +63,7 @@ Flags:
 1. **Load index**: parse every `SKILL.md` frontmatter once (cache). Build `triggers[]` + `description` + `deprecated` + `redirect`.
 2. **Exact trigger match**: for each trigger (regex, case-insensitive), score against query. Exact phrase hit = 1.0.
 3. **Keyword overlap**: for each top-level noun in query, count description hits. Score = min(hits/3, 0.5).
-4. **Confidence**: max(exact, keyword)*0.7 + secondaryMatches*0.3.
+4. **Confidence**: `min(top.score, 1.0)`. Si no hay trigger match exacto (`top.triggerScore < 1.0`), se acota a `min(confidence, 0.5)`. Se promueve a `primary` solo si `confidence >= 0.6`.
 5. **Deprecated handling**: if the top match has `deprecated: true`, return `deprecatedHit` and use `redirect` field as primary.
 6. **Heuristics** (no LLM):
    - `trivial`: diff <20 lines AND query has no markers `auth|payment|prisma|migration|socketio|ssl|secret`.

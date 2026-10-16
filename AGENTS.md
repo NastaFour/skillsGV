@@ -31,5 +31,7 @@ Gentle-AI 4.1.x ODD es la única vía de desarrollo autorizada. La delegación e
 - **Memoria persistente**: Si Engram MCP está disponible, guardá decisiones y descubrimientos con `mem_save` y consultá contexto previo con `mem_search`.
 - **Revisión adversarial**: Cambios de alto impacto pasan por `judgment-day` (dos jueces ciegos independientes) antes de entrega final.
 - **Anti-slop frontend & Design Gate obligatorio**: Toda tarea con superficie visual o código frontend activa obligatoriamente la fase D1b de `design-driven` antes de escribir código UI (en greenfield/pantallas completas vía 5 bloques o inferencia en modo auto; en ajustes menores/mantenimiento vía Fast-Path con `Design Read` de 1 línea). El diseño se ancla en uno de los Chasis Arquetípicos (Monograph, Spec-Sheet, Gallery, Kinetic, Precision, Humanist, System Native) y declara sus 3 reglas generativas mecánicas en cabecera según la sintaxis del archivo (`/* @design-archetype: ... */`). Prohibido generar interfaces sin Design Read previo o inventar estética en el vacío.
+- **Floor, Not Ceiling (Enseñanza > Dogma)**: Las skills proveen el piso de ingeniería y diseño; salvo en invariantes de seguridad (cero credenciales expuestas, auth, sanitización), `pnpm-only` y verificación real con evidencia antes de cerrar, el modelo está autorizado a proponer o aplicar mejoras, APIs modernas o direcciones creativas que superen el baseline de una skill cuando beneficien al proyecto (anotando `[Beyond-Baseline: <razón técnica/creativa>]`).
+
 
 

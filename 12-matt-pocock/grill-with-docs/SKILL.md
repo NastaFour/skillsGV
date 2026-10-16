@@ -10,4 +10,4 @@ metadata:
 disable-model-invocation: true
 ---
 
-Call the Skill tool twice, for "grilling" and "domain-modeling".
+Read and follow [../grilling/SKILL.md](../grilling/SKILL.md) alongside [../domain-modeling/SKILL.md](../domain-modeling/SKILL.md).

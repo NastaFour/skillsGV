@@ -5,7 +5,7 @@ license: MIT
 allowed-tools: Read Write Edit Bash(node:*)
 metadata:
   deprecated: "true"
-  redirect: "catalog-usage"
+  redirect: "odd-workflow"
   author: gentleman-programming
   version: "1.0.0"
   trigger: ["onboard sdd", "onboarding sdd", "walkthrough sdd"]
@@ -14,7 +14,8 @@ deprecated: "true"
 redirect: "odd-workflow"
 ---
 
-> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`catalog-usage`](../catalog-usage/SKILL.md) en su lugar.
+> ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.
+
 
 # sdd-onboard — Onboarding SDD
 
