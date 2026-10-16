@@ -1,6 +1,6 @@
 ---
 name: sdd-apply
-description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
+description: "DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Implement SDD tasks from specs and design. Trigger: orchestrator launches apply for one or more change tasks."
 license: MIT
 allows-script-exec: "apply-journal.test.mjs spawns the journal CLI inside temp fixtures"
 allowed-tools: Read Write Edit Bash(node:*)
@@ -12,8 +12,6 @@ metadata:
   trigger: ["apply sdd", "implementar tareas", "aplicar cambio sdd"]
   scope: [global, project]
   delegate_only: true
-deprecated: "true"
-redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

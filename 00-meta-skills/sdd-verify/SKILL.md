@@ -1,6 +1,6 @@
 ---
 name: sdd-verify
-description: DEPRECATED. Use odd-workflow instead. "DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Validate the implementation against specs, design and tasks. Trigger: orchestrator launches verification for a change."
+description: "DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Validate the implementation against specs, design and tasks. Trigger: orchestrator launches verification for a change."
 license: MIT
 allowed-tools: Read Write Bash(node:*)
 metadata:
@@ -11,8 +11,6 @@ metadata:
   trigger: ["verify sdd", "verificar cambio", "validación contra specs"]
   scope: [global, project]
   delegate_only: true
-deprecated: "true"
-redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

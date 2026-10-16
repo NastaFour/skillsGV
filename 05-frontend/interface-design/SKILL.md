@@ -26,7 +26,7 @@ Build product interfaces with the craft and polish of top design teams (Linear, 
 - **Grid Discipline**: Use consistent multiples of 4px / 8px for spacing, padding, and gaps (`4, 8, 12, 16, 24, 32, 48px`).
 - **Concentric Radii**: Maintain `outerRadius = innerRadius + padding` across nested rounded surfaces.
 - **Semantic CSS Token Contract**:
-  - Surfaces: `--surface-canvas`, `--surface-card`, `--surface-overlay`, `--surface-inset`
+  - Surfaces: `--surface-base` (or `--surface-canvas`), `--surface-raised` (alias `--surface-card`), `--surface-overlay`, `--surface-inset`
   - Text: `--text-primary`, `--text-secondary`, `--text-muted`
   - Borders: `--border-subtle`, `--border-default`, `--border-strong`
   - Accents: `--accent-primary`, `--accent-hover`, `--accent-subtle`
@@ -41,7 +41,7 @@ Every interactive element and data container MUST implement all applicable state
 
 ## ⚡ Pre-Code Ceremony & System Persistence
 
-1. **Read & Persist in `DESIGN_SYSTEM.md`**: Before writing UI code, check the project root for the canonical **`DESIGN_SYSTEM.md`** (falling back to legacy `.interface-design/system.md` if present) to load existing tokens, chassis, spacing rhythm, and depth rules. When establishing or evolving system-wide patterns, persist them back to **`DESIGN_SYSTEM.md`**.
+1. **Read & Persist in `DESIGN_SYSTEM.md` (Artifact Resolution Order)**: Before writing UI code, resolve design system artifacts in canonical order: **`DESIGN_SYSTEM.md`** → **`design-artifacts/<project>/design-dna.md`** → **`DESIGN.md`** → **`.interface-design/system.md`** (and for product specs: **`PRD.md`** → **`PRODUCT.md`**) to load existing tokens, chassis, spacing rhythm, and depth rules. When establishing or evolving system-wide patterns, persist them back to **`DESIGN_SYSTEM.md`**.
 2. **Unified `Design Read`**: Declare the standard 3-line check before mutating UI (or 1-line Fast-Path for minor maintenance):
 
 ```

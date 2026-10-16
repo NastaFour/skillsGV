@@ -9,7 +9,8 @@
 
 ## 2. Paleta de Color (Tokens Semánticos — OKLCH por defecto, HSL permitido)
 - **Base Fondo (`--surface-base`)**: `oklch(0.98 0.005 240)`
-- **Superficie Tarjetas (`--surface-card`)**: `oklch(1.00 0.000 0)`
+- **Superficie Elevada / Tarjetas (`--surface-raised`, alias `--surface-card`)**: `oklch(1.00 0.000 0)`
+- **Superficie Overlay / Hover (`--surface-overlay`)**: `oklch(0.95 0.008 240)`
 - **Tinta Texto (`--text-primary`)**: `oklch(0.12 0.010 240)`
 - **Tinta Secundaria (`--text-secondary`)**: `oklch(0.45 0.015 240)`
 - **Borde Neutro (`--border-subtle`)**: `oklch(0.90 0.005 240)`

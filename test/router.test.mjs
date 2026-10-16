@@ -199,5 +199,34 @@ test('router: respects explicit --turn-cache CLI override', (t) => {
   assert.equal(data.query, 'chained pr');
 });
 
+test('multi-intent 4-artifact query loads all four core design and spec skills', () => {
+  const res = runRouter('crear PRD.md APP_FLOW.md TRD.md y DESIGN_SYSTEM.md');
+  const expected = ['idea-to-prd-express', 'app-flow-spec', 'architecture-designer', 'design-driven'];
+  for (const skill of expected) {
+    assert.ok(
+      res.tier1toLoad.includes(skill),
+      `tier1toLoad must include ${skill}, got: ${JSON.stringify(res.tier1toLoad)}`
+    );
+  }
+});
 
+test('querying deprecated exact name sdd-research redirects to odd-workflow', () => {
+  const res = runRouter('sdd-research');
+  assert.equal(res.primary, 'odd-workflow');
+  assert.equal(res.deprecatedHit, 'sdd-research');
+  assert.equal(res.confidence, 1);
+});
 
+test('isUiTask distinguishes pure backend logic from UI queries accurately', () => {
+  const resDb = runRouter('diseño de base de datos y vistas sql');
+  assert.equal(resDb.isUiTask, false, 'Database and SQL view design should not be marked as UI task');
+
+  const resTs = runRouter('definir interfaces typescript para backend');
+  assert.equal(resTs.isUiTask, false, 'Backend TypeScript interfaces should not be marked as UI task');
+
+  const resForm = runRouter('Crear un formulario para conectar con la api');
+  assert.equal(resForm.isUiTask, true, 'Form connected to API should be marked as UI task');
+
+  const resDash = runRouter('Crear un dashboard para monitorear postgres');
+  assert.equal(resDash.isUiTask, true, 'Dashboard for Postgres monitoring should be marked as UI task');
+});

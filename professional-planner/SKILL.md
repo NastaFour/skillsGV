@@ -1,6 +1,6 @@
 ---
 name: professional-planner
-description: DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains.
+description: "DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,8 +10,6 @@ metadata:
   trigger: ["planificar una nueva funcionalidad", "crear especificaciones", "iniciar arquitectura", "analizar requerimientos", "diseñar sistema", "PRD", "documento de requerimientos", "sdd flow", "spec-driven", "planning"]
   scope: [global, project]
   version: "2.0.0"
-deprecated: "true"
-redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../00-meta-skills/odd-workflow/SKILL.md) en su lugar.

@@ -23,7 +23,7 @@ Cuando un asistente de IA asume el desarrollo de este proyecto, puede invocar y 
 | Agente Virtual | Archivo de Directrices | Responsabilidad Principal |
 |---|---|---|
 | **Diseñador de Arquitectura** | [`architecture-designer`](../../02-dev-roles/architecture-designer/SKILL.md) | Diseñar modelos de datos en Prisma, contratos de API REST, estructuras de carpetas en el monorepo y flujos de Socket.io. |
-| **Implementador de Características** | [`feature-implementer`](../../02-dev-roles/feature-implementer/SKILL.md) | Escribir código modular en TypeScript, crear controladores Express, hooks de React Native y controladores de base de datos. |
+| **Implementador de Características** | [`feature-implementer`](../../02-dev-roles/feature-implementer/SKILL.md) | Escribir código modular, controladores de backend (ej. Express/Node), componentes o hooks de interfaz (ej. React/React Native) y capa de persistencia de datos. |
 | **Diseñador de Interfaces (Frontend)** | [`frontend-design`](../../02-dev-roles/frontend-design/SKILL.md) | Maquetar pantallas con estética de nivel de estudio, tokens semánticos OKLCH/HSL, micro-interacciones fluidas y layouts responsivos. |
 | **Probador de Calidad (QA)** | [`qa-tester`](../../02-dev-roles/qa-tester/SKILL.md) | Crear suites de prueba, simular concurrencia, realizar auditorías de regresión SOLID y verificar la seguridad de flujos críticos. |
 | **Revisor de Código** | [`code-reviewer`](../../02-dev-roles/code-reviewer/SKILL.md) | Auditar el código generado antes de confirmarlo, buscando violaciones de SOLID, código duplicado (DRY) y exceso de complejidad (KISS). |
@@ -53,7 +53,7 @@ flowchart TD
 ```
 
 1. **Fase de Planificación:** El *Diseñador de Arquitectura* define el plano del software y las tablas Prisma requeridas.
-2. **Fase de Construcción:** El *Implementador de Características* y el *Diseñador Frontend* construyen las pantallas táctiles en Expo y las APIs Express en el backend.
+2. **Fase de Construcción:** El *Implementador de Características* y el *Diseñador Frontend* construyen las interfaces de usuario (web o móvil, ej. React/Expo) y los servicios/APIs en el backend (ej. Express/Node).
 3. **Fase de Control de Calidad (El Triángulo de Acero):**
    - El *Revisor de Código* evalúa que el código sea limpio y cumpla los estándares SOLID.
    - El *QA Tester* ejecuta pruebas unitarias y de integración para garantizar transacciones ACID y evitar fugas.

@@ -232,14 +232,28 @@ let secondary = [];
 let confidence = 0;
 let triggeredExact = false;
 
-if (scored.length > 0) {
+// Check if query directly mentions a deprecated skill's exact name -> redirect immediately (R4-001)
+for (const s of index) {
+  if (s.deprecated) {
+    const nameRe = new RegExp("\\b" + escapeRegex(s.name.toLowerCase()) + "\\b", "i");
+    if (nameRe.test(qLower)) {
+      primary = s.redirect;
+      deprecatedHit = s.name;
+      confidence = 1.0;
+      triggeredExact = true;
+      break;
+    }
+  }
+}
+
+if (!primary && scored.length > 0) {
   const top = scored[0];
   confidence = Math.min(top.score, 1.0);
   triggeredExact = top.exactHit;
   // Confidence=1.0 requires exact trigger match (not just keyword overlap)
   if (top.triggerScore < 1.0) confidence = Math.min(confidence, 0.5);
   if (confidence >= 0.6) primary = top.name;
-  secondary = [...new Set(scored.slice(1, 4).map((s) => s.name))];
+  secondary = [...new Set(scored.slice(1, 5).map((s) => s.name))];
 }
 
 // Check if query mentions a deprecated skill name or trigger → redirect
@@ -279,13 +293,11 @@ const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfal
 const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
 // UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
-const UI_SURFACE_MARKERS = /(?:^|[^\p{L}\p{N}])(pantallas?|interfaz|interfaces?|components?|componentes?|dashboard|landing|forms?|formularios?|modals?|vistas?|views?|ui|frontend|diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|look|visual|layouts?|buttons?|botones?|navbars?|sidebars?|screens?|pages?|cards?|widgets?|theme|css|tailwind|estilos?)(?:$|[^\p{L}\p{N}])/iu;
-const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|postgres|prisma|reducer|state machine|service|resolver|vista\s+materializada|materialized\s+view)\b/i;
-const EXPLICIT_VISUAL_MARKERS = /\b(diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|design|css|tailwind|estilos?|styles?|layout|ui|visual|look|interfaz|interfaces?|animaci[oó]n|motion|colores?|palette|theme)\b/iu;
+const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animation|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
+const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|diseñ[oa]s?|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
+const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|schema|esquema|postgres|prisma|reducer|state\s+machine|service|resolver|typescript|ts\b|vista\s+materializada|materialized\s+view)\b/i;
 
-const matchesUiMarker = UI_SURFACE_MARKERS.test(query);
-const isPureLogicBackend = PURE_LOGIC_BACKEND_MARKERS.test(query) && !EXPLICIT_VISUAL_MARKERS.test(query);
-const isUiTask = matchesUiMarker && !isPureLogicBackend;
+const isUiTask = UNAMBIGUOUS_UI_MARKERS.test(query) || (AMBIGUOUS_UI_MARKERS.test(query) && !PURE_LOGIC_BACKEND_MARKERS.test(query));
 
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {

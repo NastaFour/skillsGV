@@ -58,7 +58,7 @@ Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligat
 
 ## F3 · El artefacto canónico `DESIGN_SYSTEM.md` y Design DNA
 
-- El artefacto primario y fuente de verdad canónica del proyecto es **`DESIGN_SYSTEM.md`** en la raíz del repositorio, estructurado según la plantilla oficial [**`references/design-system-template.md`**](references/design-system-template.md) (con **`design-artifacts/<project>/design-dna.md`** soportado como artefacto complementario o de compatibilidad retroactiva).
+- El artefacto primario y fuente de verdad canónica del proyecto es **`DESIGN_SYSTEM.md`** en la raíz del repositorio, estructurado según la plantilla oficial [**`references/design-system-template.md`**](references/design-system-template.md). La resolución unificada de artefactos sigue el orden canónico: para diseño **`DESIGN_SYSTEM.md`** → **`design-artifacts/<project>/design-dna.md`** → **`DESIGN.md`** → **`.interface-design/system.md`**; para producto **`PRD.md`** → **`PRODUCT.md`**.
 - Consolida tanto los tokens semánticos CSS (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) como los campos del Design DNA:
   - `persona` / `dolor` / `promesa`
   - `archetype`: `{name, preset, physics_spring, css_fallback}`

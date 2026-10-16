@@ -71,6 +71,53 @@ Don't create separate dark palettes. Use the same scale, swap semantic mappings:
 }
 ```
 
+## Modern Color Space: OKLCH & Canonical Semantic Tokens
+
+While HSL is widely supported, **OKLCH** is the preferred modern format for design systems because of its perceptual uniformity (lightness is consistent across hues, preventing optical contrast illusions).
+
+The canonical semantic token contract standardizes surfaces, text, borders, and accents:
+
+```css
+:root {
+  /* Surfaces */
+  --surface-base: oklch(0.98 0.005 240);       /* Canvas / general background */
+  --surface-raised: oklch(1.00 0.000 0);        /* Cards / modals (alias: --surface-card) */
+  --surface-card: var(--surface-raised);
+  --surface-overlay: oklch(0.95 0.008 240);     /* Hover / elevated layers */
+
+  /* Text & Contrast (WCAG 2.2 AA) */
+  --text-primary: oklch(0.15 0.010 240);        /* Headings & body copy */
+  --text-secondary: oklch(0.45 0.015 240);      /* Captions, metadata, subtitles */
+  --text-muted: oklch(0.60 0.010 240);          /* Placeholders, disabled states */
+
+  /* Borders */
+  --border-subtle: oklch(0.90 0.005 240);       /* Dividers and container outlines */
+  --border-focus: var(--accent-primary);        /* High-contrast focus rings */
+
+  /* Accents */
+  --accent-primary: oklch(0.55 0.220 142);      /* Primary CTA & active indicator (sat < 80%) */
+  --accent-foreground: oklch(0.99 0.000 0);     /* Text on accent */
+}
+
+/* Dark Theme Mapping */
+[data-theme="dark"], .dark {
+  --surface-base: oklch(0.14 0.010 240);
+  --surface-raised: oklch(0.18 0.012 240);
+  --surface-card: var(--surface-raised);
+  --surface-overlay: oklch(0.22 0.015 240);
+
+  --text-primary: oklch(0.96 0.005 240);
+  --text-secondary: oklch(0.70 0.010 240);
+  --text-muted: oklch(0.50 0.010 240);
+
+  --border-subtle: oklch(0.26 0.010 240);
+  --border-focus: var(--accent-primary);
+
+  --accent-primary: oklch(0.65 0.200 142);
+  --accent-foreground: oklch(0.10 0.000 0);
+}
+```
+
 ## Accent Color Palette Ideas (Non-Generic)
 
 To avoid "AI slop" blue defaults, consider these distinctive palettes:

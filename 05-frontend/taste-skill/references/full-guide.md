@@ -27,8 +27,13 @@ Antes de escribir código o estilos, el agente ejecuta una rutina de análisis s
 6. **Restricciones Silenciosas (Quiet Constraints)**: Requisitos de accesibilidad extrema o rendimiento.
 
 #### Requerimiento Obligatorio: "Design Read"
-El agente debe declarar en el chat una línea estructurada antes de generar cualquier componente:
-> **"Reading this as: [Público Objetivo] for [Producto/Propósito], with a [Estilo Estético/Vibe] language, leaning toward [Herramientas/Stack Técnico]."**
+El agente debe declarar en el chat el **Design Read** unificado de 3 líneas antes de generar cualquier componente (o Fast-Path de 1 línea para diffs <50 líneas):
+> ```
+> 1. Direction / Chassis: [Archetype] — [Why it fits the domain]
+> 2. Hierarchy & Tokens:  [Hero element, --surface-*, --accent-* from DESIGN_SYSTEM.md]
+> 3. Craft Signature:     [Fine detail, micro-interaction, or [Beyond-Baseline: <reason>]]
+> ```
+> *(Fast-Path para diffs <50 líneas: `Reading this as: [Audience] for [Product], with a [Style/Vibe] language, leaning toward [Stack].`)*
 
 *Ejemplo*:
 > *"Reading this as: B2B SaaS landing for technical buyers, with a Linear-style minimalist language, leaning toward Tailwind utilities + Geist + restrained motion."*
@@ -108,7 +113,7 @@ Al usar variantes en cursiva dentro de títulos, aplicar `leading-[1.15]` y `pb-
 ---
 
 ### 2.4 Elevación, Sombras y Radios de Borde
-- **Tarjetas y Contenedores**: Radio máximo de **`12px` o `16px`** (`rounded-xl` en Tailwind v4). Prohibidos radios desmedidos de 32px o 40px en rectángulos grandes.
+- **Tarjetas y Contenedores**: Radio de referencia entre **`12px` y `16px`** (`rounded-xl` en Tailwind v4). Radios >16px (`rounded-2xl`, `rounded-3xl`) o pastillas son heurísticas de Nivel 2 (context-aware por `absolute-bans.md`): permitidos y bienvenidos en apps infantiles, consumo masivo, lujo o interfaces lúdicas fundamentando con `[Beyond-Baseline: <razón>]`.
 - **Botones e Inputs**: Entre `6px` y `8px`, o pastilla de `9999px` cuando el brief lo justifique.
 
 ---

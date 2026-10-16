@@ -11,8 +11,6 @@ metadata:
   trigger: ["research lanes", "external evidence", "source-backed", "sdd research"]
   scope: [global, project]
   delegate_only: true
-deprecated: "true"
-redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

@@ -32,6 +32,7 @@ Formato preferido: **OKLCH** (moderno, uniforme en luminosidad). Compatible con 
   /* Superficies */
   --surface-base: oklch(0.98 0.005 240);       /* Fondo general */
   --surface-raised: oklch(1.00 0.000 0);        /* Tarjetas y modales */
+  --surface-card: var(--surface-raised);        /* Alias compatible */
   --surface-overlay: oklch(0.95 0.008 240);     /* Hover / elementos secundarios */
   
   /* Textos y Contraste (WCAG 2.2 AA) */
@@ -54,6 +55,7 @@ Formato preferido: **OKLCH** (moderno, uniforme en luminosidad). Compatible con 
 [data-theme="dark"], .dark {
   --surface-base: oklch(0.14 0.010 240);
   --surface-raised: oklch(0.18 0.012 240);
+  --surface-card: var(--surface-raised);
   --surface-overlay: oklch(0.22 0.015 240);
   
   --text-primary: oklch(0.96 0.005 240);

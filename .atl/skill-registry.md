@@ -299,7 +299,7 @@
 
 | Skill | Disparador / Descripción | Scope | Path |
 |---|---|---|---|
-| `professional-planner` | DEPRECATED. Retirada en gentle-ai 4.0.0; usar odd-workflow. Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains. | `global, project` | `professional-planner/SKILL.md` |
+| `professional-planner` | DEPRECATED. Use odd-workflow instead. Retirada en gentle-ai 4.0.0; usar odd-workflow. Activates the Spec-Driven Development (SDD) flow in 6 phases with approval gates, versioned artifacts, and skill-ecosystem integration. Use when starting a new module, complex feature, or refactor touching 2+ files or 2+ business domains. | `global, project` | `professional-planner/SKILL.md` |
 
 ## Notas de uso
 

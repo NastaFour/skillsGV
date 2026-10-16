@@ -10,8 +10,6 @@ metadata:
   version: "1.0.0"
   trigger: ["onboard sdd", "onboarding sdd", "walkthrough sdd"]
   scope: [global, project]
-deprecated: "true"
-redirect: "odd-workflow"
 ---
 
 > ⚠️ **DEPRECATED (Gentle-AI 4.0.0)**: Retirada en Gentle-AI 4.0.0 a favor de ODD exclusivo. Usá [`odd-workflow`](../odd-workflow/SKILL.md) en su lugar.

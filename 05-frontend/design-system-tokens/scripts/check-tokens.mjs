@@ -41,11 +41,11 @@ for (const srcDir of srcDirs) {
       const hexMatches = [...line.matchAll(hexRegex)];
       for (const m of hexMatches) {
         // Skip if in a CSS variable definition or tailwind config
-        if (/--color/.test(line) || /theme|colors/.test(line)) continue;
+        if (/--(color|surface|text|accent|border)/.test(line) || /theme|colors/.test(line)) continue;
         issues.push({
           severity: "warning",
           check: "hardcoded-hex",
-          msg: `Hardcoded hex color "${m[0]}" — use var(--color-*) token or Tailwind class instead.`,
+          msg: `Hardcoded hex color "${m[0]}" — use var(--surface-* / --text-* / --accent-* / --color-*) token or Tailwind class instead.`,
           file: relFile, line: i + 1,
         });
       }
