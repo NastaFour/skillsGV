@@ -24,11 +24,11 @@ The foundation of any non-generic visual system. Without tokens, every component
 
 ## 🚦 Hard Rules
 
-- **Never** hardcode `#hex` colors in components — always `var(--color-*)` or Tailwind token
+- **Never** hardcode `#hex` colors in components — always use semantic CSS tokens (`var(--surface-*)`, `var(--text-*)`, `var(--accent-*)`, `var(--border-*)`) defined in `DESIGN_SYSTEM.md`
 - **Never** use arbitrary `px` for spacing — always multiples of 4 (8pt system)
-- **Always** define color scales as 50-950 (not just `primary: "#0ea5e9"`)
+- **Always** define color scales as 50-950 or semantic intent (not just `primary: "#0ea5e9"`)
 - **Always** define motion tokens (duration + easing) as named values, not magic numbers
-- **Always** use HSL for color tokens (easier to manipulate opacity/saturation)
+- **Token Color Format**: Use **OKLCH** by default for modern CSS and Tailwind 4 projects; **HSL** is permitted when using shadcn/ui or Tailwind 3. Hex values are documentation references only, never hardcoded in JSX/CSS components.
 - **Never** use `z-index: 9999` — use named z-index tokens (`z-modal`, `z-toast`)
 
 ## 🛠️ Workflow
@@ -38,15 +38,15 @@ The foundation of any non-generic visual system. Without tokens, every component
 3. Read motion token definitions: [motion-tokens.md](references/motion-tokens.md)
 4. Run the checker to detect hardcoded values:
    ```bash
-   node ./.opencode/skills/design-system-tokens/scripts/check-tokens.mjs
+   node 05-frontend/design-system-tokens/scripts/check-tokens.mjs
    ```
-5. Set up tokens in your project (CSS variables + Tailwind config)
+5. Set up tokens in your project (`DESIGN_SYSTEM.md`, CSS variables, or Tailwind config)
 
 ## 📚 References
 
 - [Token Taxonomy](references/token-taxonomy.md) — all token categories with examples
-- [Color Scales](references/color-scales.md) — HSL scale generation, semantic tokens
+- [Color Scales](references/color-scales.md) — HSL/OKLCH scale generation, semantic tokens
 - [Motion Tokens](references/motion-tokens.md) — duration, easing, stagger scales
 - [`visual-effects`](../visual-effects/SKILL.md) — shadow tokens in practice
-- [`tailwindcss`](../tailwindcss/SKILL.md) — Tailwind theme config integration
+- [`tailwind-4`](../tailwind-4/SKILL.md) — modern Tailwind theme integration
 - [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — motion tokens in interactions

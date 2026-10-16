@@ -7,13 +7,14 @@
 - `MOTION_INTENSITY`: [1-10] (1-3 estático, 4-7 CSS GPU, 8-10 coreografía GSAP/Motion)
 - `VISUAL_DENSITY`: [1-10] (1-3 galería, 4-7 app diaria, 8-10 dashboard/cockpit)
 
-## 2. Paleta de Color (OKLCH)
-- **Base Fondo**: `oklch(0.98 0.005 240)`
-- **Superficie Tarjetas**: `oklch(1.00 0.000 0)`
-- **Tinta Texto**: `oklch(0.12 0.010 240)`
-- **Tinta Secundaria**: `oklch(0.45 0.015 240)`
-- **Borde Neutro**: `oklch(0.90 0.005 240)`
-- **Acento Primario** (Único, saturación <80%): `oklch(0.55 0.220 142)`
+## 2. Paleta de Color (Tokens Semánticos — OKLCH por defecto, HSL permitido)
+- **Base Fondo (`--surface-base`)**: `oklch(0.98 0.005 240)`
+- **Superficie Tarjetas (`--surface-card`)**: `oklch(1.00 0.000 0)`
+- **Tinta Texto (`--text-primary`)**: `oklch(0.12 0.010 240)`
+- **Tinta Secundaria (`--text-secondary`)**: `oklch(0.45 0.015 240)`
+- **Borde Neutro (`--border-subtle`)**: `oklch(0.90 0.005 240)`
+- **Acento Primario (`--accent-primary`)** (Único, saturación <80%): `oklch(0.55 0.220 142)`
+*(Referencias `#hex` en documentación solo como guía visual; componentes usan variables CSS semánticas)*
 
 ## 3. Tipografía y Escala
 - **Par Tipográfico**: [Serif encabezados + Sans cuerpo / Mono datos]

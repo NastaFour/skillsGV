@@ -27,6 +27,7 @@
    - **E · The Precision Instrument** (Estudio de ingeniería moderno / Linear, Raycast, Stripe): Foco en teclado prioritario (`Cmd+K`), densidad equilibrada (`p-2.5` a `p-4`), micro-radios controlados (6-8px), superficies táctiles sobrias. *Preset: `DV: 4, MI: 5, VD: 7` | Suave acelerado por hardware.*
    - **F · The Humanist Companion** (Producto empático y cálido / Notion, Airbnb): Ritmo suave, contención orgánica, generoso aire visual sin frialdad, tipografía conversacional humanista. *Preset: `DV: 5, MI: 4, VD: 5` | Resorte natural relajado.*
    - **G · The System Native (Enterprise Workhorse)**: Aplicaciones corporativas y dashboards B2B que integran librerías preexistentes (Shadcn UI, Radix, Tailwind estándar, Material UI). Hereda tokens y convenciones del proyecto sin imponer estética de autor. *Preset: `DV: 3, MI: 2, VD: 7` | Timing operativo limpio.*
+   - **H · Bespoke / Creative Exploration**: Propuesta de chasis híbrido o arquitectura visual personalizada adaptada a la identidad del producto, con diales libres y 3 reglas generativas mecánicas justificadas en `DESIGN_SYSTEM.md`.
    *(Si el usuario no elige: en interactivo proponer 2 perfiles adaptados al producto; en auto, inferir según datos).*
 
 5. **Calibración Triaxial Derivada & Anclaje de Scroll**:

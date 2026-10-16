@@ -45,10 +45,10 @@ Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
 Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales** (un bloque por turno). **Leer [references/d1b-questionnaire.md](references/d1b-questionnaire.md) ANTES de preguntar**. El piso obligatorio son las **8 preguntas del núcleo duro**: #1-#3 (Persona, Dolor, Promesa), #4 (Chasis Arquetípico), #6 (3 Reglas Generativas), #9 (Firma), #13 (Pantalla Corazón) y #14 (Bans). Las preguntas restantes (#5, #7, #8, #10-#12, #15-#17) son calibración: se hacen, y si el usuario no tiene respuesta se resuelven por preset del chasis o inferencia según el modo, sin bloquear el flujo.
 
 1. **Las 3 P's**: Persona (quién es, 3 adjetivos, tono), Dolor (problema que paga por resolver), Promesa (qué se lleva en 10s).
-2. **ADN Arquetípico y Diales (Chasis)**: Selección de 1 de los 7 Chasis Arquetípicos (*Technical Monograph, Industrial Spec-Sheet, The Gallery, The Kinetic Utility, The Precision Instrument, The Humanist Companion, The System Native*) que pre-calibra automáticamente los diales triaxiales (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), retícula y física de resortes (con fallback CSS nativo), más la definición de las **3 Reglas Generativas Mecánicas**.
+2. **ADN Arquetípico y Diales (Chasis)**: Selección de 1 de los 7 Chasis Arquetípicos (*Technical Monograph, Industrial Spec-Sheet, The Gallery, The Kinetic Utility, The Precision Instrument, The Humanist Companion, The System Native*) o el 8º camino *Bespoke / Creative Exploration* (donde el modelo propone un chasis híbrido o nuevo con diales libres y 3 reglas generativas mecánicas justificadas), pre-calibrando automáticamente diales triaxiales (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), retícula y física de resortes (con fallback CSS nativo).
 3. **Referencias Reales**: 3-5 URLs reales o productos ancla con qué se toma de cada uno + 2-3 anti-referencias.
 4. **Firma, Heartbeat y Suelo A11y**: Elemento inolvidable, 1 acento OKLCH (<80% sat), tipografía por contraste (Inter permitido si es corporativo preexistente), hero clamp 6rem, suelo WCAG 2.2 a11y min 12px, pantalla corazón crítica.
-5. **Anti-slop, Anti-Faux-Density y Restricciones**: 10 Absolute Bans de `taste-skill` + prohibición de falsa telemetría decorativa + límites de dependencias + física de resortes cuantitativa o fallback cubic-bezier.
+5. **Anti-slop, Anti-Faux-Density y Restricciones**: Gobernanza de `taste-skill` (Invariantes de Calidad Nivel 1 + Heurísticas Nivel 2 contra clichés) + prohibición de falsa telemetría decorativa + límites de dependencias + física de resortes cuantitativa o fallback cubic-bezier.
 
 ## F2 · Confirmaciones intermedias (mínimo, sin abrumar)
 
@@ -87,8 +87,8 @@ Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligat
 
 ## Regla anti-slop & Anti-Attention-Decay
 
-1. Nunca entregues una pantalla sin pasar por D3 (tokens) y sin Design DNA. El diseño no se improvisa en el apply.
-2. **Inyección en cabecera multi-formato**: Todo archivo frontend nuevo generado debe incluir en su primera línea de comentario las directivas del arquetipo y sus 3 reglas generativas usando la sintaxis nativa del archivo (`/* @design-archetype: ... */` en JS/TS/CSS/Dart, `<!-- @design-archetype: ... -->` en HTML/Vue templates, `# @design-archetype: ...` en Python/YAML, y omitir en `.json` estricto) para evitar que el LLM decaiga en su centroide estadístico durante sesiones largas.
+1. Nunca entregues una pantalla sin pasar por D3 (tokens) y sin Design DNA / `DESIGN_SYSTEM.md`. El diseño no se improvisa en el apply.
+2. **Inyección en cabecera multi-formato**: Requerido en el archivo raíz de entrada de la UI o cuando no exista `DESIGN_SYSTEM.md` en el proyecto (`/* @design-archetype: ... */` en JS/TS/CSS/Dart, `<!-- @design-archetype: ... -->` en HTML/Vue templates, `# @design-archetype: ...` en Python/YAML, y omitir en `.json` estricto) para declarar las directivas del arquetipo y sus 3 reglas generativas mecánicas. En proyectos con `DESIGN_SYSTEM.md` ya consolidado o en archivos secundarios de mantenimiento, esta cabecera no se fuerza para evitar ruido visual redundante.
 
 ## Persistencia
 

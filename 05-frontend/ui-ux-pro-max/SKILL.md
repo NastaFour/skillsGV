@@ -28,11 +28,12 @@ Motor de razonamiento visual y base de conocimiento de diseño frontend. Proporc
 
 ## 🚦 Reglas Duras
 
-1. **Preflight Obligatorio antes del Código**: Antes de emitir cualquier componente o vista, declarar explícitamente en el chat:
-   - **Arquetipo de Estilo**: (ej. *Bento Grid Minimalista*).
-   - **Industria y Contexto**: (ej. *SaaS B2B Analítico*).
-   - **Trío Cromático (60-30-10)**: Base neutra (60%), Estructura (30%), Acento interactivo (10%).
-   - **Garantía de Contraste**: Confirmar ratio WCAG AA (mínimo 4.5:1 para texto regular, 3.0:1 para texto grande).
+1. **Preflight Obligatorio antes del Código (Design Read de 3 Líneas)**: Antes de emitir cualquier componente o vista, declarar en el chat:
+   > `Design Read:`
+   > `1. Dirección/Chasis: [Chasis: Monograph|Spec-Sheet|Gallery|Kinetic|Precision|Humanist|System-Native|Bespoke] — [Por qué para esta audiencia/producto]`
+   > `2. Jerarquía y Tokens: [Tokens clave: --surface-*, --text-*, --accent-*, escala tipográfica/densidad]`
+   > `3. Firma de Oficio: [Detalle memorable o propuesta creativa del modelo [Beyond-Baseline: <razón>]]`
+   *(Para mantenimiento menor con diff < 50 líneas, usar Fast-Path de 1 línea: `Design Read: [Chasis] — heredando tokens de DESIGN_SYSTEM.md; [ajuste puntual]`).*
 2. **Coherencia de Estilo Único**: Prohibido mezclar estilos visuales dispares en la misma vista (ej. no combinar bordes neobrutalistas gruesos con tarjetas translúcidas de glassmorphism).
 3. **Regla del Acento Único**: Un solo color primario interactivo para llamadas a la acción (CTA). No competir con múltiples colores saturados en botones secundarios.
 4. **Doble Codificación de Estado**: Ningún estado crítico (éxito, error, advertencia) puede depender únicamente del color; acompañar con icono, glifo direccional o texto explicativo.
@@ -64,7 +65,8 @@ Estructura tu paleta respetando la regla 60-30-10:
 - **30% Estructura**: Tipografías secundarias, bordes sutiles, divisiones y fondos de tarjetas.
 - **10% Acento**: Reservado para botones principales de acción (CTA), estados activos y elementos focales.
 
-### Presets Destacados por Dominio
+### Presets Destacados por Dominio (Mapear a tokens `--surface-*`, `--text-*`, `--accent-*`, `--border-*` en `DESIGN_SYSTEM.md`)
+*(Valores `#hex` indicados como referencia visual humana; en código usar siempre tokens semánticos CSS en formato OKLCH o HSL)*
 - **SaaS Blue Steel**: Fondo `#f8fafc`, Superficie `#ffffff`, Texto `#0f172a`, Acento `#2563eb` (Blue 600).
 - **Fintech Emerald Reserve**: Fondo `#090d0b`, Superficie `#111815`, Borde `#1c2b23`, Acento `#10b981` (Emerald 500).
 - **E-commerce Warm Terracotta**: Fondo `#fafaf9`, Superficie `#ffffff`, Texto `#1c1917`, Acento `#ea580c` (Orange 600).

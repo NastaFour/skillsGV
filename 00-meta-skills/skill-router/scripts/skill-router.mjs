@@ -256,7 +256,12 @@ const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
 // UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
 const UI_SURFACE_MARKERS = /(?:^|[^\p{L}\p{N}])(pantallas?|interfaz|interfaces?|components?|componentes?|dashboard|landing|forms?|formularios?|modals?|vistas?|views?|ui|frontend|diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|look|visual|layouts?|buttons?|botones?|navbars?|sidebars?|screens?|pages?|cards?|widgets?|theme|css|tailwind|estilos?)(?:$|[^\p{L}\p{N}])/iu;
-const isUiTask = UI_SURFACE_MARKERS.test(query);
+const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|postgres|prisma|reducer|state machine|service|resolver|vista\s+materializada|materialized\s+view)\b/i;
+const EXPLICIT_VISUAL_MARKERS = /\b(diseñ[oa]s?|rediseñ[oa]r?|disen[oa]s?|redisen[oa]r?|design|css|tailwind|estilos?|styles?|layout|ui|visual|look|interfaz|interfaces?|animaci[oó]n|motion|colores?|palette|theme)\b/iu;
+
+const matchesUiMarker = UI_SURFACE_MARKERS.test(query);
+const isPureLogicBackend = PURE_LOGIC_BACKEND_MARKERS.test(query) && !EXPLICIT_VISUAL_MARKERS.test(query);
+const isUiTask = matchesUiMarker && !isPureLogicBackend;
 
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {

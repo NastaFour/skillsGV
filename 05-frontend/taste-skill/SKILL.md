@@ -26,11 +26,15 @@ Framework de control de calidad visual y erradicación determinista de "AI slop"
 
 ## 🚦 Reglas Duras
 
-1. **Regla Cero (Design Read Obligatorio)**: ANTES de emitir o modificar código de UI, declarar en el chat exactamente:
-   > `Reading this as: [Audience] for [Product], with a [Archetype: Monograph|Spec-Sheet|Gallery|Kinetic|Precision|Humanist] language, leaning toward [Stack].`
+1. **Regla Cero (Design Read Unificado de 3 Líneas)**: ANTES de emitir o modificar código de UI, declarar en el chat:
+   > `Design Read:`
+   > `1. Dirección/Chasis: [Chasis: Monograph|Spec-Sheet|Gallery|Kinetic|Precision|Humanist|System-Native|Bespoke] — [Por qué para esta audiencia/producto]`
+   > `2. Jerarquía y Tokens: [Tokens clave: --surface-*, --text-*, --accent-*, escala tipográfica/densidad]`
+   > `3. Firma de Oficio: [Detalle memorable o propuesta creativa del modelo [Beyond-Baseline: <razón>]]`
+   *(Para mantenimiento menor con diff < 50 líneas, usar Fast-Path de 1 línea: `Design Read: [Chasis] — heredando tokens de DESIGN_SYSTEM.md; [ajuste puntual]`).*
 2. **Regla Uno (Fijación Triaxial y Chasis)**: fijar los 3 diales (1-10) `DESIGN_VARIANCE`, `MOTION_INTENSITY` y `VISUAL_DENSITY` a través del Chasis Arquetípico elegido en D1b o calibración manual. Prohibido codificar con diales en estado ambiguo.
-3. **Regla Dos (Tolerancia Cero a Absolute Bans & Locks)**: violar cualquiera de los 10 Absolute Bans o Locks de Diseño (suelo 12px a11y, no monospace en prosa, física de resortes, anti-faux-density) es un fallo automático de producción.
-4. **Regla Tres (Inyección de Reglas Generativas)**: Todo archivo de UI nuevo debe declarar en su cabecera las 3 reglas mecánicas derivadas del arquetipo (`/* @design-archetype: ... */`) para evitar el decaimiento de atención.
+3. **Regla Dos (Piso de Calidad con Techo Abierto — Floor, Not Ceiling)**: respetar los Invariantes de Nivel 1 (cero datos falsos, accesibilidad WCAG 2.2, estados completos, `prefers-reduced-motion`). Las heurísticas de Nivel 2 contra clichés de IA son adaptables al dominio y se pueden flexibilizar justificando la propuesta en el Design Read (`[Beyond-Baseline: <razón>]`).
+4. **Regla Tres (Inyección de Reglas Generativas)**: El comentario de cabecera `/* @design-archetype: ... */` es requerido únicamente en el archivo raíz de entrada de la UI o cuando no exista `DESIGN_SYSTEM.md` en el proyecto. No es necesario forzarlo en cada archivo secundario durante mantenimientos.
 5. **Delimitación de Alcance**: esta skill audita y gobierna; no conduce la entrevista de unicidad (deferir a `design-driven` D1b).
 
 ## ⚙️ Vector Triaxial de Diales (1-10)
@@ -44,13 +48,15 @@ $$\vec{T} = \begin{bmatrix} \text{DESIGN\_VARIANCE} \\ \text{MOTION\_INTENSITY} 
   - `The Kinetic Utility`: [4, 8, 7] (100dvh fijo, canvas hero, HUDs flotantes ≤24px)
   - `The Precision Instrument`: [4, 5, 7] (Linear-style, atajos, micro-radios 6-8px)
   - `The Humanist Companion`: [5, 4, 5] (Notion/Airbnb style, orgánico, conversacional)
+  - `The System Native`: [3, 2, 7] (Enterprise workhorse, Shadcn/Radix/Tailwind nativo, tokens heredados)
+  - `Bespoke / Creative Exploration`: [Diales libres + 3 reglas generativas mecánicas justificadas]
 
 ## 🛠️ Flujo de Verificación (Preflight)
 
-1. **Declarar**: emitir la línea formal de Design Read con arquetipo.
+1. **Declarar**: emitir el Design Read unificado de 3 líneas (o 1 línea en Fast-Path).
 2. **Calibrar**: confirmar diales triaxiales y las 3 reglas generativas mecánicas.
-3. **Escanear Bans**: revisar ausencia de em-dashes en copy visible, gradientes lila, paleta beige cliché y faux-density.
-4. **Verificar Locks**: 1 acento OKLCH (<80% sat), hero clamp (max 6rem), suelo a11y (min 12px con clamp), monospace solo en tablas, cards radius (max 12-16px).
+3. **Escanear Invariantes**: verificar cumplimiento estricto de Nivel 1 y adecuar Nivel 2 al dominio.
+4. **Verificar Tokens**: usar tokens semánticos CSS (`--surface-*`, `--text-*`, `--accent-*`, `--border-*` en OKLCH/HSL) de `DESIGN_SYSTEM.md`, suelo a11y min 12px y física de resortes coherente.
 5. **Ejecutar Preflight**: pasar la matriz mecánica de verificación antes de declarar el componente listo.
 
 ## 📦 Contrato de Salida

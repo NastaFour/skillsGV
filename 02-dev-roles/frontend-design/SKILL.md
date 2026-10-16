@@ -38,14 +38,15 @@ Consider written content carefully. Often a design brief may not contain real co
 
 For calibration: AI-generated design right now clusters around three looks: (1) a warm cream background (near `#F4F1EA`) with a high-contrast serif display and a terracotta accent; (2) a near-black background with a single bright acid-green or vermilion accent; (3) a broadsheet-style layout with hairline rules, zero border-radius, and dense newspaper-like columns. All three are legitimate for some briefs, but they are **defaults rather than choices**, and they appear regardless of subject. Where the brief pins down a visual direction, follow it exactly — the brief's own words always win, including when it asks for one of these looks. Where it leaves an axis free, do not spend that freedom on one of these defaults. Just like a human designer who is hired, there is often a careful balance between doing what you are good at and taking each project as a chance to experiment and learn.
 
-Work in two passes. **First, brainstorm a short design plan** based on the human's design brief: create a compact token system with color, type, layout, and signature.
+Work in two passes. **First, emit the unified 3-line Design Read** based on the design brief before writing any UI code:
 
-- **Color**: describe the palette as 4–6 named hex values.
-- **Type**: the typefaces for 2+ roles (a characterful display face that is used with restraint, a complementary body face, and a utility face for captions or data if needed).
-- **Layout**: a layout concept, using one-sentence prose descriptions and ASCII wireframes to ideate and compare.
-- **Signature**: the single unique element this page will be remembered by that embodies the brief in an appropriate way.
+> `Design Read:`
+> `1. Dirección/Chasis: [Chasis: Monograph|Spec-Sheet|Gallery|Kinetic|Precision|Humanist|System-Native|Bespoke] — [Por qué para esta audiencia/producto]`
+> `2. Jerarquía y Tokens: [Tokens clave: --surface-*, --text-*, --accent-*, escala tipográfica/densidad]`
+> `3. Firma de Oficio: [Detalle memorable o propuesta creativa del modelo [Beyond-Baseline: <razón>]]`
+*(Para mantenimiento menor con diff < 50 líneas, usar Fast-Path de 1 línea: `Design Read: [Chasis] — heredando tokens de DESIGN_SYSTEM.md; [ajuste puntual]`).*
 
-**Then review that plan against the brief before building**: if any part of it reads like the generic default you would produce for any similar page (work through a similar prompt to see if you arrive somewhere similar) rather than a choice made for this specific brief — revise that part, say what you changed and why. Only after you have confirmed the relative uniqueness of your design plan should you start to write the code, following the revised plan exactly and deriving every color and type decision from it.
+**Review that plan against the brief before building**: confirm that the direction reflects a deliberate craft choice rather than a generic AI default. Only after establishing the Design Read proceed to write code, deriving color and typography decisions from semantic tokens defined in `DESIGN_SYSTEM.md`.
 
 When writing the code, be careful of structuring your CSS selector specificities. It is easy to generate CSS classes that cancel each other out (especially with a type-based selector like `.section` and an element-based selector like `.cta`). This can happen often with paddings/margins between sections.
 

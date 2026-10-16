@@ -17,8 +17,8 @@ En lugar de calibrar diales en el vacío, el vector $\vec{T}$ se pre-calibra aut
 | **The Gallery / Space Tension** | $[9, 4, 2]^T$ | Vacío activo $\ge 45\%$. Escala bipolar con escalón de anclaje. | Alta inercia: `stiffness: 110, damping: 22, mass: 1.6` (500-800ms, stagger 60ms). | `cubic-bezier(0.16, 1, 0.3, 1)` 600ms |
 | **The Kinetic Utility** | $[4, 8, 7]^T$ | Viewport fijo `100dvh` (`overflow-hidden`). HUDs flotantes $\le 24\text{px}$. | Resorte crítico veloz: `stiffness: 480, damping: 38, mass: 0.6` (seguimiento 1:1). | `cubic-bezier(0.34, 1.56, 0.64, 1)` 180ms |
 | **The Precision Instrument** | $[4, 5, 7]^T$ | Densidad calibrada (`p-2.5` a `p-4`), micro-radios 6-8px, atajos `Cmd+K`. | Hardware acelerado: `cubic-bezier(0.16, 1, 0.3, 1)` (150-200ms en transform/opacity). | `cubic-bezier(0.16, 1, 0.3, 1)` 180ms |
-| **The Humanist Companion** | $[5, 4, 5]^T$ | Contención orgánica, aire amable, ritmo conversacional. | Resorte natural relajado: `stiffness: 200, damping: 28` (250-350ms). | `cubic-bezier(0.25, 0.8, 0.25, 1)` 300ms |
 | **The System Native (Enterprise)** | $[3, 2, 7]^T$ | Hereda tokens y retícula del sistema existente (Shadcn, MUI, Tailwind). | Estándar operativo comercial, sobrio y predecible. | `cubic-bezier(0.2, 0, 0, 1)` 150ms |
+| **Bespoke / Creative Exploration** | Variable $[\text{DV}, \text{MI}, \text{VD}]^T$ | Híbrido justificado o arquitectura espacial a medida del dominio. | Resortes o curvas calibradas para la experiencia específica. | Declarado en `DESIGN_SYSTEM.md` |
 
 ---
 
