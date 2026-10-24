@@ -1,6 +1,6 @@
 ---
 name: three-js-web
-description: Desarrollo web 3D en tiempo real con three.js, react-three-fiber y drei en React: escenas WebGL, modelos GLTF, performance de GPU y Spline como alternativa no-code. Use when building 3D scenes, WebGL experiences, or react-three-fiber components.
+description: "Desarrollo web 3D en tiempo real con three.js, react-three-fiber y drei en React: escenas WebGL, modelos GLTF, performance de GPU y Spline como alternativa no-code. Use when building 3D scenes, WebGL experiences, or react-three-fiber components."
 license: MIT
 metadata:
   trigger: ["three.js", "threejs", "react-three-fiber", "drei", "webgl", "3d scene"]

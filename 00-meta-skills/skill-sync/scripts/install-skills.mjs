@@ -143,8 +143,8 @@ const AGENT_TARGETS = [
     id: "antigravity",
     name: "Antigravity",
     detect: (h) => existsSync(join(h, ".gemini", "antigravity-cli")) || existsSync(join(h, ".gemini", "antigravity")) || existsSync(join(h, ".agents")) || hasBinary("antigravity") || hasBinary("agy"),
-    globalInstallPath: (h) => join(h, ".agents", "skills"),
-    projectInstallPath: (target) => join(target, ".agents", "skills"),
+    globalInstallPath: (h) => existsSync(join(h, ".gemini", "antigravity")) ? join(h, ".gemini", "antigravity", "skills") : join(h, ".agents", "skills"),
+    projectInstallPath: (target) => existsSync(join(target, ".gemini", "antigravity")) ? join(target, ".gemini", "antigravity", "skills") : join(target, ".agents", "skills"),
   },
   {
     id: "kiro",

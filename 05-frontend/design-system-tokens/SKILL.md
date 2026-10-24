@@ -1,6 +1,6 @@
 ---
 name: design-system-tokens
-description: Design token taxonomy for consistent visual systems — color scales (OKLCH/HSL 50-950), typography scales, 8pt spacing system, elevation/shadow tokens, border radii, z-index layers, and motion tokens. Outputs the canonical DESIGN_SYSTEM.md specification. Trigger: DESIGN_SYSTEM.md, design_system.md, sistema de diseno, design tokens, design system.
+description: "Design token taxonomy for consistent visual systems — color scales (OKLCH/HSL 50-950), typography scales, 8pt spacing system, elevation/shadow tokens, border radii, z-index layers, and motion tokens. Outputs the canonical DESIGN_SYSTEM.md specification. Trigger: DESIGN_SYSTEM.md, design_system.md, sistema de diseno, design tokens, design system."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: kill-switches
-description: Implements emergency stop mechanisms for AI agent processes: heartbeat dead-man switches, process group SIGKILL, stalled session quarantine, and zombie process cleanup. Use when running long autonomous sessions, multi-agent workflows, or unattended CI/CD agents.
+description: "Implements emergency stop mechanisms for AI agent processes: heartbeat dead-man switches, process group SIGKILL, stalled session quarantine, and zombie process cleanup. Use when running long autonomous sessions, multi-agent workflows, or unattended CI/CD agents."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read

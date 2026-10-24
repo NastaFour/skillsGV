@@ -1,6 +1,6 @@
 ---
 name: implement
-description: "Implement a piece of work based on a spec or set of tickets." Use when the task matches this skill.
+description: "Implement a piece of work based on a spec or set of tickets. Use when the task matches this skill."
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:

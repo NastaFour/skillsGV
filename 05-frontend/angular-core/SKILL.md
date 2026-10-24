@@ -1,6 +1,6 @@
 ---
 name: angular-core
-description: Angular core patterns — standalone components (no `standalone: true`), input/output functions, signals for state, NO lifecycle hooks (signals + effect replace them), inject() over constructor, native control flow (@if/@for/@switch), zoneless Angular, RxJS only when needed. Use when creating Angular components or setting up zoneless so the AI does not regress to decorators and ZoneJS.
+description: "Angular core patterns — standalone components (no `standalone: true`), input/output functions, signals for state, NO lifecycle hooks (signals + effect replace them), inject() over constructor, native control flow (@if/@for/@switch), zoneless Angular, RxJS only when needed. Use when creating Angular components or setting up zoneless so the AI does not regress to decorators and ZoneJS."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Angular 20+."
 allowed-tools: Bash(node:*) Read

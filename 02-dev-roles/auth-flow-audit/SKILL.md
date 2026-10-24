@@ -1,6 +1,6 @@
 ---
 name: auth-flow-audit
-description: Audits end-to-end consistency of the auth flow: store, App.tsx, API, cookies, and axios interceptors. Detects anti-patterns like access tokens in localStorage, setToken without getMe, and 401 interceptors that redirect on public pages. Use when implementing or debugging login, register, session refresh, or redirect loops.
+description: "Audits end-to-end consistency of the auth flow: store, App.tsx, API, cookies, and axios interceptors. Detects anti-patterns like access tokens in localStorage, setToken without getMe, and 401 interceptors that redirect on public pages. Use when implementing or debugging login, register, session refresh, or redirect loops."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:

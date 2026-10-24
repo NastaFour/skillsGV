@@ -1,6 +1,6 @@
 ---
 name: observability
-description: Configures observability stack: OpenTelemetry traces, Prometheus metrics, structured logging, and distributed tracing. Use when adding telemetry to services, configuring dashboards, or debugging production issues with traces.
+description: "Configures observability stack: OpenTelemetry traces, Prometheus metrics, structured logging, and distributed tracing. Use when adding telemetry to services, configuring dashboards, or debugging production issues with traces."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read

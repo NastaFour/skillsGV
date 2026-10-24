@@ -289,7 +289,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | grill-with-docs | [12-matt-pocock/grill-with-docs/SKILL.md](12-matt-pocock/grill-with-docs/SKILL.md) ← A relentless interview to sharpen a plan or design, which also creates docs (AD… |
 | grilling | [12-matt-pocock/grilling/SKILL.md](12-matt-pocock/grilling/SKILL.md) ← Grill the user relentlessly about a plan, decision, or idea |
 | handoff | [12-matt-pocock/handoff/SKILL.md](12-matt-pocock/handoff/SKILL.md) ← Use when the session must be compacted into a handoff document for another agen… |
-| implement | [12-matt-pocock/implement/SKILL.md](12-matt-pocock/implement/SKILL.md) ← Implement a piece of work based on a spec or set of tickets." Use when the task… |
+| implement | [12-matt-pocock/implement/SKILL.md](12-matt-pocock/implement/SKILL.md) ← Implement a piece of work based on a spec or set of tickets |
 | improve-codebase-architecture | [12-matt-pocock/improve-codebase-architecture/SKILL.md](12-matt-pocock/improve-codebase-architecture/SKILL.md) ← Scan a codebase for deepening opportunities, present them as a visual HTML repo… |
 | migrate-to-shoehorn | [12-matt-pocock/migrate-to-shoehorn/SKILL.md](12-matt-pocock/migrate-to-shoehorn/SKILL.md) ← Migrate test files from `as` type assertions to @total-typescript/shoehorn |
 | prototype | [12-matt-pocock/prototype/SKILL.md](12-matt-pocock/prototype/SKILL.md) ← Build a throwaway prototype to answer a design question |

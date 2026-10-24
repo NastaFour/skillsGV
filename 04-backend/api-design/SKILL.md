@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: Defines REST API design conventions: URL structure, HTTP methods, status codes, pagination, filtering, versioning, and error response format. Use when creating new endpoints, designing API contracts, or reviewing API consistency.
+description: "Defines REST API design conventions: URL structure, HTTP methods, status codes, pagination, filtering, versioning, and error response format. Use when creating new endpoints, designing API contracts, or reviewing API consistency."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read

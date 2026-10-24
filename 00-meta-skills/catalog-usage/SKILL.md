@@ -1,6 +1,6 @@
 ---
 name: catalog-usage
-description: Trigger: instalar skills, catálogo de skills, usar el catálogo, skill-sync, install-skills, onboarding, rollback, uninstall. Onboarding y operación del catálogo para agentes: instalación, uso diario y mantenimiento.
+description: "Trigger: instalar skills, catálogo de skills, usar el catálogo, skill-sync, install-skills, onboarding, rollback, uninstall. Onboarding y operación del catálogo para agentes: instalación, uso diario y mantenimiento."
 license: MIT
 compatibility: Requires Node 20+. Windows-first (pure Node scripts, no Bash). Cross-platform (Windows, macOS, Linux).
 metadata:

@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: Defines error handling patterns across the stack: Result types, Express error middleware, React error boundaries, and Socket.io error events. Use when implementing error handling, debugging error flows, or creating custom error classes.
+description: "Defines error handling patterns across the stack: Result types, Express error middleware, React error boundaries, and Socket.io error events. Use when implementing error handling, debugging error flows, or creating custom error classes."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read

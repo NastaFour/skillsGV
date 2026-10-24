@@ -1,6 +1,6 @@
 ---
 name: angular-architecture
-description: Angular architecture — the Scope Rule (scope determines structure: 1 feature → features/[feature]/, 2+ features → features/shared/), project structure, file naming (no .component/.service/.model suffixes), style guide (inject() over constructor, readonly inputs, name handlers by action). Use when structuring Angular projects so the AI does not place single-use components in shared/.
+description: "Angular architecture — the Scope Rule (scope determines structure: 1 feature → features/[feature]/, 2+ features → features/shared/), project structure, file naming (no .component/.service/.model suffixes), style guide (inject() over constructor, readonly inputs, name handlers by action). Use when structuring Angular projects so the AI does not place single-use components in shared/."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Angular 20+."
 allowed-tools: Bash(node:*) Read

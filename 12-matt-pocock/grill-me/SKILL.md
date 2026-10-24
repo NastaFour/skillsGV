@@ -1,6 +1,6 @@
 ---
 name: grill-me
-description: Trigger: grill, interview, stress-test. Use when the user wants to sharpen a plan or design with relentless questioning.
+description: "Trigger: grill, interview, stress-test. Use when the user wants to sharpen a plan or design with relentless questioning."
 allowed-tools: Read Write Glob Grep Bash(git:*,gh:*)
 license: MIT
 metadata:
