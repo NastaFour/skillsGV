@@ -3,7 +3,7 @@ name: signup-flow-cro
 description: "Reducción de fricción y optimización de conversión en formularios y flujos de registro. Úsala para aumentar tasas de completitud de signup. No usar para lógica interna de JWT o base de datos."
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   trigger: ["signup flow cro", "flujo de registro", "formulario de registro", "reducir friccion registro", "social login cro"]
   scope: [global, project]
 allowed-tools: Read Bash(node:*)
@@ -11,58 +11,56 @@ allowed-tools: Read Bash(node:*)
 
 # 📝 signup-flow-cro — Reducción de Fricción en Flujos de Registro
 
-Directrices de optimización de conversión (CRO) especializadas en la reducción de fricción cognitiva y abandono en formularios de registro (*Sign Up*). Enfocadas en maximizar la tasa de completitud mediante el principio de fricción mínima, validación asistida en tiempo real y arquitectura progresiva por etapas.
+Directrices de optimización de conversión (CRO) especializadas en la reducción de fricción cognitiva y abandono en formularios de registro (*Sign Up*). Estructuradas en **Guardrails de 2 Niveles** para maximizar la tasa de completitud mediante validación asistida, accesibilidad nativa con gestores de contraseñas y arquitectura progresiva adaptable tanto a SaaS PLG como a flujos B2B/Regulados.
 
 ---
 
 ## 📋 Cuándo Usar
 
-- Al diseñar, maquetar o refactorizar pantallas o diálogos modales de registro de usuario.
-- Al identificar tasas altas de abandono (*drop-off*) entre el acceso a `/registro` y la creación de la cuenta.
-- Para simplificar formularios saturados que solicitan demasiada información antes de otorgar valor.
-- Para implementar formularios multi-paso progresivos con indicadores claros de avance.
-- Para incorporar validación en línea contextual, visibilidad de contraseña y sugerencias de corrección en campos de correo.
-- **NO usar** para lógica de backend, almacenamiento de contraseñas, hashing criptográfico o emisión de JWT (usar `04-backend/jwt-bcrypt`).
-- **NO usar** para formularios de facturación o cobros bancarios (usar habilidades de pagos o checkout).
+- Al diseñar, maquetar o refactorizar pantallas o diálogos de creación de cuenta.
+- Al identificar tasas altas de abandono (*drop-off*) entre la visita a `/registro` y la creación efectiva del usuario.
+- Para simplificar formularios saturados o estructurarlos en etapas progresivas con indicadores de avance.
+- Para incorporar validación en línea asistida (`onBlur` / debounce), interruptor de visibilidad de contraseña y soporte completo de autocompletado (`autoComplete`) y Passkeys/OAuth.
+- **NO usar** para lógica de almacenamiento de contraseñas en servidor, hashing criptográfico o emisión de JWT (usar `04-backend/jwt-bcrypt`).
+- **NO usar** para flujos de pasarela de pago o liquidación bancaria.
 
 ---
 
-## 🚦 Reglas Duras
+## 🛡️ Guardrails de 2 Niveles (Invariantes Duros vs Heurísticas Contextuales)
 
-1. **Principio de Fricción Mínima en el Paso 1**: Solicitar exclusivamente los datos imprescindibles para autenticar al usuario (Email y Contraseña o un botón de acceso social OAuth). Todo dato accesorio (número de teléfono, razón social, cargo, número de empleados) debe postergarse obligatoriamente para la etapa de onboarding posterior al registro.
-2. **Prohibición de Campos Duplicados de Contraseña**: Queda estrictamente prohibido solicitar confirmación repetitiva de contraseña (*"Repetir contraseña"*). La verificación se resuelve proporcionando un interruptor de visibilidad claro y accesible (`Show/Hide password`) junto con un indicador visual de robustez.
-3. **Validación Inline Asistida, Nunca Castigadora**: Prohibido retener la validación hasta el evento final `onSubmit` o desplegar mensajes de error en rojo antes de que el usuario termine de interactuar. Las comprobaciones de formato deben validarse tras el evento `onBlur` o mediante pausas de tipeo (*debounce*), premiando el cumplimiento con indicadores afirmativos verdes.
-4. **Barra de Progreso Transparente en Flujos Multi-Step**: Si el proceso de registro requiere segmentación o configuración inicial forzosa en más de un paso, debe presentarse una barra de avance continua o un contador visual claro (ej. *"Paso 1 de 2: Tu Cuenta"*).
-5. **Atributos Nativos de Autocompletado**: Cada campo de entrada debe incluir los atributos semánticos de accesibilidad y navegador correspondientes (`autoComplete="email"`, `autoComplete="new-password"`), habilitando gestores de contraseñas y reduciendo errores manuales.
+### Nivel 1: Invariantes Duros (Innegociables en Todo Dominio)
+1. **Soporte Nativo de Gestores de Contraseñas y Accesibilidad**: Cada campo debe asociar un `<label>` explícito, declarar atributos semánticos (`type="email"`, `autoComplete="email"`, `autoComplete="new-password"`, `aria-invalid`, `aria-describedby`) y nunca bloquear el pegado (`onPaste`) en campos de contraseña o código OTP.
+2. **Validación Inline Asistida, Nunca Castigadora**: No disparar errores en rojo en el primer carácter escrito (`onChange` temprano) ni esperar únicamente al `onSubmit`. Validar formato al perder el foco (`onBlur`) o tras pausa de escritura (*debounce*), manteniendo feedback en vivo solo para despejar un error ya corregido o mostrar criterios de fortaleza de contraseña.
+3. **Preservación de Estado ante Errores**: Si falla el envío o un correo ya existe, conservar los datos ingresados y ofrecer acción directa (iniciar sesión o recuperar acceso) sin vaciar el formulario.
+
+### Nivel 2: Heurísticas Contextuales CRO (Base Self-Serve vs Excepciones B2B/Compliance)
+1. **Fricción Mínima en el Paso 1**:
+   - *Por defecto (PLG / B2C Self-Serve)*: Solicitar únicamente las credenciales esenciales (Email + Contraseña, Passkey o botón OAuth/SSO) en el primer paso, posponiendo datos de perfil u organización para el onboarding posterior.
+   - *Excepción Contextual (`[Beyond-Baseline]`)*: En productos **B2B Enterprise, Fintech (KYC/KYB), Salud o portales con aprovisionamiento por tenant/región**, donde la creación de la cuenta requiere legal o técnicamente el identificador fiscal, dominio corporativo, región de residencia de datos (`EU` vs `US`) o código de invitación, estructurar un **Flujo Multi-Paso Progresivo** (Paso 1: Identidad/Credencial -> Paso 2: Datos de Tenant/Compliance) con barra de progreso explícita.
+2. **Campo Único de Contraseña con Interruptor de Visibilidad**:
+   - *Por defecto*: Evitar el campo duplicado *"Repetir contraseña"* utilizando en su lugar un botón accesible `Mostrar/Ocultar contraseña` (`aria-label`) e indicadores dinámicos de requisitos.
+   - *Excepción Contextual (`[Beyond-Baseline]`)*: En generación de frases semilla sin custodia o claves maestras no recuperables donde el soporte no puede restablecer la clave, se autoriza un paso de verificación explícita documentado con `[Beyond-Baseline: non-custodial key verification]`.
 
 ---
 
 ## 🧠 Metodología Paso a Paso
 
-### 1. Principio de Fricción Mínima (Fase de Entrada Inmediata)
-- **Acceso con 1 Clic (Social Login / OAuth)**: Ubicar los botones de acceso de proveedores habituales (Google, GitHub) en la posición superior con alta visibilidad. Esto reduce la fricción a un solo toque y ahorra el ingreso manual de credenciales.
-- **Separador Semántico Discreto**: Emplear un divisor sutil (*"O continúa con tu correo"*) para dar paso al formulario tradicional sin saturar visualmente.
-- **Micro-Copy de Confianza**: Indicar de manera concisa que no se realizarán cargos ni se publicará nada en sus redes (*"No compartiremos tus datos con terceros"*).
+### 1. Fase de Entrada Rápida (SSO / OAuth / Email)
+- **Acceso con 1 Clic**: Cuando el dominio lo permita, ubicar proveedores de identidad (Google, GitHub, Microsoft Entra / SAML SSO) en posición prioritaria.
+- **Divisor Semántico**: Separar claramente el acceso federado del formulario de correo electrónico.
 
-### 2. Eliminación de Campos Redundantes y Visibilidad de Contraseña
-- **Interruptor de Contraseña**: Añadir un botón accesible de tipo `button` con icono de ojo para alternar el atributo `type="password"` a `type="text"`. Esto reduce en más de un 80% los errores tipográficos en dispositivos móviles y teclados compactos.
-- **Requisitos Claros y Dinámicos**: En vez de un texto intimidante con reglas complejas (*"Debe contener 8 caracteres, mayúscula, símbolo..."*), mostrar una lista de comprobación dinámica debajo del campo que cambie de color a medida que el usuario cumple cada criterio.
+### 2. Visibilidad de Contraseña y Requisitos en Tiempo Real
+- Añadir un botón `type="button"` para alternar `type="password"` y `type="text"`, reduciendo errores tipográficos en teclados móviles.
+- Mostrar criterios verificables (`8+ caracteres`, `número o símbolo`) que cambien de estado conforme el usuario escribe.
 
-### 3. Validación Inline Asistida en Tiempo Real
-- **Detección de Errores de Dominio**: Verificar errores tipográficos habituales en correos populares (ej. sugerir *"¿Quisiste escribir @gmail.com?"* ante entradas como `@gmai.com`).
-- **Estados de Éxito Visual**: Mostrar un icono de validación verde discreto cuando el formato del email sea correcto y la contraseña cumpla los requisitos mínimos, reforzando la sensación de avance rápido.
-- **Manejo Amigable de Errores**: Si un correo ya está registrado, ofrecer de inmediato un enlace directo para iniciar sesión o recuperar contraseña, sin forzar a rellenar el formulario desde cero.
-
-### 4. Formularios Progresivos Multi-Step
-- **Paso 1 (Compromiso Mínimo)**: Creación de credencial (Email + Contraseña). Al hacer clic en *"Continuar"*, la cuenta base queda generada.
-- **Paso 2 (Personalización Rápida)**: Nombre del espacio de trabajo o rol profesional, con opción accesible de *"Omitir por ahora"*.
-- **Persistencia de Estado**: Guardar el progreso de los campos en memoria durante la sesión para que un retroceso accidental no borre la información ya ingresada.
+### 3. Arquitectura Multi-Paso cuando Existan Datos de Negocio
+- Si se requieren campos adicionales de organización o cumplimiento, asegurar la creación o reserva del progreso en el Paso 1 y mostrar un indicador claro (`Paso 1 de 2: Tu Cuenta` -> `Paso 2 de 2: Organización`).
 
 ---
 
 ## 💻 Ejemplos de Implementación
 
-### Ejemplo 1: Formulario de Registro Minimalista con Toggle de Contraseña y Medidor de Fuerza (React + Tailwind CSS)
+### Ejemplo 1: Formulario de Registro con Toggle de Contraseña y Validación Asistida (React + Tailwind CSS)
 ```tsx
 import React, { useState } from "react";
 
@@ -72,11 +70,9 @@ export function MinimalSignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [touchedEmail, setTouchedEmail] = useState(false);
 
-  // Validación básica del formato de correo
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const showEmailError = touchedEmail && email.length > 0 && !isEmailValid;
 
-  // Criterios de fortaleza de contraseña
   const hasMinLength = password.length >= 8;
   const hasNumberOrSymbol = /[\d!@#$%^&*]/.test(password);
 
@@ -88,136 +84,106 @@ export function MinimalSignupForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="w-full max-w-md mx-auto rounded-2xl border border-border-subtle bg-surface-primary p-8 shadow-sm">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Crea tu cuenta gratis</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Comienza tu prueba de 14 días en menos de un minuto.
+        <h2 className="text-2xl font-bold text-text-primary">Crea tu cuenta</h2>
+        <p className="mt-1 text-sm text-text-secondary">
+          Comienza en menos de un minuto sin configuraciones complejas.
         </p>
       </div>
 
-      {/* Botón de Social Login prioritario */}
       <button
         type="button"
-        className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750"
+        className="flex w-full items-center justify-center gap-3 rounded-xl border border-border-subtle bg-surface-elevated px-4 py-3 text-sm font-semibold text-text-primary shadow-xs transition hover:border-accent-primary"
       >
-        <svg className="h-5 w-5" viewBox="0 0 24 24">
-          <path
-            fill="#4285F4"
-            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-          />
-          <path
-            fill="#34A853"
-            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-          />
-          <path
-            fill="#FBBC05"
-            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-          />
-          <path
-            fill="#EA4335"
-            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-          />
-        </svg>
-        Registrarse con Google
+        Continuar con SSO / Google
       </button>
 
-      {/* Divisor semántico */}
       <div className="relative my-6 flex items-center justify-center">
-        <div className="w-full border-t border-slate-200 dark:border-slate-800" />
-        <span className="absolute bg-white px-3 text-xs font-medium uppercase text-slate-400 dark:bg-slate-900">
-          o con correo electrónico
+        <div className="w-full border-t border-border-subtle" />
+        <span className="absolute bg-surface-primary px-3 text-xs font-medium uppercase text-text-secondary">
+          o con tu correo
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Campo de Correo Electrónico con validación asistida */}
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div>
-          <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-            Correo corporativo o personal
+          <label htmlFor="signup-email" className="block text-xs font-medium text-text-primary">
+            Correo electrónico
           </label>
           <div className="relative mt-1">
             <input
+              id="signup-email"
               type="email"
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() => setTouchedEmail(true)}
+              aria-invalid={showEmailError}
+              aria-describedby={showEmailError ? "email-error" : undefined}
               placeholder="tu@empresa.com"
-              className={`w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none transition ${
-                showEmailError
-                  ? "border-rose-400 bg-rose-50/30 text-rose-900 dark:bg-rose-950/20 dark:text-rose-200"
-                  : isEmailValid
-                  ? "border-emerald-500 bg-emerald-50/20 text-slate-900 dark:text-white"
-                  : "border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              }`}
+              className="w-full rounded-xl border border-border-subtle bg-surface-elevated px-3.5 py-2.5 text-sm text-text-primary outline-none transition focus:border-accent-primary"
             />
             {isEmailValid && (
-              <span className="absolute right-3 top-3 text-emerald-500 text-sm">✓</span>
+              <span className="absolute right-3 top-2.5 text-accent-primary text-sm" aria-hidden="true">
+                ✓
+              </span>
             )}
           </div>
           {showEmailError && (
-            <p className="mt-1 text-xs text-rose-500">Por favor introduce un correo válido.</p>
+            <p id="email-error" role="alert" className="mt-1 text-xs text-text-secondary">
+              Por favor introduce una dirección de correo válida.
+            </p>
           )}
         </div>
 
-        {/* Campo de Contraseña sin repetición y con interruptor de vista */}
         <div>
-          <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+          <label htmlFor="signup-password" className="block text-xs font-medium text-text-primary">
             Contraseña
           </label>
           <div className="relative mt-1">
             <input
+              id="signup-password"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mínimo 8 caracteres"
-              className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-xl border border-border-subtle bg-surface-elevated px-3.5 py-2.5 pr-16 text-sm text-text-primary outline-none transition focus:border-accent-primary"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-              aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+              className="absolute right-3 top-2.5 text-xs font-semibold text-text-secondary hover:text-text-primary"
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
               {showPassword ? "Ocultar" : "Mostrar"}
             </button>
           </div>
 
-          {/* Comprobadores visuales dinámicos de seguridad */}
-          <div className="mt-2.5 flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-            <span className={`flex items-center gap-1 ${hasMinLength ? "text-emerald-500 font-medium" : ""}`}>
+          <div className="mt-2.5 flex items-center gap-4 text-xs text-text-secondary">
+            <span className={hasMinLength ? "text-text-primary font-semibold" : ""}>
               {hasMinLength ? "✓" : "○"} 8+ caracteres
             </span>
-            <span className={`flex items-center gap-1 ${hasNumberOrSymbol ? "text-emerald-500 font-medium" : ""}`}>
+            <span className={hasNumberOrSymbol ? "text-text-primary font-semibold" : ""}>
               {hasNumberOrSymbol ? "✓" : "○"} 1 número o símbolo
             </span>
           </div>
         </div>
 
-        {/* Botón de acción primordial */}
         <button
           type="submit"
-          className="mt-2 w-full rounded-xl bg-emerald-500 py-3 text-sm font-semibold text-slate-950 shadow-md transition hover:bg-emerald-400"
+          className="mt-2 w-full rounded-xl bg-accent-primary py-3 text-sm font-semibold text-surface-primary shadow-md transition hover:bg-accent-hover"
         >
-          Crear cuenta y comenzar
+          Crear cuenta y continuar
         </button>
       </form>
-
-      <p className="mt-4 text-center text-xs text-slate-400">
-        Al registrarte, aceptas nuestros{" "}
-        <a href="/terminos" className="underline hover:text-slate-600 dark:hover:text-slate-300">
-          Términos de Servicio
-        </a>
-        .
-      </p>
     </div>
   );
 }
 ```
 
-### Ejemplo 2: Flujo Progresivo Multi-Paso con Indicador de Progreso
+### Ejemplo 2: Flujo Progresivo Multi-Paso para Entornos B2B / Tenant Setup
 ```tsx
 import React, { useState } from "react";
 
@@ -225,25 +191,20 @@ export function MultiStepSignup() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
     workspaceName: "",
-    role: "Desarrollo",
+    dataRegion: "eu-west-1",
   });
 
-  const nextStep = () => setStep((s) => s + 1);
-  const prevStep = () => setStep((s) => s - 1);
-
   return (
-    <div className="w-full max-w-lg mx-auto rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      {/* Barra de Progreso Superior */}
+    <div className="w-full max-w-lg mx-auto rounded-2xl border border-border-subtle bg-surface-primary p-8 shadow-sm">
       <div className="mb-8">
-        <div className="flex justify-between text-xs font-semibold uppercase text-slate-400 mb-2">
+        <div className="flex justify-between text-xs font-semibold uppercase text-text-secondary mb-2">
           <span>Paso {step} de 2</span>
-          <span>{step === 1 ? "Credenciales" : "Espacio de trabajo"}</span>
+          <span>{step === 1 ? "Identidad" : "Organización y Región"}</span>
         </div>
-        <div className="h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+        <div className="h-1.5 w-full rounded-full bg-surface-elevated overflow-hidden">
           <div
-            className="h-full bg-emerald-500 transition-all duration-300"
+            className="h-full bg-accent-primary transition-all duration-300"
             style={{ width: `${(step / 2) * 100}%` }}
           />
         </div>
@@ -251,46 +212,47 @@ export function MultiStepSignup() {
 
       {step === 1 ? (
         <div className="space-y-4">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Empieza con tu correo</h3>
+          <h3 className="text-xl font-bold text-text-primary">Empieza con tu correo corporativo</h3>
           <input
             type="email"
+            autoComplete="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="ejemplo@empresa.com"
-            className="w-full rounded-xl border border-slate-200 p-3 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            placeholder="nombre@empresa.com"
+            className="w-full rounded-xl border border-border-subtle bg-surface-elevated p-3 text-sm text-text-primary"
           />
           <button
             type="button"
-            onClick={nextStep}
-            className="w-full rounded-xl bg-emerald-500 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400"
+            onClick={() => setStep(2)}
+            className="w-full rounded-xl bg-accent-primary py-3 text-sm font-semibold text-surface-primary hover:bg-accent-hover"
           >
             Continuar al paso siguiente →
           </button>
         </div>
       ) : (
         <div className="space-y-4">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Personaliza tu entorno</h3>
+          <h3 className="text-xl font-bold text-text-primary">Configura tu Tenant</h3>
           <input
             type="text"
+            autoComplete="organization"
             value={formData.workspaceName}
             onChange={(e) => setFormData({ ...formData, workspaceName: e.target.value })}
-            placeholder="Nombre de tu proyecto o equipo"
-            className="w-full rounded-xl border border-slate-200 p-3 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            placeholder="Nombre de la organización"
+            className="w-full rounded-xl border border-border-subtle bg-surface-elevated p-3 text-sm text-text-primary"
           />
           <div className="flex items-center gap-3 pt-2">
             <button
               type="button"
-              onClick={prevStep}
-              className="w-1/3 rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300"
+              onClick={() => setStep(1)}
+              className="w-1/3 rounded-xl border border-border-subtle bg-surface-elevated py-3 text-sm font-semibold text-text-primary"
             >
               Atrás
             </button>
             <button
               type="button"
-              onClick={() => alert("Registro completado")}
-              className="w-2/3 rounded-xl bg-emerald-500 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400"
+              className="w-2/3 rounded-xl bg-accent-primary py-3 text-sm font-semibold text-surface-primary hover:bg-accent-hover"
             >
-              Finalizar configuración
+              Finalizar aprovisionamiento
             </button>
           </div>
         </div>
@@ -302,12 +264,17 @@ export function MultiStepSignup() {
 
 ---
 
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+El formulario de un solo paso (Email + Contraseña/OAuth) es la heurística óptima para productos SaaS autogestionados. En arquitecturas **B2B Enterprise, Fintech regulado (KYC/KYB), Salud (HIPAA) o sistemas multi-tenant con residencia de datos inmutable**, donde ciertos campos organizacionales, códigos de verificación MFA/OTP o validaciones de dominio son indispensables antes de emitir la sesión inicial, implementa un flujo multi-paso transparente con persistencia de estado, documentando la razón con `[Beyond-Baseline: <requisito B2B tenant/KYC/seguridad>]`.
+
+---
+
 ## 🚫 Anti-Patrones Comunes
 
 | Anti-Patrón Inadecuado | Impacto Negativo en CRO | Solución Correcta |
 | :--- | :--- | :--- |
-| **Pedir datos no esenciales de inmediato** (teléfono, empresa, dirección) | Incrementa la resistencia psicológica y genera más de un 40% de abandonos tempranos. | Solo email/contraseña o OAuth en el registro; trasladar preguntas opcionales al onboarding. |
-| **Obligar a repetir la contraseña** (*"Confirmar Contraseña"*) | Provoca frustración por discrepancias de tipeo y duplica la longitud percibida del formulario. | Un único campo con botón de ver/ocultar contraseña e indicador de requisitos en tiempo real. |
-| **Validación agresiva en el evento `onChange` inicial** | Alerta al usuario con textos rojos de error antes de que haya terminado de escribir el correo. | Validar al perder el foco (`onBlur`) o tras pausa (*debounce*), mostrando checks positivos al acertar. |
-| **Flujos de múltiples pasos sin indicador de avance** | La incertidumbre sobre cuántos pasos faltan impulsa a cerrar la pestaña. | Barra de avance continua o contador claro (*"Paso 1 de 2"*) con opción de omitir pasos secundarios. |
-| **Ausencia de botones de Social Login (Google / GitHub)** | Obliga a recordar una nueva contraseña, elevando la fricción en usuarios móviles. | Botón de Social Login en la cabecera del formulario para permitir el registro en 1 toque. |
+| **Pedir campos de marketing no esenciales en el Paso 1** | Incrementa el abandono temprano en más de un 40%. | Posponer encuestas opcionales al onboarding o dividir en pasos claros si son requisitos técnicos de tenant. |
+| **Bloquear pegado (`onPaste`) o carecer de `autoComplete`** | Impide el uso de gestores de contraseñas (1Password, Bitwarden, iCloud Keychain). | Respetar eventos nativos del portapapeles e incluir `autoComplete="new-password"`. |
+| **Validación agresiva en el primer `onChange`** | Muestra errores en rojo mientras el usuario aún está escribiendo su correo. | Validar en `onBlur` o con *debounce*, limpiando el error inmediatamente al corregirse. |
+| **Flujos de múltiples pasos sin indicador de avance** | Genera incertidumbre sobre la longitud real del registro. | Mostrar barra de progreso (`Paso 1 de 2`) y preservar los valores al navegar atrás. |

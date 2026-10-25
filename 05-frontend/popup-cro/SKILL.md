@@ -1,9 +1,9 @@
 ---
 name: popup-cro
-description: "Diseño de popups, modales de exit-intent y banners de alta conversión sin degradar la experiencia de usuario. No usar para notificaciones nativas push o correos transaccionales."
+description: "Diseño de popups, modales de exit-intent y banners de alta conversión sin degradar la experiencia de usuario. Úsala al implementar modales promocionales o de retención. No usar para notificaciones nativas push o correos transaccionales."
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   trigger: ["popup cro", "exit intent modal", "slide in banner", "micro conversion", "modal de conversion"]
   scope: [global, project]
 allowed-tools: Read Bash(node:*)
@@ -11,52 +11,51 @@ allowed-tools: Read Bash(node:*)
 
 # 💡 popup-cro — Modales de Exit-Intent, Banners y Micro-Conversiones
 
-Principios de Optimización de Tasa de Conversión (CRO) aplicados al diseño y comportamiento de ventanas modales, detección de intención de salida (*exit-intent*) y barras deslizantes (*slide-in banners*). Diseñado para capturar micro-conversiones legítimas maximizando el valor entregado y erradicando prácticas intrusivas que deterioran la experiencia o el posicionamiento SEO.
+Principios de Optimización de Tasa de Conversión (CRO) aplicados al diseño y comportamiento de ventanas modales, detección de intención de salida (*exit-intent*) y barras deslizantes (*slide-in banners*). Estructurado en **Guardrails de 2 Niveles** para capturar micro-conversiones legítimas, erradicar patrones oscuros (*dark patterns*) y adaptarse tanto a flujos PLG/e-commerce como a entornos regulados.
 
 ---
 
 ## 📋 Cuándo Usar
 
-- Al implementar modales de intención de salida (*exit-intent*) para recuperar visitantes a punto de cerrar la pestaña.
+- Al implementar modales de intención de salida (*exit-intent*) para recuperar visitantes a punto de abandonar una página clave.
 - Al diseñar banners deslizantes laterales o inferiores (*slide-ins*) activados por profundidad de lectura (*scroll depth*).
-- Para capturar prospectos calificados ofreciendo recursos de alta utilidad (plantillas, calculadoras, guías o descuentos).
-- Para prevenir carritos abandonados o pérdidas de formularios a medio rellenar.
-- Para establecer políticas de frecuencia y persistencia que eviten hostigar al usuario en visitas recurrentes.
+- Para capturar prospectos calificados ofreciendo recursos de utilidad inmediata (plantillas, calculadoras, guías o descuentos).
+- Para prevenir carritos abandonados o pérdida accidental de formularios con cambios sin guardar.
+- Para establecer políticas de frecuencia (*frequency capping*) y persistencia que eviten fatigar al usuario.
 - **NO usar** para notificaciones nativas push del sistema operativo o navegador (usar `push-notifications`).
-- **NO usar** para correos transaccionales, códigos OTP o alertas de cuenta (usar `notifications-multichannel`).
+- **NO usar** para correos transaccionales, códigos OTP o alertas de servidor (usar `notifications-multichannel`).
 
 ---
 
-## 🚦 Reglas Duras
+## 🛡️ Guardrails de 2 Niveles (Invariantes Duros vs Heurísticas Contextuales)
 
-1. **Disparadores Basados en Intención, Nunca en Carga Inmediata**: Queda terminantemente prohibido mostrar modales promocionales de inmediato al cargar la página (`onLoad`). El despliegue debe fundamentarse en señales de intención demostrada: salida del cursor hacia la barra de pestañas (*exit-intent* en desktop), desplazamiento profundo de lectura (*scroll depth* > 60-70%) o inactividad controlada (> 45 segundos).
-2. **Ergonomía y Control Total de Cierre**: El modal debe ofrecer tres vías de cierre instantáneas: (a) pulsación de la tecla `Escape`, (b) clic en el área oscura exterior (*backdrop*), y (c) un botón de cierre visual "X" con área táctil accesible (mínimo 44x44px) y atributo `aria-label="Cerrar modal"`.
-3. **Limitación Estricta de Frecuencia (Frequency Capping)**: Máximo un modal interactivo por sesión. Si el usuario descarta o cierra el aviso, debe almacenarse la marca temporal para no volver a presentarlo durante un período mínimo de 14 a 30 días.
-4. **Micro-Conversiones con Utilidad Inmediata**: Prohibido utilizar textos genéricos pasivos (*"Suscríbete a nuestro boletín"*). Toda solicitud de datos debe responder a una propuesta de valor tangible y consumible al instante (*"Descarga la guía en PDF"*, *"Calcula tu ROI en 30 segundos"* o *"Desbloquea 15% de descuento"*).
-5. **Cumplimiento Estricto de Directrices Móviles (Evitar Penalizaciones SEO)**: En dispositivos móviles, prohibido superponer modales invasivos a pantalla completa que tapen el contenido principal (Directriz contra *Interstitials* intrusivos de Google). En su lugar, emplear banners inferiores compactos (*bottom sheets*) o barras fijas discretas que no ocupen más del 25% del visor.
+### Nivel 1: Invariantes Duros (Innegociables en Todo Dominio)
+1. **Cero Patrones Oscuros (*Zero Dark Patterns*)**: Nunca ocultar ni miniaturizar el control de cierre, nunca disfrazar anuncios como alertas del sistema y nunca emplear textos de culpabilización (*confirmshaming* como *"No, prefiero seguir perdiendo dinero"*).
+2. **Accesibilidad Completa de Teclado y Lector de Pantalla**: Todo diálogo modal interactivo debe declarar `role="dialog"`, `aria-modal="true"` y `aria-labelledby`, atrapar el foco mientras esté abierto, devolver el foco al cerrarse y ofrecer tres vías de cierre claras (tecla `Escape`, clic en `backdrop` y botón `"X"` con área táctil `>= 44x44px` y `aria-label="Cerrar modal"`).
+3. **Protección de Viewport Móvil y SEO**: En dispositivos móviles, evitar *interstitials* promocionales a pantalla completa que bloqueen la lectura del contenido principal al aterrizar desde buscadores. Preferir *bottom sheets* compactos o banners discretos (`<= 25%` del alto visible).
+
+### Nivel 2: Heurísticas Contextuales CRO (Base PLG/B2C vs Excepciones Enterprise/Compliance)
+1. **Disparadores Basados en Intención (Heurística Base)**:
+   - *Por defecto (Marketing / Lead-Gen)*: Evitar mostrar modales promocionales en el evento `onLoad`. Disparar tras señales de intención demostrada: salida del puntero hacia la barra de pestañas (*exit-intent* en desktop), profundidad de lectura (`scroll depth > 60–70%`) o inactividad en checkout (`> 45s`).
+   - *Excepción Contextual (`[Beyond-Baseline]`)*: Avisos regulatorios obligatorios (consentimiento legal/GDPR estricto, verificación de mayoría de edad, expiración de sesión bancaria, mantenimiento crítico o confirmación de pérdida de datos en formularios editados) están autorizados a activarse en carga o bloquear la vista hasta recibir respuesta explícita.
+2. **Limitación de Frecuencia (*Frequency Capping*)**:
+   - *Por defecto*: Máximo un modal promocional por sesión, con enfriamiento persistente (`14 a 30 días` tras el cierre).
+   - *Excepción Contextual (`[Beyond-Baseline]`)*: Alertas operativas de seguridad, límites de cuota de API o confirmaciones transaccionales se rigen por el estado de la cuenta y no por un enfriamiento de marketing.
+3. **Propuesta de Valor Inmediata y Fricción Mínima**:
+   - Preferir un único campo de entrada (ej. correo electrónico) acompañado de un beneficio tangible e inmediato (*"Descarga el checklist en PDF"*) en lugar de textos pasivos (*"Suscríbete al boletín"*).
 
 ---
 
 ## 🧠 Metodología Paso a Paso
 
 ### 1. Detección Inteligente de Intención
-- **Exit-Intent en Escritorio**: Escuchar el evento `mouseleave` en el elemento `document`. Cuando `e.clientY <= 0` (el cursor se dirige hacia la barra de direcciones o pestañas para abandonar el sitio), verificar si el capping lo autoriza y disparar el modal.
-- **Scroll Depth**: Disparar banners laterales únicamente cuando el lector haya consumido más del 65% del artículo o página de producto, garantizando que ya existe interés genuino.
-- **Inactividad Razonable**: En flujos de compra o embudos largos, detectar pausas prolongadas (> 45s) para ofrecer asistencia en vivo o resolver dudas frecuentes.
+- **Exit-Intent en Escritorio**: Escuchar `mouseleave` en `document`. Cuando `e.clientY <= 0`, verificar el estado de enfriamiento y presentar el modal.
+- **Scroll Depth**: Activar banners laterales solo cuando el lector haya consumido más del 65% del contenido.
+- **Inactividad en Embudos Críticos**: En carritos o configuradores complejos, detectar pausas prolongadas (`> 45s`) para ofrecer ayuda contextual.
 
-### 2. Formulación de la Oferta de Micro-Conversión
-- **Un Solo Campo de Entrada**: Limitar la captura exclusivamente al correo electrónico. Cada campo adicional reduce la conversión del modal en más del 25%.
-- **Titular Enfocado en el Resultado**: *"Llévate la plantilla de métricas CRO lista para usar"* en vez de *"Únete a nuestra lista de correo"*.
-- **CTA con Beneficio Explicito**: Botón de alto contraste que declare el resultado (*"Obtener plantilla gratis"*).
-
-### 3. Ergonomía, Accesibilidad y Cierre Accesible
-- **Atributos Semánticos**: Asignar `role="dialog"`, `aria-modal="true"`, `aria-labelledby` y `aria-describedby` para compatibilidad completa con lectores de pantalla.
-- **Gestión de Teclado**: Retener el foco dentro del modal mientras esté activo y devolver el foco al elemento desencadenante al cerrarse.
-- **Cierre Transparente**: No esconder el botón de salida ni usar botones engañosos con textos de culpabilización (*"No, no me interesa crecer"*).
-
-### 4. Políticas de Persistencia y Capping
-- Registrar en el almacenamiento local del navegador (`localStorage.getItem("modal_dismissed_at")`) la fecha del descarte.
-- Validar antes de cada ejecución si la diferencia entre la fecha actual y la guardada supera el umbral configurado (14 a 30 días). Si no se supera, la función permanece en silencio sin alterar el DOM.
+### 2. Ergonomía, Accesibilidad y Cierre Transparente
+- Asignar `role="dialog"`, `aria-modal="true"`, `aria-labelledby` y `aria-describedby`.
+- Garantizar contraste legible y una opción secundaria neutral de descarte (*"Ahora no, gracias"*).
 
 ---
 
@@ -78,7 +77,6 @@ export function useExitIntent({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Comprobar si el usuario ya descartó el aviso dentro del periodo de enfriamiento
     const dismissedAt = localStorage.getItem(storageKey);
     if (dismissedAt) {
       const daysPassed = (Date.now() - parseInt(dismissedAt, 10)) / (1000 * 60 * 60 * 24);
@@ -88,7 +86,6 @@ export function useExitIntent({
     }
 
     const handleMouseLeave = (e: MouseEvent) => {
-      // Disparar solo cuando el puntero sale por la parte superior de la ventana
       if (e.clientY <= 0) {
         setIsOpen(true);
       }
@@ -109,7 +106,7 @@ export function useExitIntent({
 }
 ```
 
-### Ejemplo 2: Modal de Conversión Accesible con Backdrop (React + Tailwind CSS)
+### Ejemplo 2: Modal de Conversión Accesible con Tokens Semánticos (React + Tailwind CSS)
 ```tsx
 import React, { useEffect, useRef } from "react";
 
@@ -123,7 +120,6 @@ export function ExitIntentModal({ isOpen, onClose }: ExitModalProps) {
   const [submitted, setSubmitted] = React.useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Escuchar tecla Escape para cerrar
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -148,23 +144,21 @@ export function ExitIntentModal({ isOpen, onClose }: ExitModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-primary/80 backdrop-blur-sm transition-opacity"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      {/* Contenedor del Modal (detiene la propagación del clic para evitar cierre accidental) */}
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+        className="relative w-full max-w-lg rounded-2xl border border-border-subtle bg-surface-elevated p-8 shadow-2xl"
       >
-        {/* Botón Accesible de Cierre */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+          className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-primary hover:text-text-primary transition"
           aria-label="Cerrar modal"
         >
           ✕
@@ -172,44 +166,40 @@ export function ExitIntentModal({ isOpen, onClose }: ExitModalProps) {
 
         {!submitted ? (
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-500">
-              🎁 Recurso Exclusivo
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-surface-primary px-3 py-1 text-xs font-semibold text-accent-primary border border-border-subtle">
+              Recurso Práctico
             </div>
-            <h2 id="modal-title" className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">
-              Antes de irte, llévate el Checklist de Auditoría CRO
+            <h2 id="modal-title" className="mt-3 text-2xl font-bold text-text-primary">
+              Antes de irte, descarga el Checklist de Auditoría CRO
             </h2>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              25 puntos clave para identificar fugas de conversión en tu landing page y aumentar tus ventas sin invertir más en tráfico.
+            <p className="mt-2 text-sm text-text-secondary">
+              25 puntos verificables para detectar fugas de conversión en tu flujo principal sin aumentar el gasto en adquisición.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ingresa tu correo"
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                placeholder="tu@empresa.com"
+                className="w-full rounded-xl border border-border-subtle bg-surface-primary px-4 py-3 text-sm text-text-primary outline-none focus:border-accent-primary"
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-md hover:bg-emerald-400 transition"
+                className="shrink-0 rounded-xl bg-accent-primary px-6 py-3 text-sm font-semibold text-surface-primary shadow-md hover:bg-accent-hover transition"
               >
-                Descargar Gratis
+                Obtener guía
               </button>
             </form>
-
-            <p className="mt-3 text-center text-xs text-slate-400">
-              Cero spam. Te enviaremos el enlace al instante.
-            </p>
           </div>
         ) : (
           <div className="py-6 text-center">
-            <span className="text-4xl">🎉</span>
-            <h3 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="mt-2 text-lg font-bold text-text-primary">
               ¡Checklist enviado con éxito!
             </h3>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-text-secondary">
               Revisa tu bandeja de entrada en los próximos instantes.
             </p>
           </div>
@@ -222,12 +212,17 @@ export function ExitIntentModal({ isOpen, onClose }: ExitModalProps) {
 
 ---
 
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+Los disparadores por intención y el *frequency capping* de 14–30 días son la línea base para evitar popups intrusivos en marketing y comercio electrónico. En flujos **Enterprise B2B, Fintech, Salud o Compliance** —donde se requiere bloqueo modal para aceptación de contratos legales actualizados, re-autenticación por inactividad (PSD2/HIPAA), advertencias de riesgo financiero o confirmación de operaciones destructivas—, se autoriza omitir el cierre por clic exterior o disparar el diálogo de forma inmediata, anotando `[Beyond-Baseline: <requisito regulatorio/seguridad>]` y preservando siempre la accesibilidad por teclado y lector de pantalla.
+
+---
+
 ## 🚫 Anti-Patrones Comunes
 
 | Anti-Patrón Inadecuado | Impacto Negativo en CRO | Solución Correcta |
 | :--- | :--- | :--- |
-| **Popup invasivo inmediato en `onLoad`** | Tasa de rebote superior al 50%; destruye la confianza inicial del visitante. | Disparar solo tras intención: *exit-intent*, profundidad de scroll (>60%) o inactividad. |
-| **Ocultar o miniaturizar la 'X' de cierre** | Genera frustración extrema y fuerza al usuario a cerrar la pestaña del navegador. | Botón de cierre visible (área mínima 44x44px), soporte de tecla Escape y clic en el backdrop. |
-| **Popups a pantalla completa en dispositivos móviles** | Penalización directa de posicionamiento por Google (SEO) por bloqueo de lectura. | Usar banners inferiores compactos (*bottom sheets*) que no superen el 25% de la altura visible. |
-| **Preguntar una y otra vez en cada recarga** | Hostigamiento y fatiga visual en usuarios recurrentes o clientes ya suscritos. | Establecer límite estricto de frecuencia (*capping*) con enfriamiento de 14 a 30 días si se cierra. |
-| **Copys manipuladores o culpabilizadores** (*"No, prefiero perder dinero"*) | Deteriora la reputación de la marca y proyecta deshonestidad comercial. | Respetar la decisión del usuario con una opción limpia y neutral de descarte sin reproches. |
+| **Popup promocional invasivo en `onLoad`** | Tasa de rebote superior al 50%; deteriora la confianza inicial. | Disparar promociones tras intención (*exit-intent*, `scroll > 60%`) o usar banner no bloqueante. |
+| **Ocultar o miniaturizar la `'X'` de cierre** | Frustración extrema; fuerza al usuario a cerrar la pestaña completa. | Botón de cierre visible (`>= 44x44px`), soporte de tecla `Escape` y clic en `backdrop`. |
+| **Interstitials promocionales a pantalla completa en móvil** | Penalización directa de posicionamiento orgánico (SEO) por bloqueo de lectura. | Usar *bottom sheets* compactos que no superen el 25% de la altura visible. |
+| **Copys manipuladores (*confirmshaming*)** | Deteriora la reputación de la marca y proyecta deshonestidad comercial. | Opción de descarte clara, respetuosa y neutral. |

@@ -1,122 +1,131 @@
 ---
 name: refactoring-ui
-description: "Metodología Wathan & Schoger: diseñar primero en escala de grises, jerarquía por peso/tono y sombras multicapa. Úsala al pulir interfaces visuales. No usar para branding o logos."
+description: "Metodología Wathan & Schoger armonizada con tokens OKLCH: validación de jerarquía en escala de grises, contraste por peso/luminosidad y elevación multicapa. Úsala al pulir interfaces visuales. No usar para branding o logos."
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   trigger: ["refactoring ui", "jerarquia visual", "escala de grises", "sombras multicapa", "espaciado fijo", "contraste sutil"]
   scope: [global, project]
 allowed-tools: Read Bash(node:*)
 ---
 
-# 📐 refactoring-ui — Metodología de Diseño para Desarrolladores
+# 📐 refactoring-ui — Metodología de Diseño Táctico y Jerarquía Visual
 
-Conjunto de principios tácticos basados en el framework de Adam Wathan y Steve Schoger (*Refactoring UI*). Permite transformar interfaces rígidas o toscas en experiencias visuales jerarquizadas, elegantes y legibles mediante decisiones sistemáticas de diseño.
+Conjunto de principios tácticos basados en *Refactoring UI* (Adam Wathan & Steve Schoger), integrados con el flujo de tokens semánticos OKLCH de `design-driven` (`DESIGN_SYSTEM.md`). Permite transformar interfaces rígidas o saturadas en experiencias visuales jerarquizadas, legibles y coherentes mediante decisiones sistemáticas de contraste, espaciado y elevación.
 
 ---
 
 ## 📋 Cuándo Usar
 
 - Al diseñar o refactorizar pantallas frontend (formularios, tarjetas, tablas, páginas de ajustes, dashboards).
-- Al notar que una interfaz se siente sobrecargada, desalineada o con falta de jerarquía clara.
-- Para eliminar bordes negros pesados y sustituirlos por sombras suaves multicapa y elevaciones naturales.
-- Para estandarizar escalas fijas de espaciado (4/8/12/16/24/32/48/64) y tipografía sin inventar números mágicos.
-- Para reducir el ruido visual eliminando colores innecesarios que compiten entre sí.
-- **NO usar** para diseño de logotipos, branding de marca o ilustraciones complejas.
-- **NO usar** para animaciones táctiles complejas (usar `emil-kowalski` o `motion-framer`).
+- Al notar que una interfaz se siente sobrecargada, desalineada o sin jerarquía clara entre datos primarios y metadatos.
+- Para validar mediante la prueba de luminosidad/escala de grises que la jerarquía visual funciona sin depender exclusivamente del matiz (hue).
+- Para calibrar elevaciones con sombras multicapa o bordes semánticos sutiles (`border-border-subtle`).
+- Para estandarizar escalas modulares de espaciado (`4, 8, 12, 16, 24, 32, 48, 64px`) y tipografía.
+- **NO usar** para diseño de logotipos, identidad corporativa desde cero o ilustraciones vectoriales complejas.
+- **NO usar** para física de animaciones o gestos táctiles (usar `emil-kowalski`).
 
 ---
 
-## 🚦 Reglas Duras
+## 🚦 Reglas e Heurísticas de Jerarquía (Alineadas con `design-driven` D3)
 
-1. **Escala de Grises Primero (Grayscale First)**: Prohibido introducir color hasta que la pantalla completa sea plenamente comprensible, legible y equilibrada en blanco, negro y escala de grises. El color es un acento y refuerzo semántico, no la estructura.
-2. **Jerarquía por Peso y Tono, No por Color**: Para diferenciar niveles de información (título vs descripción vs fecha), variar el peso tipográfico (`font-semibold` frente a `font-normal`) y el tono del gris (`text-slate-900`, `text-slate-600`, `text-slate-400`). Nunca asignar un color saturado diferente a cada línea de texto.
-3. **Prohibición de Bordes Negros Duros**: No utilizar bordes gruesos de alto contraste (`border-gray-400` o `border-black`) para delimitar contenedores. Emplear sombras multicapa suaves (`shadow-sm`, `shadow-md`) o bordes muy sutiles (`border-slate-200/60` sobre blanco, o `border-white/10` en modo oscuro).
-4. **Escala de Espaciado Estricta (Rejilla de 4px / 8px)**: Todos los márgenes, paddings y distancias deben pertenecer a la escala estricta: `4, 8, 12, 16, 24, 32, 48, 64px` (Tailwind `p-1`, `p-2`, `p-3`, `p-4`, `p-6`, `p-8`, `p-12`, `p-16`). Prohibido usar medidas arbitrarias no modulares.
-5. **No Saturar con Color (Un Solo Acento Primario)**: El 90% de la interfaz debe ser territorio de neutros y grises. Reserva un único color de acento primario para las acciones principales (CTA). Los colores semánticos (verde, rojo, ámbar) solo se aplican para comunicar estados puntuales.
-6. **Empezar con Demasiado Espacio en Blanco**: Diseñar primero con espaciados amplios y generosos. Es notablemente más sencillo ajustar y compactar una vista que descomprimir una interfaz congestionada.
+1. **Prueba de Jerarquía Acromática Compatible con Tokens OKLCH**: En lugar de bloquear la definición de la paleta semántica de `DESIGN_SYSTEM.md` (Fase D3), utiliza la "escala de grises" como **heurística de validación óptica**: la jerarquía entre superficies (`--surface-primary`, `--surface-elevated`) y textos (`--text-primary`, `--text-secondary`, `--text-muted`) debe sostenerse por su canal de luminosidad (`L` en OKLCH) y peso tipográfico incluso si se desatura la pantalla al 0%.
+2. **Jerarquía por Peso y Luminosidad, No por Ruido Cromático**: Para diferenciar niveles de información (título vs descripción vs fecha), variar el peso tipográfico (`font-semibold` frente a `font-normal`) y el token semántico de texto (`text-text-primary`, `text-text-secondary`, `text-text-muted`). Nunca asignar un color saturado distinto a cada línea de texto.
+3. **Delimitación de Contenedores según el Arquetipo**:
+   - En arquetipos *Atmospheric Minimalist*, *Humanist* o *Precision Dark UI*, evitar bordes pesados de alto contraste; preferir sombras multicapa suaves (`shadow-sm`, `shadow-md`), diferencias de luminosidad entre superficies (`bg-surface-elevated`) o bordes sutiles (`border-border-subtle`).
+   - En arquetipos *Technical Monograph* o *Neo-Brutalist Swiss Grids*, las líneas divisorias expuestas de `1px solid` (`border-border-subtle` / `border-border-strong`) son estructurales e intencionales.
+4. **Escala de Espaciado Modular (Rejilla de 4px / 8px)**: Los márgenes, paddings y gaps deben pertenecer a la escala modular (`4, 8, 12, 16, 24, 32, 48, 64px`). Evitar medidas mágicas arbitrarias que rompan el ritmo vertical.
+5. **Presupuesto de Color Focal**: El 85–90% de la superficie debe apoyarse en tokens neutros o atmosféricos (`--surface-*`, `--text-*`). Reserva `--accent-primary` para acciones principales (CTA) y estados activos, y tokens semánticos (`--status-success`, `--status-warning`, `--status-danger`) para feedback puntual.
+6. **Respiración Espacial y Ley de Proximidad**: Agrupa elementos relacionados con gaps estrechos (`gap-1.5` a `gap-3`) y separa secciones independientes con espacio generoso (`gap-6` a `gap-12`) antes de añadir líneas divisorias innecesarias.
 
 ---
 
 ## 💡 Principios Tácticos Fundamentales
 
-### 1. Descomponer la Jerarquía en Tres Niveles
-En cualquier tarjeta o bloque de información, clasifica los textos en:
-- **Nivel Primario (El dato crucial)**: `text-slate-900 font-semibold text-base` (ej. nombre de usuario, importe total).
-- **Nivel Secundario (Contexto indispensable)**: `text-slate-600 font-normal text-sm` (ej. descripción, correo electrónico).
-- **Nivel Terciario (Metadato auxiliar)**: `text-slate-400 font-normal text-xs` (ej. fecha, estado de sincronización).
+### 1. Descomponer la Jerarquía en Tres Niveles Semánticos
+En cualquier tarjeta, fila o panel, clasifica los textos en tres niveles:
+- **Nivel Primario (El dato crucial)**: `text-text-primary font-semibold text-base` (ej. nombre de entidad, importe total).
+- **Nivel Secundario (Contexto indispensable)**: `text-text-secondary font-normal text-sm` (ej. rol, descripción breve, identificador).
+- **Nivel Terciario (Metadato auxiliar)**: `text-text-muted font-normal text-xs` (ej. marca temporal, estado de sincronización).
 
-### 2. Separar Mediante Fondos en Vez de Líneas Divisarias
-En lugar de trazar una línea horizontal entre cada fila o sección:
-- Alterna tonos tenues de fondo (`bg-slate-50` frente a `bg-white`).
-- Deja que el espacio en blanco (`gap-6`) marque la separación natural entre grupos no relacionados (principio de proximidad).
+### 2. Separar Mediante Superficies y Proximidad
+En lugar de trazar bordes pesados entre cada fila o bloque:
+- Alterna tokens de superficie (`bg-surface-primary` frente a `bg-surface-elevated`).
+- Deja que el espacio en blanco (`gap-6`) marque la separación natural entre grupos no relacionados.
 
 ### 3. Sombras Multicapa (Luz Directa + Luz Ambiental)
-Una sombra realista combina:
-- Una sombra ambiental pequeña y suave que delimita el borde inferior.
-- Una sombra direccional más amplia y translúcida que simula la fuente de luz superior.
-- En Tailwind CSS, las clases estándar `shadow-sm` y `shadow-md` implementan esta doble capa.
+Cuando el arquetipo utilice elevación física:
+- Combina una sombra ambiental corta que perfile el contorno inferior con una sombra direccional suave y difusa que simule luz cenital (`shadow-sm` / `shadow-md` en modo claro; iluminación de borde superior `inset 0 1px 0 oklch(1 0 0 / 0.06)` en modo oscuro).
 
-### 4. Alineación Correcta en Tablas y Cifras
-- Textos informativos: siempre alineados a la izquierda (`text-left`).
-- Números, fechas, porcentajes y monedas: siempre alineados a la derecha (`text-right`) y con cifras tabulares (`tabular-nums font-mono`).
-- Cabeceras de tabla: atenuadas respecto a los datos (`text-xs font-semibold uppercase tracking-wider text-slate-500`).
+### 4. Alineación Óptica en Tablas y Cifras
+- Textos informativos: alineados a la izquierda (`text-left`).
+- Cantidades, fechas, porcentajes e importes: alineados a la derecha (`text-right`) con cifras tabulares (`tabular-nums font-mono`).
+- Cabeceras de tabla: discretas y estructuradas (`text-xs font-semibold uppercase tracking-wider text-text-secondary`).
 
 ---
 
-## 🛠️ Flujo de Refactorización Paso a Paso
+## 🛠️ Flujo de Pulido Visual Armonizado con `DESIGN_SYSTEM.md`
 
-1. **Auditoría Monocromática**: Pasa toda la vista a escala de grises reemplazando fondos, textos y bordes de color por grises neutros (`slate` o `zinc`).
-2. **Corrección de Espaciado**: Aplica la escala de 4/8/16/24/32px y verifica que los elementos dependientes estén más juntos que los bloques independientes.
-3. **Reemplazo de Bordes**: Sustituye líneas negras por `bg-white shadow-sm border border-slate-200/60 rounded-xl`.
-4. **Calibración de Tipografía**: Ajusta pesos (`font-semibold` / `font-normal`) y contrastes (`text-slate-900` / `text-slate-500`).
-5. **Reintroducción del Color Focal**: Aplica el color de acento primario únicamente al botón de acción decisiva y a estados activos relevantes.
+1. **Anclaje de Tokens (`design-driven` D3)**: Define o verifica la escala OKLCH (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) asegurando saltos claros de luminosidad (`L`).
+2. **Prueba de Contraste Acromático**: Verifica que al inspeccionar la vista sin saturación, las acciones primarias, títulos y contenedores sigan siendo inequívocos.
+3. **Corrección de Proximidad y Espaciado**: Ajusta paddings y márgenes a la escala de 4/8px.
+4. **Calibración de Bordes y Elevación**: Sustituye recuadros toscos por `bg-surface-elevated border border-border-subtle shadow-sm rounded-xl` (o hairlines limpias de `1px` si el arquetipo es *Monograph* / *Swiss Grid*).
+5. **Aplicación Selectiva del Acento**: Reserva `bg-accent-primary` para el CTA principal de la vista.
 
 ---
 
 ## 💻 Ejemplos Prácticos de Refactorización
 
-### Antes: Tarjeta sobrecargada "hecha por programador"
+### Antes: Tarjeta sobrecargada con estilos arbitrarios y sin jerarquía
 ```html
-<!-- Código tosco con bordes duros, colores arbitrarios y falta de jerarquía -->
+<!-- Bordes duros arbitrarios, colores literales que compiten y ausencia de escala tipográfica -->
 <div style="border: 2px solid #666; padding: 15px; margin: 10px; border-radius: 4px;">
-  <h3 style="color: blue; font-size: 16px;">Juan Pérez</h3>
-  <p style="color: black; font-size: 14px;">Administrador de Sistemas</p>
-  <span style="color: green; font-size: 14px;">Activo hace 5 min</span>
-  <button style="background: red; color: white; border: none; padding: 10px;">Suspender</button>
+  <h3 style="color: blue; font-size: 16px;">Elena Rostova</h3>
+  <p style="color: black; font-size: 14px;">Arquitecta de Sistemas Principales</p>
+  <span style="color: green; font-size: 14px;">Sincronizado hace 5 min</span>
+  <button style="background: red; color: white; border: none; padding: 10px;">Revocar acceso</button>
 </div>
 ```
 
-### Después: Refactorizada con la metodología Wathan & Schoger
+### Después: Refactorizada con Jerarquía Wathan & Schoger + Tokens Semánticos
 ```html
-<article class="flex items-center justify-between rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+<article class="flex items-center justify-between rounded-xl border border-border-subtle bg-surface-primary p-5 shadow-sm transition-shadow hover:shadow-md">
   <div class="flex items-center gap-4">
-    <!-- Avatar con tono neutro y borde sutil -->
-    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-      JP
+    <!-- Avatar sobre superficie elevada -->
+    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-elevated font-semibold text-text-primary border border-border-subtle">
+      ER
     </div>
     <div>
-      <!-- Jerarquía primaria por peso y tono -->
-      <h3 class="text-sm font-semibold text-slate-900 dark:text-white">
-        Juan Pérez
+      <!-- Jerarquía primaria por peso y luminosidad -->
+      <h3 class="text-sm font-semibold text-text-primary">
+        Elena Rostova
       </h3>
-      <!-- Nivel secundario en gris atenuado -->
-      <p class="text-xs text-slate-500 dark:text-slate-400">
-        Administrador de Sistemas
+      <!-- Nivel secundario atenuado -->
+      <p class="text-xs text-text-secondary">
+        Arquitecta de Sistemas Principales
       </p>
-      <!-- Metadato terciario con indicador sutil -->
-      <p class="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
-        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-        Activo hace 5 min
+      <!-- Metadato terciario con indicador semántico puntual -->
+      <p class="mt-1 flex items-center gap-1.5 text-xs text-text-secondary">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent-primary"></span>
+        Sincronizado hace 5 min
       </p>
     </div>
   </div>
-  <!-- Acción secundaria discreta en gris en lugar de botón rojo invasivo -->
-  <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-rose-600 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors">
-    Suspender
+  <!-- Acción destructiva secundaria discreta hasta recibir foco/hover -->
+  <button
+    type="button"
+    class="rounded-lg border border-border-subtle bg-surface-elevated px-3 py-1.5 text-xs font-medium text-text-primary hover:border-accent-primary transition-colors"
+  >
+    Revocar acceso
   </button>
 </article>
 ```
+
+---
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+La jerarquía en tres niveles, la escala modular de 4/8px y la restricción de color focal constituyen el piso táctico para evitar interfaces caóticas. Cuando el arquetipo seleccionado en `DESIGN_SYSTEM.md` requiera decisiones expresivas deliberadas —como cuadrículas brutales con líneas expuestas de alto contraste (*Neo-Brutalist Swiss Grids*), tipografía hero de escala extrema (*Kinetic Typography*) o composiciones cromáticas inmersivas (*Bespoke / Creative Exploration*)—, estas prevalecen sobre las heurísticas conservadoras siempre que mantengan legibilidad WCAG y se documenten con `[Beyond-Baseline: <razón técnica/creativa>]`.
 
 ---
 
