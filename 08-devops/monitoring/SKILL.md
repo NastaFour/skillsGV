@@ -1,25 +1,25 @@
 ---
 name: monitoring
-description: Logging, healthchecks, and telemetry standards for the application. Covers Pino/Winston setup, healthcheck endpoints, correlation-ID tracing, and alerts. Use when configuring observability for the backend. Do not use for CI/CD pipelines or infrastructure setup.
+description: "Logging, healthchecks, and observability telemetry standards for backend services. Covers structured logging (Pino/Winston), liveness/readiness healthcheck probes, correlation-ID and OpenTelemetry tracing, and alerting thresholds. Use when configuring backend observability and health monitoring. Do not use for CI/CD pipelines or infrastructure provisioning."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["logging", "healthcheck", "telemetría", "monitoreo", "pino", "winston", "correlation-id", "alertas", "métricas"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# 📊 Monitoring — Logging, Healthchecks & Telemetría
+# 📊 Monitoring — Structured Logging, Healthchecks & Observability
 
-Usa este skill al configurar sistemas de observabilidad para el backend de the application.
+Use this skill when configuring observability, health probes, distributed tracing, and operational alerting for backend services.
 
 ---
 
-## 📝 Estándar de Logging (Pino)
+## 📝 Structured Logging Standard (Pino)
 
 ```typescript
-// packages/shared-utils/src/logger.ts
+// packages/observability/src/logger.ts
 import pino from 'pino';
 
 export const logger = pino({
@@ -27,7 +27,13 @@ export const logger = pino({
   transport: process.env.NODE_ENV === 'development'
     ? { target: 'pino-pretty', options: { colorize: true } }
     : undefined,
-  redact: ['req.headers.authorization', 'req.headers.cookie'],
+  redact: [
+    'req.headers.authorization',
+    'req.headers.cookie',
+    '*.password',
+    '*.token',
+    '*.secret',
+  ],
   serializers: {
     req: (req) => ({
       method: req.method,
@@ -38,96 +44,97 @@ export const logger = pino({
 });
 ```
 
-**Reglas:**
-- Usar `logger.info/error/warn` — nunca `console.log`
-- Todo log debe incluir `correlationId`
-- Redactar tokens, passwords, cookies
-- En producción: salida JSON estructurada (sin pretty-print)
-- Consultar `../../04-backend/expressjs/SKILL.md` para el middleware de error global
+**Core Rules:**
+- Use structured `logger.info` / `logger.warn` / `logger.error` — never raw `console.log` in production paths.
+- Every log entry must include `correlationId` (and `traceId`/`spanId` when OpenTelemetry is active).
+- Redact credentials, session cookies, tokens, and PII fields automatically at the logger root.
+- Emit newline-delimited JSON (NDJSON) in production for log aggregation pipelines.
 
 ---
 
-## 🏥 Healthcheck Endpoint
+## 🏥 Liveness & Readiness Healthcheck Probes
+
+Separate lightweight liveness checks (`/health/live`) from dependency readiness checks (`/health/ready` or `/api/health`):
 
 ```typescript
-// apps/backend/src/routes/health.ts
-import { Router } from 'express';
-import { prisma } from '../lib/prisma';
+// Dependency-injected readiness probe (framework- and ORM-agnostic)
+export interface HealthDependency {
+  name: string;
+  check: (signal: AbortSignal) => Promise<void>;
+}
 
-const router = Router();
+export async function evaluateReadiness(dependencies: HealthDependency[]) {
+  const results = await Promise.allSettled(
+    dependencies.map(async (dep) => {
+      const start = performance.now();
+      await dep.check(AbortSignal.timeout(3_000));
+      return { name: dep.name, status: 'up', latencyMs: Math.round(performance.now() - start) };
+    })
+  );
 
-router.get('/api/health', async (_req, res) => {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    res.json({
-      status: 'ok',
-      uptime: process.uptime(),
-      db: 'connected',
+  const checks = results.map((res, idx) =>
+    res.status === 'fulfilled'
+      ? res.value
+      : { name: dependencies[idx].name, status: 'down', error: 'Dependency check failed' }
+  );
+  const healthy = checks.every((c) => c.status === 'up');
+
+  return {
+    httpStatus: healthy ? 200 : 503,
+    body: {
+      status: healthy ? 'ok' : 'degraded',
+      uptimeSeconds: Math.floor(process.uptime()),
       timestamp: new Date().toISOString(),
-    });
-  } catch {
-    res.status(503).json({
-      status: 'error',
-      db: 'disconnected',
-      timestamp: new Date().toISOString(),
-    });
-  }
-});
-
-export default router;
+      checks,
+    },
+  };
+}
 ```
 
-- Railway/Render usan este endpoint para determinar si el servicio está vivo
-- Timeout: < 5 segundos
-- Batería de checks: DB, Redis (si hay), memoria disponible
+- Orchestrators (Kubernetes, Railway, Render, Fly.io, ECS) poll readiness probes to route traffic only to healthy instances.
+- Enforce a strict per-dependency timeout (`< 3–5 seconds`) so a hung database or cache connection never stalls the health endpoint indefinitely.
 
 ---
 
-## 🔗 Correlation-ID Tracing
+## 🔗 Distributed Correlation-ID Tracing
 
-Cada request entrante recibe un `x-correlation-id`. Este se propaga a:
-- Llamadas HTTP internas (header `x-correlation-id`)
-- Eventos de Socket.io (incluido en el payload)
-- Mensajes de RabbitMQ/Redis Pub/Sub (metadata)
-- Logs de Prisma (vía middleware de query logging)
+Every incoming request is assigned or forwards an `x-correlation-id` (and W3C `traceparent` header), propagated across:
+- Downstream HTTP/RPC calls
+- Real-time WebSocket / SSE events
+- Message broker / background queue metadata
+- Database query commentary or logger context
 
 ```typescript
-// apps/backend/src/middleware/correlation.ts
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import type { Request, Response, NextFunction } from 'express';
 
 export function correlationMiddleware(req: Request, res: Response, next: NextFunction) {
-  const id = (req.headers['x-correlation-id'] as string) || uuid();
-  req.correlationId = id;
+  const id = (req.headers['x-correlation-id'] as string) || randomUUID();
+  req.headers['x-correlation-id'] = id;
   res.setHeader('x-correlation-id', id);
   next();
 }
 ```
 
-Consultar `../../04-backend/microservices/SKILL.md` para tracing entre servicios.
+Refer to `../../04-backend/microservices/SKILL.md` for cross-service context propagation.
 
 ---
 
-## 🚨 Alertas
+## 🚨 Operational Alerting Thresholds
 
-| Evento | Severidad | Canal |
+| Signal / Condition | Severity | Target Action |
 |---|---|---|
-| Healthcheck falla 3x seguido | 🔴 Crítica | Email + Slack |
-| Latencia p95 > 2s | 🟡 Warning | Slack |
-| Tasa de error > 5% en 5min | 🔴 Crítica | Email + Slack |
-| AI bot responde fallback genérico > 10x | 🟡 Warning | Admin Dashboard |
-| Disco < 10% libre | 🔴 Crítica | Email |
+| Readiness probe fails 3x consecutively | 🔴 Critical | Pager / On-Call Alert + Auto-restart |
+| HTTP p95 latency > SLO threshold (e.g., 2s) | 🟡 Warning | Engineering Alert Channel |
+| HTTP 5xx error rate > 2–5% over 5 min window | 🔴 Critical | Pager / Incident Channel |
+| LLM / External API fallback rate spike | 🟡 Warning | FinOps & Reliability Dashboard |
+| Disk / Memory saturation > 85% | 🔴 Critical | Infrastructure Alert |
 
 ---
 
-## 📈 Métricas (futuro Prometheus)
+## 📈 Metrics & OpenTelemetry (`[Beyond-Baseline]`)
 
-```typescript
-// Métricas base a exponer en /metrics (Prometheus)
-// - http_requests_total{method, path, status}
-// - http_request_duration_seconds{method, path}
-// - socket_connections_active
-// - db_query_duration_seconds{query_type}
-```
-
-Consultar `../../03-ai-ml/ai-scalability-mlops/SKILL.md` para telemetría específica de modelos AI.
+Structured logs + health probes are the observability floor. Adopt full OpenTelemetry instrumentation when operating distributed or high-throughput workloads (annotate with `[Beyond-Baseline: <reason>]`):
+- **RED Metrics (`/metrics` or OTLP)**: Track Rate (`http_requests_total`), Errors (`http_Unhandled_errors_total`), and Duration histograms (`http_request_duration_seconds`) plus active pool/connection gauges.
+- **OpenTelemetry SDK (`@opentelemetry/sdk-node`)**: Export unified traces, metrics, and logs via OTLP to Grafana Tempo/Loki/Prometheus, Datadog, or Honeycomb.
+- Refer to `../../03-ai-ml/ai-scalability-mlops/SKILL.md` for LLM-specific latency and token telemetry.

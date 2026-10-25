@@ -1,13 +1,13 @@
 ---
 name: session-notes
-description: ECC-inspired session-to-session context transfer. Records key decisions, discoveries, and context at session end so the next session starts with awareness. Use at the end of each development session or before context compaction.
+description: "ECC-inspired session-to-session context transfer. Records key decisions, discoveries, and context at session end so the next session starts with awareness. Use at the end of each development session or before context compaction. Do not use for permanent architecture decision records (ADRs) or user-facing documentation."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["session notes", "end session", "save context", "session summary", "before compaction", "handoff", "apuntes", "registro de sesión"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # 📝 Session Notes (ECC Pattern)
@@ -38,42 +38,42 @@ Save as `.codewhale/sessions/YYYY-MM-DD-<topic>.md` or `.sessions/YYYY-MM-DD.md`
 
 - **Date**: 2026-06-14
 - **Duration**: ~2h
-- **Phase**: Phase 3 (Design) — Employee Web Admin Panel
-- **Agent**: OpenCode (deepseek-v4-pro)
+- **Phase**: Phase 3 (Feature Implementation) — Workspace Billing & Audit Module
+- **Agent**: OpenCode / Antigravity
 
 ## 🎯 Goals
-- [x] Design the inventory management schema
-- [x] Define API contracts for product CRUD
-- [ ] Start employee auth flow (deferred to next session)
+- [x] Design the audit event persistence schema
+- [x] Define shared API contracts for resource CRUD
+- [ ] Implement role-based authorization middleware (deferred to next session)
 
 ## 🧠 Key Decisions
-1. **Decision**: Use Prisma enum for product categories vs string
-   - **Why**: Type safety, better than magic strings
-   - **Rejected alternative**: String enum (harder to validate)
-2. **Decision**: Separate `inventory` table from `products` for stock tracking
-   - **Why**: Historical stock data needed for audit trail, not just current quantity
+1. **Decision**: Use database enum for resource lifecycle states vs raw string
+   - **Why**: Compile-time and DB-level type safety, prevents invalid state transitions
+   - **Rejected alternative**: Free-form string column (harder to validate across services)
+2. **Decision**: Separate `audit_events` append-only table from primary `resources` table
+   - **Why**: Immutable historical trail needed for compliance without bloating primary read queries
 
 ## 🐞 Bugs Found & Fixed
-- **Socket.io reconnection timeout**: Changed from default to 10s for mobile networks
-- **Prisma migration drift**: Added `pnpm prisma migrate dev --create-only` to workflow
+- **WebSocket reconnection timeout**: Adjusted backoff ceiling to 10s for unstable client networks
+- **ORM migration drift**: Added `pnpm prisma migrate dev --create-only` to pre-commit workflow
 
 ## 🔬 Discoveries
-- Expo Location API requires foreground + background permissions for drivers
-- BCV API rate limits: 10 req/min, need caching layer
+- Background sync API requires explicit foreground/background permission declarations on mobile targets
+- Upstream third-party webhook rate limit is 60 req/min; requires local token-bucket throttling
 
 ## 📂 Files Modified
-- `apps/backend/prisma/schema.prisma` — added `inventory` model
-- `packages/contracts/src/product.ts` — Zod schemas for CRUD
-- `apps/admin-panel/src/components/InventoryGrid.tsx` — new component
+- `packages/database/prisma/schema.prisma` — added `AuditEvent` model
+- `packages/contracts/src/resource.ts` — Zod schemas for resource CRUD
+- `apps/web/src/features/audit/AuditLogTable.tsx` — new presentational table component
 
 ## ⏭️ Next Session
-1. Start employee auth flow (JWT + bcrypt)
-2. Wire up inventory grid to API
-3. Write tests for product CRUD endpoints
+1. Implement RBAC/ABAC authorization middleware
+2. Wire `AuditLogTable` to paginated query endpoint
+3. Write integration tests for resource state transitions
 
 ## 📊 Project Tracker Status
 - **Active Phase**: `[/]` Phase 3 — 60% complete
-- **Next Phase**: Phase 4 (Mobile Client)
+- **Next Phase**: Phase 4 (End-to-End Verification)
 - **Blockers**: None
 ```
 
@@ -83,7 +83,7 @@ After saving session notes, update `01-planning-process/project-tracker/SKILL.md
 
 ```markdown
 ## 4. 🧠 Decision Log
-- [2026-06-14] Session: Inventory schema design. Decisions: Prisma enum for categories, separate inventory table. See `.sessions/2026-06-14-inventory-design.md`.
+- [2026-06-14] Session: Audit schema & contracts design. Decisions: DB enum for lifecycle states, append-only `audit_events` table. See `.sessions/2026-06-14-audit-design.md`.
 ```
 
 ## 🔗 Compact Survival Protocol
@@ -98,10 +98,16 @@ When the context is about to compact, the agent must:
 ```
 --- COMPACTION BOUNDARY ---
 Session notes saved: .sessions/2026-06-14.md
-Active phase: Phase 3 (Design)
-Next task: Wire inventory grid to API
-Key decision: Separate inventory table for audit trail
+Active phase: Phase 3 (Feature Implementation)
+Next task: Wire AuditLogTable to paginated API
+Key decision: Separate append-only audit_events table for compliance trail
 ```
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+This template is the baseline for session continuity. You are encouraged to adapt storage or structure when a project provides stronger persistence primitives (annotated with `[Beyond-Baseline: <reason>]`):
+- **Engram / ODD Task Mirror**: When working under ODD with `odd/tasks/<feature>.md` and Engram MCP (`mem_save` / `mem_session_summary`), synchronize decisions directly into the feature logbook instead of duplicating markdown files.
+- **Automated Git-Linked Notes**: Attach commit SHAs and test runner summaries directly to the session handoff for deterministic resume checks.
 
 ## 📚 References
 
@@ -130,9 +136,9 @@ If you had to repeat a prompt **2+ times** or the agent ran into the **same prob
 
 ```
 Session notes:
-- Pattern discovered: Expo prebuild always fails when new native deps are added
+- Pattern discovered: Native prebuild fails when unlinked native dependencies are added
 - Created skill: `expo-native-deps` with trigger "expo install", "native dependency"
-- Added auto-invoke entry: "Instalar dependencia nativa Expo" → `expo-production-auditor`
+- Added auto-invoke entry: "Install native Expo dependency" → `expo-production-auditor`
 ```
 
 This prevents wasting tokens and time on the same problem in future sessions.

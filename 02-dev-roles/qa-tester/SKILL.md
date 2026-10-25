@@ -1,28 +1,39 @@
 ---
 name: qa-tester
-description: Generate comprehensive automated test suites. Use this skill to write unit, integration, or E2E tests using the project's designated testing framework.
+description: "Generate comprehensive automated test suites with adversarial boundary, concurrency, idempotency, and authorization matrices. Use this skill when writing unit, integration, or E2E tests using the project's testing framework. Do not use for production feature implementation without tests."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["qa tester"]
+  trigger: ["qa tester", "test matrix", "edge case tests", "adversarial testing"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-This skill forces the AI to think destructively, aiming to break the code to ensure its robustness.
+# 🧪 QA Tester (Adversarial & Boundary Verification)
 
-## Testing Coverage Requirements
-Your test suites MUST explicitly cover these 6 scenarios:
-1. **Happy Path**: The normal, expected flow (minimum 2 tests).
-2. **Edge Cases**: Empty inputs, null values, negative prices/stock, special characters (minimum 3 tests).
-3. **Security & Authentication**: Verify API blocks requests lacking JWT cookies and test Socket server handshake rejections for empty auth tokens.
-4. **Real-time & Cleanups**: Test socket connection closures and verify listeners are successfully detached on unmount (no memory leaks).
-5. **Database Integrity**: Test transactional actions (e.g. mock checkouts that trigger stock shortages) and verify Prisma database state rolls back completely if a single item fails validation.
-6. **SOLID & Clean Code Regression**: After any refactor, assert that no function in the changed module exceeds 40 lines. Confirm no TypeScript `any` type has leaked into interfaces. Scan imports to ensure shared logic has not been duplicated locally instead of being sourced from `@scope/shared-types` or `@scope/shared-utils`. Refer to [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
+This skill guides the agent to think adversarially—designing test suites that expose boundary bugs, race conditions, authorization gaps, and partial-failure state corruption.
 
-## Code Standards for Tests
-- **Descriptive Naming**: Test names must explain exactly what is verified (e.g., `should_rollback_stock_changes_if_order_item_is_depleted`).
-- **Mocking**: Mock external dependencies (payment APIs, GPS locations) cleanly. Use `jest.mock` or MSW.
-- **Setup/Teardown**: Include necessary fixtures, database truncates (`beforeEach`), and server shutdowns (`afterAll`).
-- **Coverage Summary**: End with a bulleted summary of all scenarios covered.
+## 🎯 Universal Testing Coverage Matrix
+
+Your test suites must evaluate the target feature across these 6 verification dimensions:
+
+1. **Happy Path & Contract Compliance**: Verify the nominal flow produces the exact expected return values, HTTP status codes, persisted records, and emitted events (minimum 2 tests).
+2. **Boundary & Malformed Input Matrix**: Empty payloads, `null`/`undefined`, numeric boundaries (`0`, `-1`, `MAX_SAFE_INTEGER`, `NaN`), Unicode/control characters, oversized payloads, and invalid state transitions (minimum 3 tests).
+3. **Authentication & Authorization (RBAC/ABAC/BOLA)**: Verify unauthenticated requests are rejected (`401`), unauthorized role/scope actions fail (`403`), and cross-tenant / horizontal privilege escalation attempts (BOLA/IDOR) cannot read or mutate another principal's resources.
+4. **Concurrency, Idempotency & Lifecycle Cleanup**: Test duplicate requests with the same idempotency key, concurrent conflicting mutations (optimistic locking / version checks), and proper cleanup of event listeners, timers, or WebSocket subscriptions on teardown.
+5. **Transactional & State Integrity**: Verify multi-step database mutations roll back atomically when an intermediate step or invariant fails, leaving zero orphaned records or inconsistent state.
+6. **Type Safety & Clean Code Regression**: Confirm no `any` leaks into public contracts, shared schemas are imported from their canonical package, and public interfaces are exercised rather than internal implementation details. Refer to [SOLID & Clean Code](../../06-code-quality/solid-clean-code/SKILL.md).
+
+## 🛠️ Code Standards for Tests
+
+- **Behavioral Naming**: Test names must state the scenario and observable outcome (e.g., `should_rollback_transaction_when_audit_log_write_fails` or `should_reject_cross_tenant_resource_update_with_403`).
+- **Proportional Isolation**: Mock external third-party network boundaries (payment gateways, LLM APIs, webhooks) via MSW or dependency injection. Prefer real lightweight databases (e.g., PGlite, SQLite in-memory, or Testcontainers) for persistence integration tests over brittle ORM mocks.
+- **Deterministic Setup/Teardown**: Isolate state between tests (`beforeEach` transaction rollback or table truncation) and close open handles in `afterAll`.
+- **Coverage Summary**: Conclude with a concise matrix mapping each implemented test to the 6 dimensions above.
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+When a module requires deeper verification beyond standard unit/integration assertions, extend the suite (annotating `[Beyond-Baseline: <reason>]`):
+- **Property-Based Testing (`fast-check`)**: Use generative fuzzing for parsers, serializers, financial math, or state-machine transitions.
+- **Contract / Snapshot Testing**: Add OpenAPI/Zod contract compatibility checks when evolving shared APIs.

@@ -1,86 +1,90 @@
 ---
 name: socketio
-description: Real-time event communication with Socket.io (v4.7+). Covers server middleware validation, private room configurations, Zod payload checks, and client listener cleanup. Use when creating or modifying Socket.io events, rooms, or real-time payload flows.
+description: "Real-time event communication with Socket.io (v4.7+). Covers handshake authentication middleware, multi-tenant room/namespace isolation, Zod payload validation, and client listener lifecycle cleanup. Use when creating or modifying Socket.io events, rooms, or real-time streams. Do not use for standard stateless REST CRUD endpoints."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["socket.io", "websocket", "tiempo real", "rooms", "handshake"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# 🔌 Real-Time Sockets with Socket.io
+# 🔌 Real-Time Communication with Socket.io
 
-Use this skill when implementing real-time feeds, client chat, GPS dispatch tracking, or notification brokers.
+Use this skill when implementing real-time event streams, collaborative rooms, live telemetry feeds, or push notification brokers.
 
 ## 🚨 Connection & Authorization (2026 Guardrails)
 
 1. **Strict Handshake Middleware**:
-   - WebSockets must never allow anonymous connections.
-   - Enforce an authentication middleware on the Socket server (`io.use`) that extracts and validates the JWT token before allowing the connection:
-     ```javascript
+   - Never allow unauthenticated socket connections on protected namespaces.
+   - Validate the short-lived JWT or session credential inside `io.use()` before completing the handshake:
+     ```typescript
      io.use((socket, next) => {
-       const token = socket.handshake.auth.token;
+       const token = socket.handshake.auth?.token;
        if (!token) return next(new Error('Authentication error: Token missing'));
-       
+
        try {
-         const user = verifyToken(token); // Decodes payload
-         socket.user = user; // Attach details
+         const principal = verifyAccessToken(token);
+         socket.data.user = principal;
          next();
-       } catch (err) {
-         next(new Error('Authentication error: Invalid Token'));
+       } catch {
+         next(new Error('Authentication error: Invalid token'));
        }
      });
      ```
 
-2. **Event Payload Validation**:
-   - Validate the schema of every payload received in `socket.on` events using validation schemas (like Zod) to prevent prototype injection or type errors:
-     ```javascript
-     socket.on('delivery:location', (data) => {
-       try {
-         const coordinates = LocationSchema.parse(data);
-         // Process coordinates
-       } catch (err) {
-         socket.emit('error', { message: 'Invalid payload schema' });
+2. **Inbound Payload Schema Validation**:
+   - Validate every client-emitted `socket.on` payload with Zod before executing domain logic or rebroadcasting, preventing prototype pollution and malformed broadcasts:
+     ```typescript
+     socket.on('resource:cursor_move', (rawPayload, ack) => {
+       const parsed = CursorMoveSchema.safeParse(rawPayload);
+       if (!parsed.success) {
+         return ack?.({ ok: false, error: 'INVALID_PAYLOAD' });
        }
+       socket.to(`resource:${parsed.data.resourceId}`).emit('resource:cursor_moved', parsed.data);
+       ack?.({ ok: true });
      });
      ```
 
-## 🛒 Real-Time Rooms & Events
+## 🏛️ Universal Room & Namespace Isolation Patterns
 
-Isolate events by creating virtual **Rooms**:
+Scope broadcasts strictly using deterministic room naming conventions and verify authorization before calling `socket.join()`:
 
-1. **Buyer Room (`order:${orderId}`)**:
-   - The buyer joins this room to receive order progress updates.
-   - Server emits: `order:status_updated` (`'PENDING' | 'PACKING' | 'SHIPPED' | 'DELIVERED'`).
+1. **Entity / Resource Room (`resource:${resourceId}`)**:
+   -Subscribed clients watching or collaborating on a specific domain record receive state transition events (`resource:updated`, `resource:comment_added`) only after verifying read access to `resourceId`.
 
-2. **Delivery Dispatch Room (`deliveries:active`)**:
-   - Delivery couriers emit `delivery:location` (`{ lat: number, lng: number }`).
-   - The server broadcasts this location to the buyer currently waiting for the order.
+2. **Tenant / Workspace Broadcast Room (`tenant:${tenantId}`)**:
+   - Isolates organization-wide announcements, quota alerts, or live operational metrics strictly to members of `tenantId`.
 
-3. **Inventory Room (`inventory:alerts`)**:
-   - Employee dashboard joins this room to receive instant notices from the server if stock of any item drops to 0.
-   - Server emits: `inventory:depleted` (`{ productId: string }`).
+3. **Principal Private Channel (`user:${userId}`)**:
+   - Joined automatically upon authenticated handshake (`socket.join(\`user:\${socket.data.user.sub}\`)`) for targeted notifications across multiple active tabs or devices.
 
 ## ♻️ Client Lifecycle Management
 
-1. **React / Expo Cleanup Hook**:
-   - Every websocket subscription must be removed when the UI component unmounts:
+1. **Deterministic React / Mobile Cleanup**:
+   - Always detach event listeners in the `useEffect` cleanup function to prevent duplicate handlers and memory leaks:
      ```typescript
      useEffect(() => {
-       socket.connect();
-       
-       socket.on('order:status_updated', (data) => {
-         setStatus(data.status);
-       });
-       
-       return () => {
-         socket.off('order:status_updated');
-         socket.disconnect();
+       const onResourceUpdated = (payload: ResourceUpdatedEvent) => {
+         setResourceState(payload.state);
        };
-     }, [orderId]);
+
+       socket.emit('resource:subscribe', { resourceId });
+       socket.on('resource:updated', onResourceUpdated);
+
+       return () => {
+         socket.emit('resource:unsubscribe', { resourceId });
+         socket.off('resource:updated', onResourceUpdated);
+       };
+     }, [resourceId]);
      ```
 
-2. **Background Handling (Mobile)**:
-   - For mobile apps (Expo), configure automatic reconnect limits (`reconnectionAttempts: 5`) and handle connection closing if the application goes into the background to save battery.
+2. **Mobile & Reconnection Resilience**:
+   - Configure bounded exponential backoff (`reconnectionDelay`, `reconnectionDelayMax`, `reconnectionAttempts`) and suspend non-essential streams when the app enters the background.
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+Single-node Socket.io is the baseline. Scale or simplify the transport when architectural needs dictate (annotate with `[Beyond-Baseline: <reason>]`):
+- **Horizontal Scaling with Redis / NATS Adapter**: Attach `@socket.io/redis-streams-adapter` and enable Connection State Recovery when running multiple backend replicas.
+- **Server-Sent Events (SSE) for Unidirectional Feeds**: When communication is strictly server-to-client (e.g., LLM token streaming or status notifications), prefer standard HTTP/2 SSE over full-duplex WebSockets.

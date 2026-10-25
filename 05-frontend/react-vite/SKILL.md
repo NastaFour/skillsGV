@@ -1,57 +1,61 @@
 ---
 name: react-vite
-description: Standards and guidelines for React and Vite development. Enforces Single Responsibility (SRP) for components, Vite configurations, and security guardrails for the Admin Panel. Use when developing or modifying React components, managing local/global state, or configuring Vite.
+description: "Standards and guidelines for React and Vite SPA development. Enforces Single Responsibility (SRP) for components, custom hook extraction, Vite build configurations, and frontend security guardrails. Use when developing or modifying React components, managing client/server state, or configuring Vite. Do not use for Next.js App Router SSR-specific server components."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
   trigger: ["react", "vite", "SPA", "componentes", "hooks"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# ⚡ React & Vite Development (2026 Standards)
+# ⚡ React & Vite SPA Development (2026 Standards)
 
-Use this skill when developing or modifying React components, managing local or global states, or configuring Vite projects, particularly the Web Admin Panel for the application.
+Use this skill when developing or modifying React components, managing local or remote state, or configuring Vite single-page and multi-module web applications.
 
 ---
 
 ## 🏛️ Single Responsibility Principle (SRP) for Components
 
-To prevent bloated, convoluted UI code, strictly isolate responsibilities:
+To keep UI code maintainable and testable, separate rendering from side-effect orchestration:
 
-1. **Presenter vs Container Pattern**:
-   - **Presenter Components (Dumb)**: Focus exclusively on styling and rendering layout (using classes, tailwind, elements). They do not call API fetchers or open socket flows. They receive data and event handlers via props.
-   - **Container Components (Smart)**: Focus on state lifecycle, API fetching, socket subscriptions, and data transforms. They do not contain complex HTML styling; they pass clean data arrays to presenters.
+1. **Presentational vs Stateful Orchestration**:
+   - **Presentational Components**: Focus on visual layout, accessibility semantics, and styling tokens. They receive data and callbacks via typed props and remain easy to preview and test in isolation.
+   - **Feature Containers / Route Views**: Coordinate route parameters, data queries, subscriptions, and domain mutations, passing normalized props down to presentational views.
 
-2. **Custom Hooks Extraction**:
-   - Extract async data loading, WebSocket listener bindings, and cart mutation math into custom React Hooks (e.g. `useInventoryManager()`, `useSupportTicket(ticketId)`).
-   - This keeps component code shorter, readable, and reusable.
+2. **Custom Hooks for Side Effects & Domain Logic**:
+   - Extract data fetching, real-time stream subscriptions, and complex state transitions into focused custom hooks (e.g., `useResourceQuery(resourceId)`, `useWorkspaceStream(workspaceId)`, `useOptimisticMutation()`).
+   - Keep component bodies concise and declarative.
 
 ---
 
 ## 🚨 2026 Guardrails & Security
 
 1. **Modern Functional Architecture**:
-   - Class components are strictly prohibited. Use only functional components with hooks.
-   
-2. **Environment Variables**:
-   - All environment variables exposed to the frontend must start with the `VITE_` prefix (e.g., `VITE_API_URL`, `VITE_SOCKET_URL`).
-   - Non-prefixed variables must remain hidden.
+   - Use functional components and hooks exclusively; class components are reserved only for legacy Error Boundary wrappers when not using `react-error-boundary`.
 
-3. **Prevention of XSS & Injection**:
-   - Avoid using `dangerouslySetInnerHTML`.
-   - If rendering HTML is unavoidable, sanitize first using `dompurify`.
-   - Use `dompurify` for raw string rendering in data tables or dynamic interactive charts to prevent XSS.
+2. **Public Environment Variable Hygiene**:
+   - Only non-sensitive public configuration may use the `VITE_` prefix (e.g., `VITE_API_BASE_URL`, `VITE_WS_URL`).
+   - Never expose private API keys, database URLs, or signing secrets in `VITE_*` variables, as Vite statically embeds them into the client bundle.
 
-4. **Socket.io Client Lifecycle**:
-   - Socket listener instances must be declared inside `useEffect` blocks.
-   - Always return a cleanup function (`socket.off(...)`) to prevent memory leaks and UI thread saturation.
+3. **XSS & Injection Prevention**:
+   - Avoid `dangerouslySetInnerHTML`.
+   - When rendering rich user-generated HTML or markdown is required, sanitize strictly with `dompurify` before mounting.
+
+4. **Subscription & Effect Lifecycle**:
+   - Declare WebSocket, `EventSource`, or DOM event listeners inside `useEffect` (or `useSyncExternalStore`) and always return a deterministic cleanup function (`socket.off(...)`, `controller.abort()`) to prevent memory leaks.
 
 ---
 
-## 🛒 Application Integration (Admin Web Panel)
+## 🧩 Universal SPA Integration Patterns
 
-- **Inventory Updates**: Ensure state updates (e.g. subtracting stock when an item is out) render immediately without lagging the browser.
-- **Order Tracking**: Use `useEffect` cleanup loops to safely receive live coordinates from deliveries via WebSockets.
-- **Support Chat**: Cleanly isolate support channel components from API logs to prevent window context pollution.
+- **Optimistic UI & Server State**: Pair local UI feedback with server-state synchronization (e.g., TanStack Query) so mutations feel instant while rolling back cleanly on network errors.
+- **Real-Time Stream Isolation**: Subscribe to live telemetry or collaborative room updates inside dedicated hooks so high-frequency events do not trigger full-page re-renders.
+- **Code Splitting & Bundle Budgets**: Use `React.lazy()` and route-level dynamic imports in Vite to keep initial entry chunks fast.
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+These rules establish the React + Vite baseline. Adopt modern ecosystem primitives when beneficial (annotate with `[Beyond-Baseline: <reason>]`):
+- **React 19 & Compiler**: Leverage React 19 actions (`useActionState`, `useOptimistic`), `use()`, and the React Compiler instead of manual `useMemo`/`useCallback` boilerplate where enabled.
+- **Type-Safe Routers & Query Caches**: Prefer TanStack Router + TanStack Query (or Remix/React Router v7 framework mode) over manual `useEffect` data fetching.

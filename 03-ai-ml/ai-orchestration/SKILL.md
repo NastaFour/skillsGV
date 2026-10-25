@@ -1,69 +1,75 @@
 ---
 name: ai-orchestration
-description: Guidelines for managing multi-agent orchestrations. Enforces Chain of Thought (CoT) step reasoning, progressive prompting rounds, session state logging, and human verification hooks.
+description: "Guidelines for managing multi-agent orchestrations. Enforces Chain of Thought (CoT) reasoning traces, progressive execution stages, explicit state machines, evaluator-optimizer loops, and human-in-the-loop verification hooks. Use when coordinating multiple LLM agents or staged AI workflows. Do not use for simple single-prompt completions."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["orquestación AI", "multi-agente", "chain of thought", "progressive prompting"]
+  trigger: ["orquestación AI", "multi-agente", "chain of thought", "progressive prompting", "agent orchestration"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# 🤖 AI Orchestration (Agentic Design Patterns)
+# 🤖 AI Orchestration (Multi-Agent Design Patterns)
 
-Use this skill when designing systems where multiple LLM processes or backend workers coordinate to solve a user task.
+Use this skill when designing systems where multiple LLM calls, specialist workers, or deterministic tools coordinate to solve complex user or backend tasks.
 
 ---
 
 ## 🚨 Multi-Agent Orchestration Guardrails
 
-1. **State Machine Management**:
-   - Maintain an explicit task context state object (like a session log) that tracks the status of each agent's execution.
-   - Do not rely on chat history to track progress. Use a structured state document (e.g. JSON in DB or Redis).
+1. **Explicit State Machine Management**:
+   - Maintain an explicit workflow state object (persisted in PostgreSQL, Redis, or durable execution state) that tracks the lifecycle of each step (`PENDING | RUNNING | NEEDS_APPROVAL | COMPLETED | FAILED`).
+   - Do not rely solely on unstructured chat history to track multi-step progress. Pass compact, typed state handoffs between agents.
 
-2. **Mandatory Chain of Thought (CoT)**:
-   - Every coordinator agent must be prompted to think step-by-step before delegating or formulating outputs.
-   - Design prompts to include a `"thinking"` parameter in the output schemas to capture the reasoning steps, ensuring trace analysis.
+2. **Structured Reasoning Traces (CoT)**:
+   - Prompt router and planner agents to emit structured reasoning before selecting tools or delegating subtasks.
+   - Include a bounded `reasoningSummary` or `rationale` field in structured output schemas so observability pipelines can audit why a route or tool was chosen.
 
-3. **Progressive Prompting (Rounds)**:
-   - Do not request the coordinator to perform classification, search, and resolution in a single execution step.
-   - Divide operations into discrete Rounds:
-     - **Round 1 (Ingestion & Triage)**: Identify the customer's core problem and assign the ticket category.
-     - **Round 2 (Information Gathering)**: Query databases or inventories matching the triage context.
-     - **Round 3 (Resolution Formulation)**: Draft response scripts or replacement suggestions based on the gathered details.
-     - **Round 4 (Safety & Compliance Check)**: Audit the response format and content constraints.
+3. **Progressive Execution Stages (Router → Specialist → Evaluator)**:
+   - Avoid monolithic prompts that attempt intent classification, retrieval, mutation planning, and compliance checking in one fragile step.
+   - Decompose workflows into composable stages:
+     - **Stage 1 (Router & Intent Classification)**: Parse user input, validate constraints, and route to the appropriate specialist workflow.
+     - **Stage 2 (Context & Tool Retrieval)**: Query authorized knowledge bases, APIs, or domain records matching the classified intent.
+     - **Stage 3 (Specialist Worker Synthesis)**: Generate the structured proposal, artifact, or action plan from verified context.
+     - **Stage 4 (Evaluator / Verifier Gate)**: Validate schema compliance, policy rules, and factual grounding before emitting the result.
 
-4. **Human-in-the-Loop Safeguards**:
-   - Any financial or database-modifying operation suggested by an AI agent must stop for human validation.
-   - **Prohibited**: Allowing an AI bot to issue refunds or modify order statuses autonomously.
-   - **Required**: Requiring an employee's manual confirmation in the Admin Panel dashboard.
+4. **Human-in-the-Loop (HITL) Safeguards**:
+   - Any high-consequence, financial, or irreversible state-mutating action proposed by an agent must pause at a `NEEDS_APPROVAL` checkpoint.
+   - **Prohibited**: Allowing an autonomous agent loop to execute destructive mutations or external billing actions without explicit policy bounds and human confirmation.
+   - **Required**: Persist the proposed action payload and require an authenticated reviewer's confirmation before committing the mutation.
 
 ---
 
-## 🛒 Application Integration Example (Triage & Route Coordination)
+## 🏗️ Universal Orchestration Topology (Router → Workers → Verifier)
 
+```text
+                        [Incoming Request / Event]
+                                    │
+                                    ▼ (Stage 1: Intent & Triage)
+                             [Router Agent]
+                     (Classifies intent & risk level)
+                                    │
+                 ┌──────────────────┴──────────────────┐
+                 ▼ (Stage 2A: Retrieval)               ▼ (Stage 2B: Computation)
+       [Knowledge Specialist]                [Domain Task Worker]
+   (Queries vector/SQL context)         (Executes deterministic tools)
+                 │                                     │
+                 └──────────────────┬──────────────────┘
+                                    ▼ (Stage 3: Quality & Safety Gate)
+                          [Evaluator / Verifier]
+                   (Checks schema, grounding & policies)
+                                    │
+                                    ▼ (Stage 4: Conditional HITL)
+                       [Human Approval Checkpoint]
+                    (Required if riskLevel === 'HIGH')
 ```
-                       [Customer Inquiry]
-                               │
-                ┌──────────────┴──────────────┐
-                ▼ (Round 1: Triage)           ▼ (Round 1: Coordinates)
-         [Triage Agent]               [Route Ingestor]
-       (Classifies category)      (Ingests location points)
-                │                             │
-                ▼ (Round 2: Audit)            ▼ (Round 2: CoT Routing)
-         [Stock Auditor]              [Path Optimizer]
-     (Checks inventory logs)     (Solves path sequence with CoT)
-                │                             │
-                ▼ (Round 3: Suggestion)        ▼ (Round 3: Dispatch)
-      [Replacement Generator]        [Courier Coordinator]
-   (Formulates replacement JSON)   (Previews route in Admin Panel)
-                │                             │
-                └──────────────┬──────────────┘
-                               ▼ (Human-in-the-Loop)
-                  [Employee Review Dashboard]
-               (Manual Approval before DB Write)
-```
-- Use the orchestrator to coordinates alerts: if the **Stock Auditor** finds that a product required in a confirmed order has 0 stock, it flags the order as "Stock Alert" and triggers a websocket broadcast to the employee chat room.
-- The **Path Optimizer** receives coordinates from multiple client deliveries, compiles them using Dijkstra or OR-Tools APIs, and sends the optimized sequence to the Delivery driver's Expo mobile screen.
-- Every dispatcher agent writes its actions and steps to the central state log database to ensure transparency and MLOps traceability (`skill-ai-scalability-mlops`).
+
+- **Traceability**: Every stage writes its input hash, latency, token usage, and structured decision to the workflow audit log (`correlationId`) for observability and MLOps evaluation (`03-ai-ml/ai-scalability-mlops/SKILL.md`).
+- **Bounded Retries**: If the **Evaluator / Verifier** rejects an output due to schema or policy violations, feed the deterministic validation error back to the **Specialist Worker** for at most `N` (typically 2) self-correction turns before escalating.
+
+## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+
+This staged topology is the baseline for reliable multi-agent systems. You are encouraged to adopt higher-leverage orchestration patterns when justified (annotate with `[Beyond-Baseline: <reason>]`):
+- **Single-Agent with Tool Use First**: If a task can be solved deterministically by a single model invocation with well-typed tools, prefer a single agent over multi-agent complexity.
+- **Durable Execution Engines**: Use Temporal, Inngest, LangGraph, or Cloudflare Workflows for long-running, resumable state machines with automatic retries and human-approval webhooks.
