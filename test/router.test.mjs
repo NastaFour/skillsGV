@@ -230,3 +230,41 @@ test('isUiTask distinguishes pure backend logic from UI queries accurately', () 
   const resDash = runRouter('Crear un dashboard para monitorear postgres');
   assert.equal(resDash.isUiTask, true, 'Dashboard for Postgres monitoring should be marked as UI task');
 });
+
+test('diacritic-insensitive trigger matching routes unaccented Spanish queries accurately', () => {
+  const resAuth = runRouter('autenticacion con jwt');
+  assert.equal(resAuth.primary, 'jwt-bcrypt');
+  assert.equal(resAuth.confidence, 1);
+
+  const resAuthOnly = runRouter('autenticacion de usuarios');
+  assert.equal(resAuthOnly.primary, 'jwt-bcrypt');
+  assert.equal(resAuthOnly.confidence, 1);
+
+  const resTel = runRouter('telemetria');
+  assert.ok(
+    resTel.primary === 'monitoring' || resTel.tier1toLoad.includes('monitoring'),
+    `Expected monitoring in routed skills for 'telemetria', got ${JSON.stringify(resTel)}`
+  );
+  assert.equal(resTel.confidence, 1);
+
+  const resTelMet = runRouter('telemetria y metricas');
+  assert.equal(resTelMet.primary, 'monitoring');
+  assert.equal(resTelMet.confidence, 1);
+});
+
+test('Unicode word-boundary matching routes dotted triggers cleanly', () => {
+  const resPrd = runRouter('PRD.md');
+  assert.ok(
+    resPrd.primary === 'idea-to-prd-express' || resPrd.primary === 'product-requirements-prd',
+    `Expected PRD.md to route to idea-to-prd-express (or product-requirements-prd), got ${resPrd.primary}`
+  );
+  assert.equal(resPrd.confidence, 1);
+
+  const resNode = runRouter('node.js');
+  assert.equal(resNode.primary, 'nodejs');
+  assert.equal(resNode.confidence, 1);
+
+  const resSocket = runRouter('socket.io');
+  assert.equal(resSocket.primary, 'socketio');
+  assert.equal(resSocket.confidence, 1);
+});

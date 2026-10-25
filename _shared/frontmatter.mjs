@@ -7,6 +7,8 @@
  * - skill-validator (validate-skills)
  * - catalog-manifest
  * - skills-loader
+ * - catalog-doctor
+ * - script-utils
  */
 
 /**

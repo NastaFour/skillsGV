@@ -72,6 +72,27 @@ function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/**
+ * Normalizes text by decomposing Unicode characters (NFD), stripping
+ * combining diacritical marks, and lowercasing so accented and unaccented
+ * queries/triggers match identically.
+ */
+export function normalizeText(str) {
+  return String(str ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+/**
+ * Builds a Unicode-aware word/phrase boundary regex so triggers containing
+ * dots or non-ASCII characters (e.g. "PRD.md", "node.js", "socket.io") match
+ * cleanly without substring traps.
+ */
+function buildWordBoundaryRegex(term) {
+  return new RegExp(`(?<![\\p{L}\\p{N}_])${escapeRegex(term)}(?![\\p{L}\\p{N}_])`, "iu");
+}
+
 const MIN_TRIGGER_LENGTH = 4;
 
 /**
@@ -127,7 +148,7 @@ for (const f of files) {
 const validSkillNames = new Set(index.map((s) => s.name));
 
 // Scoring
-const qLower = query.toLowerCase();
+const qLower = normalizeText(query);
 let scored = [];
 for (const s of index) {
   if (s.deprecated) continue;
@@ -137,12 +158,12 @@ for (const s of index) {
   const matchedTriggers = [];
   for (const t of s.triggers) {
     if (!t) continue;
-    const tLower = t.toLowerCase().trim();
+    const tLower = normalizeText(t).trim();
     if (seenTriggers.has(tLower)) continue;
     seenTriggers.add(tLower);
     if (!passesTriggerLengthGate(t, tLower)) continue;
-    // Word-boundary regex: full-word/phrase match, no substring traps
-    const re = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
+    // Unicode-aware word-boundary regex: full-word/phrase match, no substring traps
+    const re = buildWordBoundaryRegex(tLower);
     if (re.test(qLower)) {
       triggerScore += 1.0;
       exactHit = true;
@@ -150,11 +171,14 @@ for (const s of index) {
     }
   }
   // Description keyword overlap (subordinate — caps confidence <1.0)
-  const descLower = s.desc.toLowerCase();
-  const queryNouns = qLower.split(/\s+/).filter((w) => w.length >= MIN_TRIGGER_LENGTH);
+  const descLower = normalizeText(s.desc);
+  const queryNouns = qLower
+    .split(/\s+/)
+    .map((w) => w.replace(/^[^\p{L}\p{N}_]+|[^\p{L}\p{N}_]+$/gu, ""))
+    .filter((w) => w.length >= MIN_TRIGGER_LENGTH);
   let kwHits = 0;
   for (const w of queryNouns) {
-    const wRe = new RegExp("\\b" + escapeRegex(w) + "\\b", "i");
+    const wRe = buildWordBoundaryRegex(w);
     if (wRe.test(descLower)) kwHits++;
   }
   const kwScore = Math.min(kwHits / 3, 0.5);
@@ -235,7 +259,7 @@ let triggeredExact = false;
 // Check if query directly mentions a deprecated skill's exact name -> redirect immediately (R4-001)
 for (const s of index) {
   if (s.deprecated) {
-    const nameRe = new RegExp("\\b" + escapeRegex(s.name.toLowerCase()) + "\\b", "i");
+    const nameRe = buildWordBoundaryRegex(normalizeText(s.name));
     if (nameRe.test(qLower)) {
       primary = s.redirect;
       deprecatedHit = s.name;
@@ -260,14 +284,14 @@ if (!primary && scored.length > 0) {
 if (!primary) {
   for (const s of index) {
     if (s.deprecated) {
-      const nameRe = new RegExp("\\b" + escapeRegex(s.name.toLowerCase()) + "\\b", "i");
+      const nameRe = buildWordBoundaryRegex(normalizeText(s.name));
       let triggerHit = nameRe.test(qLower);
       if (!triggerHit && Array.isArray(s.triggers)) {
         for (const t of s.triggers) {
           if (!t) continue;
-          const tLower = t.toLowerCase().trim();
+          const tLower = normalizeText(t).trim();
           if (!passesTriggerLengthGate(t, tLower)) continue;
-          const tRe = new RegExp("\\b" + escapeRegex(tLower) + "\\b", "i");
+          const tRe = buildWordBoundaryRegex(tLower);
           if (tRe.test(qLower)) {
             triggerHit = true;
             break;
@@ -297,7 +321,12 @@ const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx
 const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|diseñ[oa]s?|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
 const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|schema|esquema|postgres|prisma|reducer|state\s+machine|service|resolver|typescript|ts\b|vista\s+materializada|materialized\s+view)\b/i;
 
-const isUiTask = UNAMBIGUOUS_UI_MARKERS.test(query) || (AMBIGUOUS_UI_MARKERS.test(query) && !PURE_LOGIC_BACKEND_MARKERS.test(query));
+const isUiTask =
+  UNAMBIGUOUS_UI_MARKERS.test(query) ||
+  UNAMBIGUOUS_UI_MARKERS.test(qLower) ||
+  ((AMBIGUOUS_UI_MARKERS.test(query) || AMBIGUOUS_UI_MARKERS.test(qLower)) &&
+    !PURE_LOGIC_BACKEND_MARKERS.test(query) &&
+    !PURE_LOGIC_BACKEND_MARKERS.test(qLower));
 
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {
@@ -369,4 +398,3 @@ else {
   if (deprecatedHit) console.log(`  deprecatedHit: ${deprecatedHit} -> redirect to ${primary}`);
   console.log(`  Tier1 load:  [${tier1toLoad.join(", ")}]`);
 }
-

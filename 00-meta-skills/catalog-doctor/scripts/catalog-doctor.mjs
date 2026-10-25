@@ -24,6 +24,12 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import {
+  splitFrontmatter as parseFrontmatter,
+  getField,
+  getNestedField,
+  parseList as parseListValue,
+} from "../../../_shared/frontmatter.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -157,43 +163,6 @@ export const DOCTOR_COMMAND_TABLE = [
   },
 ];
 
-/**
- * Parses frontmatter YAML block without third-party dependencies.
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!match) return null;
-  return { front: match[1], body: match[2] };
-}
-
-function getNestedField(front, parent, field) {
-  const startRe = new RegExp(`^${parent}:\\s*$`, "m");
-  const startMatch = front.match(startRe);
-  if (!startMatch) return null;
-  const startIdx = startMatch.index + startMatch[0].length;
-  const rest = front.slice(startIdx);
-  const lines = rest.split(/\r?\n/);
-  const blockLines = [];
-  for (const line of lines) {
-    if (line === "") { blockLines.push(line); continue; }
-    if (!/^\s/.test(line)) break;
-    blockLines.push(line);
-  }
-  const block = blockLines.join("\n");
-  const fieldRe = new RegExp(`^\\s+${field}:\\s*(.+?)(?:\\r?\\n\\s+[a-z_-]+:|\\r?\\n[\\S]|$)`, "ms");
-  const fm = block.match(fieldRe);
-  return fm ? fm[1].trim() : null;
-}
-
-function parseListValue(raw) {
-  let value = String(raw ?? "").trim();
-  if (value.startsWith("[")) value = value.replace(/^\[/, "").replace(/\]$/, "");
-  return value
-    .split(/\r?\n|,/)
-    .map((item) => item.trim().replace(/^-\s*/, "").replace(/^["']|["']$/g, ""))
-    .filter(Boolean);
-}
-
 function walkSkillFiles(dir) {
   const out = [];
   try {
@@ -303,8 +272,7 @@ export function checkMcpParity(root) {
     const parsed = parseFrontmatter(content);
     if (!parsed) continue;
 
-    const nameMatch = parsed.front.match(/^name:\s*(.+)$/m);
-    const skillName = nameMatch ? nameMatch[1].trim() : null;
+    const skillName = getField(parsed.front, "name");
     if (skillName) allSkillNames.add(skillName);
 
     // Reject top-level requires-mcp

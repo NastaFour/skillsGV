@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, relative, resolve, dirname } from "node:path";
+import { splitFrontmatter, getField, getNestedField, parseList, parseTriggers } from "./frontmatter.mjs";
 
 /**
  * Derive the workspace-scoped turn cache file path.
@@ -79,14 +80,15 @@ export function readFileUtf8(filePath) {
 
 /**
  * Parse frontmatter from a markdown file.
+ * Delegates to `_shared/frontmatter.mjs` (`splitFrontmatter`).
  * @param {string} content
  * @returns {{ front: string, body: string } | null}
  */
 export function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-  if (!match) return null;
-  return { front: match[1], body: match[2] };
+  return splitFrontmatter(content);
 }
+
+export { splitFrontmatter, getField, getNestedField, parseList, parseTriggers };
 
 /**
  * @param {string} p

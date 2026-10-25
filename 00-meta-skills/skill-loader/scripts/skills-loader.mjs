@@ -391,6 +391,7 @@ const CATEGORY_TITLES = {
   "08-devops": "DevOps (08-devops/)",
   "09-media-graphics": "Media y Gráficos (09-media-graphics/)",
   "11-mcp-hybrid": "Híbridas MCP (11-mcp-hybrid/)",
+  "12-matt-pocock": "12 · Matt Pocock Workflows",
   "professional-planner": "Planificación SDD (professional-planner/)",
 };
 

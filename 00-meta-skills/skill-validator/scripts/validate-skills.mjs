@@ -104,6 +104,156 @@ function walkSkills(dir) {
 }
 
 
+/**
+ * Validates YAML 1.2 strict syntax on the frontmatter block (`frontmatter-strict-yaml`),
+ * catching constructs that break strict YAML parsers such as Go yaml.v3 (Antigravity):
+ *   (a) Tab indentation (`^\t` or leading whitespace containing tabs)
+ *   (b) Single-line quoted scalars (`"..."` or `'...'`) with unclosed quotes or
+ *       trailing non-comment text after the closing quote
+ *   (c) Unquoted plain scalar values (not starting with `"`, `'`, `[`, `{`, `>`, `|`)
+ *       that contain `: ` (colon followed by space), which YAML 1.2 rejects as
+ *       "mapping values are not allowed in this context".
+ */
+export function validateStrictYamlFrontmatter(front) {
+  const issues = [];
+  const lines = front.split(/\r?\n/);
+  let inBlockScalar = false;
+  let blockScalarIndent = -1;
+
+  for (let idx = 0; idx < lines.length; idx++) {
+    const line = lines[idx];
+    const lineNum = idx + 2; // line 1 is opening ---
+
+    // (a) Tab indentation in YAML frontmatter lines
+    if (/^[ \t]*\t/.test(line)) {
+      issues.push({
+        severity: "error",
+        check: "frontmatter-strict-yaml",
+        msg: `Line ${lineNum}: tab indentation is not allowed in YAML 1.2 frontmatter (use spaces)`,
+      });
+    }
+
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    const indentMatch = line.match(/^[ \t]*/);
+    const indent = indentMatch ? indentMatch[0].length : 0;
+
+    if (inBlockScalar) {
+      if (indent > blockScalarIndent) {
+        continue;
+      }
+      inBlockScalar = false;
+      blockScalarIndent = -1;
+    }
+
+    const kvMatch = line.match(/^([ \t]*)([A-Za-z0-9_-]+):(?:[ \t]+(.*))?$/);
+    if (kvMatch) {
+      const key = kvMatch[2];
+      const val = (kvMatch[3] ?? "").trim();
+      if (!val) continue;
+
+      // Block scalar header (> or |, with optional chomping/indentation indicators)
+      if (/^[>|][-+]?\d*(?:\s+#.*)?$/.test(val)) {
+        inBlockScalar = true;
+        blockScalarIndent = indent;
+        continue;
+      }
+
+      // (b) Double-quoted scalar
+      if (val.startsWith('"')) {
+        let closeIdx = -1;
+        for (let i = 1; i < val.length; i++) {
+          if (val[i] === "\\") {
+            i++;
+            continue;
+          }
+          if (val[i] === '"') {
+            closeIdx = i;
+            break;
+          }
+        }
+        if (closeIdx === -1) {
+          issues.push({
+            severity: "error",
+            check: "frontmatter-strict-yaml",
+            msg: `Line ${lineNum} (${key}): unclosed double-quoted scalar in YAML frontmatter`,
+          });
+        } else {
+          const trailing = val.slice(closeIdx + 1).trim();
+          if (trailing !== "" && !trailing.startsWith("#")) {
+            issues.push({
+              severity: "error",
+              check: "frontmatter-strict-yaml",
+              msg: `Line ${lineNum} (${key}): trailing text after closing double quote (${trailing}) breaks strict YAML 1.2 parsers`,
+            });
+          }
+        }
+        continue;
+      }
+
+      // (b) Single-quoted scalar
+      if (val.startsWith("'")) {
+        let closeIdx = -1;
+        for (let i = 1; i < val.length; i++) {
+          if (val[i] === "'") {
+            if (val[i + 1] === "'") {
+              i++;
+              continue;
+            }
+            closeIdx = i;
+            break;
+          }
+        }
+        if (closeIdx === -1) {
+          issues.push({
+            severity: "error",
+            check: "frontmatter-strict-yaml",
+            msg: `Line ${lineNum} (${key}): unclosed single-quoted scalar in YAML frontmatter`,
+          });
+        } else {
+          const trailing = val.slice(closeIdx + 1).trim();
+          if (trailing !== "" && !trailing.startsWith("#")) {
+            issues.push({
+              severity: "error",
+              check: "frontmatter-strict-yaml",
+              msg: `Line ${lineNum} (${key}): trailing text after closing single quote (${trailing}) breaks strict YAML 1.2 parsers`,
+            });
+          }
+        }
+        continue;
+      }
+
+      // (c) Unquoted plain scalar (not starting with ", ', [, {, >, |)
+      if (!val.startsWith("[") && !val.startsWith("{")) {
+        const plainVal = val.replace(/\s+#.*$/, "");
+        if (/:\s/.test(plainVal) || plainVal.endsWith(":")) {
+          issues.push({
+            severity: "error",
+            check: "frontmatter-strict-yaml",
+            msg: `Line ${lineNum} (${key}): unquoted ": " in plain scalar value ("mapping values are not allowed in this context" in YAML 1.2; wrap the value in quotes)`,
+          });
+        }
+      }
+      continue;
+    }
+
+    // Indented continuation line outside block scalars
+    if (!trimmed.startsWith("-") && !trimmed.startsWith("[") && !trimmed.startsWith("{") && !trimmed.startsWith('"') && !trimmed.startsWith("'")) {
+      const plainCont = trimmed.replace(/\s+#.*$/, "");
+      if (/:\s/.test(plainCont) || plainCont.endsWith(":")) {
+        issues.push({
+          severity: "error",
+          check: "frontmatter-strict-yaml",
+          msg: `Line ${lineNum}: unquoted ": " in multiline plain scalar continuation (use ">" or "|" block scalar or wrap in quotes)`,
+        });
+      }
+    }
+  }
+
+  return issues;
+}
+
 function validate(file, catalogNames) {
   const issues = [];
   let content;
@@ -119,6 +269,8 @@ function validate(file, catalogNames) {
     return issues;
   }
   const { front, body } = parsed;
+
+  issues.push(...validateStrictYamlFrontmatter(front));
 
   // Duplicate key check in YAML frontmatter (e.g. repeated keys or "compatibility: compatibility:")
   const seenFrontmatterKeys = new Set();
@@ -373,14 +525,7 @@ function auditScripts(file, front) {
 }
 
 /** Inline (`[a, b]`) or block (`- a`) YAML list values -> trimmed string array. */
-function parseListValue(raw) {
-  let value = String(raw ?? "").trim();
-  if (value.startsWith("[")) value = value.replace(/^\[/, "").replace(/\]$/, "");
-  return value
-    .split(/\r?\n|,/)
-    .map((item) => item.trim().replace(/^-\s*/, "").replace(/^["']|["']$/g, ""))
-    .filter(Boolean);
-}
+const parseListValue = parseList;
 
 /**
  * requires-mcp: top-level declarations are rejected (the agentskills.io
