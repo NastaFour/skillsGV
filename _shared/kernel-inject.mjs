@@ -37,6 +37,8 @@ import { createHash } from "node:crypto";
 
 export const KERNEL_START = "<!-- skillsGV:kernel:start -->";
 export const KERNEL_END = "<!-- skillsGV:kernel:end -->";
+export const KERNEL_OPEN_MARKER = KERNEL_START;
+export const KERNEL_CLOSE_MARKER = KERNEL_END;
 
 /**
  * Per-harness auto-loaded context file (relative to the install root).
@@ -492,4 +494,4 @@ export function unguardGitignore(root, giRecord) {
   }
 }
 
-export { sha256 as __sha256ForTests, stripBlockOnce as __stripBlockOnceForTests };
+export { sha256 as __sha256ForTests, stripBlockOnce as __stripBlockOnceForTests, templateBlock as buildKernelBlock };

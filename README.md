@@ -6,9 +6,9 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
 [![Skills Count](https://img.shields.io/badge/skills-231-purple.svg)](#categories)
-[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.0)-brightgreen.svg)](#organic-driven-development)
+[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.2.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.2.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
@@ -24,7 +24,7 @@ Most AI coding setups suffer from two extremes:
 
 - 🎯 **231 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
-- 🔄 **ODD-Exclusive Workflow**: Authorize → Explore → Classify → Task File + Engram Mirror → Atomic Work-Unit Commits on feature branch.
+- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.2.0)**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) on feature branch → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
 - 🎨 **Anti-Slop Design Governance**: Incorporates Paul Bakaus's `impeccable`, Leonxlnx's `taste-skill` (10 Absolute Bans, triaxial dials), and `design-driven` DNA interviews.
 - 🧠 **Cross-Session Memory**: Seamless MCP integration with [Engram](https://github.com/Gentleman-Programming/engram) (`mem_save`, `mem_search`, `mem_judge`).
@@ -101,7 +101,7 @@ flowchart TD
 |---|:---:|:---:|:---:|
 | **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
 | **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
-| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.1.x alignment) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.2.0 alignment) |
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
 | **Anti-Slop Design System** | ❌ | ❌ | ✅ (`impeccable` + `taste-skill`) |

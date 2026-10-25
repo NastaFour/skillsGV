@@ -43,7 +43,7 @@
       "tier": "strong",
       "reasoning_effort": "high",
       "effort": "high",
-      "description": "ODD orchestrator: coordinates sub-agents, never does the work inline"
+      "description": "ODD orchestrator: orchestrates and works inline by default, delegating only when a named Delegation Trigger holds"
     },
     "explorer": {
       "tier": "cheap",
@@ -61,7 +61,7 @@
       "tier": "mid",
       "reasoning_effort": "medium",
       "effort": "medium",
-      "description": "ODD verifier: independent verification of work-unit commits"
+      "description": "ODD verifier: independent verification of high-risk (items 1-6) work-unit commits"
     },
     "judge-a": {
       "tier": "strong",
@@ -152,7 +152,7 @@
     {
       "name": "gentle-orchestrator",
       "group": "coordinator",
-      "role": "ODD orchestrator: coordinates sub-agents, never does the work inline",
+      "role": "ODD orchestrator: orchestrates and works inline by default, delegating only when a named Delegation Trigger holds",
       "tier": "strong",
       "effort": "max",
       "delegate_only": false

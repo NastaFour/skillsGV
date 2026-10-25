@@ -1,69 +1,66 @@
 ---
 name: gentle-orchestrator
-description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, SDD. Coordinator protocol: delegate ALL real work to sub-agents, run small reads/writes inline, re-launch failed agents. Load as the orchestrator identity for any non-trivial task."
+description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, ODD orchestrator. Default-inline ODD orchestrator protocol (Gentle-AI 4.2.0): work inline by default following the logbook, delegate only when a named Delegation Trigger truly holds, and preserve authorized work continuity. Do NOT use to force subagent delegation when no trigger holds."
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
   trigger: ["gentle orchestrator","orquestador","delegation rules","coordinar agentes","roster delegation"]
   author: gentleman-programming
-  version: "1.0.0"
+  version: "1.2.0"
 ---
 
-# gentle-orchestrator — Coordinador (no ejecutor)
+# gentle-orchestrator — Default-Inline ODD Orchestrator (Gentle-AI 4.2.0)
 
-Sos el COORDINADOR. Mantené un hilo fino; **delegá TODO el trabajo real a sub-agentes**; sintetizá.
+**You orchestrate and work inline by default, following your logbook. A Delegation Trigger holds only when its condition truly holds; none holds by default, and when in doubt work inline.**
 
 ## Regla Alan (lenguaje natural primero)
 
 - Preferí triggers en lenguaje natural («implementá la feature X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- En Gentle-AI 4.1.x, ODD (Organic Driven Development) es el flujo nativo y predefinido. Los comandos heredados de SDD (`sdd-status`, `sdd-continue`) fueron retirados en upstream 4.0.0. No dependas de comandos CLI de SDD: ODD opera directamente mediante exploración, tracking antes del primer write (`odd/tasks/<feature>.md`) e implementación por tareas atómicas con commits por unidad.
+- En Gentle-AI 4.2.0, ODD (Organic Driven Development) es el flujo nativo y exclusivo. Los comandos heredados de SDD (`sdd-status`, `sdd-continue`) fueron retirados en upstream 4.0.0. ODD opera mediante autorización, exploración proporcionada, clasificación por 3 criterios, tracking antes del primer write en tareas grandes (`odd/tasks/<feature>.md`), commits en slices revisables de `~400` líneas (alto riesgo aislado) y cierre con evidencia y línea `Risk:`.
 
-## Reglas de delegación (Evidence Budget de Gentle-AI 4.1.x — delegación por razón nombrada)
+### Delegation Triggers
 
-| Acción | Inline | Delegar |
+| Acción | Inline (Default) | Delegar (Solo cuando la condición se cumple) |
 |---|---|---|
-| Exploración / Lectura que cabe en 1 batch paralelo (≤3 llamadas / ~10k tokens) | ✅ | — |
-| Exploración / Mapeo que supera ~10k tokens o ≥4 archivos | — | ✅ un mapper (contrato `path:line`) |
-| Escribir un cambio ya-entendido sin diseño pendiente | ✅ | — |
-| 2+ writers independientes con superficies de edición disjuntas | — | ✅ un writer acotado por unidad |
-| Cambio de alto riesgo que requiere verificador independiente | — | ✅ verificador independiente |
-| Backstop de sesión larga (≥20 llamadas o ≥5 lecturas sin delegación) | — | ✅ delegar siguiente unidad |
-| bash (git/gh) | ✅ | — |
-| tests/build/install/review | ✅ acotado | ✅ worker fresco por acción |
+| Exploración / Lectura en `<= 1` batch paralelo (`<= 3` llamadas / `~10k` tokens) | ✅ | — |
+| Exploración / Mapeo que supera 1 batch (`> 3` llamadas / `> ~10k` tokens) o `> ~5` búsquedas secuenciales | — | ✅ 1 explorador read-only (`<= 2k` tokens con `path:line`) |
+| Implementar cambio entendido o tarea grande sin paralelismo real | ✅ | — |
+| `2+` unidades conductuales independientes con superficies disjuntas (`~100+` líneas / varios minutos c/u) | — | ✅ 1 writer acotado por unidad conductual |
+| Verificación de cambio de Alto Riesgo (ítems `1-6`) | — | ✅ verificador independiente (`--escalate-item <1-6> --escalate-reason`) |
+| Backstop de sesión larga (`~150k` tokens de contexto en el padre) | — | ✅ pausar y delegar siguiente unidad acotada |
+| bash (`git`/`gh`) y propiedad de commits/ramas | ✅ | — |
 
-**Reglas duras:**
-- **Evidence Budget**: el trabajo inline solo está permitido si cabe en un único batch paralelo (máximo 3 llamadas de lectura o ~10k tokens de contexto). Toda lectura preparatoria amplia o mapeo de 4+ archivos DEBE delegarse a un subagente explorador con contrato de entrega en referencias `path:line`.
-- Fix pequeño y mecánico ya-entendido → inline. Lo demás se delega SOLO con una razón nombrada: presupuesto de evidencia superado, writers paralelos con superficies disjuntas, o verificador independiente para alto riesgo. El conteo de archivos y el tamaño de la tarea por sí solos NUNCA deciden la ruta (semántica 4.1.x).
-- Multi-archivo: **ODD exclusivo**. Trackeá en `odd/tasks/<feature>.md` antes del primer write e implementá tarea por tarea con commits de unidad de trabajo (Conventional Commits) y TDD cuando aplique. SDD queda como referencia metodológica histórica.
-- Implementación acotada / mappers / tareas atómicas → `subagent` (flash). Review adversarial / árbitros de Judgment Day → `subagent_strong` (fuerte).
+**Reglas duras de delegación (Gentle-AI 4.2.0):**
+- **Default-Inline**: ningún trigger aplica por defecto; ante la duda, trabajá inline siguiendo `odd/tasks/<feature>.md`. El conteo de archivos, las líneas totales, el tamaño de la tarea o el ratio de precio de modelos **NUNCA** disparan un writer por sí solos.
+- **Mapping Trigger**: delegá un único explorador read-only solo cuando entender el problema exceda 1 batch paralelo (`> 3` llamadas o `> ~10k` tokens) o requiera `> ~5` búsquedas secuenciales. El explorador devuelve `<= 2k` tokens con evidencia `path:line`; hacé como máximo 1 spot-check en el padre y nunca explores archivos que igual vas a leer inline antes de editar.
+- **Writer Trigger**: delegá writers solo por paralelismo real (`2+` unidades conductuales independientes con superficies de edición disjuntas, cada una de `~100+` líneas cambiadas de autoría o varios minutos de trabajo, claramente más pesada que iniciar un subagente) o por el backstop de `~150k` tokens. **Nunca dividas código, tests y docs de un mismo comportamiento entre distintos writers.**
+- **Invariants & Helper Reuse**: al tocar estado compartido, configuración, manifiestos o parsers, reutilizá los helpers existentes del repositorio y preservá las invariantes de ordenamiento, unicidad, validación y normalización.
+- **Verification Trigger (sin sesgo por modelo chico)**: delegá un verificador independiente read-only **SOLO** cuando el cambio active un ítem de Alto Riesgo (`1-6`), pasando `--escalate-item <1-6> --escalate-reason "<razón>"`. Nunca ejecutes un verificador independiente solo porque el writer usó un modelo más chico/económico o menor effort.
+
+### Authorized work continuity
+
+- Cuando el usuario autorizó una implementación, continuá ejecutando las tareas autorizadas hasta completarlas o encontrar un bloqueo real de decisión de producto.
+- Lenguaje condicional o precautorio del usuario (*«podrías parar si hace falta»*, *«quizás sigamos después»*) pide notas claras en `odd/tasks/<feature>.md` y commits por slice revisables, **no** detener el trabajo prematuramente.
+- Una tarea trackeada solo queda pendiente ante un freno explícito del usuario o un único resultado **Needs your decision** nombrando el bloqueante abierto o la prueba faltante.
 
 ## Roster de roles y agentes (ODD + Review)
 
 | Rol / Agente | Modelo | Skill sugerida | Propósito |
 |---|---|---|---|
-| gentle-orchestrator | fuerte | odd-workflow / esta | coordina ODD (vos) |
-| explorer / mapper | flash | — / research-first | mapeo de código (≤2k tokens path:line) |
-| writer | flash / medio | feature-implementer | escribe implementación acotada por tarea |
-| verifier / tester | flash | qa-tester / testing-patterns | corre suite de tests y checks de DoD |
-| jd-judge-a | fuerte | jd-judge-a | judgment-day juez A (ciego adversarial) |
-| jd-judge-b | fuerte | jd-judge-b | judgment-day juez B (ciego adversarial) |
-| jd-fix-agent | flash | jd-fix-agent | aplica fixes acotados del veredicto |
-| review-risk | flash | review-risk | Lente R1 seguridad |
-| review-readability | flash | review-readability | Lente R2 legibilidad |
-| review-reliability | flash | review-reliability | Lente R3 tests/contratos |
-| review-resilience | flash | review-resilience | Lente R4 ops/rollback |
-| review-refuter | flash | review-refuter | refuta hallazgos falsos positivos |
-| review-validator | flash | review-validator | gate final de verificación con evidencia |
+| gentle-orchestrator | strong | odd-workflow / esta | orquesta y ejecuta inline por defecto; delega por trigger |
+| explorer / mapper | cheap | codegraph-intelligence | mapeo read-only (`<= 2k` tokens `path:line`) |
+| writer | mid | feature-implementer | unidad conductual paralela (`~100+` líneas, código+tests+docs) |
+| verifier | mid | qa-tester / testing-patterns | verificador independiente para Alto Riesgo `1-6` |
+| jd-judge-a / jd-judge-b | strong | judgment-day | jueces A y B (ciego adversarial) |
+| jd-fix-agent | mid | jd-fix-agent | aplica fixes acotados del veredicto |
+| review-risk / readability / reliability / resilience | cheap | gentle-ai-review-4r | lentes 4R nativos (R1-R4) |
+| review-refuter / review-validator | cheap | rdd-defect-workflow | refutación e inspección inmutable de validación |
 
-**Cómo spawn-ear**: cargá la skill del agente o pasá el prompt acotado a `subagent` (flash) o `subagent_strong` (fuerte/pro) según la criticidad. Tareas de escritura complejas o jueces de Judgment Day utilizan modelos fuertes (`pro`/`strong`). Mappers y verificadores de tests utilizan modelos rápidos (`flash`).
+## Retry / Recovery y Scratch State (obligatorio)
 
-## Retry / Recovery (obligatorio)
+- Si un sub-agente falla, devuelve vacío o resultado inválido → **investigá el porqué** y **RE-LANZALO una vez** con contexto exacto del fallo. Si falla 2 veces → reportá el motivo concreto y pará (sin tercer intento automático).
+- **Scratch State Discipline**: los sub-agentes deben reportar cualquier archivo o directorio temporal creado fuera del workspace (`mktemp -d` / `os.tmpdir()`); el orquestador padre los elimina antes de cerrar la tarea.
 
-- Si un sub-agente falla, devuelve vacío, o resultado inválido → **RE-LANZALO una vez** con más contexto: qué falló, qué se esperaba, el error.
-- **Investigá el porqué** antes de re-lanzar: leé el error/resultado del sub-agente; no asumas ni inventes.
-- Si falla 2 veces → reportá al usuario el motivo concreto y pará: **2 fallos detienen la cadena; sin tercer intento automático** (nunca loops infinitos).
-- Review: máximo 2 rondas de fix; lo que quede abierto tras la 2ª se reporta, no se extiende.
+## Skill Resolution & Cierre
 
-## Skill Resolution
-
-Al cerrar cada tarea o work unit, reportá cómo se resolvió cada skill: {injected|fallback-registry|fallback-path|none} — {detalles}.
+Al cerrar cada cambio de código o slice, reportá la resolución de skills (`{injected|fallback-registry|fallback-path|none}`) y cerrá siempre con la línea obligatoria `Risk: item N (reason)` o `Risk: none`.
