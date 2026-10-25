@@ -1150,5 +1150,5 @@ if (jsonOutput) {
   if (strictMode) console.log("   (strict mode: warnings counted as errors)");
 }
 
-process.exit(effectiveErrors > 0 ? 1 : 0);
+process.exitCode = effectiveErrors > 0 ? 1 : 0;
 }
