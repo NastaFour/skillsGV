@@ -35,7 +35,7 @@ Choose the structural pattern that matches the complexity and volatility of the 
 | Dimension | Full Clean / Hexagonal (`UseCase + Port + Adapter`) | Vertical Slice / Cohesive Module (`Handler + Schema + Query`) |
 |---|---|---|
 | **When to Use** | Complex domain invariants, financial/inventory state machines, multi-step orchestration, or volatile external providers (Stripe, LLMs, queues) that require fakes in unit tests. | Straightforward CRUD endpoints, read projections, admin dashboards, internal webhooks, or BFF data loaders with minimal branching logic. |
-| **Structure** | Pure domain entities/services isolated from HTTP and persistence; external I/O behind focused interfaces. | Colocate route handler, Zod input/output schema, and type-safe query in a single cohesive feature slice (`features/invoices/list-invoices.ts`). |
+| **Structure** | Pure domain entities/services isolated from HTTP and persistence; external I/O behind focused interfaces. | Colocate route handler, Zod input/output schema, and type-safe query in a single cohesive feature slice (`src/features/invoices/list-invoices.ts`). |
 | **Rule of Three (KISS)** | Introduce an interface + adapter when crossing an external side-effect boundary or when 2+ implementations exist (e.g., `LiveGateway` + `FakeGateway`). | Do not create single-implementation interfaces for internal read queries that are tested against an ephemeral database. |
 
 ---
