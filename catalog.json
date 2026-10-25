@@ -1,13 +1,13 @@
 {
   "version": 1,
   "totals": {
-    "skills": 231
+    "skills": 237
   },
   "categories": [
     {
       "id": "00-meta-skills",
       "title": "Meta-Skills",
-      "count": 28
+      "count": 29
     },
     {
       "id": "01-planning-process",
@@ -17,17 +17,17 @@
     {
       "id": "02-dev-roles",
       "title": "Dev Roles (SDD)",
-      "count": 31
+      "count": 32
     },
     {
       "id": "03-ai-ml",
       "title": "AI / ML",
-      "count": 7
+      "count": 8
     },
     {
       "id": "04-backend",
       "title": "Backend",
-      "count": 24
+      "count": 25
     },
     {
       "id": "05-frontend",
@@ -37,12 +37,12 @@
     {
       "id": "06-code-quality",
       "title": "Code Quality",
-      "count": 17
+      "count": 18
     },
     {
       "id": "07-testing",
       "title": "Testing",
-      "count": 4
+      "count": 5
     },
     {
       "id": "08-devops",
@@ -100,6 +100,16 @@
       "deprecated": false,
       "note": "← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento",
       "autoInvoke": true
+    },
+    {
+      "name": "codegraph-intelligence",
+      "path": "00-meta-skills/codegraph-intelligence/SKILL.md",
+      "category": "00-meta-skills",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "find-skills",
@@ -692,6 +702,16 @@
       "autoInvoke": false
     },
     {
+      "name": "gentle-ai-review-4r",
+      "path": "02-dev-roles/gentle-ai-review-4r/SKILL.md",
+      "category": "02-dev-roles",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "github-pr",
       "path": "02-dev-roles/github-pr/SKILL.md",
       "category": "02-dev-roles",
@@ -932,6 +952,16 @@
       "autoInvoke": false
     },
     {
+      "name": "context-engineering",
+      "path": "03-ai-ml/context-engineering/SKILL.md",
+      "category": "03-ai-ml",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "llm-integration",
       "path": "03-ai-ml/llm-integration/SKILL.md",
       "category": "03-ai-ml",
@@ -1086,6 +1116,16 @@
       "path": "04-backend/microservices/SKILL.md",
       "category": "04-backend",
       "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "modern-ts-backend",
+      "path": "04-backend/modern-ts-backend/SKILL.md",
+      "category": "04-backend",
+      "tier": "full",
       "tier0": false,
       "deprecated": false,
       "note": null,
@@ -1852,6 +1892,16 @@
       "autoInvoke": true
     },
     {
+      "name": "supply-chain-runtime-security",
+      "path": "06-code-quality/supply-chain-runtime-security/SKILL.md",
+      "category": "06-code-quality",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "systemic-issue-triage",
       "path": "06-code-quality/systemic-issue-triage/SKILL.md",
       "category": "06-code-quality",
@@ -1889,6 +1939,16 @@
       "tier0": false,
       "deprecated": false,
       "note": "← commits atómicos estructurados por unidad de trabajo revisable",
+      "autoInvoke": false
+    },
+    {
+      "name": "agentic-evals-edd",
+      "path": "07-testing/agentic-evals-edd/SKILL.md",
+      "category": "07-testing",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
       "autoInvoke": false
     },
     {

@@ -1,6 +1,6 @@
 # 🧭 Harness Map — Skills ↔ 20 Agent Harnesses
 
-This document maps the **231 skills** in this catalog to the **20 Agent Harnesses** framework (Gentleman Programming taxonomy, 2026). Use it to identify gaps and to understand which skill serves each operational concern.
+This document maps the **237 skills** in this catalog to the **20 Agent Harnesses** framework (Gentleman Programming taxonomy, 2026). Use it to identify gaps and to understand which skill serves each operational concern.
 
 > ⚡ **Gentle-AI 4.2.0 Evolution**: En Gentle-AI 4.2.0, el flujo operativo exclusivo es **ODD (Organic Driven Development)** con orquestación **default-inline** (el orquestador trabaja inline por defecto siguiendo su logbook; los triggers de delegación solo se activan cuando su condición realmente se cumple: mapeo >1 batch de ≤3 llamadas/~10k tokens o >~5 búsquedas secuenciales, 2+ writers paralelos de ~100+ líneas con superficies disjuntas, o verificador independiente para ítems de alto riesgo 1-6 vía `--escalate-item <1-6> --escalate-reason`). Los commits se agrupan en slices revisables de ~400 líneas (aislando cualquier unidad de alto riesgo 1-6 en su propio commit) y todo cambio cierra con `Risk: item N (reason)` o `Risk: none`. Los subcomandos CLI de SDD y OpenSpec fueron retirados en upstream; las skills de SDD se preservan en el catálogo como marco de referencia histórico.
 

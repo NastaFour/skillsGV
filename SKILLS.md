@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -34,8 +34,9 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing substantial features or multi-step development in harnesses… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.2.0 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
+| codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
 ## 01-planning-process
 
@@ -70,11 +71,11 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | Skill | Path |
 |---|---|
 | architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Generates the canonical TRD.md (Technical Requirements Document): module archit… |
-| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, professional-grade code review (Pull Request simulation) on… |
-| dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the "Definition of Done" (DoD) |
+| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.2.0… |
+| dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the Definition of Done (DoD) |
 | expert-debugger | [02-dev-roles/expert-debugger/SKILL.md](02-dev-roles/expert-debugger/SKILL.md) ← DEPRECATED. Use systematic-debugging instead. |
 | security-audit | [02-dev-roles/security-audit/SKILL.md](02-dev-roles/security-audit/SKILL.md) ← ECC-inspired security scanning workflow |
-| feature-implementer | [02-dev-roles/feature-implementer/SKILL.md](02-dev-roles/feature-implementer/SKILL.md) ← Implement production-ready features and code following best practices |
+| feature-implementer | [02-dev-roles/feature-implementer/SKILL.md](02-dev-roles/feature-implementer/SKILL.md) ← Implement production-ready features and domain logic following senior engineeri… |
 | frontend-designer | [02-dev-roles/frontend-designer/SKILL.md](02-dev-roles/frontend-designer/SKILL.md) ← DEPRECATED. Use frontend-design instead. |
 | frontend-design | [02-dev-roles/frontend-design/SKILL.md](02-dev-roles/frontend-design/SKILL.md) ← Anthropic methodology, anti-AI-slop, signature element |
 | judgment-day | [02-dev-roles/judgment-day/SKILL.md](02-dev-roles/judgment-day/SKILL.md) ← parallel adversarial review (red + blue) |
@@ -91,7 +92,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | decision-gate | [02-dev-roles/decision-gate/SKILL.md](02-dev-roles/decision-gate/SKILL.md) ← compress human's last-20% judgment to 3 min, traceable |
 | github-pr | [02-dev-roles/github-pr/SKILL.md](02-dev-roles/github-pr/SKILL.md) ← conventional commits, structured PR descriptions |
 | performance-refactor | [02-dev-roles/performance-refactor/SKILL.md](02-dev-roles/performance-refactor/SKILL.md) ← Refactor code to improve performance, readability, and scalability |
-| qa-tester | [02-dev-roles/qa-tester/SKILL.md](02-dev-roles/qa-tester/SKILL.md) ← Generate comprehensive automated test suites |
+| qa-tester | [02-dev-roles/qa-tester/SKILL.md](02-dev-roles/qa-tester/SKILL.md) ← Generate comprehensive automated test suites with adversarial boundary, concurr… |
 | technical-writer | [02-dev-roles/technical-writer/SKILL.md](02-dev-roles/technical-writer/SKILL.md) ← Generate comprehensive, accessible, and professional technical documentation |
 | frontend-debugging-protocol | [02-dev-roles/frontend-debugging-protocol/SKILL.md](02-dev-roles/frontend-debugging-protocol/SKILL.md) ← `references/diagnostic-tree.md` |
 | auth-flow-audit | [02-dev-roles/auth-flow-audit/SKILL.md](02-dev-roles/auth-flow-audit/SKILL.md) ← `references/audit-checklist.md`, `scripts/audit-auth.mjs` |
@@ -100,6 +101,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
 | archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) ← Usala para crear diagramas Excalidraw, flujos y mapas de arquitectura visual té… |
+| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 4.0 |
 
 ## 03-ai-ml
 
@@ -107,11 +109,12 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 |---|---|
 | ai-orchestration | [03-ai-ml/ai-orchestration/SKILL.md](03-ai-ml/ai-orchestration/SKILL.md) ← Guidelines for managing multi-agent orchestrations |
 | ai-scalability-mlops | [03-ai-ml/ai-scalability-mlops/SKILL.md](03-ai-ml/ai-scalability-mlops/SKILL.md) ← Guidelines for scaling applications and managing AI/ML operations |
-| api-ai-billing | [03-ai-ml/api-ai-billing/SKILL.md](03-ai-ml/api-ai-billing/SKILL.md) ← Guidelines for managing AI integration billing and usage quotas |
+| api-ai-billing | [03-ai-ml/api-ai-billing/SKILL.md](03-ai-ml/api-ai-billing/SKILL.md) ← Guidelines for managing AI API billing, FinOps token budgets, and usage quotas |
 | llm-integration | [03-ai-ml/llm-integration/SKILL.md](03-ai-ml/llm-integration/SKILL.md) ← Guidelines for integrating LLMs into backend APIs |
 | ai-sdk-5 | [03-ai-ml/ai-sdk-5/SKILL.md](03-ai-ml/ai-sdk-5/SKILL.md) ← Vercel AI SDK 5, useChat/UIMessage/streaming |
 | prompt-engineering | [03-ai-ml/prompt-engineering/SKILL.md](03-ai-ml/prompt-engineering/SKILL.md) ← Standards and guidelines for Prompt Engineering |
 | research-first | [03-ai-ml/research-first/SKILL.md](03-ai-ml/research-first/SKILL.md) ← ECC-inspired research-first development pattern |
+| context-engineering | [03-ai-ml/context-engineering/SKILL.md](03-ai-ml/context-engineering/SKILL.md) ← Use when designing LLM context layouts, agent memory pipelines, multi-turn comp… |
 
 ## 04-backend
 
@@ -122,8 +125,8 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | mcp-integration | [04-backend/mcp-integration/SKILL.md](04-backend/mcp-integration/SKILL.md) ← Configures Model Context Protocol (MCP) servers for AI agents |
 | api-design | [04-backend/api-design/SKILL.md](04-backend/api-design/SKILL.md) ← Defines REST API design conventions: URL structure, HTTP methods, status codes,… |
 | expressjs | [04-backend/expressjs/SKILL.md](04-backend/expressjs/SKILL.md) ← Guidelines for Express.js API development |
-| jwt-bcrypt | [04-backend/jwt-bcrypt/SKILL.md](04-backend/jwt-bcrypt/SKILL.md) ← Security standards for User Authentication |
-| microservices | [04-backend/microservices/SKILL.md](04-backend/microservices/SKILL.md) ← Guidelines for Microservice architectures |
+| jwt-bcrypt | [04-backend/jwt-bcrypt/SKILL.md](04-backend/jwt-bcrypt/SKILL.md) ← Security standards for User Authentication and Authorization |
+| microservices | [04-backend/microservices/SKILL.md](04-backend/microservices/SKILL.md) ← Guidelines for Microservices and Modular Monolith architectures |
 | nodejs | [04-backend/nodejs/SKILL.md](04-backend/nodejs/SKILL.md) ← Guidelines for backend Node.js development |
 | payments | [04-backend/payments/SKILL.md](04-backend/payments/SKILL.md) ← Universal payment processing architecture covering checkout sessions, payment i… |
 | postgresql | [04-backend/postgresql/SKILL.md](04-backend/postgresql/SKILL.md) ← `references/schema-reference.md` |
@@ -141,6 +144,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | django-drf | [04-backend/django-drf/SKILL.md](04-backend/django-drf/SKILL.md) ← Django REST Framework: serializers, viewsets, permissions, JWT |
 | java-21 | [04-backend/java-21/SKILL.md](04-backend/java-21/SKILL.md) ← records, sealed classes, pattern matching, virtual threads (Loom) |
 | spring-boot-3 | [04-backend/spring-boot-3/SKILL.md](04-backend/spring-boot-3/SKILL.md) ← constructor injection, @ConfigurationProperties, @Transactional |
+| modern-ts-backend | [04-backend/modern-ts-backend/SKILL.md](04-backend/modern-ts-backend/SKILL.md) ← Use when architecting greenfield TypeScript APIs, edge/serverless services, typ… |
 
 ## 05-frontend
 
@@ -149,12 +153,12 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | electronjs | [05-frontend/electronjs/SKILL.md](05-frontend/electronjs/SKILL.md) ← DEPRECATED. Use electron instead. |
 | electron | [05-frontend/electron/SKILL.md](05-frontend/electron/SKILL.md) ← security patterns: contextBridge, sandbox, IPC validation (gentleman-skills) |
 | expo-production-auditor | [05-frontend/expo-production-auditor/SKILL.md](05-frontend/expo-production-auditor/SKILL.md) ← `references/troubleshooting.md` |
-| maps-gps | [05-frontend/maps-gps/SKILL.md](05-frontend/maps-gps/SKILL.md) ← Implements real-time GPS delivery tracking |
+| maps-gps | [05-frontend/maps-gps/SKILL.md](05-frontend/maps-gps/SKILL.md) ← Implements real-time GPS telemetry streaming and interactive geospatial map vie… |
 | nextjs | [05-frontend/nextjs/SKILL.md](05-frontend/nextjs/SKILL.md) ← DEPRECATED. Use nextjs-15 instead. |
 | push-notifications | [05-frontend/push-notifications/SKILL.md](05-frontend/push-notifications/SKILL.md) ← Implementation of mobile push notifications across Expo, React Native, APNs, an… |
-| pwa-capacitor | [05-frontend/pwa-capacitor/SKILL.md](05-frontend/pwa-capacitor/SKILL.md) ← Standards for Progressive Web Apps (PWA) and Capacitor builds |
+| pwa-capacitor | [05-frontend/pwa-capacitor/SKILL.md](05-frontend/pwa-capacitor/SKILL.md) ← Standards for Progressive Web Apps (PWA) and Ionic Capacitor hybrid mobile buil… |
 | react-native | [05-frontend/react-native/SKILL.md](05-frontend/react-native/SKILL.md) ← Guidelines for cross-platform React Native development |
-| react-vite | [05-frontend/react-vite/SKILL.md](05-frontend/react-vite/SKILL.md) ← Standards and guidelines for React and Vite development |
+| react-vite | [05-frontend/react-vite/SKILL.md](05-frontend/react-vite/SKILL.md) ← Standards and guidelines for React and Vite SPA development |
 | react-19 | [05-frontend/react-19/SKILL.md](05-frontend/react-19/SKILL.md) ← React 19 with React Compiler, no manual memoization |
 | nextjs-15 | [05-frontend/nextjs-15/SKILL.md](05-frontend/nextjs-15/SKILL.md) ← Next.js 15 App Router, Server Actions |
 | tailwindcss | [05-frontend/tailwindcss/SKILL.md](05-frontend/tailwindcss/SKILL.md) ← DEPRECATED. Use tailwind-4 instead. |
@@ -192,7 +196,7 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | impeccable | [05-frontend/impeccable/SKILL.md](05-frontend/impeccable/SKILL.md) ← Comandos Bakaus, PRODUCT.md/DESIGN.md, references/commands.md |
 | taste-skill | [05-frontend/taste-skill/SKILL.md](05-frontend/taste-skill/SKILL.md) ← Design Read, diales, 10 bans, references/full-guide.md |
 | emil-kowalski | [05-frontend/emil-kowalski/SKILL.md](05-frontend/emil-kowalski/SKILL.md) ← Filosofía de Emil Kowalski (animations.dev): física de resortes, gestos interru… |
-| refactoring-ui | [05-frontend/refactoring-ui/SKILL.md](05-frontend/refactoring-ui/SKILL.md) ← Metodología Wathan & Schoger: diseñar primero en escala de grises, jerarquía po… |
+| refactoring-ui | [05-frontend/refactoring-ui/SKILL.md](05-frontend/refactoring-ui/SKILL.md) ← Metodología Wathan & Schoger armonizada con tokens OKLCH: validación de jerarqu… |
 | ui-ux-pro-max | [05-frontend/ui-ux-pro-max/SKILL.md](05-frontend/ui-ux-pro-max/SKILL.md) ← Base de 50+ estilos UI, 160+ paletas y reglas por industria (SaaS, Fintech, E-c… |
 | onboarding-cro | [05-frontend/onboarding-cro/SKILL.md](05-frontend/onboarding-cro/SKILL.md) ← Diseño y optimización de flujos de onboarding para reducir Time-to-Value (TTV)… |
 | page-cro | [05-frontend/page-cro/SKILL.md](05-frontend/page-cro/SKILL.md) ← Optimización de conversión para landing pages, precios y páginas de producto se… |
@@ -215,28 +219,30 @@ Catálogo de **231 skills** compatible con [agentskills.io](https://agentskills.
 | changesets | [06-code-quality/changesets/SKILL.md](06-code-quality/changesets/SKILL.md) ← Configures Changesets for versioning and changelog management in pnpm monorepos |
 | changelog-generator | [06-code-quality/changelog-generator/SKILL.md](06-code-quality/changelog-generator/SKILL.md) ← automatic user-facing changelogs & release notes from git commits |
 | env-management | [06-code-quality/env-management/SKILL.md](06-code-quality/env-management/SKILL.md) ← Manages environment variables across development, staging, and production envir… |
-| solid-clean-code | [06-code-quality/solid-clean-code/SKILL.md](06-code-quality/solid-clean-code/SKILL.md) ← Enforces software engineering quality and clean coding principles |
-| typescript | [06-code-quality/typescript/SKILL.md](06-code-quality/typescript/SKILL.md) ← Guidelines for strict TypeScript development |
+| solid-clean-code | [06-code-quality/solid-clean-code/SKILL.md](06-code-quality/solid-clean-code/SKILL.md) ← Software engineering quality and architectural proportionality — SOLID, DRY, KI… |
+| typescript | [06-code-quality/typescript/SKILL.md](06-code-quality/typescript/SKILL.md) ← Guidelines for strict TypeScript development — precise type safety, unknown nar… |
 | dependency-guardian | [06-code-quality/dependency-guardian/SKILL.md](06-code-quality/dependency-guardian/SKILL.md) ← Garantiza el uso de versiones estables, seguras y actualizadas de todas las dep… |
 | build-config-validator | [06-code-quality/build-config-validator/SKILL.md](06-code-quality/build-config-validator/SKILL.md) ← `scripts/validate-build-config.mjs` |
 | elixir-antipatterns | [06-code-quality/elixir-antipatterns/SKILL.md](06-code-quality/elixir-antipatterns/SKILL.md) ← Agent misuse, nested case, bare spawn, GenServer bottleneck |
+| supply-chain-runtime-security | [06-code-quality/supply-chain-runtime-security/SKILL.md](06-code-quality/supply-chain-runtime-security/SKILL.md) ← Use when hardening Node/TypeScript dependency trees, auditing third-party MCP s… |
 
 ## 07-testing
 
 | Skill | Path |
 |---|---|
 | go-testing | [07-testing/go-testing/SKILL.md](07-testing/go-testing/SKILL.md) ← patrones de prueba para Go: unit tests, cobertura, Bubbletea teatest y golden files |
-| testing-patterns | [07-testing/testing-patterns/SKILL.md](07-testing/testing-patterns/SKILL.md) ← Unit, integration, and E2E testing patterns for fullstack apps |
+| testing-patterns | [07-testing/testing-patterns/SKILL.md](07-testing/testing-patterns/SKILL.md) ← Unit, integration, and E2E testing patterns for fullstack apps — fast determini… |
 | playwright | [07-testing/playwright/SKILL.md](07-testing/playwright/SKILL.md) ← E2E, MCP-first exploration, Page Object Model |
 | pytest | [07-testing/pytest/SKILL.md](07-testing/pytest/SKILL.md) ← fixtures, mocking, parametrize, markers, async, conftest |
+| agentic-evals-edd | [07-testing/agentic-evals-edd/SKILL.md](07-testing/agentic-evals-edd/SKILL.md) ← Use when testing AI agents, LLM prompts, RAG pipelines, or skill routers with d… |
 
 ## 08-devops
 
 | Skill | Path |
 |---|---|
-| ci-cd | [08-devops/ci-cd/SKILL.md](08-devops/ci-cd/SKILL.md) ← CI/CD pipeline configuration for the application monorepo |
+| ci-cd | [08-devops/ci-cd/SKILL.md](08-devops/ci-cd/SKILL.md) ← CI/CD pipeline configuration for modern workspaces and monorepos |
 | kill-switches | [08-devops/kill-switches/SKILL.md](08-devops/kill-switches/SKILL.md) ← Implements emergency stop mechanisms for AI agent processes: heartbeat dead-man… |
-| monitoring | [08-devops/monitoring/SKILL.md](08-devops/monitoring/SKILL.md) ← Logging, healthchecks, and telemetry standards for the application |
+| monitoring | [08-devops/monitoring/SKILL.md](08-devops/monitoring/SKILL.md) ← Logging, healthchecks, and observability telemetry standards for backend servic… |
 | observability | [08-devops/observability/SKILL.md](08-devops/observability/SKILL.md) ← Configures observability stack: OpenTelemetry traces, Prometheus metrics, struc… |
 | store-deployment-eas | [08-devops/store-deployment-eas/SKILL.md](08-devops/store-deployment-eas/SKILL.md) ← `references/eas-setup.md`, `scripts/check-eas-config.mjs` |
 | cloudflare-edge | [08-devops/cloudflare-edge/SKILL.md](08-devops/cloudflare-edge/SKILL.md) ← Usala para configurar el patrón Cloudflare delante con proxy, WAF, Turnstile, e… |
