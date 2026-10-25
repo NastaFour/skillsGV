@@ -30,21 +30,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
-const args = process.argv.slice(2);
-let query = null, diffLines = null, jsonOut = false, turnCache = null;
-for (let i = 0; i < args.length; i++) {
-  if (args[i] === "--") continue;
-  if (args[i] === "--query") query = args[++i];
-  else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
-  else if (args[i] === "--json") jsonOut = true;
-  else if (args[i] === "--turn-cache") turnCache = args[++i];
-  else if (args[i] === "--help" || args[i] === "-h") {
-    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json] [--turn-cache <path>]");
-    process.exit(0);
-  }
-}
-
-if (!query) { console.error("Missing --query"); process.exit(2); }
+const samePath = (a, b) =>
+  process.platform === "win32" ? a.toLowerCase() === b.toLowerCase() : a === b;
+const isCliEntry = Boolean(process.argv[1] && samePath(resolve(process.argv[1]), resolve(__filename)));
 
 function statSafe(p) { try { return statSync(p); } catch { return null; } }
 
@@ -89,7 +77,7 @@ export function normalizeText(str) {
  * dots or non-ASCII characters (e.g. "PRD.md", "node.js", "socket.io") match
  * cleanly without substring traps.
  */
-function buildWordBoundaryRegex(term) {
+export function buildWordBoundaryRegex(term) {
   return new RegExp(`(?<![\\p{L}\\p{N}_])${escapeRegex(term)}(?![\\p{L}\\p{N}_])`, "iu");
 }
 
@@ -121,6 +109,23 @@ const TIER0_SKILLS = new Set([
   "dod-checker",
   "decision-gate",
 ]);
+
+if (isCliEntry) {
+const args = process.argv.slice(2);
+let query = null, diffLines = null, jsonOut = false, turnCache = null;
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--") continue;
+  if (args[i] === "--query") query = args[++i];
+  else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
+  else if (args[i] === "--json") jsonOut = true;
+  else if (args[i] === "--turn-cache") turnCache = args[++i];
+  else if (args[i] === "--help" || args[i] === "-h") {
+    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json] [--turn-cache <path>]");
+    process.exit(0);
+  }
+}
+
+if (!query) { console.error("Missing --query"); process.exit(2); }
 
 // Build skill index (deduplicated by name: one skill may never appear twice)
 const files = walkSkills(CATALOG_ROOT);
@@ -317,8 +322,8 @@ const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfal
 const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
 // UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
-const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animation|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
-const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|diseñ[oa]s?|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
+const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animaciones|animation|animations|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
+const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
 const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|schema|esquema|postgres|prisma|reducer|state\s+machine|service|resolver|typescript|ts\b|vista\s+materializada|materialized\s+view)\b/i;
 
 const isUiTask =
@@ -397,4 +402,5 @@ else {
   console.log(`  skipJD:      ${skipJudgmentDay}`);
   if (deprecatedHit) console.log(`  deprecatedHit: ${deprecatedHit} -> redirect to ${primary}`);
   console.log(`  Tier1 load:  [${tier1toLoad.join(", ")}]`);
+}
 }

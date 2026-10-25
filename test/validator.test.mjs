@@ -103,3 +103,30 @@ metadata:
   assert.equal(strictIssues.length, 0, `Expected 0 frontmatter-strict-yaml issues, got ${JSON.stringify(strictIssues)}`);
   assert.equal(res.errors, 0);
 });
+
+test('validateStrictYamlFrontmatter can be imported directly and validates multiline quotes, >2+ headers, and list colons', async () => {
+  const { validateStrictYamlFrontmatter } = await import('../00-meta-skills/skill-validator/scripts/validate-skills.mjs');
+  assert.equal(typeof validateStrictYamlFrontmatter, 'function');
+
+  // Valid multiline double-quoted scalar and >2+ block scalar
+  const validIssues = validateStrictYamlFrontmatter(`name: sample-skill
+description: "First line of a valid
+  multiline quoted description: with colon"
+notes: >2+
+  indented block scalar: with colon
+metadata:
+  trigger:
+    - "quoted: trigger"`);
+  assert.equal(validIssues.length, 0, `Expected 0 issues for valid YAML, got ${JSON.stringify(validIssues)}`);
+
+  // Invalid unquoted colon in list item and unclosed multiline quote before next key
+  const invalidIssues = validateStrictYamlFrontmatter(`name: sample-skill
+description: "Unclosed quote before next key
+license: MIT
+metadata:
+  trigger:
+    - unquoted: colon in list item`);
+  assert.equal(invalidIssues.length, 2, `Expected 2 issues, got ${JSON.stringify(invalidIssues)}`);
+  assert.match(invalidIssues[0].msg, /unclosed double-quoted scalar/i);
+  assert.match(invalidIssues[1].msg, /unquoted ": " in list item scalar/i);
+});

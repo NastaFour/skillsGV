@@ -36,7 +36,7 @@ Use this skill when designing deployment structures, setting up Docker/Kubernete
 
 ## 🔁 2. MLOps Pipeline & Data Quality
 
-When integrating AI modules (such as the Support Triage AI or the Delivery Dispatch Routing Agent):
+When integrating AI modules (such as automated support triage, classification pipelines, or multi-step routing agents):
 
 1. **Strict Data Contracts**:
    - Every input sent to an LLM or ML model must match a strict JSON schema verified via Zod.

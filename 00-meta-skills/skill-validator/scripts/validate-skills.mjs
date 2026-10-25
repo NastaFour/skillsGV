@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { REPO_ROOT, checkCatalog, readTier0Set, walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 import { splitFrontmatter as parseFrontmatter, getField, getNestedField, parseList } from "../../../_shared/frontmatter.mjs";
 
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const args = process.argv.slice(2);
@@ -54,7 +55,8 @@ function isCatalogTarget(target) {
   );
 }
 
-if (!statSafe(targetPath)) {
+const isCliEntry = Boolean(process.argv[1] && samePath(resolve(process.argv[1]), resolve(__filename)));
+if (isCliEntry && !statSafe(targetPath)) {
   console.error(`Path not found: ${targetPath}`);
   process.exit(2);
 }
@@ -114,11 +116,29 @@ function walkSkills(dir) {
  *       that contain `: ` (colon followed by space), which YAML 1.2 rejects as
  *       "mapping values are not allowed in this context".
  */
+function findClosingQuote(str, quoteChar, startIndex = 0) {
+  for (let i = startIndex; i < str.length; i++) {
+    if (quoteChar === '"' && str[i] === "\\") {
+      i++;
+      continue;
+    }
+    if (quoteChar === "'" && str[i] === "'" && str[i + 1] === "'") {
+      i++;
+      continue;
+    }
+    if (str[i] === quoteChar) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 export function validateStrictYamlFrontmatter(front) {
   const issues = [];
   const lines = front.split(/\r?\n/);
   let inBlockScalar = false;
   let blockScalarIndent = -1;
+  let openQuote = null; // { quoteChar, key, lineNum, baseIndent }
 
   for (let idx = 0; idx < lines.length; idx++) {
     const line = lines[idx];
@@ -139,6 +159,34 @@ export function validateStrictYamlFrontmatter(front) {
     const indentMatch = line.match(/^[ \t]*/);
     const indent = indentMatch ? indentMatch[0].length : 0;
 
+    if (openQuote) {
+      // If a new key appears at or outer to the opening key's indent before closing quote, it is unclosed
+      if (indent <= openQuote.baseIndent && /^[ \t]*[A-Za-z0-9_-]+:(?:[ \t]|$)/.test(line)) {
+        const qLabel = openQuote.quoteChar === '"' ? "double" : "single";
+        issues.push({
+          severity: "error",
+          check: "frontmatter-strict-yaml",
+          msg: `Line ${openQuote.lineNum} (${openQuote.key}): unclosed ${qLabel}-quoted scalar in YAML frontmatter`,
+        });
+        openQuote = null;
+      } else {
+        const closeIdx = findClosingQuote(trimmed, openQuote.quoteChar, 0);
+        if (closeIdx !== -1) {
+          const qLabel = openQuote.quoteChar === '"' ? "double" : "single";
+          const trailing = trimmed.slice(closeIdx + 1).trim();
+          if (trailing !== "" && !trailing.startsWith("#")) {
+            issues.push({
+              severity: "error",
+              check: "frontmatter-strict-yaml",
+              msg: `Line ${lineNum} (${openQuote.key}): trailing text after closing ${qLabel} quote (${trailing}) breaks strict YAML 1.2 parsers`,
+            });
+          }
+          openQuote = null;
+        }
+        continue;
+      }
+    }
+
     if (inBlockScalar) {
       if (indent > blockScalarIndent) {
         continue;
@@ -153,71 +201,27 @@ export function validateStrictYamlFrontmatter(front) {
       const val = (kvMatch[3] ?? "").trim();
       if (!val) continue;
 
-      // Block scalar header (> or |, with optional chomping/indentation indicators)
-      if (/^[>|][-+]?\d*(?:\s+#.*)?$/.test(val)) {
+      // Block scalar header (> or |, with optional chomping/indentation indicators in either order per YAML 1.2 §8.1.1)
+      if (/^[>|](?:[-+]?\d*|\d+[-+]?)(?:\s+#.*)?$/.test(val)) {
         inBlockScalar = true;
         blockScalarIndent = indent;
         continue;
       }
 
-      // (b) Double-quoted scalar
-      if (val.startsWith('"')) {
-        let closeIdx = -1;
-        for (let i = 1; i < val.length; i++) {
-          if (val[i] === "\\") {
-            i++;
-            continue;
-          }
-          if (val[i] === '"') {
-            closeIdx = i;
-            break;
-          }
-        }
+      // (b) Double-quoted or single-quoted scalar
+      if (val.startsWith('"') || val.startsWith("'")) {
+        const quoteChar = val[0];
+        const qLabel = quoteChar === '"' ? "double" : "single";
+        const closeIdx = findClosingQuote(val, quoteChar, 1);
         if (closeIdx === -1) {
-          issues.push({
-            severity: "error",
-            check: "frontmatter-strict-yaml",
-            msg: `Line ${lineNum} (${key}): unclosed double-quoted scalar in YAML frontmatter`,
-          });
+          openQuote = { quoteChar, key, lineNum, baseIndent: indent };
         } else {
           const trailing = val.slice(closeIdx + 1).trim();
           if (trailing !== "" && !trailing.startsWith("#")) {
             issues.push({
               severity: "error",
               check: "frontmatter-strict-yaml",
-              msg: `Line ${lineNum} (${key}): trailing text after closing double quote (${trailing}) breaks strict YAML 1.2 parsers`,
-            });
-          }
-        }
-        continue;
-      }
-
-      // (b) Single-quoted scalar
-      if (val.startsWith("'")) {
-        let closeIdx = -1;
-        for (let i = 1; i < val.length; i++) {
-          if (val[i] === "'") {
-            if (val[i + 1] === "'") {
-              i++;
-              continue;
-            }
-            closeIdx = i;
-            break;
-          }
-        }
-        if (closeIdx === -1) {
-          issues.push({
-            severity: "error",
-            check: "frontmatter-strict-yaml",
-            msg: `Line ${lineNum} (${key}): unclosed single-quoted scalar in YAML frontmatter`,
-          });
-        } else {
-          const trailing = val.slice(closeIdx + 1).trim();
-          if (trailing !== "" && !trailing.startsWith("#")) {
-            issues.push({
-              severity: "error",
-              check: "frontmatter-strict-yaml",
-              msg: `Line ${lineNum} (${key}): trailing text after closing single quote (${trailing}) breaks strict YAML 1.2 parsers`,
+              msg: `Line ${lineNum} (${key}): trailing text after closing ${qLabel} quote (${trailing}) breaks strict YAML 1.2 parsers`,
             });
           }
         }
@@ -238,8 +242,24 @@ export function validateStrictYamlFrontmatter(front) {
       continue;
     }
 
+    // (d) Block sequence list item (- item)
+    if (trimmed.startsWith("-")) {
+      const itemVal = trimmed.slice(1).trim();
+      if (itemVal && !itemVal.startsWith('"') && !itemVal.startsWith("'") && !itemVal.startsWith("[") && !itemVal.startsWith("{")) {
+        const plainItem = itemVal.replace(/\s+#.*$/, "");
+        if (/:\s/.test(plainItem) || plainItem.endsWith(":")) {
+          issues.push({
+            severity: "error",
+            check: "frontmatter-strict-yaml",
+            msg: `Line ${lineNum}: unquoted ": " in list item scalar (wrap the list item in quotes)`,
+          });
+        }
+      }
+      continue;
+    }
+
     // Indented continuation line outside block scalars
-    if (!trimmed.startsWith("-") && !trimmed.startsWith("[") && !trimmed.startsWith("{") && !trimmed.startsWith('"') && !trimmed.startsWith("'")) {
+    if (!trimmed.startsWith("[") && !trimmed.startsWith("{") && !trimmed.startsWith('"') && !trimmed.startsWith("'")) {
       const plainCont = trimmed.replace(/\s+#.*$/, "");
       if (/:\s/.test(plainCont) || plainCont.endsWith(":")) {
         issues.push({
@@ -249,6 +269,15 @@ export function validateStrictYamlFrontmatter(front) {
         });
       }
     }
+  }
+
+  if (openQuote) {
+    const qLabel = openQuote.quoteChar === '"' ? "double" : "single";
+    issues.push({
+      severity: "error",
+      check: "frontmatter-strict-yaml",
+      msg: `Line ${openQuote.lineNum} (${openQuote.key}): unclosed ${qLabel}-quoted scalar in YAML frontmatter`,
+    });
   }
 
   return issues;
@@ -1004,6 +1033,7 @@ function runRegistryConsistencyCheck(skills, targetPath) {
   return issues;
 }
 
+if (isCliEntry) {
 const skills = walkSkills(targetPath);
 
 function countIssues(issues) {
@@ -1121,3 +1151,4 @@ if (jsonOutput) {
 }
 
 process.exit(effectiveErrors > 0 ? 1 : 0);
+}

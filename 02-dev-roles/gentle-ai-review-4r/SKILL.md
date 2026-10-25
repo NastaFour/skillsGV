@@ -19,7 +19,7 @@ Operational guide for the **Gentle-AI 4.2.0** native review facade (`gentle-ai r
 
 ## 🚫 Core Invariants (Gentle-AI 4.2.0 / Contract 1.4.0)
 
-1. **OPT-IN USER AUTHORITY**: RDD mode is strictly user-owned (`gentle-ai review mode enable --scope global`). Never enable or disable RDD autonomously. When `gentle-ai review mode status` reports disabled, operate under ordinary repository policy (`disabled/unmanaged`).
+1. **OPT-IN USER AUTHORITY & GRACEFUL FALLBACK**: RDD mode is strictly user-owned (`gentle-ai review mode enable --scope global`). Never enable or disable RDD autonomously. When `gentle-ai review mode status` reports disabled, operate under ordinary repository policy (`disabled/unmanaged`). When the `gentle-ai` binary is absent or the repository is on an unsupported SMB/UNC network path (`\\server\share`), report `receipt-driven development: unavailable` and continue under ordinary repository policy.
 2. **HIGH-RISK ONLY `review_due`**: In Gentle-AI 4.2.0, `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk. A medium-risk candidate reports `under_budget` regardless of authored line count.
 3. **ISOLATED HIGH-RISK SLICES**: Before committing a unit whose `Risk:` line names any High-Risk Item (`1..6`), **close and review any pending `under_budget` slice first**, then give the high-risk unit its own isolated commit and review cycle.
 4. **NO SMALL-MODEL VERIFIER BIAS**: Independent verification is triggered strictly by high-risk classification (`--escalate-item <1-6> --escalate-reason "<why>"`), never because a smaller or faster model authored the change.
@@ -115,4 +115,4 @@ Every code change must close with `Risk: item N (<reason>)` or `Risk: none`. Any
 The native `gentle-ai review` lifecycle defines the baseline governance contract. Teams and agents may extend verification depth when the domain warrants it (`[Beyond-Baseline: <reason>]`):
 
 - **Adversarial Dual-Judge Escalation (`judgment-day`)**: For critical Item 1 (financial/data migrations) or Item 2 (cryptographic/auth boundary) changes, combine `gentle-ai review` (`R1,R3,R4`) with two blind adversarial review agents to eliminate single-reviewer blind spots (`[Beyond-Baseline: Dual-blind adversarial security audit]`).
-- **Differential Benchmark Receipts**: Pair `R3`/`R4` reviews on hot-path parsers or query engines with automated `mktemp -d` base-vs-head latency benchmarks attached to the review evidence.
+- **Differential Benchmark Receipts**: Pair `R3`/`R4` reviews on hot-path parsers or query engines with automated `mktemp -d` base-vs-head latency benchmarks attached to the review evidence (workers must report any `mktemp -d` paths created so the parent orchestrator cleans them up before task closure).

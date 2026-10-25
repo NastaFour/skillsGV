@@ -74,7 +74,7 @@ No Node.js, no Python, no Docker. One binary, one SQLite file. Most agents launc
 Inmediatamente después de:
 - **Resolución de Bugs Complejos:** errores de compilación nativa en Expo, conflictos en el monorepo, fallos de transacciones Prisma, fugas de sockets.
 - **Decisiones Arquitectónicas (ADRs aprobados):** qué librería se adoptó, justificación, configuración.
-- **Bypasses de Seguridad:** justificación detrás de cualquier `// #IA_BYPASS: <reason>` aprobado por el DoD Checker.
+- **Extensiones Beyond-Baseline:** justificación técnica detrás de cualquier `[Beyond-Baseline: <reason>]` o excepción de arquitectura validada.
 - **Conflictos de memoria:** cuando `mem_judge`/`mem_compare` detectan que una nueva observación contradice una previa, registrar la resolución.
 
 Payload (mem_save):

@@ -15,7 +15,7 @@ Load when the frontmatter trigger terms apply to a defect or review-authority wo
 
 RDD is opt-in and user-owned: it is enabled only through the native command `gentle-ai review mode enable --scope global` (`status` and `disable` accept scope `global|clone`). The catalog never enables or disables it.
 - **When disabled**: No receipt is required, the pipeline does not fail by its absence, and you report `disabled/unmanaged` under ordinary repository policy.
-- **When unavailable**: If the `gentle-ai` binary or native `review` subcommand is not installed or unreachable in the active runtime, degrade gracefully: report `receipt-driven development: unavailable` and proceed under ordinary repository policy without fabricating receipts or blocking delivery.
+- **When unavailable**: If the `gentle-ai` binary or native `review` subcommand is not installed, unreachable in the active runtime, or invoked from an unsupported SMB/UNC network path (`\\server\share`), degrade gracefully: report `receipt-driven development: unavailable` and proceed under ordinary repository policy without fabricating receipts or blocking delivery.
 
 This skill guides public collaboration. It does not grant issue approval, label, review, exception, or merge authority.
 
@@ -55,7 +55,7 @@ The bounded correction budget is FROZEN BY THE BINARY at review START, derived f
 
 | Condition | Action |
 | --- | --- |
-| RDD binary/command unavailable | Report `receipt-driven development: unavailable`; follow ordinary policy. |
+| RDD binary/command unavailable or SMB/UNC path | Report `receipt-driven development: unavailable`; follow ordinary policy. |
 | RDD disabled | Ordinary policy; `disabled/unmanaged`; no receipt or approval claim. |
 | Pending `under_budget` slice before High-Risk (`1-6`) unit | Commit `under_budget` slice first; isolate High-Risk unit in its own commit. |
 | High-Risk item `1-6` triggered | Pass `--escalate-item <1-6> --escalate-reason`; record assessed tier/outcome per commit. |

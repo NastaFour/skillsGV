@@ -1,16 +1,16 @@
-# Socket.io Room Pattern for Delivery Tracking
+# Socket.io Room Pattern for Live Location Tracking
 
-Each delivery is a dedicated Socket.io **room** so only the buyer, courier, and assigned admin receive updates.
+Each active tracking session uses a dedicated Socket.io **room** so only authorized subscribers, the mobile publisher, and optional operators receive location updates.
 
 ## 🏠 Room Naming
 
 ```
-order:<order-uuid>
+session:<session-uuid>
 ```
 
-- Buyer joins on opening the delivery screen
-- Courier joins on accepting the order
-- Admin (optional) joins on assigning themselves to the order
+- Subscriber joins on opening the live tracking view
+- Publisher joins on starting the active tracking session
+- Operator (optional) joins when monitoring the session
 
 ## 🤝 Join on Authenticated Handshake
 

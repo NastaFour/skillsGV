@@ -116,7 +116,7 @@ Instance 2 scope:  apps/web/components/Inventory.tsx, apps/web/hooks/useInventor
                     → No overlap → SAFE TO FORK ✓
 
 Instance 1 scope:  apps/api/routes/orders.ts, apps/api/middleware/auth.ts
-Instance 2 scope:  apps/api/middleware/auth.ts, apps/api/socket/delivery.ts
+Instance 2 scope:  apps/api/middleware/auth.ts, apps/api/socket/notifications.ts
                     → Overlap on auth.ts → MERGE, DO NOT FORK ✗
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: reports-exports
-description: Patterns for generating and exporting reports in the application — PDF receipts, CSV revenue reports, booking summaries, and staff performance metrics. Covers PDF generation (PDFKit/puppeteer), CSV streaming for large datasets, and scheduled report delivery. Use when implementing admin dashboard reports, financial exports, or PDF booking confirmations.
+description: Patterns for generating and exporting structured reports — PDF invoices/receipts, CSV financial exports, activity summaries, and operational metrics. Covers PDF generation (PDFKit/puppeteer), CSV streaming for large datasets, and scheduled report delivery. Use when implementing admin dashboard reports, financial exports, or PDF booking confirmations.
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+."
 metadata:

@@ -268,3 +268,20 @@ test('Unicode word-boundary matching routes dotted triggers cleanly', () => {
   assert.equal(resSocket.primary, 'socketio');
   assert.equal(resSocket.confidence, 1);
 });
+
+test('skill-router exports normalizeText and buildWordBoundaryRegex safely without exiting', async () => {
+  const mod = await import('../00-meta-skills/skill-router/scripts/skill-router.mjs');
+  assert.equal(typeof mod.normalizeText, 'function');
+  assert.equal(typeof mod.buildWordBoundaryRegex, 'function');
+  assert.equal(mod.normalizeText('Animación y Diseño'), 'animacion y diseno');
+  assert.ok(mod.buildWordBoundaryRegex('node.js').test('usar node.js en backend'));
+});
+
+test('skill-router detects Spanish plural animaciones as UI task and injects design-driven', () => {
+  const res = runRouter('crear animaciones fluidas en la vista principal');
+  assert.equal(res.isUiTask, true);
+  assert.ok(
+    res.primary === 'design-driven' || res.secondary.includes('design-driven') || res.tier1toLoad.includes('design-driven'),
+    `Expected design-driven in router output, got ${JSON.stringify(res)}`
+  );
+});

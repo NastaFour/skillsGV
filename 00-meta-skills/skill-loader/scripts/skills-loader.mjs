@@ -348,7 +348,13 @@ function modeCheck() {
     console.log(JSON.stringify({ allowed: false, tier: null, name: checkName, reason: "route-first", hint: "run --turn first" }));
     process.exit(1);
   }
-  const tc = JSON.parse(readFileSync(cacheFile, "utf8"));
+  let tc;
+  try {
+    tc = JSON.parse(readFileSync(cacheFile, "utf8"));
+  } catch {
+    console.log(JSON.stringify({ allowed: false, tier: null, name: checkName, reason: "corrupt-turn-cache", hint: "run --turn first" }));
+    process.exit(1);
+  }
   if (tc.tier1 && tc.tier1.includes(checkName)) {
     console.log(JSON.stringify({ allowed: true, tier: 1, name: checkName }));
     logCheckTelemetry(checkName, true);
@@ -391,7 +397,7 @@ const CATEGORY_TITLES = {
   "08-devops": "DevOps (08-devops/)",
   "09-media-graphics": "Media y Gráficos (09-media-graphics/)",
   "11-mcp-hybrid": "Híbridas MCP (11-mcp-hybrid/)",
-  "12-matt-pocock": "12 · Matt Pocock Workflows",
+  "12-matt-pocock": "Matt Pocock Workflows (12-matt-pocock/)",
   "professional-planner": "Planificación SDD (professional-planner/)",
 };
 
