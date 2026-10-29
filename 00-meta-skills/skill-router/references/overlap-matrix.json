@@ -52,7 +52,7 @@
     {
       "id": "anti-slop-frontend",
       "canonical": "design-driven",
-      "members": ["design-driven", "taste-skill", "impeccable"],
+      "members": ["design-driven", "taste-skill", "impeccable", "hallmark-design-study"],
       "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. Si las 3 puntúan, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
     },
     {
@@ -96,6 +96,12 @@
       "canonical": "testing-patterns",
       "members": ["testing-patterns", "tdd"],
       "note": "testing-patterns gobierna los patrones de arquitectura de suites de pruebas (Vitest, Supertest, RTL, cobertura obligatoria); tdd (12-matt-pocock) modela el ciclo rojo-verde y definición de interfaces en costuras. Si ambas puntúan para testing, gana testing-patterns como primario."
+    },
+    {
+      "id": "security-defense-suite",
+      "canonical": "security-audit",
+      "members": ["security-audit", "live-cve-security-intel", "ai-safety-agent-guard", "supply-chain-runtime-security"],
+      "note": "security-audit es el auditor AppSec general canónico (OWASP/VBSec); live-cve-security-intel audita CVEs recientes en vivo, ciclo de vida OOM/worker y Trail of Bits fp-check; ai-safety-agent-guard protege agentes/LLMs contra prompt injection y comandos destructivos; supply-chain-runtime-security cubre pnpm y MCP sandboxing. Si puntúan juntas en una consulta general, gana security-audit y las especializadas quedan secondary/tier1toLoad."
     }
   ]
 }

