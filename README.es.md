@@ -40,9 +40,19 @@ Gobernanza visual determinista y erradicación de sesgos genéricos de IA en int
 
 - **impeccable** (`05-frontend/impeccable`): gobernanza por 23 comandos especializados (`shape`, `craft`, `critique`, `audit`, `polish`...), manteniendo `PRODUCT.md` (contexto durable) y `DESIGN.md` (tokens visuales en formato Google Stitch).
 - **taste-skill** (`05-frontend/taste-skill`): Design Read obligatorio previo a la implementación, diales triaxiales 1-10 (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), 10 Absolute Bans de fallo automático y preflight mecánico.
-- **design-driven D1b**: entrevista de unicidad en 5 bloques secuenciales (3 P's, diales, referencias reales, firma visual, anti-slop) que alimenta el Design DNA del producto.
+- **design-driven D1b & Think Outside the Box**: 8 Chasis Arquetípicos, síntesis One-Shot en 8 líneas o Fast-Path de 1 línea, protocolo de inversión lateral de 3 clichés, y extensiones especializadas: `hallmark-design-study` (extracción ética de ADN visual), `scroll-world-storytelling` (scrollytelling a 60fps con `prefers-reduced-motion`) y `frontend-slides-deck` (presentaciones sin dependencias).
+- **Floor, Not Ceiling (Enseñanza > Dogma)**: Hard Invariants para seguridad, accesibilidad y verdad en código, autorizando libremente al modelo a proponer arquitecturas o estéticas superiores (`[Beyond-Baseline]`).
 - **MCPs opcionales**: integración no bloqueante con Figma (vía `figma-implement`), 21st.dev y Fal.ai (FLUX Schnell).
 - *Nota*: el índice completo de las 52 fuentes vive en `05-frontend/taste-skill/references/full-guide.md`.
+
+## 🛡️ Seguridad Defensiva y Suite de Producción (250 Puntos)
+
+Blindaje integral de runtime, resiliencia distribuida y auditoría pre-lanzamiento:
+
+- **live-cve-security-intel**: consulta en tiempo real de advisories OSV.dev, ciclo de vida de memoria/workers (mitigación de patrones post-2026 tipo PHP2Shell) y `fp-check` obligatorio de Trail of Bits.
+- **ai-safety-agent-guard**: delimitadores `<untrusted_document>`, intercepción mecánica de comandos destructivos (`rm -rf`, `git push -f`, `DROP TABLE`, borrados de PowerShell/Windows) y defensa contra prompt injection.
+- **distributed-resilience-sre**: Circuit Breakers, Exponential Backoff con Jitter, Idempotency-Keys, Transactional Outbox + CDC, Dead-Letter Queues (DLQ), Graceful Shutdown (`SIGTERM`), Liveness/Readiness probes y Presigned URLs.
+- **production-readiness-250**: checklist maestro de los 250 puntos de ingeniería senior (dinero en centavos `BigInt`/`Decimal` sin floats, UTC/IANA timezones, normalización Unicode `NFC`, protección del Event Loop, GDPR/PII, Audit Logs y SPF/DKIM/DMARC).
 
 ## Instalación
 

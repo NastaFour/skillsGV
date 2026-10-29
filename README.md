@@ -26,7 +26,10 @@ Most AI coding setups suffer from two extremes:
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
 - 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.3.1)**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) on feature branch → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
-- 🎨 **Anti-Slop Design Governance**: Incorporates Paul Bakaus's `impeccable`, Leonxlnx's `taste-skill` (10 Absolute Bans, triaxial dials), and `design-driven` DNA interviews.
+- 🛡️ **Defensive Security & Pre-Release Live CVE Gate**: Real-time OSV.dev advisories (`live-cve-security-intel`), runtime command interception & prompt injection guards (`ai-safety-agent-guard`), and supply-chain sandboxing.
+- 🏗️ **250-Point Production Engineering & Distributed SRE**: Complete readiness checklist (`production-readiness-250`) and fault-tolerant distributed resilience (`distributed-resilience-sre`) covering monetary math (no floats for money), UTC/IANA timezones, idempotency keys, outbox/DLQ patterns, circuit breakers, and graceful `SIGTERM` shutdowns.
+- 🎨 **Anti-Slop Design Governance & "Think Outside the Box"**: Integrates `impeccable`, `taste-skill`, `design-driven` (8 Archetypal Chassis, 3-line Design Read, lateral creative synthesis), `hallmark-design-study`, `scroll-world-storytelling`, and `frontend-slides-deck`.
+- 🌟 **Floor, Not Ceiling Architecture**: Hard invariants prevent regressions and security vulnerabilities, while explicitly empowering models to propose superior modern patterns (`[Beyond-Baseline]`).
 - 🧠 **Cross-Session Memory**: Seamless MCP integration with [Engram](https://github.com/Gentleman-Programming/engram) (`mem_save`, `mem_search`, `mem_judge`).
 - 🤖 **Universal Agent Portability**: One install script works with Claude Code, Gemini CLI, Cursor, Antigravity, OpenCode, Codex, GitHub Copilot, Windsurf, Kiro, and DeepSeek.
 
@@ -181,11 +184,11 @@ The catalog contains **246 skills** distributed across structured domains:
 |---|---|---|
 | **Meta-Skills** | `00-meta-skills/` | `skill-router`, `skill-validator`, `skill-loader`, `skill-creator`, `agent-roster`, `odd-workflow` |
 | **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr` |
-| **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `dod-checker` |
-| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `api-ai-billing`, `prompt-engineering` |
-| **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
-| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `angular-core`, `tailwind-4`, `react-native`, `impeccable`, `taste-skill` |
-| **Code Quality** | `06-code-quality/` | `typescript`, `solid-clean-code`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
+| **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `live-cve-security-intel`, `dod-checker` |
+| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-engineering` |
+| **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `distributed-resilience-sre`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
+| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
+| **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
 | **Testing** | `07-testing/` | `testing-patterns` (TDD RED/GREEN), `playwright`, `pytest`, `go-testing` |
 | **DevOps** | `08-devops/` | `ci-cd`, `observability`, `monitoring`, `kill-switches`, `store-deployment-eas` |
 | **Media & Graphics** | `09-media-graphics/` | `nano-banana`, `banana-claude` |
