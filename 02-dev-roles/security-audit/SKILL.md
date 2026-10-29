@@ -1,160 +1,70 @@
 ---
 name: security-audit
-description: ECC-inspired security scanning workflow. Covers OWASP Top 10 checks, dependency vulnerability scanning, secret detection, input sanitization review, and agentic security validation. Use when implementing auth flows, processing payments, handling user data, or deploying to production.
+description: "Trigger: security audit, auditoria de seguridad, owasp audit, vulnerability scan, hardening, vbsec check. Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LLM checks, VBSec vibe-coding reviews, Trail of Bits differential analysis, and authentication/authorization audits. Do NOT use for offensive exploitation."
 license: MIT
-compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
-allowed-tools: Bash(node:*) Read
+compatibility: "Compatible with Gentle-AI 4.3.1+, Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+allowed-tools: Bash(node:*,pnpm:*,git:*) Read Glob Grep
 metadata:
-  trigger: ["security audit", "security scan", "vulnerability", "CVE", "OWASP", "pen test", "security review", "secret detection", "ECC security"]
+  trigger: ["security audit", "vulnerability scan", "owasp", "penetration testing", "hardening", "vbsec", "defending code"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
-# 🛡️ Security Audit Workflow (ECC AgentShield Pattern)
+# 🛡️ Application Security (AppSec) Auditor — OWASP 2026, VBSec & Defending Code
 
-Systematic security review inspired by [ECC's security guide](https://github.com/affaan-m/ECC/blob/main/the-security-guide.md) and AgentShield (1,282 tests, 102 rules). Use this skill before pushing code that touches authentication, payments, user data, or production deploys.
+Comprehensive defensive security auditor covering **OWASP Top 10 (Web, API & LLM 2026)**, **VBSec** (AI-generated code vulnerability patterns), **Defending Code** invariants, and cross-cutting orchestration with [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md), [`ai-safety-agent-guard`](../../03-ai-ml/ai-safety-agent-guard/SKILL.md), and [`supply-chain-runtime-security`](../../06-code-quality/supply-chain-runtime-security/SKILL.md).
 
-## 📋 When to Use
+---
 
-- Use before deploying any code that handles authentication
-- Use when processing payments or sensitive financial data
-- Use when adding new dependencies (check for CVEs)
-- Use when handling user input that could be injection vectors
-- Use during Phase 6 (Verify) of SDD for security-critical features
-- Do NOT use for simple UI changes or documentation
+## 🚫 Hard Security Invariants (Non-Negotiable)
 
-## 🚦 Hard Rules
+1. **ZERO HARDCODED SECRETS**: Never commit API keys, private keys, JWT secrets, or connection strings in source code, tests, or client bundles (`NEXT_PUBLIC_*` / `VITE_*`).
+2. **BOUNDARY SCHEMA VALIDATION**: Every external input (HTTP params/body/headers, Server Actions, WebSocket events, webhooks, CLI args) must be validated with a strict schema (e.g., Zod) before domain execution.
+3. **OBJECT-LEVEL AUTHORIZATION (NO IDOR/BOLA)**: Every data read/mutation must scope queries by the authenticated principal's tenant/owner ID (`WHERE id = $1 AND org_id = $2`), never trusting client-supplied IDs alone.
+4. **SAFE TOKEN STORAGE**: Web refresh tokens must use `httpOnly: true, secure: true, sameSite: 'strict'|'lax'` cookies; mobile apps must use hardware-backed encrypted storage (`Keychain` / `Keystore` / `expo-secure-store`).
 
-- **Always** run dependency audit: `pnpm audit --prod`
-- **Always** verify no secrets in committed files (API keys, tokens, passwords)
-- **Always** validate ALL user input with Zod schemas before processing
-- **Always** use parameterized queries (Prisma handles this, but verify)
-- **Never** ship code with `console.log(token)` or similar secret leakage
-- **Never** use `eval()`, `Function()`, or dynamic code execution
-- **Never** trust client-side validation alone — always validate server-side
+---
 
-## 🛠️ Audit Checklist
+## 🔍 The 5-Pillar AppSec Audit Protocol
 
-### 🔑 Authentication & Authorization
+### 1. Authentication, Sessions & Cryptography
+- **Password & Key Hashing**: Verify `Argon2id` or `bcrypt` (cost >= 12); reject `MD5`/`SHA-256` for passwords.
+- **JWT & Session Integrity**: Verify explicit algorithm allowlists (`algorithms: ['RS256']` or `['HS256']`), short access-token TTLs (5-15 min), refresh token rotation with reuse detection, and `crypto.timingSafeEqual` for HMAC/webhook comparisons.
+- **Fail-Closed Startup**: Reject fallback secrets (`process.env.SECRET || 'default'`). Missing secrets must fail startup immediately.
 
-- [ ] JWT access tokens stored in memory, not LocalStorage/AsyncStorage
-- [ ] Refresh tokens in HTTP-only, Secure, SameSite=Strict cookies
-- [ ] Token rotation implemented (old refresh token invalidated on use)
-- [ ] Password hashing uses bcrypt(12) or argon2
-- [ ] Rate limiting on auth endpoints (100 req/15min)
-- [ ] Role-based access control (RBAC) on all admin routes
+### 2. VBSec Checklist (AI "Vibe-Coding" Vulnerability Patterns)
+AI-generated code frequently introduces subtle structural flaws that pass happy-path tests:
+- **Unprotected Next.js Server Actions / RPC Endpoints**: Remember that `"use server"` functions compile to public HTTP POST endpoints — verify every Server Action checks session auth and validates inputs with Zod inside the function body.
+- **Unmounted or Bypassed Middleware**: Confirm auth/rate-limit middleware is actually wired to the router/matcher and covers all HTTP verbs (`GET`, `POST`, `PATCH`, `DELETE`).
+- **TOCTOU Race Conditions**: Check financial, inventory, coupon, or quota mutations for non-atomic `read -> check -> write` sequences; require database transactions with row locking (`SELECT ... FOR UPDATE`) or single atomic conditional updates (`UPDATE ... WHERE balance >= $amount`).
+- **Mass Assignment / Over-Posting**: Never pass raw `req.body` directly into ORM `.create(req.body)` or `.update(req.body)` — allowlist fields explicitly.
 
-### 📦 Dependencies
+### 3. Injection, SSRF & Path Traversal Defense
+- **SQL / NoSQL / Command Injection**: Enforce parameterized queries (`$1` / prepared statements) and `execFile(bin, argsArray, { shell: false })`.
+- **SSRF Protection**: When fetching user-provided URLs (webhooks, avatars, importers), validate protocol (`https:` only), disable redirects or re-validate each hop, and block private/link-local IP ranges (`127.0.0.0/8`, `10.0.0.0/8`, `169.254.169.254`, `::1`).
+- **Path Traversal & File Uploads**: Canonicalize paths with `path.resolve` and verify `resolved.startsWith(allowedRoot + path.sep)`. Validate file uploads by magic bytes, enforce size caps, and store outside public webroots with randomized filenames.
 
-- [ ] `pnpm audit --prod` shows zero critical/high vulnerabilities
-- [ ] All dependencies are actively maintained (last commit < 6 months)
-- [ ] No deprecated packages in `package.json`
-- [ ] Dependency versions are pinned (no `^` for security-critical deps)
-- [ ] `pnpm-lock.yaml` is committed and up to date
+### 4. API Resilience, Rate Limiting & Headers
+- **Tiered Rate Limiting**: Enforce stricter sliding-window rate limits on auth (`/login`, `/reset-password`), OTP, and expensive AI/export endpoints.
+- **Security Headers**: Verify `Content-Security-Policy` (CSP), `Strict-Transport-Security` (HSTS), `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and strict `CORS` origin allowlists.
+- **Error Sanitization**: Never leak stack traces, SQL table names, or internal file paths in production `500` responses.
 
-### 🔌 Input Validation
+### 5. Ecosystem Security Handoffs (Zero Overlap)
+- **Pre-Release Live CVEs, OOM/Worker Lifecycle & Trail of Bits `fp-check`**: Run [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md).
+- **LLM Prompt Injection, Agent Guard & `cc-safety-net`**: Run [`ai-safety-agent-guard`](../../03-ai-ml/ai-safety-agent-guard/SKILL.md).
+- **`pnpm` Supply-Chain Hardening & MCP Server Sandboxing**: Run [`supply-chain-runtime-security`](../../06-code-quality/supply-chain-runtime-security/SKILL.md).
 
-- [ ] All API request bodies validated with Zod schemas
-- [ ] All Socket.io payloads validated with Zod before processing
-- [ ] SQL injection prevented (Prisma parameterized queries — verify no raw SQL)
-- [ ] XSS prevented (React auto-escapes, verify user-generated content)
-- [ ] File upload limits and type validation enforced
+---
 
-### 🔐 Secrets & Configuration
+## 📋 Audit Report Output Contract
 
-- [ ] No API keys, tokens, or passwords in source code
-- [ ] `.env` file in `.gitignore`
-- [ ] All secrets accessed via `process.env` or a config module
-- [ ] Production secrets different from staging/development
-- [ ] Database URLs not hardcoded in CI configs
+Group findings by severity (`🚨 Critical`, `🔴 High`, `🟡 Medium`, `🔵 Hardening`) after applying **False-Positive Refutation (`fp-check`)**:
+- **Location**: Clickable `path:line` reference.
+- **Exploit Scenario**: Concrete source-to-sink trace proving reachability.
+- **Remediation**: Drop-in secure code replacement.
 
-### 🌐 Network & Transport
+---
 
-- [ ] HTTPS enforced in production (secure cookies)
-- [ ] CORS whitelist explicit (never `origin: '*'`)
-- [ ] Rate limiting on all public endpoints
-- [ ] Helmet middleware configured (CSP, HSTS, X-Frame-Options)
-- [ ] Socket.io connections validated with JWT handshake
+## 🧭 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
-### 🗄️ Database
-
-- [ ] Principle of least privilege: DB user has only required permissions
-- [ ] Sensitive columns encrypted or hashed (passwords, tokens)
-- [ ] Database backups automated and encrypted
-- [ ] No raw SQL with user input (always use Prisma parameterized queries)
-
-### 🧪 Testing for Security
-
-- [ ] Auth flow tests: login, register, token refresh, logout
-- [ ] Input validation tests: SQL injection, XSS, oversized payloads
-- [ ] Rate limiting tests: verify 429 responses after threshold
-- [ ] Role escalation tests: verify employee can't access admin routes
-
-## 🔍 Secret Detection Pattern
-
-```bash
-# Before committing, scan for accidental secrets
-git diff --cached | pnpm dlx secretlint --format compact
-
-# Or use ripgrep locally
-rg -i "api.?key|secret|token|password" --glob '!node_modules' --glob '!.git'
-```
-
-## 🔍 Sanitization Scans (ECC Pattern)
-
-Inspired by ECC's security guide. Before any commit, scan for hidden injection vectors.
-
-### Unicode Sanitization
-
-Zero-width characters, bidi override, and hidden Unicode are invisible to humans but executable to LLMs:
-
-```bash
-# Scan for zero-width and bidi control characters (ECC recommended)
-rg -nP '[\x{200B}\x{200C}\x{200D}\x{2060}\x{FEFF}\x{202A}-\x{202E}]'
-
-# Scan for HTML comments and suspicious hidden blocks
-rg -n '<!--|<script|data:text/html|base64,'
-```
-
-### Prompt Injection in Skills & Rules
-
-Snyk's ToxicSkills study (Feb 2026) found prompt injection in **36% of 3,984 public skills**. Scan skill files for suspicious patterns:
-
-```bash
-# Check for outbound network commands in skills/rules
-rg -n 'curl|wget|nc|scp|ssh' --glob '**/SKILL.md' --glob '**/*.md'
-
-# Check for permission escalations  
-rg -n 'enableAllProjectMcpServers|ANTHROPIC_BASE_URL|--dangerously-skip-permissions'
-
-# Check for hidden base64 payloads
-rg -nP '[A-Za-z0-9+/]{40,}={0,2}' --glob '!node_modules' --glob '!pnpm-lock.yaml'
-```
-
-### Supply Chain Awareness
-
-Treat skills, hooks, and MCP configs as supply chain artifacts:
-- Verify skill sources (check GitHub stars, last commit date)
-- Scan third-party skills before installing (`pnpm dlx skills@latest install` — review first)
-- Never auto-approve MCP servers from untrusted repos
-- Rotate credentials after running agent on untrusted repos
-
-## 🔗 Integration with Existing Skills
-
-| Check | Related Skill |
-|---|---|
-| JWT + auth validation | `04-backend/jwt-bcrypt/SKILL.md` |
-| Dependency audit | `06-code-quality/dependency-guardian/SKILL.md` |
-| Input validation (Zod) | `04-backend/socketio/SKILL.md` |
-| Rate limiting | `04-backend/expressjs/SKILL.md` |
-| Env management | `06-code-quality/env-management/SKILL.md` |
-| Database security | `04-backend/postgresql/SKILL.md` |
-| Code review | `02-dev-roles/code-reviewer/SKILL.md` |
-| Production deploy | `08-devops/ci-cd/SKILL.md` |
-
-## 📚 References
-
-- [ECC Security Guide](https://github.com/affaan-m/ECC/blob/main/the-security-guide.md)
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [AgentShield Docs](https://github.com/affaan-m/ECC)
-- `04-backend/api-design/SKILL.md` — API security conventions
+This checklist defines the baseline AppSec floor. Auditors and engineers may apply stronger cryptographic or architectural guarantees (e.g., WebAuthn/Passkeys, DPoP sender-constrained tokens, or PostgreSQL Row-Level Security) when annotated with `[Beyond-Baseline: <security reason>]`.
