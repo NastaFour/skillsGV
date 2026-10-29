@@ -1,96 +1,70 @@
 ---
 name: design-driven
-description: "Trigger: DESIGN_SYSTEM.md, design system, sistema de diseno, design driven, DDD, pipeline de diseno, design-driven development, disenar pantalla, rediseno, design DNA. Formal design pipeline that outputs the canonical DESIGN_SYSTEM.md specification. Decision gates + Design DNA + anti-AI-slop rule."
+description: "Trigger: design-driven, design gate, D1b, DESIGN_SYSTEM.md, design read, think outside the box, chasis arquetipico. Use before generating or refactoring any UI/frontend to run the D1b Uniqueness Interview (or One-Shot Auto-Inference), lock an Archetypal Chassis or Think-Outside-the-Box lateral direction, and emit DESIGN_SYSTEM.md. Do NOT use for backend-only services without visual surfaces."
 license: MIT
-allowed-tools: Read Task Bash(git:*,gh:*,od:*,node:*)
+compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+allowed-tools: Bash(node:*,pnpm:*,git:*) Read Write
 metadata:
-  author: gentleman-programming
-  version: "2.1.0"
-  delegate_only: true
-  trigger: ["DESIGN_SYSTEM.md", "design_system.md", "sistema de diseno", "design driven", "pipeline de diseno", "design-driven development", "disenar pantalla", "rediseno", "design system", "brief de diseno", "prototipo formal", "entrevista de diseno", "design dna"]
+  trigger: ["design-driven", "design system", "ui mockup", "ux validation", "color palette", "stitch", "d1b", "think outside the box"]
+  scope: [global, project]
+  version: "3.1.0"
 ---
 
-# design-driven — Pipeline de Diseño formal (DDD)
+# 🎨 Design-Driven Development (3D) & Think-Outside-the-Box Engine
 
-> Principio rector: **un diseño único no se dibuja — se entrevista.** Cada respuesta del
-> usuario alimenta un artefacto "Design DNA" que hace trazable la unicidad. Nunca
-> inventes preferencias de marca; ante "no sé", proponé 2 opciones concretas y esperá elección.
-> Desacoplá siempre el **Chasis Composicional** (retícula y matemáticas) del **Livery** (marca y colores).
+Enforces intentional, anti-slop UI architecture before a single line of JSX/CSS is emitted. Harmonizes the entire frontend ecosystem (`taste-skill`, `impeccable`, `ui-ux-pro-max`, `hallmark-design-study`, `scroll-world-storytelling`, `frontend-slides-deck`) around a single source of truth: **`DESIGN_SYSTEM.md`** and the **3-Line `Design Read`**.
 
-## Rol de ejecución
+---
 
-- Si sos el sub-agente **design-driven**: coordiná D1-D6 y delegá el trabajo de fase. No lo ejecutes inline.
-- Si cargaste esta skill con **skill()**: sos el orquestador. Seguí este contrato y HACÉ las preguntas de F1/F2 vos mismo (no las delegues).
+## 🚫 Hard Invariants vs Open Creative Upper-Bound (`Floor, Not Ceiling`)
 
-## Pipeline y fases
+- **Hard Invariants (Floor)**:
+  1. Never emit greenfield UI without a prior **3-Line `Design Read`** (or **1-Line Fast-Path** for minor maintenance `< 50` lines).
+  2. Never use fake data (`Lorem ipsum`, `John Doe`, fake sparklines) or omit interactive states (`hover`, `focus-visible`, `active`, `disabled`, `loading`, `error`).
+  3. Always consume semantic CSS tokens (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) defined in `DESIGN_SYSTEM.md` (OKLCH default for Tailwind 4/modern CSS; HSL supported for shadcn/Tailwind 3; `#hex` only as visual reference in docs).
+  4. Enforce WCAG 2.2 AA contrast and `@media (prefers-reduced-motion: reduce)`.
+- **Open Creative Upper-Bound (Ceiling — `[Beyond-Baseline]`)**:
+  - The 8 Archetypal Chassis below are proven launchpads, **never cages**. When a domain calls for a bold lateral aesthetic, activate **Archetype H (`Bespoke / Think Outside the Box`)** and annotate `[Beyond-Baseline: <creative/domain rationale>]`.
 
-Orden estricto: D1 → **D1b** → D2 → D3 → D4 → D5 → D6.
+---
 
-| Fase | Nombre | Produce | Modelo | Apoyo |
-|---|---|---|---|---|
-| D1 | design-brief | Objetivo, audiencia, moodboard de referencias visuales (imágenes vía Antigravity/od), restricciones (tokens, stack, a11y) | strong | frontend-design, brainstorming |
-| **D1b** | **Cuestionario de Unicidad** | Design DNA (3 P's, chasis arquetípico, diales pre-calibrados, 3 reglas generativas mecánicas, referencias, firma, anti-slop) | strong | taste-skill, impeccable (ver F1) |
-| D2 | design-explore | Auditoría visual de la UI actual + inventario de componentes + problemas | strong | interface-design, web-design-guidelines |
-| D3 | design-system | **`DESIGN_SYSTEM.md`** canónico ([plantilla](references/design-system-template.md)): tokens semánticos (OKLCH/HSL + dark, tipografía, 8pt, elevación, motion) + primitivas | strong | design-system-tokens, oklch-theme-injector, tailwind-4 |
-| D4 | design-prototype | Prototipo de 1-3 pantallas clave (HTML/React o **od**) | flash + od | open-design, interface-design, micro-interactions |
-| D5 | design-handoff | Spec visual TEXTUAL + assets exportados | strong | micro-interactions, motion-accessibility, technical-writer |
-| D6 | design-review | Judgment Day visual: 2 jueces ciegos contra el Design DNA | 2× strong | judgment-day, ux-auditor-agent |
+## ⚡ Execution Modes (Token-Optimized One-Shot vs Interactive)
 
-## F1 · Cuestionario de Unicidad (D1b — Greenfield vs Fast-Path)
+| Mode | When to Use | Token Cost & Behavior |
+|---|---|---|
+| **1. Fast-Path (1-Line `Design Read`)** | Bugfix, tweak, or maintenance `< 50` lines on an existing project with `DESIGN_SYSTEM.md` | Emit 1 line: `Design Read: [Chassis] — inheriting tokens from DESIGN_SYSTEM.md; [targeted change].` Zero interview rounds. |
+| **2. One-Shot Auto-Inference (`auto` / One-Shot Prompt)** | User requests a complete app/screen in one shot or says `"sorprendeme"`, `"auto"`, `"one-shot"` | Synthesize the 8 core D1b dimensions + **Think-Outside-the-Box Lateral Protocol** inline in a compact 8-line block, write/update `DESIGN_SYSTEM.md`, emit the 3-line `Design Read`, and build immediately. |
+| **3. Interactive D1b Interview** | Greenfield project where user wants collaborative design exploration | Run the 5 conversational blocks in [`references/d1b-questionnaire.md`](references/d1b-questionnaire.md). |
 
-> **Auto-Trigger & Scoping**:
-> 1. **Greenfield / Nuevas Pantallas**: El brief D1 + el cuestionario D1b los ejecuta el ORQUESTADOR con el usuario en **5 bloques secuenciales (un bloque por turno)** ANTES de generar código UI. Si el usuario no conoce el pipeline o pide "hacé lo que quieras / auto", el orquestador infiere el arquetipo según la entropía de datos, emite el `Design Read` formal y construye sobre el chasis sin improvisar en el vacío.
-> 2. **Fast-Path (Mantenimiento Incremental)**: Para ajustes menores (diff < 50 líneas, bugfix, o agregar un botón/input a una pantalla existente), **no se corren los 5 bloques**. El orquestador emite un `Design Read` de 1 línea heredando el chasis/tokens del proyecto y procede directamente.
+---
 
-Tras D1, para pantallas nuevas el ORQUESTADOR ejecuta D1b en **5 bloques obligatorios y secuenciales** (un bloque por turno). **Leer [references/d1b-questionnaire.md](references/d1b-questionnaire.md) ANTES de preguntar**. El piso obligatorio son las **8 preguntas del núcleo duro**: #1-#3 (Persona, Dolor, Promesa), #4 (Chasis Arquetípico), #6 (3 Reglas Generativas), #9 (Firma), #13 (Pantalla Corazón) y #14 (Bans). Las preguntas restantes (#5, #7, #8, #10-#12, #15-#17) son calibración: se hacen, y si el usuario no tiene respuesta se resuelven por preset del chasis o inferencia según el modo, sin bloquear el flujo.
+## 🏛️ The 8 Archetypal Chassis & "Think Outside the Box" Protocol
 
-1. **Las 3 P's**: Persona (quién es, 3 adjetivos, tono), Dolor (problema que paga por resolver), Promesa (qué se lleva en 10s).
-2. **ADN Arquetípico y Diales (Chasis)**: Selección de 1 de los 7 Chasis Arquetípicos (*Technical Monograph, Industrial Spec-Sheet, The Gallery, The Kinetic Utility, The Precision Instrument, The Humanist Companion, The System Native*) o el 8º camino *Bespoke / Creative Exploration* (donde el modelo propone un chasis híbrido o nuevo con diales libres y 3 reglas generativas mecánicas justificadas), pre-calibrando automáticamente diales triaxiales (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), retícula y física de resortes (con fallback CSS nativo).
-3. **Referencias Reales**: 3-5 URLs reales o productos ancla con qué se toma de cada uno + 2-3 anti-referencias.
-4. **Firma, Heartbeat y Suelo A11y**: Elemento inolvidable, 1 acento OKLCH (<80% sat), tipografía por contraste (Inter permitido si es corporativo preexistente), hero clamp 6rem, suelo WCAG 2.2 a11y min 12px, pantalla corazón crítica.
-5. **Anti-slop, Anti-Faux-Density y Restricciones**: Gobernanza de `taste-skill` (Invariantes de Calidad Nivel 1 + Heurísticas Nivel 2 contra clichés) + prohibición de falsa telemetría decorativa + límites de dependencias + física de resortes cuantitativa o fallback cubic-bezier.
+Select one of `A–G` or unlock lateral creation via `H`:
 
-## F2 · Confirmaciones intermedias (mínimo, sin abrumar)
+- **A. `Technical Monograph`** (`[7, 2, 8]`): Editorial documentation & research (1:3 asymmetric grid, 1px exposed hairlines, zero cards).
+- **B. `Industrial Spec-Sheet`** (`[3, 1, 9]`): Telemetry, DevOps, quantitative finance (12-col hairline matrix, `tabular-nums`, zero shadows).
+- **C. `The Gallery`** (`[9, 4, 2]`): Luxury, architecture, portfolios (`>= 45%` open canvas, bipolar typographic scale).
+- **D. `The Kinetic Utility`** (`[4, 8, 7]`): Spatial editors, 3D/WebGL, audio/video tools (`100dvh` locked viewport, floating HUDs).
+- **E. `The Precision Instrument`** (`[4, 5, 7]`): High-velocity productivity (Linear/Raycast style, keyboard-first, `6-8px` micro-radii).
+- **F. `The Humanist Companion`** (`[5, 4, 5]`): Consumer, health, education, publishing (warm editorial surfaces, organic rhythm).
+- **G. `The System Native`** (`[3, 2, 7]`): Multi-team enterprise SaaS (disciplined Radix/Shadcn/Tailwind primitives).
+- **H. `Bespoke / Creative Exploration ("Think Outside the Box")`**:
+  When standard SaaS templates feel predictable, run the **3-Step Lateral Design Inversion**:
+  1. **Cliché Inversion**: Name the 3 most overused visual clichés of the target industry (e.g., *"fintech = dark blue + neon green crypto cards"*) and invert them (e.g., *"Swiss archival ledger on warm cotton paper with stamped vermilion ink"*).
+  2. **Cross-Domain Metaphor & `study` DNA**: Borrow physical or cross-industry structural metaphors (e.g., Braun industrial dials, Teenage Engineering tactile grids, railway timetables, museum catalog cards) or extract structural DNA via [`hallmark-design-study`](../hallmark-design-study/SKILL.md).
+  3. **3 Mechanical Generative Rules**: Translate the metaphor into 3 strict CSS/layout laws (grid proportions, border/surface physics, motion curve) and declare `[Beyond-Baseline: <lateral thesis>]`.
 
-- **Tras D3 tokens**: 1 pregunta — paleta base (clara/oscura/mixta + default), par tipográfico, densidad. Mostrá 2 variantes mínimas si hay duda.
-- **Tras D4 prototype**: 1 crítica guiada — "¿qué 3 cosas cambiarías del prototipo?" (reacciona, no diseña).
-- **Tras D5 handoff**: aprobación explícita antes de implementar.
+---
 
-## F3 · El artefacto canónico `DESIGN_SYSTEM.md` y Design DNA
+## 📋 Unified 3-Line `Design Read` & `DESIGN_SYSTEM.md` Contract
 
-- El artefacto primario y fuente de verdad canónica del proyecto es **`DESIGN_SYSTEM.md`** en la raíz del repositorio, estructurado según la plantilla oficial [**`references/design-system-template.md`**](references/design-system-template.md). La resolución unificada de artefactos sigue el orden canónico: para diseño **`DESIGN_SYSTEM.md`** → **`design-artifacts/<project>/design-dna.md`** → **`DESIGN.md`** → **`.interface-design/system.md`**; para producto **`PRD.md`** → **`PRODUCT.md`**.
-- Consolida tanto los tokens semánticos CSS (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) como los campos del Design DNA:
-  - `persona` / `dolor` / `promesa`
-  - `archetype`: `{name, preset, physics_spring, css_fallback}`
-  - `generative_rules`: `[rule1_layout, rule2_surface, rule3_type_scale]`
-  - `dials`: `{variance, motion, density}`
-  - `references`: `[{url, takeaway}]`
-  - `anti_references`
-  - `signature`
-  - `accent_oklch`
-  - `type_pairing`
-  - `bans[]`
-  - `heartbeat_screen`
-- Se persiste en Engram con topic key **design/<project>/dna**.
-- **D6 evalúa contra `DESIGN_SYSTEM.md` / Design DNA**: ¿tiene la firma elegida? ¿cumple las 3 reglas generativas? ¿evita faux-density y TODOS los invariantes anti-slop? ¿parece un dashboard genérico? — respuesta textual con evidencia. Si falla → vuelve a D3/D4 (máx 2 rondas).
+Before writing UI code, emit:
+```text
+Design Read:
+1. Direction/Chassis: [Archetype A-H] — [Target audience & Think-Outside-the-Box thesis]
+2. Hierarchy & Tokens: [--surface-*, --text-*, --accent-*, --border-* in OKLCH/HSL + typographic scale]
+3. Craft Signature: [3 mechanical rules + memorable micro-detail [Beyond-Baseline: <reason>]]
+```
 
-## F4 · Modos y reglas transversales
-
-- Cachear **interactive|auto** por sesión. En auto, mantener SIEMPRE D1b (cuestionario o inferencia) y D5 (aprobación); omitir solo las confirmaciones intermedias si el usuario lo pide.
-- Si el usuario manda referencias como imágenes y el modelo no ve → Antigravity/od traduce a spec textual.
-- Preferencias de marca NUNCA se inventan en vacío; en ausencia de respuesta, se infieren según el dominio del producto o se proponen opciones.
-
-## Gates
-
-- **decision-gate** al final de D1, D3 y D5 (el humano aprueba el rumbo).
-- D6: máximo 2 rondas de fix.
-- **D6 technical gate (opcional)**: corré **scripts/token-audit.mjs --srcDir <proyecto>** para cazar hex hardcodeados, literales **bg-white**/text-black y paletas no semánticas antes de aprobar.
-
-## Regla anti-slop & Anti-Attention-Decay
-
-1. Nunca entregues una pantalla sin pasar por D3 (tokens) y sin Design DNA / `DESIGN_SYSTEM.md`. El diseño no se improvisa en el apply.
-2. **Inyección en cabecera multi-formato**: Requerido en el archivo raíz de entrada de la UI o cuando no exista `DESIGN_SYSTEM.md` en el proyecto (`/* @design-archetype: ... */` en JS/TS/CSS/Dart, `<!-- @design-archetype: ... -->` en HTML/Vue templates, `# @design-archetype: ...` en Python/YAML, y omitir en `.json` estricto) para declarar las directivas del arquetipo y sus 3 reglas generativas mecánicas. En proyectos con `DESIGN_SYSTEM.md` ya consolidado o en archivos secundarios de mantenimiento, esta cabecera no se fuerza para evitar ruido visual redundante.
-
-## Persistencia
-
-D1-D6 guardan decisiones en Engram con topic design/<proyecto>. D4 guarda prototipos en design-artifacts/<fecha>-<fase>/ del proyecto (historial visual).
+Persist the full specification in `DESIGN_SYSTEM.md` (and place `/* @design-archetype: <name> */` only in the root entry file when `DESIGN_SYSTEM.md` is absent). Cross-reference [`references/d1b-questionnaire.md`](references/d1b-questionnaire.md) for the full D1b interview and One-Shot synthesis template.
