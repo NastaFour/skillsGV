@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*,pnpm:*,git:*) Read Write
 metadata:
-  trigger: ["design-driven", "design driven", "design system", "ui mockup", "ux validation", "color palette", "stitch", "d1b", "think outside the box"]
+  trigger: ["design-driven", "design driven", "DESIGN_SYSTEM.md", "design system", "ui mockup", "ux validation", "color palette", "stitch", "d1b", "think outside the box"]
   scope: [global, project]
   version: "3.1.0"
 ---

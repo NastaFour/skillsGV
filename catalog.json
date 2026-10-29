@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 237
+    "skills": 244
   },
   "categories": [
     {
@@ -17,12 +17,12 @@
     {
       "id": "02-dev-roles",
       "title": "Dev Roles (SDD)",
-      "count": 32
+      "count": 33
     },
     {
       "id": "03-ai-ml",
       "title": "AI / ML",
-      "count": 8
+      "count": 11
     },
     {
       "id": "04-backend",
@@ -32,7 +32,7 @@
     {
       "id": "05-frontend",
       "title": "Frontend",
-      "count": 52
+      "count": 55
     },
     {
       "id": "06-code-quality",
@@ -772,6 +772,16 @@
       "autoInvoke": true
     },
     {
+      "name": "live-cve-security-intel",
+      "path": "02-dev-roles/live-cve-security-intel/SKILL.md",
+      "category": "02-dev-roles",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "micro-interactions",
       "path": "02-dev-roles/micro-interactions/SKILL.md",
       "category": "02-dev-roles",
@@ -922,6 +932,16 @@
       "autoInvoke": false
     },
     {
+      "name": "ai-safety-agent-guard",
+      "path": "03-ai-ml/ai-safety-agent-guard/SKILL.md",
+      "category": "03-ai-ml",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "ai-scalability-mlops",
       "path": "03-ai-ml/ai-scalability-mlops/SKILL.md",
       "category": "03-ai-ml",
@@ -972,10 +992,30 @@
       "autoInvoke": false
     },
     {
+      "name": "multimodal-ai-pipelines",
+      "path": "03-ai-ml/multimodal-ai-pipelines/SKILL.md",
+      "category": "03-ai-ml",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "prompt-engineering",
       "path": "03-ai-ml/prompt-engineering/SKILL.md",
       "category": "03-ai-ml",
       "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "rag-knowledge-systems",
+      "path": "03-ai-ml/rag-knowledge-systems/SKILL.md",
+      "category": "03-ai-ml",
+      "tier": "full",
       "tier0": false,
       "deprecated": false,
       "note": null,
@@ -1382,6 +1422,26 @@
       "autoInvoke": true
     },
     {
+      "name": "frontend-slides-deck",
+      "path": "05-frontend/frontend-slides-deck/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "hallmark-design-study",
+      "path": "05-frontend/hallmark-design-study/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "i18n-localization",
       "path": "05-frontend/i18n-localization/SKILL.md",
       "category": "05-frontend",
@@ -1610,6 +1670,16 @@
       "deprecated": false,
       "note": "← `references/scroll-reveal.md`, `references/parallax.md`, `scripts/check-scroll.mjs`",
       "autoInvoke": true
+    },
+    {
+      "name": "scroll-world-storytelling",
+      "path": "05-frontend/scroll-world-storytelling/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "signup-flow-cro",

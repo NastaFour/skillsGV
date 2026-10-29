@@ -1,11 +1,11 @@
 # skillsGV
 
 [![CI](https://github.com/NastaFour/skillsGV/actions/workflows/ci.yml/badge.svg)](https://github.com/NastaFour/skillsGV/actions)
-[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](package.json)
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-237-purple.svg)](#categories)
+[![Skills Count](https://img.shields.io/badge/skills-244-purple.svg)](#categories)
 [![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.3.1)-brightgreen.svg)](#organic-driven-development)
 
 > **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.3.1 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
@@ -22,7 +22,7 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **237 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- 🎯 **244 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
 - 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.3.1)**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) on feature branch → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
@@ -175,7 +175,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **237 skills** distributed across structured domains:
+The catalog contains **244 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|
