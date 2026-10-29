@@ -45,7 +45,7 @@ flowchart TD
    - **Contained risk**: Touches none of the 6 High-Risk items below.
    - **Resumable from `git diff` alone** (*Resume Test*): If the session stopped now, someone could finish from the original request and `git diff` alone.
    A task is **Large** only when the Resume Test fails (multi-session, external wait, separate deliverables, or requirements too long to survive compaction). Small work stays inline without durable task files.
-5. **Track before first write**: For large authorized work, create `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks` automatically before the first source edit. Tell the user in one line which document was created and how many tasks it holds.
+5. **Track before first write**: For large authorized work, create `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks` automatically before the first source edit. Structure in fixed order: Header (Objective, Branch, Delivery, Runner) -> `## Specs` (S1..Sn verbatim quotes & checks) -> `## Tasks` (T1..Tn ID, linked S#, route, status, commit) -> `## Log` (L1 verbatim request, evidence, decisions). Tell user in one line which document was created and task count.
 6. **Implement task-by-task (with One-Shot Pre-Flight Blueprint)**:
    - **One-Shot Pre-Flight Blueprint (Token Saver)**: Before editing code for a task, synthesize a compact **5-line micro-blueprint** (1. Exact target files, 2. Public signatures/types, 3. Core invariants & helpers to reuse, 4. Edge/lifecycle failure modes, 5. Exact verification probe command). This eliminates trial-and-error edit loops and achieves clean one-shot execution.
    - Work inline by default. Commit work units in reviewable slices of `~400` authored changed lines on the feature branch (with code + tests + docs together). Any unit whose `Risk:` line names a High-Risk item (`1-6`) gets its own isolated commit (closing any pending `under_budget` slice first; if native RDD is unavailable, report `receipt-driven development: unavailable` and follow ordinary repository policy). Record the commit hash holding each task in `odd/tasks/<feature>.md`.
@@ -78,6 +78,7 @@ You orchestrate and work inline by default, following your logbook. **A Delegati
   - *(b) Context backstop*: At `~150k` parent-context tokens, pause and delegate the next bounded unit.
   Never delegate a writer for task size, file count, or model price ratio alone.
 - **Verification trigger**: Delegate an independent read-only verifier ONLY when a High-Risk item (`1-6`) applies, passing `--escalate-item <1-6> --escalate-reason "<reason>"`. Pass the full feature doc (`S#`), baseline commit, and probe commands; the verifier executes probes in an isolated temporary directory (`mktemp -d`) and never mutates the repository.
+- **Invariants & Helper Reuse**: Reuse existing codebase helpers for shared state/parsers/manifests and preserve ordering, uniqueness, validation, and normalization invariants.
 
 ---
 

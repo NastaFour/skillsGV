@@ -50,20 +50,21 @@ $$\text{RRF\_Score}(d) = \frac{1}{k + \text{rank}_{\text{vector}}(d)} + \frac{1}
 -- Canonical PostgreSQL (pgvector + tsvector) Tenant-Scoped Hybrid RRF Query
 WITH vector_matches AS (
   SELECT id, content, source_uri,
-         ROW_NUMBER() OVER (ORDER BY embedding <=> $1::vector) AS r_vec
-  FROM knowledge_chunks
-  WHERE tenant_id = $2
+         ROW_NUMBER() OVER (ORDER BY embedding <=> $2::vector) AS r_vec
+  FROM knowledge_chunks c
+  WHERE c.tenant_id = $1
   LIMIT 40
 ),
 lexical_matches AS (
   SELECT id, content, source_uri,
          ROW_NUMBER() OVER (ORDER BY ts_rank_cd(search_tsv, websearch_to_tsquery('simple', $3)) DESC) AS r_lex
-  FROM knowledge_chunks
-  WHERE tenant_id = $2 AND search_tsv @@ websearch_to_tsquery('simple', $3)
+  FROM knowledge_chunks c
+  WHERE c.tenant_id = $1 AND NULLIF(trim($3), '') IS NOT NULL AND c.search_tsv @@ websearch_to_tsquery('simple', $3)
   LIMIT 40
 )
 SELECT COALESCE(v.id, l.id) AS id,
        COALESCE(v.content, l.content) AS content,
+       COALESCE(v.source_uri, l.source_uri) AS source_uri,
        COALESCE(1.0 / (60 + v.r_vec), 0.0) + COALESCE(1.0 / (60 + l.r_lex), 0.0) AS rrf_score
 FROM vector_matches v
 FULL OUTER JOIN lexical_matches l ON v.id = l.id

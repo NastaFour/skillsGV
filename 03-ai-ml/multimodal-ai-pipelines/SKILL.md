@@ -60,9 +60,14 @@ export const DocumentExtractionSchema = z.object({
   extractionConfidence: z.enum(["high", "medium", "needs_human_review"]),
 });
 
-export function verifyInvoiceMath(data: z.infer<typeof DocumentExtractionSchema>): boolean {
+export function verifyInvoiceMath(data: z.infer<typeof DocumentExtractionSchema>): { valid: boolean; reason?: string } {
   const computedSum = data.lineItems.reduce((acc, item) => acc + item.lineTotal, 0);
-  return Math.abs(computedSum + data.tax - data.totalAmount) < 0.02;
+  const taxExclusiveMatch = Math.abs(computedSum + data.tax - data.totalAmount) < 0.02;
+  const taxInclusiveMatch = Math.abs(computedSum - data.totalAmount) < 0.02 && data.tax <= data.totalAmount;
+  if (!taxExclusiveMatch && !taxInclusiveMatch) {
+    return { valid: false, reason: `Math mismatch: sum(${computedSum.toFixed(2)}), tax(${data.tax}) != total(${data.totalAmount})` };
+  }
+  return { valid: true };
 }
 ```
 

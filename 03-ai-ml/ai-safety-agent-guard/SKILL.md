@@ -48,17 +48,18 @@ flowchart LR
 
 ```typescript
 // Deterministic pre-execution guard for agent shell/tool invocations
-const DESTRUCTIVE_PATTERNS = [
-  /\brm\s+-[rRf]+\s+(?:\/|~|\$HOME|\.\.)/,
-  /\bgit\s+(?:push\s+.*--force|reset\s+--hard|clean\s+-[fd]+)/,
-  /\b(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)|TRUNCATE\s+TABLE)\b/i,
-  /\b(?:curl|wget)\b.*(?:\$\{?[A-Z0-9_]*(?:KEY|TOKEN|SECRET)|\.env)/i,
+const DESTRUCTIVE_PATTERNS: Array<{ id: string; pattern: RegExp; reason: string }> = [
+  { id: 'FS_WIPE_POSIX', pattern: /\brm\b(?=.*(?:\s-[a-zA-Z]*[rR]|\s--recursive))(?=.*(?:\s-[a-zA-Z]*[fF]|\s--force)).*(?:\s\/|\s~|\s\$HOME|\s\$\{HOME\}|\s\.\.|\s\.(?:\s|$|\/)|\s\*)/i, reason: 'Recursive forced deletion targeting root, home, parent, current dir, or wildcard' },
+  { id: 'FS_WIPE_WIN', pattern: /\b(?:Remove-Item|ri|del|erase|rd|rmdir)\b(?=.*(?:-Recurse|-Force|\/s|\/q)).*(?:[A-Za-z]:\\|~|\$HOME|\.\.|\s\.(?:\s|$|\\)|\*)/i, reason: 'Windows/PowerShell recursive forced deletion' },
+  { id: 'GIT_DESTRUCTIVE', pattern: /\bgit\s+(?:push\b(?=.*(?:\s--force(?:-with-lease)?|\s-[a-zA-Z]*f\b|\s\+[a-zA-Z0-9_\/-]+))|reset\s+--hard|clean\s+-[a-zA-Z]*[fd])/i, reason: 'Destructive Git history rewrite or untracked wipe' },
+  { id: 'DB_DROP', pattern: /\b(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)|TRUNCATE\s+TABLE)\b/i, reason: 'Irreversible schema or table destruction' },
+  { id: 'SECRET_EXFIL', pattern: /\b(?:curl|wget|Invoke-WebRequest|iwr|nc)\b.*(?:\.env|id_rsa|credentials|AWS_SECRET|PRIVATE_KEY)/i, reason: 'Outbound secret exfiltration attempt' },
 ];
 
 export function assertSafeCommand(cmd: string): void {
-  for (const pattern of DESTRUCTIVE_PATTERNS) {
-    if (pattern.test(cmd)) {
-      throw new Error(`[AgentGuard:Blocked] Destructive or exfiltration command requires explicit human approval: ${cmd}`);
+  for (const entry of DESTRUCTIVE_PATTERNS) {
+    if (entry.pattern.test(cmd)) {
+      throw new Error(`[AgentGuard:Blocked] ${entry.reason}: ${cmd}`);
     }
   }
 }

@@ -29,3 +29,5 @@
 {"id":"frontend-slides-direct","query":"frontend slides html presentation y slide deck interactivo","expectedPrimary":"frontend-slides-deck","source":"v3.2-routing"}
 {"id":"rag-knowledge-direct","query":"rag retrieval augmented generation con hybrid search y reranking","expectedPrimary":"rag-knowledge-systems","source":"v3.2-routing"}
 {"id":"multimodal-ai-direct","query":"multimodal ai vision pipeline y document ocr estructurado","expectedPrimary":"multimodal-ai-pipelines","source":"v3.2-routing"}
+{"id":"distributed-resilience-direct","query":"distributed resilience circuit breaker exponential backoff jitter idempotency key transactional outbox","expectedPrimary":"distributed-resilience-sre","source":"v3.2-routing"}
+{"id":"production-readiness-250-direct","query":"production readiness 250 checklist monetary precision timezone dst y unicode normalization","expectedPrimary":"production-readiness-250","group":"security-defense-suite","source":"overlap-matrix"}

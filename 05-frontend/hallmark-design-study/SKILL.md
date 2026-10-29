@@ -3,7 +3,7 @@ name: hallmark-design-study
 description: "Trigger: hallmark, study design, website cloner, extract design dna, stitch design system, redesign ui, macrostructure. Use when extracting structural and visual DNA from reference URLs or screenshots (study), syncing components with DESIGN_SYSTEM.md (stitch), or executing Hallmark's 4 design verbs (build, audit, redesign, study) without copying proprietary content. Do NOT use for verbatim brand/trademark piracy."
 license: MIT
 compatibility: "Compatible with Gentle-AI 4.3.1+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity. Requires Node 20+ and pnpm 9+."
-allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
+allowed-tools: Read Write Edit Bash(node:*,pnpm:*,curl:*) Glob Grep WebSearch
 metadata:
   trigger: ["hallmark", "study design", "website cloner", "extract design dna", "stitch skills", "stitch design system", "redesign", "macrostructure", "clonar estructura visual"]
   scope: "global, project"
@@ -35,7 +35,7 @@ flowchart LR
 ```
 
 ### 1. `study <url | screenshot | reference>` (Ethical Website DNA Extraction)
-Deconstruct any admired reference interface into 5 transferable layers and write them into `DESIGN_SYSTEM.md`:
+Inspect live URLs (via `curl` or `WebSearch`), user-supplied screenshots, or local CSS/HTML files to deconstruct reference interfaces into 5 transferable layers and write them into `DESIGN_SYSTEM.md`:
 - **Layer 1 — Macrostructure**: Identify the primary spatial architecture (*Editorial Split 1:3*, *Bento Telemetry Matrix*, *Pinned Canvas + Floating HUD*, *Command-First Workbench*, or *Monumental Gallery*).
 - **Layer 2 — Luminance & OKLCH Polarity**: Extract surface elevation steps (`--surface-0` to `--surface-3`), border contrast mechanism (hairline `1px` vs negative-space separation), and primary accent chroma.
 - **Layer 3 — Typographic Voice**: Capture display-to-body scale ratio (`clamp()`), tracking (`-0.03em` on headlines), and numeric discipline (`tabular-nums`).

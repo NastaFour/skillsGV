@@ -54,7 +54,7 @@ Prefer modern CSS `animation-timeline: view()` / `scroll()` for progressive reve
 ### Tier 2: Sticky `<canvas>` Keyframe Sequence Scrubber (Apple Product Showcase Style)
 When showcasing hardware, industrial products, or complex visual transformations:
 1. **Sticky Stage Container**: Pin a `100dvh` `<canvas>` inside a `300vh–500vh` scroll track (`position: sticky; top: 0`).
-2. **Progressive Frame Preloading**: Load Frame 0 immediately as an LCP poster image, then preload remaining frames (`60–120` WebP/AVIF frames) in chunks off the main thread (`createImageBitmap`).
+2. **Progressive Frame Preloading & Procedural Fallback**: Load Frame 0 immediately as an LCP poster image, then preload remaining frames (`60–120` WebP/AVIF frames) in chunks off the main thread (`createImageBitmap`). **If pre-rendered image frames do not exist in the workspace, draw procedural Canvas2D/SVG keyframes; never invent fake asset URLs.**
 3. **Damped Scroll Interpolation**: Map normalized scroll progress $p \in [0, 1]$ to `frameIndex = Math.min(totalFrames - 1, Math.floor(p * totalFrames))` inside a single `requestAnimationFrame` loop, redrawing only when `frameIndex !== lastFrameIndex`.
 
 ### Tier 3: 3D WebGL / Three.js Camera Spline Diorama (`scroll-world`)

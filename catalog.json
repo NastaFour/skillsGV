@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 244
+    "skills": 246
   },
   "categories": [
     {
@@ -27,7 +27,7 @@
     {
       "id": "04-backend",
       "title": "Backend",
-      "count": 25
+      "count": 26
     },
     {
       "id": "05-frontend",
@@ -37,7 +37,7 @@
     {
       "id": "06-code-quality",
       "title": "Code Quality",
-      "count": 18
+      "count": 19
     },
     {
       "id": "07-testing",
@@ -1072,6 +1072,16 @@
       "autoInvoke": true
     },
     {
+      "name": "distributed-resilience-sre",
+      "path": "04-backend/distributed-resilience-sre/SKILL.md",
+      "category": "04-backend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "django-drf",
       "path": "04-backend/django-drf/SKILL.md",
       "category": "04-backend",
@@ -1946,6 +1956,16 @@
       "path": "06-code-quality/pnpm-workspaces/SKILL.md",
       "category": "06-code-quality",
       "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "production-readiness-250",
+      "path": "06-code-quality/production-readiness-250/SKILL.md",
+      "category": "06-code-quality",
+      "tier": "full",
       "tier0": false,
       "deprecated": false,
       "note": null,

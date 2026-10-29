@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **244 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -149,6 +149,7 @@ Catálogo de **244 skills** compatible con [agentskills.io](https://agentskills.
 | java-21 | [04-backend/java-21/SKILL.md](04-backend/java-21/SKILL.md) ← records, sealed classes, pattern matching, virtual threads (Loom) |
 | spring-boot-3 | [04-backend/spring-boot-3/SKILL.md](04-backend/spring-boot-3/SKILL.md) ← constructor injection, @ConfigurationProperties, @Transactional |
 | modern-ts-backend | [04-backend/modern-ts-backend/SKILL.md](04-backend/modern-ts-backend/SKILL.md) ← Use when architecting greenfield TypeScript APIs, edge/serverless services, typ… |
+| distributed-resilience-sre | [04-backend/distributed-resilience-sre/SKILL.md](04-backend/distributed-resilience-sre/SKILL.md) ← Architect resilient distributed systems, fault-tolerant messaging, and SRE prod… |
 
 ## 05-frontend
 
@@ -232,6 +233,7 @@ Catálogo de **244 skills** compatible con [agentskills.io](https://agentskills.
 | build-config-validator | [06-code-quality/build-config-validator/SKILL.md](06-code-quality/build-config-validator/SKILL.md) ← `scripts/validate-build-config.mjs` |
 | elixir-antipatterns | [06-code-quality/elixir-antipatterns/SKILL.md](06-code-quality/elixir-antipatterns/SKILL.md) ← Agent misuse, nested case, bare spawn, GenServer bottleneck |
 | supply-chain-runtime-security | [06-code-quality/supply-chain-runtime-security/SKILL.md](06-code-quality/supply-chain-runtime-security/SKILL.md) ← Use when hardening Node/TypeScript dependency trees, auditing third-party MCP s… |
+| production-readiness-250 | [06-code-quality/production-readiness-250/SKILL.md](06-code-quality/production-readiness-250/SKILL.md) ← Execute the 250-point Senior Production Engineering, Data Precision, Edge-Case,… |
 
 ## 07-testing
 

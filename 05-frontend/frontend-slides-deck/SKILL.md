@@ -26,16 +26,16 @@ Harmonized adaptation of **zarazhangrui/frontend-slides** (zero-dependency HTML 
 
 ---
 
-## 🎨 Phase 1: Slide Style Discovery & Archetypal Pairing
+## 🏛️ 1. Slide Deck Archetypes & Design Read Pairing
 
-Before generating slides, emit the **3-Line `Design Read`** and anchor the deck in a cohesive visual preset (mapped to our semantic tokens `--surface-*`, `--text-*`, `--accent-*`, `--border-*`):
+Before generating slides, emit the **3-Line `Design Read`** referencing **Archetype A, B, E, or H** and anchor the deck in a cohesive visual preset (mapped to our semantic tokens `--surface-*`, `--text-*`, `--accent-*`, `--border-*`):
 
 | Deck Archetype | Visual Character | Best For |
 |---|---|---|
-| **A. `Swiss Editorial Monograph`** | Warm alabaster paper (`oklch(0.98 0.01 85)`), exposed `1px` hairlines, high-contrast Serif + Mono | Technical RFCs, research talks, architecture reviews |
-| **B. `Dark Precision Keynote`** | Deep carbon (`oklch(0.13 0.01 260)`), subtle luminance borders, `tabular-nums` oversized KPIs | Product launches, developer tool demos, engineering all-hands |
-| **C. `Executive Spec-Sheet`** | Crisp high-density 12-column bento grid, zero decorative gradients, verifiable comparison matrices | Board updates, financial/infrastructure proposals, post-mortems |
-| **D. `Bespoke / Think Outside the Box`** | Custom metaphor (e.g., blueprint cyanotype, terminal HUD, museum exhibition catalog) | Keynote storytelling (`[Beyond-Baseline: <reason>]`) |
+| **Archetype A — Technical Monograph (Swiss Editorial Deck)** | Warm alabaster paper (`oklch(0.98 0.01 85)`), exposed `1px` hairlines, high-contrast Serif + Mono | Technical RFCs, research talks, architecture reviews |
+| **Archetype B — High-Craft Spec-Sheet (Executive Architecture Review)** | Crisp high-density 12-column bento grid, zero decorative gradients, verifiable comparison matrices | Board updates, financial/infrastructure proposals, post-mortems |
+| **Archetype E — Atmospheric Minimalism & Dark Precision (Keynote Deck)** | Deep carbon (`oklch(0.13 0.01 260)`), subtle luminance borders, `tabular-nums` oversized KPIs | Product launches, developer tool demos, engineering all-hands |
+| **Archetype H — Bespoke / Think Outside the Box (Exhibition Deck)** | Custom metaphor (e.g., blueprint cyanotype, terminal HUD, museum exhibition catalog) | Keynote storytelling (`[Beyond-Baseline: <reason>]`) |
 
 ---
 
