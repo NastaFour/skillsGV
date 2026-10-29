@@ -49,7 +49,7 @@ $$\vec{T} = \begin{bmatrix} \text{DESIGN\_VARIANCE} \\ \text{MOTION\_INTENSITY} 
   - `The Precision Instrument`: [4, 5, 7] (Linear-style, atajos, micro-radios 6-8px)
   - `The Humanist Companion`: [5, 4, 5] (Notion/Airbnb style, orgánico, conversacional)
   - `The System Native`: [3, 2, 7] (Enterprise workhorse, Shadcn/Radix/Tailwind nativo, tokens heredados)
-  - `Bespoke / Creative Exploration`: [Diales libres + 3 reglas generativas mecánicas justificadas]
+  - `Bespoke / Creative Exploration (Think Outside the Box)`: [Diales libres + protocolo de Inversión de 3 Clichés + 3 reglas generativas mecánicas justificadas con `[Beyond-Baseline: <razón>]`]
 
 ## 🛠️ Flujo de Verificación (Preflight)
 

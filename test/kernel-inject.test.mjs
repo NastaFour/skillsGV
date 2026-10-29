@@ -62,7 +62,7 @@ test("injectKernel creates missing channel files and is idempotent", () => {
   assert.equal(first.find((r) => r.file === "AGENTS.md").status, "injected");
   const agentsMd = readFileSync(join(root, "AGENTS.md"), "utf8");
   assert.ok(agentsMd.includes(KERNEL_START) && agentsMd.includes(KERNEL_END));
-  assert.ok(agentsMd.includes("kernel de arranque") && agentsMd.includes("Gentle-AI 4.2.0"));
+  assert.ok(agentsMd.includes("kernel de arranque") && agentsMd.includes("Gentle-AI 4.3.1"));
 
   const second = injectKernel(opts);
   assert.equal(second.find((r) => r.file === "AGENTS.md").status, "unchanged");
@@ -91,7 +91,7 @@ test("injectKernel replaces a stale block instead of duplicating it", () => {
   injectKernel({ root, agentIds: ["antigravity"], variant: "minimal", catalogRoot: CATALOG_ROOT });
   const after = readFileSync(join(root, "GEMINI.md"), "utf8");
   assert.equal(after.indexOf(KERNEL_START), after.lastIndexOf(KERNEL_START));
-  assert.ok(after.includes("modo gentle-ai") && after.includes("Gentle-AI 4.2.0"));
+  assert.ok(after.includes("modo gentle-ai") && after.includes("Gentle-AI 4.3.1"));
   assert.ok(after.includes("# Previo"));
 
   rmSync(root, { recursive: true, force: true });

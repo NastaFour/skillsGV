@@ -2,7 +2,7 @@
 name: codegraph-intelligence
 description: "Trigger: codegraph, codegraph_explore, blast radius, callers, callees, call graph, structural codebase intelligence. Use when answering structural, architectural, call-flow, dependency, symbol-reference, or impact-analysis questions before broad filesystem searches. Do NOT use for non-Git scratch folders, single-file known edits, or destructive index lifecycle commands."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.2.0+, CodeGraph 1.4.1+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
+compatibility: "Compatible with Gentle-AI 4.3.1+, CodeGraph 1.4.1+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
 allowed-tools: Read Bash(gentle-ai:*,codegraph:*,git:*) Glob Grep
 metadata:
   trigger: ["codegraph", "codegraph intelligence", "codegraph_explore", "blast radius", "impact analysis", "call graph", "callers callees", "mapa estructural", "analisis de impacto"]
@@ -13,7 +13,7 @@ metadata:
 
 # 🕸️ CodeGraph Intelligence — Structural Codebase & Blast-Radius Analysis
 
-High-precision structural codebase navigation powered by **CodeGraph 1.4.1+** and **Gentle-AI 4.2.0+**. Replaces token-heavy, stochastic `Glob`/`Grep` fishing with deterministic AST call graphs, symbol resolution, caller/callee lineage, and blast-radius impact mapping.
+High-precision structural codebase navigation powered by **CodeGraph 1.4.1+** and **Gentle-AI 4.3.1+**. Replaces token-heavy, stochastic `Glob`/`Grep` fishing with deterministic AST call graphs, symbol resolution, caller/callee lineage, and blast-radius impact mapping.
 
 ---
 
@@ -46,11 +46,11 @@ flowchart TD
 ### Step-by-Step Execution
 1. **Authoritative Root Resolution**: Use the explicit working directory as `<project-root>`. Check `<cwd>/.git` (directory or worktree file) and `<cwd>/.codegraph/` before any ancestor discovery. Never silently fall back to an enclosing parent repository.
 2. **Workspace Validation**: Confirm `<project-root>` is a real project repository (never `$HOME`, `/tmp`, or an uninitialized directory).
-3. **Lazy Init (Gentle-AI 4.2.0)**: If `.codegraph/` is absent, execute once:
+3. **Lazy Init (Gentle-AI 4.3.1)**: If `.codegraph/` is absent, execute once:
    ```bash
    gentle-ai codegraph init --cwd <project-root>
    ```
-   *Note*: In Gentle-AI 4.2.0, `gentle-ai codegraph init` validates the root, runs `codegraph init -q <root>`, and automatically appends `.codegraph/` to `.git/info/exclude` so the index never pollutes `git status`.
+   *Note*: In Gentle-AI 4.3.1, `gentle-ai codegraph init` validates the root, runs `codegraph init -q <root>`, and automatically appends `.codegraph/` to `.git/info/exclude` so the index never pollutes `git status`.
 4. **Synchronize Index**: Before running CLI intelligence commands—or when the MCP file watcher is inactive/stale—synchronize incremental AST diffs:
    ```bash
    codegraph sync -q <project-root>

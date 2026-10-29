@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -34,7 +34,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.2.0 Organic Driven Development… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.3.1 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
 | codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
@@ -71,10 +71,10 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | Skill | Path |
 |---|---|
 | architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Generates the canonical TRD.md (Technical Requirements Document): module archit… |
-| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.2.0… |
+| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.3.1… |
 | dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the Definition of Done (DoD) |
 | expert-debugger | [02-dev-roles/expert-debugger/SKILL.md](02-dev-roles/expert-debugger/SKILL.md) ← DEPRECATED. Use systematic-debugging instead. |
-| security-audit | [02-dev-roles/security-audit/SKILL.md](02-dev-roles/security-audit/SKILL.md) ← ECC-inspired security scanning workflow |
+| security-audit | [02-dev-roles/security-audit/SKILL.md](02-dev-roles/security-audit/SKILL.md) ← Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LL… |
 | feature-implementer | [02-dev-roles/feature-implementer/SKILL.md](02-dev-roles/feature-implementer/SKILL.md) ← Implement production-ready features and domain logic following senior engineeri… |
 | frontend-designer | [02-dev-roles/frontend-designer/SKILL.md](02-dev-roles/frontend-designer/SKILL.md) ← DEPRECATED. Use frontend-design instead. |
 | frontend-design | [02-dev-roles/frontend-design/SKILL.md](02-dev-roles/frontend-design/SKILL.md) ← Anthropic methodology, anti-AI-slop, signature element |
@@ -101,7 +101,8 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
 | archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) ← Usala para crear diagramas Excalidraw, flujos y mapas de arquitectura visual té… |
-| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 4.0 |
+| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 5 |
+| live-cve-security-intel | [02-dev-roles/live-cve-security-intel/SKILL.md](02-dev-roles/live-cve-security-intel/SKILL.md) ← Use at the end of a project, before release, or during High-Risk (Item 2/5) rev… |
 
 ## 03-ai-ml
 
@@ -115,6 +116,9 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | prompt-engineering | [03-ai-ml/prompt-engineering/SKILL.md](03-ai-ml/prompt-engineering/SKILL.md) ← Standards and guidelines for Prompt Engineering |
 | research-first | [03-ai-ml/research-first/SKILL.md](03-ai-ml/research-first/SKILL.md) ← ECC-inspired research-first development pattern |
 | context-engineering | [03-ai-ml/context-engineering/SKILL.md](03-ai-ml/context-engineering/SKILL.md) ← Use when designing LLM context layouts, agent memory pipelines, multi-turn comp… |
+| ai-safety-agent-guard | [03-ai-ml/ai-safety-agent-guard/SKILL.md](03-ai-ml/ai-safety-agent-guard/SKILL.md) ← Use when building LLM/agentic applications, MCP servers, tool-calling pipelines… |
+| multimodal-ai-pipelines | [03-ai-ml/multimodal-ai-pipelines/SKILL.md](03-ai-ml/multimodal-ai-pipelines/SKILL.md) ← Use when building applications that process images, PDFs, screenshots, audio st… |
+| rag-knowledge-systems | [03-ai-ml/rag-knowledge-systems/SKILL.md](03-ai-ml/rag-knowledge-systems/SKILL.md) ← Use when designing or optimizing RAG pipelines, document chunking, hybrid BM25… |
 
 ## 04-backend
 
@@ -145,6 +149,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | java-21 | [04-backend/java-21/SKILL.md](04-backend/java-21/SKILL.md) ← records, sealed classes, pattern matching, virtual threads (Loom) |
 | spring-boot-3 | [04-backend/spring-boot-3/SKILL.md](04-backend/spring-boot-3/SKILL.md) ← constructor injection, @ConfigurationProperties, @Transactional |
 | modern-ts-backend | [04-backend/modern-ts-backend/SKILL.md](04-backend/modern-ts-backend/SKILL.md) ← Use when architecting greenfield TypeScript APIs, edge/serverless services, typ… |
+| distributed-resilience-sre | [04-backend/distributed-resilience-sre/SKILL.md](04-backend/distributed-resilience-sre/SKILL.md) ← Architect resilient distributed systems, fault-tolerant messaging, and SRE prod… |
 
 ## 05-frontend
 
@@ -202,6 +207,9 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | page-cro | [05-frontend/page-cro/SKILL.md](05-frontend/page-cro/SKILL.md) ← Optimización de conversión para landing pages, precios y páginas de producto se… |
 | popup-cro | [05-frontend/popup-cro/SKILL.md](05-frontend/popup-cro/SKILL.md) ← Diseño de popups, modales de exit-intent y banners de alta conversión sin degra… |
 | signup-flow-cro | [05-frontend/signup-flow-cro/SKILL.md](05-frontend/signup-flow-cro/SKILL.md) ← Reducción de fricción y optimización de conversión en formularios y flujos de r… |
+| frontend-slides-deck | [05-frontend/frontend-slides-deck/SKILL.md](05-frontend/frontend-slides-deck/SKILL.md) ← Use when creating zero-dependency interactive HTML slide presentations, convert… |
+| hallmark-design-study | [05-frontend/hallmark-design-study/SKILL.md](05-frontend/hallmark-design-study/SKILL.md) ← Use when extracting structural and visual DNA from reference URLs or screenshot… |
+| scroll-world-storytelling | [05-frontend/scroll-world-storytelling/SKILL.md](05-frontend/scroll-world-storytelling/SKILL.md) ← Use when building immersive scroll-driven landing pages, product showcases, 3D/… |
 
 ## 06-code-quality
 
@@ -225,6 +233,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | build-config-validator | [06-code-quality/build-config-validator/SKILL.md](06-code-quality/build-config-validator/SKILL.md) ← `scripts/validate-build-config.mjs` |
 | elixir-antipatterns | [06-code-quality/elixir-antipatterns/SKILL.md](06-code-quality/elixir-antipatterns/SKILL.md) ← Agent misuse, nested case, bare spawn, GenServer bottleneck |
 | supply-chain-runtime-security | [06-code-quality/supply-chain-runtime-security/SKILL.md](06-code-quality/supply-chain-runtime-security/SKILL.md) ← Use when hardening Node/TypeScript dependency trees, auditing third-party MCP s… |
+| production-readiness-250 | [06-code-quality/production-readiness-250/SKILL.md](06-code-quality/production-readiness-250/SKILL.md) ← Execute the 250-point Senior Production Engineering, Data Precision, Edge-Case,… |
 
 ## 07-testing
 

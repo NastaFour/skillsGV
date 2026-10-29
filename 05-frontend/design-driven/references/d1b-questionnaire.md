@@ -1,64 +1,70 @@
-# Cuestionario de Unicidad D1b (5 Bloques Obligatorios) — design-driven
+# Fase D1b — Entrevista de Unicidad, Chasis Arquetípicos y Protocolo "Think Outside the Box"
 
-> **Regla de oro**: Un bloque por turno para diseño formal de pantallas completas o greenfield. El piso obligatorio son las **8 preguntas del núcleo duro** — #1 Persona, #2 Dolor, #3 Promesa, #4 Chasis Arquetípico, #6 Reglas Generativas, #9 Firma, #13 Pantalla Corazón, #14 Bans — que siempre deben quedar respondidas (en modo interactivo con respuesta del usuario; en modo auto, por inferencia documentada). Las demás preguntas son calibración y pueden heredarse del preset del chasis. Desacoplar siempre el **Chasis Composicional** (retícula, relaciones de escala y física) del **Livery** (fuentes, colores y logotipo corporativos del cliente).
-> 
-> **Fast-Path (Mantenimiento Incremental)**: En tareas de mantenimiento o ajustes menores (diff < 50 líneas, bugfix o agregado de un botón/control a pantalla existente), NO ejecutar los 5 bloques. El agente ejecuta el **Fast-Path**: hereda el chasis y tokens existentes emitiendo un único `Design Read` de 1 línea.
-> 
-> **Autorización de Auto-Inferencia**: En modo `auto` o cuando el usuario solicita explícitamente delegar la decisión («hacé lo que quieras / decidí vos / auto»), el orquestador **queda explícitamente autorizado** a inferir el Chasis Arquetípico más adecuado según la entropía de datos del producto, emitir el `Design Read` formal y avanzar sin bloquear el flujo interactivo.
+Este cuestionario operacionaliza la Fase D1b de `design-driven`. Su propósito es **erradicar el diseño genérico por omisión ("AI-slop")** combinando un piso sólido de ingeniería visual con un techo creativo abierto (**Floor, Not Ceiling**).
 
 ---
 
-## Bloque 1 · Las 3 P's (Persona, Dolor, Promesa)
+## ⚡ Modo 1: Síntesis One-Shot Ultra-Compacta (Ahorro Máximo de Tokens)
 
-1. **Persona**: ¿Quién es el usuario principal? (Edad, oficio, contexto de uso diario). ¿Cuáles son 3 adjetivos de la sensación que debe transmitir y cuál es su tono de voz?
-2. **Dolor**: ¿Qué problema o frustración concreta paga por resolver esta interfaz?
-3. **Promesa**: ¿Qué valor o certeza inmediata se lleva el usuario en los primeros 10 segundos de interacción?
-*(Si responde "no sé": en modo interactivo proponer 2 opciones contrastadas y esperar; en modo auto, inferir según el dominio del producto).*
+Cuando el usuario pida una ejecución directa/one-shot o el flujo corra en modo `auto`, **no abras rondas de preguntas que consuman turnos extra**. Sintetizá las 8 dimensiones nucleares + el protocolo **Think Outside the Box** en un único bloque compacto antes del `Design Read`:
 
----
-
-## Bloque 2 · ADN Arquetípico, Diales y Gramática Generativa (Fusión de Chasis)
-
-4. **Selección de Chasis Arquetípico** (Elegir 1 de los 8 Chasis Arquetípicos):
-   - **A · Technical Monograph** (Reporte académico / Bell Labs 1974): Retícula asimétrica 1:3 (`main` + marginalia en `<aside>`), hairlines 1D continuos (`border-b`), cero tarjetas contenedoras en caja. *Preset: `DV: 7, MI: 2, VD: 8` | Física sobre-amortiguada.*
-   - **B · Industrial Spec-Sheet** (Telemetría analítica / Manual NASA): Matriz de 12/16 columnas con hairlines de 1px, `tabular-nums lining-nums`, monospace estrictamente zonificado a métricas y tablas (prohibido en prosa). *Preset: `DV: 3, MI: 1, VD: 9` | Física mecánica instantánea (colapso a lista en móvil).*
-   - **C · The Gallery / Space Tension** (Catálogo de arte / Prada): Vacío activo masivo (≥45% viewport), escala tipográfica bipolar (Display ≥3:1 vs micro) con escalón intermedio obligatorio (eyebrow de 18-24px). *Preset: `DV: 9, MI: 4, VD: 2` | Alta inercia con stagger.*
-   - **D · The Kinetic Utility** (Mesa de trabajo / Figma Canvas): Viewport fijo `100dvh` (`overflow-hidden`), herramienta/canvas protagonista inmediato desde el frame 0, HUDs contextuales flotantes a ≤24px. *Preset: `DV: 4, MI: 8, VD: 7` | Resorte veloz crítico.*
-   - **E · The Precision Instrument** (Estudio de ingeniería moderno / Linear, Raycast, Stripe): Foco en teclado prioritario (`Cmd+K`), densidad equilibrada (`p-2.5` a `p-4`), micro-radios controlados (6-8px), superficies táctiles sobrias. *Preset: `DV: 4, MI: 5, VD: 7` | Suave acelerado por hardware.*
-   - **F · The Humanist Companion** (Producto empático y cálido / Notion, Airbnb): Ritmo suave, contención orgánica, generoso aire visual sin frialdad, tipografía conversacional humanista. *Preset: `DV: 5, MI: 4, VD: 5` | Resorte natural relajado.*
-   - **G · The System Native (Enterprise Workhorse)**: Aplicaciones corporativas y dashboards B2B que integran librerías preexistentes (Shadcn UI, Radix, Tailwind estándar, Material UI). Hereda tokens y convenciones del proyecto sin imponer estética de autor. *Preset: `DV: 3, MI: 2, VD: 7` | Timing operativo limpio.*
-   - **H · Bespoke / Creative Exploration**: Propuesta de chasis híbrido o arquitectura visual personalizada adaptada a la identidad del producto, con diales libres y 3 reglas generativas mecánicas justificadas en `DESIGN_SYSTEM.md`.
-   *(Si el usuario no elige: en interactivo proponer 2 perfiles adaptados al producto; en auto, inferir según datos).*
-
-5. **Calibración Triaxial Derivada & Anclaje de Scroll**:
-   - Confirmar si se adoptan los diales del preset elegido (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`) o si se fuerza un valor puntual.
-   - ¿La página tiene cadencia narrativa con scroll fluido o funciona como una aplicación densa fija / viewport lock (`100dvh`)?
-
-6. **Las 3 Reglas Generativas Mecánicas** *(directiva derivada por el agente, no una pregunta al usuario — el agente la deriva del arquetipo elegido en #4 y la confirma)*:
-   - El agente DEBE derivar del arquetipo exactamente **3 directivas técnicas de CSS/Layout inmutables** (1 de retícula/layout, 1 de división/superficie, 1 de escala tipográfica) para registrarlas en `DESIGN_SYSTEM.md` (y/o `design-dna.md`) y en el header del archivo visual antes de codificar.
+```markdown
+### 🧠 D1b One-Shot Creative Synthesis
+1. **Esencia y Anti-Referencia**: [3 adjetivos] | Jamás parecerse a: [Cliché de la industria a evitar]
+2. **Inversión Lateral (Think Outside the Box)**: [Cliché dominante del nicho] -> Invertido en: [Metáfora física/editorial única]
+3. **Chasis y Diales**: [Arquetipo A-H] (`DESIGN_VARIANCE: X, MOTION_INTENSITY: Y, VISUAL_DENSITY: Z`)
+4. **Arquitectura de Color (OKLCH/HSL)**: `--surface-0`, `--surface-1`, `--text-primary`, `--accent-primary`, `--border-subtle`
+5. **Sistema Tipográfico**: `--font-display`, `--font-sans`, `--font-mono` (`tabular-nums` en métricas)
+6. **Física Espacial (3 Reglas Mecánicas)**: [Regla 1: Grid/proporción] · [Regla 2: Bordes/superficie] · [Regla 3: Densidad/respiro]
+7. **Coreografía de Movimiento**: [Curva spring/cubic-bezier + fallback `prefers-reduced-motion`]
+8. **Firma de Oficio (`[Beyond-Baseline]`)**: [El detalle bespoke que hace inolvidable esta interfaz]
+```
 
 ---
 
-## Bloque 3 · Referencias Reales y Anti-Referencias *(bloque de calibración — sus preguntas #7 y #8 no pertenecen al núcleo duro; con referencias provistas por el usuario o presets del dominio se resuelven sin bloquear)*
+## 🗣️ Modo 2: Entrevista Interactiva en 5 Bloques (Proyectos Greenfield Colaborativos)
 
-7. **Referencias Positivas**: Proporcionar 3-5 URLs reales (Godly, Awwwards, 21st.dev, Dribbble, Figma o producto vivo) indicando qué se toma exactamente de cada una (paleta, tipografía, retícula o micro-interacción). *En modo terminal o backend sin URLs, indicar nombres de productos referentes concretos*.
-8. **Anti-Referencias**: Proporcionar 2-3 ejemplos de productos, sitios o patrones que NO gustan y por qué, para prohibirlos explícitamente.
+Si el usuario prefiere co-diseñar paso a paso, presentá estos 5 bloques conversacionales:
+
+### Bloque 1: Personalidad, Anti-Referencias y "Think Outside the Box"
+1. **Personalidad en 3 palabras**: Si tu producto fuera un objeto físico o espacio arquitectónico, ¿qué 3 adjetivos lo definirían? *(ej: "cronógrafo suizo, silencioso, táctil" o "revista impresa, cálida, radical")*.
+2. **Anti-Referencias**: ¿Qué cliché visual de tu industria odiás o querés evitar a toda costa?
+3. **Metáfora Fuera de la Caja**: ¿Te gustaría anclar la interfaz en un **Chasis Arquetípico clásico (A-G)** o explorar una **Inversión Lateral (H. Bespoke / Think Outside the Box)** inspirada en un objeto físico/editorial fuera del software tradicional?
+
+### Bloque 2: Selección de Chasis y Densidad (A–H)
+4. **Elección de Chasis**:
+   - **A. `Technical Monograph`** (`[7, 2, 8]` — Editorial técnico, asimétrico 1:3, hairlines 1px, sin cards)
+   - **B. `Industrial Spec-Sheet`** (`[3, 1, 9]` — Telemetría/finanzas, grilla 12-col hairline, `tabular-nums`)
+   - **C. `The Gallery`** (`[9, 4, 2]` — Lujo/portafolio, `>= 45%` lienzo abierto, escala tipográfica extrema)
+   - **D. `The Kinetic Utility`** (`[4, 8, 7]` — Herramienta espacial/3D/canvas, `100dvh`, HUDs flotantes)
+   - **E. `The Precision Instrument`** (`[4, 5, 7]` — Productividad veloz estilo Linear/Raycast, `6-8px` radios)
+   - **F. `The Humanist Companion`** (`[5, 4, 5]` — Consumo/salud/educación, superficies cálidas y orgánicas)
+   - **G. `The System Native`** (`[3, 2, 7]` — SaaS enterprise multi-equipo sobre primitivas limpias)
+   - **H. `Bespoke / Creative Exploration (Think Outside the Box)`** (Híbrido o metáfora lateral con 3 reglas generativas propias)
+
+### Bloque 3: Luz, Color Semántico y Materialidad
+5. **Polaridad y Atmósfera**: ¿Modo oscuro profundo (oled/carbon), claro papel/editorial (alabaster/warm stone), o adaptativo?
+6. **Acento con Intención**: ¿Qué color guía la acción primaria (`--accent-primary`) y cómo evitamos el violeta/azul genérico de IA sin justificación de marca?
+
+### Bloque 4: Voz Tipográfica y Ritmo
+7. **Combinación Tipográfica**: ¿Sans geométrica de precisión + Monospace técnica, Serif editorial de alto contraste + Sans humanista, o Display expresiva para storytelling?
+
+### Bloque 5: El Detalle Firma (Signature Craft)
+8. **Momento Memorable**: ¿Cuál será el "detalle firma" en los primeros 5 segundos? *(ej. navegación tipo comando instantánea, transición scroll-scrubbed con `scroll-world-storytelling`, o fichas técnicas con micro-tipografía tabular impecable)*.
 
 ---
 
-## Bloque 4 · Firma (Signature), Heartbeat y Salvaguardas A11y
+## 🧬 Las 3 Reglas Generativas Mecánicas por Chasis
 
-9. **Elemento de Firma**: ¿Cuál es el elemento icónico e inolvidable que el usuario recordará tras usar la aplicación una sola vez?
-10. **Acento Cromático**: Definir 1 único color de acento primario OKLCH o Hex corporativo (saturación estricta < 80%).
-11. **Par Tipográfico en Contraste (Livery)**: Definir el emparejamiento tipográfico por contraste de ejes (Serif + Sans, Geometric + Humanist, o una familia explotada). *Inter queda prohibido como default reflexivo cuando no hay sistema previo; se permite si es la tipografía establecida del proyecto o requerimiento corporativo*.
-12. **Límites de Hero y Suelo A11y**: Techo tipográfico clamp a 6rem máximo, tracking floor a `-0.04em`, y suelo mínimo de legibilidad WCAG 2.2 a `clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)` (mínimo 12px con peso ≥ 500 para metadatos, con excepción de etiquetas microscópicas en ejes de gráficos y `<kbd>`).
-13. **Pantalla Corazón (Heartbeat)**: ¿Cuál es LA pantalla o dato crítico que no puede fallar bajo ninguna circunstancia?
+Todo `DESIGN_SYSTEM.md` debe dejar asentadas las 3 leyes mecánicas del chasis elegido (o las 3 leyes creadas en el modo **Think Outside the Box**):
 
----
-
-## Bloque 5 · Anti-Slop Negativo, Anti-Faux-Density y Restricciones Reales
-
-14. **Lista de Prohibiciones (Bans)**: Confirmar Nivel 1 (Hard Anti-Slop Invariants: cero Lorem ipsum/datos falsos, cero telemetría decorativa falsa, estados interactivos completos, contraste WCAG) y evaluar Nivel 2 (Heurísticas contextuales overrideables según el dominio/marca o `[Beyond-Baseline]`), más los odios estéticos específicos del usuario.
-15. **Anti-Faux-Density (Tufte)**: Si el proyecto carece de entropía real de datos, prohibir la simulación artificial de números de serie, métricas falsas (`SYS_STATUS: 0x4F`) o falsos LEDs decorativos (cosplay de telemetría). *(Mocks funcionales de prototipado en Fase D4 están permitidos si representan datos reales futuros).*
-16. **Límites de Dependencias y Física**: ¿Hasta dónde se puede implementar? (Solo CSS nativo con curvas cúbicas vs librerías aprobadas como GSAP, Motion o componentes curados de 21st.dev). Prohibido `transition: all 0.3s ease` genérico; usar la física de resortes o el fallback CSS nativo del arquetipo.
-17. **Restricciones de Entrega**: Nivel de accesibilidad requerido (WCAG AA), idioma/localización y fecha límite.
+| Chasis | Regla 1 (Layout / Grilla) | Regla 2 (Superficie / Bordes) | Regla 3 (Tipografía / Interacción) |
+|---|---|---|---|
+| **A. Monograph** | Grilla asimétrica 1:3 con índice sticky | Hairlines expuestas `1px solid var(--border-subtle)`, 0 cards | Contraste Serif/Sans + notas marginales |
+| **B. Spec-Sheet** | Matriz densa de 12 columnas compactas | Cero `box-shadow`, radios `0px-2px`, celdas con borde compartido | `font-variant-numeric: tabular-nums` obligatorio |
+| **C. Gallery** | Lienzo vacío `>= 45%` del viewport | Cero bordes divisores; separación pura por espacio negativo | Escala bipolar (`clamp(2.75rem, 6vw, 5.5rem)` vs `0.75rem`) |
+| **D. Kinetic** | Viewport fijo `100dvh` con lienzo central | Paneles HUD flotantes (`backdrop-filter: blur(16px)`) | Transiciones físicas por resorte + atajos directos |
+| **E. Precision** | Jerarquía de paneles colapsables y listas densas | Micro-radios `6px-8px`, bordes de luminancia sutil `1px` | Navegación `Cmd+K` y estados hover instantáneos (`<120ms`) |
+| **F. Humanist** | Flujo de lectura centrado (`60-70ch`) y grillas amables | Superficies cálidas en capas suaves, radios `10px-16px` | Micro-copy empático y transiciones suaves |
+| **G. System Native** | Layouts estándar de alta claridad y predecibilidad | Tokens semánticos puros sobre primitivas accesibles (Radix/Shadcn) | Foco en velocidad de tarea y consistencia |
+| **H. Bespoke (Out of the Box)** | **Definida por inversión lateral del cliché** | **Definida por la materialidad de la metáfora elegida** | **Definida por la firma interactiva `[Beyond-Baseline]`** |

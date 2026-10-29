@@ -237,7 +237,7 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 - For product requirements, invoke `idea-to-prd-express` to synthesize into `PRD.md`.
 - For UI direction and tokens, invoke `design-driven` to produce `DESIGN_SYSTEM.md`.
-- For execution under ODD, initialize `odd-workflow` creating `odd/tasks/<feature>.md`.
+- For execution under ODD, initialize `odd-workflow` creating `odd/tasks/<feature>.md` and synthesize a **5-line One-Shot Execution Blueprint** per task (`thinkrail` / `superpowers` pattern: 1. Target files, 2. Public signatures/types, 3. Invariants/helpers to reuse, 4. Edge/lifecycle failure modes, 5. Exact verification probe command) to guarantee zero-retry one-shot implementation.
 
 ## Visual Companion
 
