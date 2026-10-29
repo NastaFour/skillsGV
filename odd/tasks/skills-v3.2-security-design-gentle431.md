@@ -28,7 +28,7 @@ Objective: Upgrade `skillsGV` to Gentle-AI `4.3.1` (Provider Contract `1.5`), in
 - [x] **T3** (`S3`) | Route: `inline` | Upgrade `D1b` + "Think Outside the Box" in `design-driven`/`taste-skill` and create `hallmark-design-study`, `scroll-world-storytelling`, `frontend-slides-deck` | Commit: `8691c5c` (`Risk: none`)
 - [x] **T4** (`S4`) | Route: `inline` | Create `rag-knowledge-systems`, `multimodal-ai-pipelines`, and sync `overlap-matrix.json` + `routing-corpus.jsonl` (`31/31` replay accuracy) | Commit: `89bbb8f` (`Risk: item 3 — router overlap matrix & corpus`)
 - [x] **T5** (`S5`) | Route: `inline` | Execute 4-way registry sync (`244` skills, v3.2.0), sync `gentle-ai-dsh`, and pass `--strict` validation (`244/244`, 0 errors, 0 warnings) + test suite (`230/230` pass) | Commit: `1839db2` (`Risk: item 5 — catalog release & addon sync`)
-- [x] **T6** (`S6`) | Route: `inline` | Remediate Judgment Day findings, create `distributed-resilience-sre` & `production-readiness-250`, 4-way sync (246 skills), verify `router-replay` (33/33) and full test suite (`230/230` pass) | Commit: `pending` (`Risk: item 5 — catalog release & addon sync`)
+- [x] **T6** (`S6`) | Route: `delegated` (`89e64423-5019-44d5-b643-12acd421820b`) | Remediate Judgment Day findings, create `distributed-resilience-sre` & `production-readiness-250`, 4-way sync (246 skills), verify `router-replay` (33/33) and full test suite (`230/230` pass) | Commit: `6c0475d` (`Risk: item 5 — catalog release & addon sync`)
 
 ## Log
 
