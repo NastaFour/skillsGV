@@ -1,21 +1,21 @@
 ---
 name: odd-workflow
-description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.2.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, commit in ~400-line reviewable slices (high-risk isolated), and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.3.1 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
 trigger: ["odd workflow", "organic driven development", "flujo odd", "implementar feature multi archivo", "iniciar feature", "trabajo sustancial", "odd task"]
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
   author: gentleman-programming
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
-# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.2.0)
+# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.3.1)
 
-The universal, disciplined protocol for software delivery across AI agents. Replaces speculative planning and ad-hoc chaos with verifiable, reviewable work-unit slices.
+The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.3.1 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
 
 ---
 
-## 🚫 ABSOLUTE BANS (Non-Negotiable)
+## 🚫 HARD INVARIANTS (Non-Negotiable)
 
 1. **NO WRITING BEFORE TRACKING ON LARGE WORK**: When the resume test fails (large task), NEVER touch a source file before creating `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks`.
 2. **NO CLASSIFICATION BY FILE OR STEP COUNT**: Never classify task size by counting files, steps, commands, tests, or a todo list. Use only the 3 Task Size criteria.
@@ -25,7 +25,7 @@ The universal, disciplined protocol for software delivery across AI agents. Repl
 
 ---
 
-## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.2.0)
+## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.3.1)
 
 ```mermaid
 flowchart TD
@@ -33,8 +33,8 @@ flowchart TD
   B --> C["3. Resolve Uncertainty: Max 1 question if blocked"]
   C --> D["4. Classify: Understood + Contained risk + Resumable from git diff?"]
   D --> E["5. Track (if Large): odd/tasks/<feature>.md + Engram mirror"]
-  E --> F["6. Implement: Reviewable ~400-line slices (High-Risk 1-6 isolated)"]
-  F --> G["7. Close & Verify: Observed output + Risk: item N | none"]
+  E --> F["6. Implement: 5-Line Pre-Flight Blueprint -> ~400-line slices (High-Risk 1-6 isolated)"]
+  F --> G["7. Close & Verify: Live CVE Gate + Observed output + Risk: item N | none"]
 ```
 
 1. **Authorize**: Establish whether the request explicitly authorizes code mutation. Investigations, reviews, audits, and planning remain strictly read-only.
@@ -46,8 +46,12 @@ flowchart TD
    - **Resumable from `git diff` alone** (*Resume Test*): If the session stopped now, someone could finish from the original request and `git diff` alone.
    A task is **Large** only when the Resume Test fails (multi-session, external wait, separate deliverables, or requirements too long to survive compaction). Small work stays inline without durable task files.
 5. **Track before first write**: For large authorized work, create `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks` automatically before the first source edit. Tell the user in one line which document was created and how many tasks it holds.
-6. **Implement task-by-task**: Work inline by default. Commit work units in reviewable slices of `~400` authored changed lines on the feature branch (with code + tests + docs together). Any unit whose `Risk:` line names a High-Risk item (`1-6`) gets its own isolated commit (closing any pending `under_budget` slice first; if native RDD is unavailable due to an absent `gentle-ai` binary or SMB/UNC path, report `receipt-driven development: unavailable` and follow ordinary repository policy). Record the commit hash holding each task in `odd/tasks/<feature>.md`.
-7. **Close & Verify**: Report the verified outcome, every failed/skipped/pending check, and the next step. Close every code change with `Risk: item N (reason)` or `Risk: none`.
+6. **Implement task-by-task (with One-Shot Pre-Flight Blueprint)**:
+   - **One-Shot Pre-Flight Blueprint (Token Saver)**: Before editing code for a task, synthesize a compact **5-line micro-blueprint** (1. Exact target files, 2. Public signatures/types, 3. Core invariants & helpers to reuse, 4. Edge/lifecycle failure modes, 5. Exact verification probe command). This eliminates trial-and-error edit loops and achieves clean one-shot execution.
+   - Work inline by default. Commit work units in reviewable slices of `~400` authored changed lines on the feature branch (with code + tests + docs together). Any unit whose `Risk:` line names a High-Risk item (`1-6`) gets its own isolated commit (closing any pending `under_budget` slice first; if native RDD is unavailable, report `receipt-driven development: unavailable` and follow ordinary repository policy). Record the commit hash holding each task in `odd/tasks/<feature>.md`.
+7. **Close, Pre-Release Live CVE Gate & Verify**:
+   - Before closing a project or release milestone, run the **Pre-Release Live CVE & Lifecycle Audit** (`../../02-dev-roles/live-cve-security-intel/SKILL.md`) to check the stack's exact dependency/runtime versions against recent CVEs/OSV advisories and audit worker/memory cleanup paths.
+   - Report the verified outcome, every failed/skipped/pending check, and the next step. Close every code change with `Risk: item N (reason)` or `Risk: none`.
 
 ---
 
@@ -61,56 +65,29 @@ High risk means a mistake is hard to detect, hard to undo, or reaches beyond the
 5. **Delivery or environment**: Installers, release, CI, deploy, dependencies.
 6. **Untested surface**: No test would catch a regression in what changes.
 
-**Mandatory closure**: Every code change (small or large, inline or delegated) MUST close with `Risk: item N (reason)` or `Risk: none`. Before writing `Risk: none`, check whether the diff touches code used by existing behavior the request did not mention (shared options, parsers, helpers); if so, declare `Risk: item 3 (...)`.
+**Mandatory closure**: Every code change MUST close with `Risk: item N (reason)` or `Risk: none`. Before writing `Risk: none`, check whether the diff touches code used by existing behavior the request did not mention (shared options, parsers, helpers); if so, declare `Risk: item 3 (...)`.
 
-### Delegation Triggers
+### Delegation Triggers (Gentle-AI 4.3.1)
 
-You orchestrate and work inline by default, following your logbook. **A Delegation Trigger holds only when its condition truly holds; none holds by default, and when in doubt work inline.**
+You orchestrate and work inline by default, following your logbook. **A Delegation Trigger holds only when its condition truly holds; none holds by default.**
 
 - **Ask trigger**: Open product or design decision -> ask 1 focused user question; stop and wait.
 - **Mapping trigger**: Understanding exceeds 1 inline batch (`> 3` calls or `> ~10k` tokens) or needs `> ~5` sequential lookups -> delegate 1 read-only explorer returning `<= 2k` tokens with `path:line` evidence; at most 1 parent spot-check.
 - **Writer trigger**: Delegate bounded writers ONLY for:
-  - *(a) Parallelism*: `2+` independent behavioral units with disjoint edit surfaces, each `~100+` authored changed lines / several minutes (clearly heavier than starting a subagent), launched together. Never split code, tests, and docs of the same behavior across writers.
+  - *(a) Parallelism*: `2+` independent behavioral units with disjoint edit surfaces, clearly heavier than starting a subagent, launched together. Never split code, tests, and docs of the same behavior across writers.
   - *(b) Context backstop*: At `~150k` parent-context tokens, pause and delegate the next bounded unit.
   Never delegate a writer for task size, file count, or model price ratio alone.
-- **Invariants & Helper Reuse**: When modifying shared state, parsers, or manifests, reuse existing codebase helpers and preserve ordering, uniqueness, validation, and normalization invariants.
-- **Verification trigger**: Delegate an independent read-only verifier ONLY when a High-Risk item (`1-6`) applies, passing `--escalate-item <1-6> --escalate-reason "<reason>"`. Never run an independent verifier merely because a writer used a smaller/cheaper model or lower effort tier.
+- **Verification trigger**: Delegate an independent read-only verifier ONLY when a High-Risk item (`1-6`) applies, passing `--escalate-item <1-6> --escalate-reason "<reason>"`. Pass the full feature doc (`S#`), baseline commit, and probe commands; the verifier executes probes in an isolated temporary directory (`mktemp -d`) and never mutates the repository.
 
 ---
 
 ## 🧪 Differential Check & Scratch State Discipline
 
-- **Differential Check (`mktemp -d`)**: When a change touches shared CLI commands, parsers, routers, or helpers (item 3 candidate), verify that unrequested behavior is unchanged by comparing output against a clean baseline worktree created in a temporary directory (`mktemp -d` / `os.tmpdir()`) before and after the change.
+- **Differential Check (`mktemp -d`)**: When a change touches shared CLI commands, parsers, routers, or helpers (item 3 candidate), verify that unrequested behavior is unchanged by comparing output against a clean baseline worktree created in `mktemp -d` / `os.tmpdir()`.
 - **Scratch State Discipline**: Never leave temporary reproduction scripts or scratch directories inside the repository tree. Subagents must report any scratch paths created outside the workspace so the parent orchestrator removes them before task closure.
-
----
-
-## 📋 Canonical Feature Document Template (`odd/tasks/<feature>.md`)
-
-Keep this exact section order (2-3 line header first, `## Log` last) so subagents read until `## Log` by reference (`Spec: odd/tasks/<feature>.md, T1, S1`):
-
-```markdown
-Objective: <Concrete, testable outcome>
-Branch: feat/<feature-name> | Delivery: reviewable work-unit slices on feature branch
-Test runner: <exact test & validation command>
-
-## Specs
-
-- **S1**: Quote user's exact strings, error messages, commands, and examples verbatim. Canonical refs: `PRD.md#FR-01`, `APP_FLOW.md`, `TRD.md`, `DESIGN_SYSTEM.md`.
-- **S2**: Next requirement with authorized scope and acceptance checks.
-
-## Tasks
-
-- [ ] **T1** (`S1`, route: inline, commit: pending) — Deliverable behavior + tests + docs.
-- [ ] **T2** (`S2`, route: delegated writer — parallel unit A, commit: pending) — Deliverable behavior + tests + docs.
-
-## Log
-
-- **L1 (YYYY-MM-DD)**: <User's original request verbatim>
-```
 
 ---
 
 ## 🧭 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
-ODD provides the engineering discipline floor. While preserving non-negotiable invariants (security, `pnpm-only`, observed test evidence, and mandatory `Risk:` closure), agents may apply higher-leverage verification such as property-based testing or automated differential harnesses when annotated with `[Beyond-Baseline: <technical reason>]`.
+ODD provides the engineering discipline floor. While preserving non-negotiable invariants (security, `pnpm-only`, observed test evidence, and mandatory `Risk:` closure), agents may apply higher-leverage verification such as property-based testing, formal state-machine checks, or automated differential harnesses when annotated with `[Beyond-Baseline: <technical reason>]`.

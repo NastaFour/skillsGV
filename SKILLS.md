@@ -34,7 +34,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.2.0 Organic Driven Development… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.3.1 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
 | codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
@@ -71,7 +71,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | Skill | Path |
 |---|---|
 | architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Generates the canonical TRD.md (Technical Requirements Document): module archit… |
-| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.2.0… |
+| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.3.1… |
 | dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the Definition of Done (DoD) |
 | expert-debugger | [02-dev-roles/expert-debugger/SKILL.md](02-dev-roles/expert-debugger/SKILL.md) ← DEPRECATED. Use systematic-debugging instead. |
 | security-audit | [02-dev-roles/security-audit/SKILL.md](02-dev-roles/security-audit/SKILL.md) ← ECC-inspired security scanning workflow |
@@ -101,7 +101,7 @@ Catálogo de **237 skills** compatible con [agentskills.io](https://agentskills.
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
 | archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) ← Usala para crear diagramas Excalidraw, flujos y mapas de arquitectura visual té… |
-| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 4.0 |
+| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 5 |
 
 ## 03-ai-ml
 

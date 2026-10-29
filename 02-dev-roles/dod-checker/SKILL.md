@@ -42,6 +42,7 @@ When asked to evaluate if a task or feature is finished, execute these checks pr
 - **Token Policies**: Web clients must not store raw sensitive JWT access tokens in vulnerable `localStorage` without explicit threat-model justification.
 - **Mobile Storage**: Sensitive credentials on mobile must use hardware-backed encrypted storage (`expo-secure-store` / Keychain / Keystore), never plain `AsyncStorage`.
 - **Boundary Validation**: All external inputs (HTTP bodies/params, WebSocket `socket.on` payloads, webhook events, queue messages) must be validated with a schema (e.g., Zod).
+- **Pre-Release Live CVE & Lifecycle Audit (`live-cve-security-intel`)**: Before closing a project or release milestone, verify the stack's exact runtime/dependency versions against live CVEs/OSV advisories and audit worker/memory state cleanup on error/OOM paths (`../live-cve-security-intel/SKILL.md`).
 - **Floor, Not Ceiling (`[Beyond-Baseline]`)**: When an implementation intentionally departs from a baseline convention to achieve a superior technical or creative outcome, it must be documented with `[Beyond-Baseline: <reason>]` in the code, commit, or task log. Unexplained violations of security or architectural invariants cause an immediate **FAIL**.
 
 ---

@@ -2,15 +2,15 @@
 
 **When a final capture returns `status_continuation`, execute its operation and ordered argument tokens unchanged. Do not reconstruct lifecycle selectors from retained prose or transcript state.**
 
-The parent orchestrator coordinates one native transaction (Gentle-AI 4.2.0, Provider Contract `1.4.0`); reviewers, refuters, correction actors, and validators receive only their provider-issued role input. Prompt prose never creates authority or decides delivery.
+The parent orchestrator coordinates one native transaction (Gentle-AI 4.3.1, Provider Contract `1.5`); reviewers, refuters, correction actors, and validators receive only their provider-issued role input. Prompt prose never creates authority or decides delivery.
 
-## Entry rule & High-Risk Slice Isolation (Gentle-AI 4.2.0, Provider Contract `1.4.0`)
+## Entry rule & High-Risk Slice Isolation (Gentle-AI 4.3.1, Provider Contract `1.5`)
 
 Enter this lifecycle once per reviewable slice or isolated high-risk commit, after an authorized source-mutating implementation is complete and normalized and before reporting it complete, whenever the user-owned review switch is enabled (`gentle-ai review mode status` reads it without changing it). When the `gentle-ai` binary or review command is unavailable in the environment, or when the workspace resides on an unsupported SMB/UNC network path (`\\server\share`), report `receipt-driven development: unavailable` and continue under ordinary repository policy without failing. Before starting or committing any unit whose `Risk:` line names a High-Risk item (`1-6`), close and commit any pending `under_budget` slice first so the high-risk commit is assessed and reviewed alone. Run `gentle-ai review assess --json` (passing `--escalate-item <1-6> --escalate-reason "<reason>"` when High-Risk `1-6` applies; never escalate for writer model size/effort) and record the assessed tier/outcome (`passive`, `under_budget`, or `review_due`) per commit in `odd/tasks/<feature>.md`. Run the selectorless STATUS in step 1 and route only from its returned `next_transition`; the START consent envelope lets the human decide this candidate, so never skip the preflight because the user did not ask for a review. Skip it only for a trivial passive documentation-only edit, when the user explicitly left this candidate unreviewed, or while a transaction is already bound to it. A runtime that runs this preflight itself hands the agent the exact returned START tokens and never runs START.
 
 ## Atomic lifecycle
 
-1. **Preflight only.** Selectorless STATUS only preflights the current worktree candidate and returns one exact START invocation. It never discovers, resumes, recovers, or evaluates ambient authority from another lineage or worktree: `gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent opencode --next-transition`.
+1. **Preflight only.** Selectorless STATUS only preflights the current worktree candidate and returns one exact START invocation. It never discovers, resumes, recovers, or evaluates ambient authority from another lineage or worktree: `gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent opencode --next-transition` (supports `--request-context <file>` and `--target-evidence <value>` under Protocol `1.5`).
 
 2. **Freeze once.** Invoke only the returned START operation and its ordered tokens unchanged. START freezes one compact atomic transaction with an explicit lineage, worktree, and target binding. It ignores every other lineage and worktree. Capture the returned lineage, revision, and target tokens. An exact replay of an active START may return `replayed`; a genuinely new START is independent.
 
