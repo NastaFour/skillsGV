@@ -96,5 +96,7 @@ When a change carries high architectural or security blast radius, escalate to [
 
 - [`references/4r-framework.md`](references/4r-framework.md) — 4R checklist
 - [`references/review-policy.md`](references/review-policy.md) — Causal review policy
-- `_shared/review-ledger-contract.md` — Native Compact Review Orchestration (Gentle-AI 4.4.0, Provider Contract `1.5`)
-- `../rdd-defect-workflow/SKILL.md` — Receipt-Driven Development workflow
+- [Review Ledger Contract](../../_shared/review-ledger-contract.md) — Native Compact Review Orchestration (Gentle-AI 4.4.0, Provider Contract `1.5`)
+- [`../rdd-defect-workflow/SKILL.md`](../rdd-defect-workflow/SKILL.md) — Receipt-Driven Development workflow
+- [`../../06-code-quality/app-resource-efficiency/SKILL.md`](../../06-code-quality/app-resource-efficiency/SKILL.md) — CPU, RAM, GPU, I/O backpressure & LLM token budgets
+- [`../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md`](../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md) — Surgical diffs, YAGNI & anti-overengineering guards
