@@ -1,8 +1,8 @@
 ---
 name: gentle-ai-review-4r
-description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.5. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 4.3.1. Do NOT use for informal prose proofreading or non-code document editing."
+description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.5. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 4.4.0. Do NOT use for informal prose proofreading or non-code document editing."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+ (Provider Contract 1.5), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
+compatibility: "Compatible with Gentle-AI 4.4.0+ (Provider Contract 1.5), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
 allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 metadata:
   trigger: ["gentle-ai review", "4R lenses", "review assess", "review_due", "under_budget", "lentes 4R", "revision proporcional", "provider contract 1.5"]
@@ -13,14 +13,14 @@ metadata:
 
 # 🛡️ Gentle-AI Review 4R — Proportionate Native Review & RDD Facade
 
-Operational guide for the **Gentle-AI 4.3.1** native review facade (`gentle-ai review`, Provider Contract `1.5`). Replaces rigid line-count review gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, `--request-context` / `--target-evidence` binding, and cryptographically bound receipt lineage when Receipt-Driven Development (RDD) is enabled.
+Operational guide for the **Gentle-AI 4.4.0** native review facade (`gentle-ai review`, Provider Contract `1.5`). Replaces rigid line-count review gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, `--request-context` / `--target-evidence` binding, and cryptographically bound receipt lineage when Receipt-Driven Development (RDD) is enabled.
 
 ---
 
-## 🚫 Core Invariants (Gentle-AI 4.3.1 / Contract 1.5)
+## 🚫 Core Invariants (Gentle-AI 4.4.0 / Contract 1.5)
 
 1. **OPT-IN USER AUTHORITY & GRACEFUL FALLBACK**: RDD mode is strictly user-owned (`gentle-ai review mode enable --scope global`). Never enable or disable RDD autonomously. When `gentle-ai review mode status` reports disabled, operate under ordinary repository policy (`disabled/unmanaged`). When the `gentle-ai` binary is absent or the repository is on an unsupported SMB/UNC network path (`\\server\share`), report `receipt-driven development: unavailable` and continue under ordinary repository policy.
-2. **HIGH-RISK ONLY `review_due`**: In Gentle-AI 4.3.1, `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk (`items 1..6`). A medium-risk candidate reports `under_budget` regardless of authored line count.
+2. **HIGH-RISK ONLY `review_due`**: In Gentle-AI 4.4.0, `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk (`items 1..6`). A medium-risk candidate reports `under_budget` regardless of authored line count.
 3. **ISOLATED HIGH-RISK SLICES**: Before committing a unit whose `Risk:` line names any High-Risk Item (`1..6`), **close and review any pending `under_budget` slice first**, then give the high-risk unit its own isolated commit and review cycle.
 4. **NO SMALL-MODEL VERIFIER BIAS**: Independent verification is triggered strictly by high-risk classification (`--escalate-item <1-6> --escalate-reason "<why>"`), never because a smaller or faster model authored the change.
 5. **SINGLE BOUNDED CORRECTION TRANSACTION**: When a review reports actionable defects, forecast correction size with `capture-correction-plan --correction-lines <N>` (`N > 0`) **before** editing source files.
@@ -102,9 +102,9 @@ Every code change must close with `Risk: item N (<reason>)` or `Risk: none`. Any
 
 ---
 
-## ⚖️ Before & After: Legacy Gate vs Gentle-AI 4.3.1 4R Review
+## ⚖️ Before & After: Legacy Gate vs Gentle-AI 4.4.0 4R Review
 
-| ❌ Legacy / Dogmatic Review | ✅ Gentle-AI 4.3.1 Proportionate 4R Review |
+| ❌ Legacy / Dogmatic Review | ✅ Gentle-AI 4.4.0 Proportionate 4R Review |
 |---|---|
 | Forces full 4-lens review on a 180-line low-risk docs/test update | `review assess` reports `under_budget`; zero unnecessary subagent overhead |
 | Mixes a 300-line routine refactor with a 40-line auth guard change in one commit | Closes the `under_budget` refactor slice first; isolates the Item 2 auth change in its own commit with `--lenses R1,R3` |

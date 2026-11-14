@@ -31,6 +31,7 @@ import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
 import { findProjectRoot, getTurnCachePath } from "../../../_shared/script-utils.mjs";
 import { parseFrontmatter, getField, getNestedField, parseList } from "../../../_shared/frontmatter.mjs";
+import { walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -159,18 +160,12 @@ function statSafe(p) { try { return statSync(p); } catch { return null; } }
 // DeepSeek Harness addon that vendors a duplicate copy of the catalog under
 // gentle-ai-dsh/skills/; _shared holds shared resources, not skills. The main
 // catalog is the single source of truth for the index, cache, and registry.
-const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
-
-function walkSkills(dir, out = []) {
-  const stat = statSafe(dir); if (!stat) return out;
+function walkSkills(dir) {
+  const stat = statSafe(dir);
+  if (!stat) return [];
   if (stat.isFile() && basename(dir) === "SKILL.md") return [dir];
-  if (!stat.isDirectory()) return out;
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
-    if (e.isDirectory()) walkSkills(join(dir, e.name), out);
-    else if (e.isFile() && e.name === "SKILL.md") out.push(join(dir, e.name));
-  }
-  return out;
+  if (!stat.isDirectory()) return [];
+  return walkSkillPaths(dir).map((rel) => join(dir, rel));
 }
 
 function getMetadataScope(fm) {

@@ -25,6 +25,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { walkSkillPaths } from "../_shared/catalog-manifest.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -98,19 +99,8 @@ function readDirSafe(dir) {
 
 /** Directories containing SKILL.md are skills. Docs and excluded dirs never count. */
 export function collectCatalogSkills(root) {
-  const out = [];
-  const walk = (dir) => {
-    for (const e of readDirSafe(dir)) {
-      if (e.isDirectory()) {
-        if (isExcluded(e.name)) continue;
-        walk(join(dir, e.name));
-      } else if (e.isFile() && e.name === "SKILL.md") {
-        out.push(dir);
-      }
-    }
-  };
-  if (existsSync(root)) walk(root);
-  return out;
+  if (!existsSync(root)) return [];
+  return walkSkillPaths(root).map((rel) => dirname(join(root, rel)));
 }
 
 function loadManifest(path) {

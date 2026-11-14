@@ -30,6 +30,7 @@ import {
   getNestedField,
   parseList as parseListValue,
 } from "../../../_shared/frontmatter.mjs";
+import { walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -164,30 +165,24 @@ export const DOCTOR_COMMAND_TABLE = [
 ];
 
 function walkSkillFiles(dir) {
-  const out = [];
-  try {
-    for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
-      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
-      const full = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        out.push(...walkSkillFiles(full));
-      } else if (entry.isFile() && entry.name === "SKILL.md") {
-        out.push(full);
-      }
-    }
-  } catch {}
-  return out;
+  return walkSkillPaths(dir).map((rel) => join(dir, rel));
+}
+
+function isSkippedCatalogTreeDir(name) {
+  if (EXCLUDED_DIR_NAMES.has(name) || name.startsWith("copia-de-seguridad")) return true;
+  if (name.startsWith(".") && !CATALOG_OWNED_DOTDIRS.has(name)) return true;
+  return false;
 }
 
 /**
  * Walks every file (not only SKILL.md) for the catalog-wide suffix index used
- * as the last resolution step. Same deterministic order and exclusions as
- * walkSkillFiles.
+ * as the last resolution step, preserving `.github/` and `.atl/` owned dotdirs
+ * while skipping local workspaces (`Anti rats/`) and agent dotdirs.
  */
 function walkCatalogFiles(dir, out = []) {
   try {
     for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
-      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
+      if (isSkippedCatalogTreeDir(entry.name)) continue;
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
         walkCatalogFiles(full, out);
@@ -206,7 +201,7 @@ function walkMarkdownFiles(dir) {
   const out = [];
   try {
     for (const entry of readdirSync(dir, { withFileTypes: true }).sort(byEntryName)) {
-      if (EXCLUDED_DIR_NAMES.has(entry.name)) continue;
+      if (isSkippedCatalogTreeDir(entry.name)) continue;
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
         out.push(...walkMarkdownFiles(full));
@@ -323,8 +318,8 @@ export function checkMcpParity(root) {
   };
 }
 
-const REFERENCE_EXTENSIONS = "(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)";
-const REFERENCE_FILE_RE = /\.(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|png|svg|css)\b/i;
+const REFERENCE_EXTENSIONS = "(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|py|png|svg|css)";
+const REFERENCE_FILE_RE = /\.(?:md|mjs|cjs|js|jsx|ts|tsx|json|yaml|yml|toml|sh|cmd|ps1|py|png|svg|css)\b/i;
 const SKILL_LINK_RE = /\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g;
 const INLINE_CODE_SPAN_RE = /`([^`\n]+)`/g;
 const CODE_PATH_RE = new RegExp(
@@ -344,7 +339,7 @@ const SKILL_LOCAL_PREFIXES = ["references/", "scripts/", "assets/", "docs/"];
  * Directories excluded from every catalog walk: VCS metadata, dependencies,
  * the vendored addon mirror, and shared non-skill resources.
  */
-const EXCLUDED_DIR_NAMES = new Set([".git", "node_modules", "gentle-ai-dsh", "_shared"]);
+const EXCLUDED_DIR_NAMES = new Set([".git", "node_modules", "gentle-ai-dsh", "_shared", "Anti rats"]);
 
 /**
  * Dot-directories owned by this catalog (validated like any other path).

@@ -1,6 +1,6 @@
 ---
 name: rdd-defect-workflow
-description: "Trigger: RDD, receipt-driven development, review authority, receipt/lineage, correction/recovery, delivery gate/kill switch, bounded review defects. Guide work under Gentle-AI 4.3.1 and Provider Contract 1.5."
+description: "Trigger: RDD, receipt-driven development, review authority, receipt/lineage, correction/recovery, delivery gate/kill switch, bounded review defects. Guide work under Gentle-AI 4.4.0 and Provider Contract 1.5."
 allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 license: Apache-2.0
 metadata:
@@ -24,7 +24,7 @@ This skill guides public collaboration. It does not grant issue approval, label,
 - Check the user-owned RDD kill switch first (`gentle-ai review mode status`; activation is only `gentle-ai review mode enable --scope global`). When disabled, report `disabled/unmanaged`; when the binary is absent, report `receipt-driven development: unavailable`.
 - Require an approved issue (`status:approved`) and clean current `main` reproduction before implementation. Audit existing PRs for supersession or conflict; stop or narrow stale claims.
 - Group by causal authority invariant. Use one issue and one PR or explicit chain per independent invariant and rollback boundary. Split independent causes; never merge a superseded or conflicting authority line.
-- **High-Risk Commit Isolation (Gentle-AI 4.3.1)**: Close and commit any pending `under_budget` slice before starting or committing a High-Risk unit (`Risk: item 1-6`) so the high-risk commit is assessed and reviewed alone.
+- **High-Risk Commit Isolation (Gentle-AI 4.4.0)**: Close and commit any pending `under_budget` slice before starting or committing a High-Risk unit (`Risk: item 1-6`) so the high-risk commit is assessed and reviewed alone.
 - **No Small-Model Verifier Bias**: Independent verification and review escalation run ONLY when a High-Risk item (`1-6`) holds via `--escalate-item <1-6> --escalate-reason "<reason>"`, never merely because a writer used a smaller/cheaper model or lower effort tier.
 - Inventory every operator flow claimed by the issue or PR, including entry, mode, environment, expectation, and negative controls. Require one truthful black-box bench journey per CLI or lifecycle flow, or actual runtime E2E proof when the core bench cannot represent it. Synthetic proxy coverage never proves another runtime.
 - Use CodeGraph-first impact mapping, a dedicated worktree, and behavior-first tests. Run source-mutating normalization before candidate freeze.
@@ -32,9 +32,9 @@ This skill guides public collaboration. It does not grant issue approval, label,
 - Only when RDD is enabled, bind lineage, correction, recovery, and acknowledgement to the exact candidate: run the selectorless STATUS preflight (`gentle-ai review status --contract gentle-ai.review-integration/v2 --next-transition`) before continuing, route only from its returned `next_transition`, never re-review an already-acknowledged target (`target_already_acknowledged`), and never open a new review budget outside a native action. Only the exact acknowledgement burns authority (`gentle-ai.review-acknowledged/v1`); delivery gates never decide delivery. Keep bounded review defects in one correction transaction.
 - Require independent read-only candidate validation before publication when escalated. Validation cannot edit source or authority; findings require a new candidate.
 
-## ODD Integration Points (Gentle-AI 4.3.1, Provider Contract `1.5`)
+## ODD Integration Points (Gentle-AI 4.4.0, Provider Contract `1.5`)
 
-The catalog integrates with the native review lifecycle for each candidate slice; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, Gentle-AI 4.3.1, Provider Contract `1.5`). Under 4.3.1 the review is proportionate: `review assess` reports `review_due: true` only for High-Risk candidates (`items 1-6`, or explicit `--escalate-item <1-6> --escalate-reason`), while medium/low candidates report `under_budget` or `passive`. When `review_due` holds, the agent selects the fitting 4R lenses at START via `--lenses <r,...> --lenses-reason <text>` (and may bind `--request-context <file>` / `--target-evidence <value>`):
+The catalog integrates with the native review lifecycle for each candidate slice; the full lifecycle contract is `_shared/review-ledger-contract.md` (Native Compact Review Orchestration, Gentle-AI 4.4.0, Provider Contract `1.5`). Under 4.4.0 the review is proportionate: `review assess` reports `review_due: true` only for High-Risk candidates (`items 1-6`, or explicit `--escalate-item <1-6> --escalate-reason`), while medium/low candidates report `under_budget` or `passive`. When `review_due` holds, the agent selects the fitting 4R lenses at START via `--lenses <r,...> --lenses-reason <text>` (and may bind `--request-context <file>` / `--target-evidence <value>`):
 
 1. **Close pending `under_budget` slice before High-Risk**: If an `under_budget` slice is open when a High-Risk (`1-6`) change is ready, commit the `under_budget` slice first so the high-risk unit gets its own isolated commit and isolated review transaction.
 2. **Per work-unit slice or isolated high-risk commit**: At commit closure on the feature branch, run `gentle-ai review assess --json` (recording the assessed tier and outcome per commit in `odd/tasks/<feature>.md`) and the selectorless STATUS preflight over the candidate diff, routing only from the returned `next_transition`.
@@ -76,6 +76,6 @@ Return `rdd_mode`, `provider_contract` (`1.5`), `assessed_tier_outcome`, `risk_l
 
 ## References
 
-- `_shared/review-ledger-contract.md` — full native receipt contract (Gentle-AI 4.3.1, Provider Contract `1.5`).
+- `_shared/review-ledger-contract.md` — full native receipt contract (Gentle-AI 4.4.0, Provider Contract `1.5`).
 - `_shared/sdd-phase-common.md` (section G) — catalog-side RDD integration contract.
 - `00-meta-skills/harness-map.md` — harness extension points (RDD active positions and lens mapping).

@@ -2,7 +2,7 @@
 name: rag-knowledge-systems
 description: "Trigger: rag, retrieval augmented generation, vector search, hybrid search, chunking strategy, reranking, graphrag, knowledge base, embeddings pipeline. Use when designing or optimizing RAG pipelines, document chunking, hybrid BM25 + dense vector retrieval, reciprocal rank fusion (RRF), cross-encoder reranking, citation grounding, or GraphRAG. Do NOT use for model weight fine-tuning or basic non-retrieval chat."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, pgvector, Qdrant, Pinecone, Milvus, Vercel AI SDK, LangChain/LlamaIndex. Requires Node 20+ or Python 3.11+."
+compatibility: "Compatible with Gentle-AI 4.4.0+, pgvector, Qdrant, Pinecone, Milvus, Vercel AI SDK, LangChain/LlamaIndex. Requires Node 20+ or Python 3.11+."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
   trigger: ["rag", "retrieval augmented generation", "knowledge systems", "hybrid search", "chunking strategy", "reranking", "graphrag", "pgvector", "vector database", "busqueda hibrida"]

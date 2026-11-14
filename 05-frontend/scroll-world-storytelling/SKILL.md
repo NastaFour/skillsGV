@@ -2,7 +2,7 @@
 name: scroll-world-storytelling
 description: "Trigger: scroll world, scroll storytelling, scrollytelling, scroll-scrubbed, 3d diorama, apple scroll effect, design-to-motion, canvas frame sequence. Use when building immersive scroll-driven landing pages, product showcases, 3D/WebGL camera fly-throughs, canvas frame scrubbers, or CSS scroll-driven animations. Do NOT use for dense CRUD forms or back-office admin tables."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, React 19, Next.js, Astro, Three.js/R3F, GSAP/Motion, CSS Scroll-Driven Animations. Requires pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.4.0+, React 19, Next.js, Astro, Three.js/R3F, GSAP/Motion, CSS Scroll-Driven Animations. Requires pnpm 9+."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
   trigger: ["scroll world", "scroll storytelling", "scrollytelling", "scroll-scrubbed", "3d diorama", "apple scroll", "design to motion", "canvas sequence", "animacion por scroll"]

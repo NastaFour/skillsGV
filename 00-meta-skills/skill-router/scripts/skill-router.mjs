@@ -25,6 +25,7 @@ import { fileURLToPath } from "node:url";
 import { validateRouterOutput } from "./validate-output.mjs";
 import { parseFrontmatter, getField, getNestedField, parseTriggers } from "../../../_shared/frontmatter.mjs";
 import { getTurnCachePath } from "../../../_shared/script-utils.mjs";
+import { walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,18 +41,12 @@ function statSafe(p) { try { return statSync(p); } catch { return null; } }
 // DeepSeek Harness addon that vendors a duplicate copy of the catalog under
 // gentle-ai-dsh/skills/; _shared holds shared resources, not skills. Walking
 // the bundle made every skill score twice and duplicated "secondary" entries.
-const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
-
-function walkSkills(dir, out = []) {
-  const stat = statSafe(dir); if (!stat) return out;
+function walkSkills(dir) {
+  const stat = statSafe(dir);
+  if (!stat) return [];
   if (stat.isFile() && basename(dir) === "SKILL.md") return [dir];
-  if (!stat.isDirectory()) return out;
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
-    if (e.isDirectory()) walkSkills(join(dir, e.name), out);
-    else if (e.isFile() && e.name === "SKILL.md") out.push(join(dir, e.name));
-  }
-  return out;
+  if (!stat.isDirectory()) return [];
+  return walkSkillPaths(dir).map((rel) => join(dir, rel));
 }
 
 const getTriggerArray = parseTriggers;

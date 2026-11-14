@@ -1,6 +1,6 @@
 ---
 name: odd-workflow
-description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.3.1 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.4.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
 trigger: ["odd workflow", "organic driven development", "flujo odd", "implementar feature multi archivo", "iniciar feature", "trabajo sustancial", "odd task"]
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
@@ -9,9 +9,9 @@ metadata:
   version: "1.3.0"
 ---
 
-# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.3.1)
+# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.4.0)
 
-The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.3.1 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
+The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.4.0 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
 
 ---
 
@@ -25,7 +25,7 @@ The universal, disciplined protocol for software delivery across AI agents. Comb
 
 ---
 
-## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.3.1)
+## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.4.0)
 
 ```mermaid
 flowchart TD
@@ -67,7 +67,7 @@ High risk means a mistake is hard to detect, hard to undo, or reaches beyond the
 
 **Mandatory closure**: Every code change MUST close with `Risk: item N (reason)` or `Risk: none`. Before writing `Risk: none`, check whether the diff touches code used by existing behavior the request did not mention (shared options, parsers, helpers); if so, declare `Risk: item 3 (...)`.
 
-### Delegation Triggers (Gentle-AI 4.3.1)
+### Delegation Triggers (Gentle-AI 4.4.0)
 
 You orchestrate and work inline by default, following your logbook. **A Delegation Trigger holds only when its condition truly holds; none holds by default.**
 

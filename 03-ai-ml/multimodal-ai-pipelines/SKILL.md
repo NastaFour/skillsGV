@@ -2,7 +2,7 @@
 name: multimodal-ai-pipelines
 description: "Trigger: multimodal ai, vision pipeline, document ocr, audio transcription, video understanding, spatial grounding, cross-modal schema. Use when building applications that process images, PDFs, screenshots, audio streams, or video alongside text using modern multimodal LLMs (Gemini, Claude, GPT-4o) with structured Zod outputs. Do NOT use for text-only chat or static CSS styling."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, Google GenAI SDK (@google/genai), Vercel AI SDK, OpenAI/Anthropic SDKs. Requires Node 20+ and pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.4.0+, Google GenAI SDK (@google/genai), Vercel AI SDK, OpenAI/Anthropic SDKs. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
   trigger: ["multimodal ai", "vision pipeline", "document ocr", "spatial grounding", "video understanding", "audio pipeline", "cross-modal", "procesamiento multimodal", "ocr estructurado"]
