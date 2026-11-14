@@ -25,7 +25,7 @@ El motor defensivo de `prompt-shield` neutraliza el *Indirect Prompt Injection* 
 
 ## 2. Pipeline de Desofuscación Universal y Traducción Canónica
 
-Para impedir que un atacante eluda las firmas léxicas mediante cambios de alfabeto, cifrados simétricos simples o fragmentación en código fuente, `scripts/safe_read.py` aplica las siguientes transformaciones deterministas según el dial `DECODE_DEPTH`:
+Para impedir que un atacante eluda las firmas léxicas mediante cambios de alfabeto, cifrados simétricos simples o fragmentación en código fuente, [`../scripts/safe_read.py`](../scripts/safe_read.py) aplica las siguientes transformaciones deterministas según el dial `DECODE_DEPTH`:
 
 | Capa de Transformación | Mecanismo de Evasión Neutralizado | Nivel `DECODE_DEPTH` Mínimo |
 |---|---|---|
@@ -118,6 +118,6 @@ Al ejecutar `/prompt-shield audit <ruta_repositorio>`, el agente aplica priorida
 Para impedir que vectores de *Indirect Prompt Injection* ingresen a la rama principal de un repositorio antes de que un agente de código los lea:
 
 1. **Pre-Commit / Post-Checkout Hook Local:**
-   Configurar la ejecución automática de `python skills/prompt-shield/scripts/safe_read.py . --paranoia 9` tras clonar o actualizar submódulos de terceros.
+   Configurar la ejecución automática de `python 03-ai-ml/prompt-shield/scripts/safe_read.py . --paranoia 9` tras clonar o actualizar submódulos de terceros.
 2. **Gate Determinista en Pull Requests (GitHub Actions / GitLab CI):**
    Todo paso de CI que ejecute `safe_read.py` fallará de forma determinista cuando el proceso devuelva el código de salida `3`, adjuntando el JSON forense con las coordenadas exactas de archivo, línea, columna, offset de bytes y hash `SHA-256`.

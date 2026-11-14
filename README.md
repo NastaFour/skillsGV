@@ -1,11 +1,11 @@
 # skillsGV
 
 [![CI](https://github.com/NastaFour/skillsGV/actions/workflows/ci.yml/badge.svg)](https://github.com/NastaFour/skillsGV/actions)
-[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](package.json)
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-246-purple.svg)](#categories)
+[![Skills Count](https://img.shields.io/badge/skills-251-purple.svg)](#categories)
 [![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.4.0)-brightgreen.svg)](#organic-driven-development)
 
 > **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
@@ -22,7 +22,7 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **246 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- 🎯 **251 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
 - 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.4.0)**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) on feature branch → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
@@ -178,17 +178,17 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **246 skills** distributed across structured domains:
+The catalog contains **251 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|
 | **Meta-Skills** | `00-meta-skills/` | `skill-router`, `skill-validator`, `skill-loader`, `skill-creator`, `agent-roster`, `odd-workflow` |
-| **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr` |
+| **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr`, `egm-spec-review` |
 | **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `live-cve-security-intel`, `dod-checker` |
-| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-engineering` |
+| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-shield`, `prompt-engineering` |
 | **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `distributed-resilience-sre`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
-| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
-| **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
+| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
+| **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `karpathy-ponytail-simplicity`, `app-resource-efficiency`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
 | **Testing** | `07-testing/` | `testing-patterns` (TDD RED/GREEN), `playwright`, `pytest`, `go-testing` |
 | **DevOps** | `08-devops/` | `ci-cd`, `observability`, `monitoring`, `kill-switches`, `store-deployment-eas` |
 | **Media & Graphics** | `09-media-graphics/` | `nano-banana`, `banana-claude` |

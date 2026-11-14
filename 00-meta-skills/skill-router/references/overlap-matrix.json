@@ -52,8 +52,8 @@
     {
       "id": "anti-slop-frontend",
       "canonical": "design-driven",
-      "members": ["design-driven", "taste-skill", "impeccable", "hallmark-design-study"],
-      "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. Si las 4 puntúan, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
+      "members": ["design-driven", "taste-skill", "impeccable", "hallmark-design-study", "ai-design-check-stageshow"],
+      "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. hallmark-design-study analiza referencias/estilos y ai-design-check-stageshow ejecuta previews HTML5 pre-build + auditoría visual de superficie. Si puntúan juntas, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
     },
     {
       "id": "pull-request-workflow",
@@ -100,8 +100,26 @@
     {
       "id": "security-defense-suite",
       "canonical": "security-audit",
-      "members": ["security-audit", "live-cve-security-intel", "ai-safety-agent-guard", "supply-chain-runtime-security", "production-readiness-250"],
-      "note": "security-audit es el auditor AppSec general canónico (OWASP/VBSec); live-cve-security-intel audita CVEs recientes en vivo, ciclo de vida OOM/worker y Trail of Bits fp-check; ai-safety-agent-guard protege agentes/LLMs contra prompt injection y comandos destructivos; supply-chain-runtime-security cubre pnpm y MCP sandboxing; production-readiness-250 cubre la auditoría de 250 puntos de precisión, compliance y producción. Si puntúan juntas en una consulta general, gana security-audit y las especializadas quedan secondary/tier1toLoad."
+      "members": ["security-audit", "live-cve-security-intel", "ai-safety-agent-guard", "supply-chain-runtime-security", "production-readiness-250", "prompt-shield"],
+      "note": "security-audit es el auditor AppSec general canónico (OWASP/VBSec + bug-hunter/defending-code); live-cve-security-intel audita CVEs recientes en vivo, ciclo de vida OOM/worker y Trail of Bits fp-check; ai-safety-agent-guard protege agentes/LLMs contra comandos destructivos; prompt-shield ejecuta cuarentena determinista read-only y desofuscación (safe_read.py) ante indirect prompt injection; supply-chain-runtime-security cubre pnpm y MCP sandboxing; production-readiness-250 cubre la auditoría de 250 puntos de precisión, compliance y producción. Si puntúan juntas en una consulta general, gana security-audit y las especializadas quedan secondary/tier1toLoad."
+    },
+    {
+      "id": "code-simplicity-efficiency",
+      "canonical": "solid-clean-code",
+      "members": ["solid-clean-code", "karpathy-ponytail-simplicity", "app-resource-efficiency"],
+      "note": "solid-clean-code es el estándar arquitectónico canónico (SOLID/DRY/KISS/Vertical Slice); karpathy-ponytail-simplicity impone diffs quirúrgicos anti-overengineering y prosa concisa; app-resource-efficiency optimiza cuellos medidos de CPU/RAM/GPU/IO y presupuesto de tokens. En consultas arquitectónicas generales gana solid-clean-code; los triggers específicos enrutan a la skill especializada."
+    },
+    {
+      "id": "spec-ideation-review",
+      "canonical": "egm-spec-review",
+      "members": ["egm-spec-review", "idea-to-prd-express", "decision-gate"],
+      "note": "egm-spec-review coordina specs con Elephant y críticos Goldfish sin contexto previo antes de codificar; idea-to-prd-express sintetiza PRD.md exprés en 20 min; decision-gate evalúa trade-offs rápidos con matrices binarias/scoring. Distinto de ideation-interview (brainstorming Socrático inicial)."
+    },
+    {
+      "id": "motion-animation-pipeline",
+      "canonical": "motion-framer",
+      "members": ["motion-framer", "motion-gsap", "web-animation-sources", "motion-video-pipeline"],
+      "note": "motion-framer es el motor canónico de animación UI React/Expo (spring/layout/gestures); motion-gsap cubre timelines SVG/ScrollTrigger complejos; web-animation-sources provee inspiración y fuentes Motion Studio; motion-video-pipeline orquesta exportación a video MP4/WebM/Remotion/FFmpeg (cubierto también por el grupo unitario hybrid-motion-video)."
     }
   ]
 }

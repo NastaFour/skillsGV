@@ -211,7 +211,7 @@ function buildIndex(cache, root = CATALOG_ROOT) {
       const fm = parseFrontmatter(content);
       if (!fm) continue;
       name = getField(fm, "name") || basename(dirname(f));
-      desc = getField(fm, "description") || "";
+      desc = (getField(fm, "description") || "").replace(/\s+/g, " ").trim();
       scope = getMetadataScope(fm);
       cache.files[rel] = { mtime, name, desc, scope };
     }
@@ -456,7 +456,8 @@ function modeEmitRegistry() {
           `Absolute path detected in registry entry "${s.name}": "${path}". All registry paths must be repo-relative.`
         );
       }
-      lines.push(`| \`${s.name}\` | ${s.desc} | \`${s.scope}\` | \`${path}\` |`);
+      const desc = (s.desc || "").replace(/\s+/g, " ").trim();
+      lines.push(`| \`${s.name}\` | ${desc} | \`${s.scope}\` | \`${path}\` |`);
     }
     lines.push("");
   }

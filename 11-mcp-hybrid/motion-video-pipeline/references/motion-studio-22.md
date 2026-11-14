@@ -9,7 +9,7 @@ Curated 22-repository reference stack indexed for [`SKILL.md`](../SKILL.md) and 
 3. **`3b1b/manim`** (`https://github.com/3b1b/manim`) — Original Python mathematical & technical diagram explanatory engine (`ManimGL`).
 4. **`ManimCommunity/manim`** (`https://github.com/ManimCommunity/manim`) — Community-maintained Python deterministic explainer engine for formulas, graphs, and vector reveals.
 5. **`theatre-js/theatre`** (`https://github.com/theatre-js/theatre`) — High-precision keyframe curve editor & animation state sheet for React, Three.js, and DOM pipelines.
-6. **`tweenjs/tween.js`** (`https://github.com/tweenjs/tween.js`) — Lightweight deterministic numeric interpolation engine for scripted frame steppers.
+6. [**tweenjs/tween.js**](https://github.com/tweenjs/tween.js) — Lightweight deterministic numeric interpolation engine for scripted frame steppers.
 
 ## Tier B — Web UI, Scroll & Vector Choreography (6 Repos)
 
@@ -22,7 +22,7 @@ Curated 22-repository reference stack indexed for [`SKILL.md`](../SKILL.md) and 
 
 ## Tier C — 3D WebGL, Shaders & Spatial Scene Pipelines (5 Repos)
 
-13. **`mrdoob/three.js`** (`https://github.com/mrdoob/three.js`) — Core WebGL/WebGPU scene graph, PBR materials, lights, and custom shader passes.
+13. [**mrdoob/three.js**](https://github.com/mrdoob/three.js) — Core WebGL/WebGPU scene graph, PBR materials, lights, and custom shader passes.
 14. **`pmndrs/react-three-fiber`** (`https://github.com/pmndrs/react-three-fiber`) — Declarative React reconciler over Three.js with deterministic frame-loop scheduling.
 15. **`pmndrs/drei`** (`https://github.com/pmndrs/drei`) — Battle-tested camera rigs, shaders, environment maps, and HTML portals for R3F.
 16. **`pmndrs/postprocessing`** (`https://github.com/pmndrs/postprocessing`) — Merged-pass bloom, chromatic aberration, DOF, and tone-mapping compositor.

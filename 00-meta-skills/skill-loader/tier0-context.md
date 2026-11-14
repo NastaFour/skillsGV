@@ -1,26 +1,26 @@
 ## odd-workflow
-Use when executing substantial features or multi-step development in harnesses without native gentle-ai. Governs Organic Driven Development (ODD): authorize, explore, clarify, track before first write in odd/tasks/<feature>.md, implement task-by-task with work-unit commits, and close with verified evidence. Do NOT use when gentle-ai is already active in the system prompt.
+Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.4.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt.
 
 ## skill-router
-Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 246 skills to 3-5.
+Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 251 skills to 3-5.
 
 ## skill-loader
-Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (9 always-on skills) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the "route first" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body.
+Tier 0/1 enforcement for the skills catalog. Caches skill frontmatter with mtime, emits tier0-context.json (9 always-on skills) on first run, and per-turn emits tier1-instructions.txt with ONLY the bodies of skills the router selected via tier1toLoad[]. Enforces the \"route first\" rule: a skill outside the current tier1toLoad must be re-routed before being read. Use at agent boot to bootstrap tier-0 context, and at every turn before reading another skill's body.
 
 ## skill-validator
 Validates that all SKILL.md files in the catalog comply with the agentskills.io specification. Checks name constraints, description length, frontmatter structure, and folder-name matching. Exits non-zero on any failure. Use in pre-commit hooks, CI pipelines, or before publishing a skill catalog.
 
 ## testing-patterns
-Unit, integration, and E2E testing patterns for the ecosystem. Use when writing tests with Vitest, Supertest, or React Native Testing Library. Do not use for load testing, pentesting, or security audits.
+Unit, integration, and E2E testing patterns for fullstack apps — fast deterministic unit tests vs ephemeral-database integration tests (PGlite, Testcontainers, SQLite in-memory). Use when writing tests with Vitest, Supertest, or React Testing Library. Do NOT use for penetration testing or security audits.
 
 ## code-reviewer
-Conduct a rigorous, professional-grade code review (Pull Request simulation) on new code. Enforces security guardrails, audits SOLID/DRY/KISS, and integrates ECC verification loops (checkpoint vs continuous evals). Use before committing, before PR creation, or during feature verification.
+Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.4.0 proportionate review rules (Provider Contract 1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass.
 
 ## engram-integration
 Persistent cross-session memory for AI coding agents via the Engram binary — one-liner setup (engram setup <agent>), 20 MCP tools (mem_save/mem_search/mem_judge...), SQLite+FTS5, git sync, optional cloud. Use when an agent should remember decisions and bugs across sessions instead of starting over.
 
 ## dod-checker
-Act as the strict Gatekeeper for the "Definition of Done" (DoD). Run this skill to evaluate a feature or task. Blocks checkoffs if SOLID, DRY, or 2026 security guardrails are bypassed.
+Act as the strict Gatekeeper for the Definition of Done (DoD). Use when evaluating whether a feature or task is ready to close. Blocks checkoffs if SOLID, DRY, architectural proportionality, or 2026 security guardrails are bypassed. Do not use for initial feature planning.
 
 ## decision-gate
 Decision-support system that compresses the human's last-20% judgment from 30 min to 3 min. Presents trade-offs as an ordered matrix, surfaces conflicts with prior decisions (via Engram), offers safe defaults to override, and records the decision + reasoning in Engram. Use when judgment-day or a PRD leaves a decision the human must make and you want it fast, well-informed, and traceable.
