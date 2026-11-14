@@ -2,7 +2,7 @@
 
 > **Documentación en Español** — Para la versión en inglés ver [`README.md`](README.md).
 
-Catálogo multi-agente de **251 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), alineado al flujo ODD (Organic-Driven Development) de Gentle-AI 4.4.0: fallback `odd-workflow`, routing determinista por turno (`skill-router` con matriz de overlap), revisión adversarial ciega con dos jueces (`judgment-day`), memoria persistente entre sesiones vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Corey Haines](https://coreyhaines.com/) (Conversion Factory), [Donald Miller](https://storybrand.com/) (StoryBrand), [Adam Wathan & Steve Schoger](https://www.refactoringui.com/) (Refactoring UI), [Emil Kowalski](https://animations.dev/) (animations.dev), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) (Hermes) y [obra `superpowers`](https://github.com/obra/superpowers).
+Catálogo multi-agente de **251 skills** conforme a la especificación de [agentskills.io](https://agentskills.io/specification), alineado al flujo ODD (Organic-Driven Development) de Gentle-AI 4.4.0 (`Provider Contract 1.5`) con **Auto-EGM Plan Gate** para planes grandes y alta lógica, ahorro de **`~41,500 tokens`** frente a stubs legados, fallback `odd-workflow`, routing determinista por turno (`skill-router` con matriz de overlap de 20 grupos), revisión adversarial ciega con dos jueces (`judgment-day`), cuarentena `prompt-shield` ([`safe_read.py`](03-ai-ml/prompt-shield/scripts/safe_read.py)), memoria persistente vía Engram y validación mecánica del catálogo (`validate-skills.mjs --strict`). Incluye metodologías y frameworks adaptados de [Gentleman Programming](https://github.com/Gentleman-Programming), [Google `elephant-goldfish-model`](https://github.com/google/elephant-goldfish-model), [NastaFour `prompt-shield`](https://github.com/NastaFour/prompt-shield), [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [Matt Pocock](https://github.com/mattpocock), [Together AI `Hallmark`](https://github.com/togethercomputer), [`@enmera/ai-design-check`](https://www.npmjs.com/package/@enmera/ai-design-check), [benjitaylor/skills `Stageshow`](https://github.com/benjitaylor/skills), [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT), [Andrej Karpathy](https://github.com/karpathy), [Addy Osmani](https://github.com/addyosmani), [msitarzewski/agency-agents](https://github.com/msitarzewski/agency-agents), [Corey Haines](https://coreyhaines.com/), [Donald Miller](https://storybrand.com/), [Refactoring UI](https://www.refactoringui.com/), [Emil Kowalski](https://animations.dev/), [NousResearch](https://github.com/NousResearch/Hermes-Function-Calling) y [obra `superpowers`](https://github.com/obra/superpowers).
 
 Las skills son portables a OpenCode, Antigravity, Claude Code, Cursor, Codex, Copilot, Gemini CLI, Kiro, Windsurf y DeepSeek. El proyecto es **Windows-first**: todo el tooling es Node puro, sin dependencia de Bash.
 
@@ -40,7 +40,7 @@ Gobernanza visual determinista y erradicación de sesgos genéricos de IA en int
 
 - **impeccable** (`05-frontend/impeccable`): gobernanza por 23 comandos especializados (`shape`, `craft`, `critique`, `audit`, `polish`...), manteniendo `PRODUCT.md` (contexto durable) y `DESIGN.md` (tokens visuales en formato Google Stitch).
 - **taste-skill** (`05-frontend/taste-skill`): Design Read obligatorio previo a la implementación, diales triaxiales 1-10 (`DESIGN_VARIANCE`, `MOTION_INTENSITY`, `VISUAL_DENSITY`), 10 Absolute Bans de fallo automático y preflight mecánico.
-- **design-driven D1b & Think Outside the Box**: 8 Chasis Arquetípicos, síntesis One-Shot en 8 líneas o Fast-Path de 1 línea, protocolo de inversión lateral de 3 clichés, y extensiones especializadas: `hallmark-design-study` (extracción ética de ADN visual), `scroll-world-storytelling` (scrollytelling a 60fps con `prefers-reduced-motion`) y `frontend-slides-deck` (presentaciones sin dependencias).
+- **design-driven D1b & Think Outside the Box**: 8 Chasis Arquetípicos, síntesis One-Shot en 3 líneas o Fast-Path de 1 línea, protocolo de inversión lateral de 3 clichés, y extensiones especializadas: `hallmark-design-study` (extracción ética de ADN visual), `ai-design-check-stageshow` (auditoría visual e interacción headless + presentaciones Stageshow), `scroll-world-storytelling` (scrollytelling a 60fps con `prefers-reduced-motion`), `frontend-slides-deck` (presentaciones sin dependencias), `web-animation-sources` y `motion-video-pipeline` (Open-Source Motion Studio con 22 repositorios de referencia).
 - **Floor, Not Ceiling (Enseñanza > Dogma)**: Hard Invariants para seguridad, accesibilidad y verdad en código, autorizando libremente al modelo a proponer arquitecturas o estéticas superiores (`[Beyond-Baseline]`).
 - **MCPs opcionales**: integración no bloqueante con Figma (vía `figma-implement`), 21st.dev y Fal.ai (FLUX Schnell).
 - *Nota*: el índice completo de las 52 fuentes vive en `05-frontend/taste-skill/references/full-guide.md`.
@@ -50,7 +50,7 @@ Gobernanza visual determinista y erradicación de sesgos genéricos de IA en int
 Blindaje integral de runtime, resiliencia distribuida y auditoría pre-lanzamiento:
 
 - **live-cve-security-intel**: consulta en tiempo real de advisories OSV.dev, ciclo de vida de memoria/workers (mitigación de patrones post-2026 tipo PHP2Shell) y `fp-check` obligatorio de Trail of Bits.
-- **ai-safety-agent-guard**: delimitadores `<untrusted_document>`, intercepción mecánica de comandos destructivos (`rm -rf`, `git push -f`, `DROP TABLE`, borrados de PowerShell/Windows) y defensa contra prompt injection.
+- **ai-safety-agent-guard & prompt-shield**: delimitadores `<untrusted_document>`, wrapper `safe_read.py` ([`NastaFour/prompt-shield`](https://github.com/NastaFour/prompt-shield)) contra prompt injection indirecto en archivos/outputs externos, intercepción mecánica de comandos destructivos (`rm -rf`, `git push -f`, `DROP TABLE`, borrados de PowerShell/Windows) y reglas defensivas `bug-hunter` / `defending-code`.
 - **distributed-resilience-sre**: Circuit Breakers, Exponential Backoff con Jitter, Idempotency-Keys, Transactional Outbox + CDC, Dead-Letter Queues (DLQ), Graceful Shutdown (`SIGTERM`), Liveness/Readiness probes y Presigned URLs.
 - **production-readiness-250**: checklist maestro de los 250 puntos de ingeniería senior (dinero en centavos `BigInt`/`Decimal` sin floats, UTC/IANA timezones, normalización Unicode `NFC`, protección del Event Loop, GDPR/PII, Audit Logs y SPF/DKIM/DMARC).
 
@@ -84,7 +84,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --uninstall
 
 ## Uso diario
 
-- **Tier 0 (siempre cargadas)**: skills base (~2K tokens): `skill-router`, `skill-validator`, `skill-creator`, `skill-sync`, `skill-loader`, `odd-workflow`, `idea-to-prd-express`, `agents`, `project-tracker`, `session-notes`, `engram-integration`, `decision-gate`, `kill-switches`, `dod-checker`.
+- **Tier 0 (siempre cargadas)**: 9 skills base (~2K tokens): `odd-workflow`, `skill-router`, `skill-loader`, `skill-validator`, `testing-patterns`, `code-reviewer`, `engram-integration`, `dod-checker`, `decision-gate`.
 - **Router antes de cada turno**: el resto de las skills se cargan bajo demanda según `tier1toLoad`:
 
   ```bash
@@ -92,7 +92,8 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --uninstall
   ```
 
 - **Trabajo chico, directo**: fixes de un archivo o consultas puntuales no requieren proceso adicional.
-- **ODD exclusivo (Gentle-AI 4.4.0)**: todo cambio de código entra en Organic-Driven Development: autorizar, explorar, clasificar por 3 criterios (**Understood** en ≤1 batch de 3 llamadas/~10k tokens, **Contained risk** en los 6 ítems de alto riesgo, **Resumable from `git diff` alone**; nunca contando pasos o archivos), feature doc en `odd/tasks/<feature>.md` + espejo Engram si es grande, commits en slices revisables de ~400 líneas en la feature branch (unidades de alto riesgo 1-6 en su propio commit aislado, cerrando primero cualquier slice `under_budget` pendiente), y cierre con `Risk: item N (reason)` o `Risk: none`. En runtimes sin binario gentle-ai, `odd-workflow` es el fallback estructurado.
+- **ODD exclusivo (Gentle-AI 4.4.0) + Auto-EGM Plan Gate**: todo cambio de código entra en Organic-Driven Development: autorizar, explorar, clasificar por 3 criterios (**Understood** en ≤1 batch de 3 llamadas/~10k tokens, **Contained risk** en los 6 ítems de alto riesgo, **Resumable from `git diff` alone**; nunca contando pasos o archivos), pasar planes **Large**, upgrades mayores o alta lógica/cómputo automáticamente por [`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md) + `google/elephant-goldfish-model` (3 críticos por defecto, 5 en cambios críticos, 0 overhead en tareas chicas), feature doc en `odd/tasks/<feature>.md` + espejo Engram si es grande, commits en slices revisables de ~400 líneas en la feature branch (unidades de alto riesgo 1-6 en su propio commit aislado, cerrando primero cualquier slice `under_budget` pendiente), y cierre con `Risk: item N (reason)` o `Risk: none`. En runtimes sin binario gentle-ai, `odd-workflow` es el fallback estructurado.
+- **Eficiencia de tokens y simplicidad**: compresión de ~41,500 tokens en el catálogo preservando el comportamiento completo, junto con `karpathy-ponytail-simplicity` (supuestos mínimos y diffs quirúrgicos) y `app-resource-efficiency` (presupuestos de batería, memoria y ciclo de vida).
 - **Antes de cerrar trabajo serio** → `judgment-day`: revisión adversarial con dos jueces independientes y ciego cruzado.
 - **Model routing**: perfiles declarativos en `_shared/model-routing/` que mapean roles de ejecución a modelos.
 
@@ -144,19 +145,30 @@ node scripts/run-evals.mjs --ab-summary
 | Directorio | Propósito |
 |---|---|
 | `00-meta-skills/` | Harness propio del catálogo: routing, validación, instalación, carga por tiers, flujo ODD y meta-skills. |
-| `01-planning-process/` | Planificación y procesos: roadmap, ADRs, Jira, brainstorming, notas de sesión, paralelización. |
+| `01-planning-process/` | Planificación y procesos: roadmap, ADRs, Jira, brainstorming, Auto-EGM (`egm-spec-review`), notas de sesión, paralelización. |
 | `02-dev-roles/` | Roles de desarrollo: code review, debugging, security audit, PRs, diseño frontend, Judgment Day. |
-| `03-ai-ml/` | Integración de IA/LLM en productos: orquestación multi-agente, billing de APIs, prompt engineering, MLOps. |
+| `03-ai-ml/` | Integración de IA/LLM en productos: orquestación multi-agente, `ai-safety-agent-guard` (`prompt-shield` / `safe_read.py`), billing de APIs, prompt engineering, MLOps. |
 | `04-backend/` | Backend: Node/Express, Prisma, PostgreSQL, auth, sockets, jobs, uploads, pagos y stacks adicionales. |
-| `05-frontend/` | Frontend: React/Vite, Next.js 15, Angular, React Native/Expo, Tailwind, animaciones y diseño de interfaces. |
-| `06-code-quality/` | Calidad y tooling: TypeScript estricto, SOLID, pnpm workspaces, Turborepo, Biome, changesets, gestión de env vars. |
+| `05-frontend/` | Frontend: React/Vite, Next.js 15, Angular, React Native/Expo, Tailwind, Motion Studio (`web-animation-sources`), `ai-design-check-stageshow`, `hallmark-design-study` y diseño de interfaces. |
+| `06-code-quality/` | Calidad, simplicidad y tooling: TypeScript estricto, `karpathy-ponytail-simplicity`, `app-resource-efficiency`, `defending-code`, `bug-hunter`, SOLID, pnpm workspaces, Turborepo, Biome, changesets, env vars. |
 | `07-testing/` | Pruebas unitarias, de integración y E2E (Vitest, Playwright, pytest). |
 | `08-devops/` | CI/CD, monitoreo, observabilidad, kill switches y despliegue a stores. |
 | `09-media-graphics/` | Generación de imágenes y assets visuales con IA (Nano Banana, dirección creativa). |
-| `11-mcp-hybrid/` | Skills híbridas que combinan instrucciones con servidores MCP: Figma, scraping de componentes, auditoría UX. |
+| `11-mcp-hybrid/` | Skills híbridas que combinan instrucciones con servidores MCP: Figma, scraping de componentes, `motion-video-pipeline` (22 repos), auditoría UX. |
 | `12-matt-pocock/` | Suite Matt Pocock adaptada a la especificación de agentskills.io. |
 | `professional-planner/` | Metodología histórica de planificación (deprecada, redirige a odd-workflow). |
 
 ## Licencias y Reconocimientos
 
-El código de unión (*glue-code*), scripts de instalación, validador y adaptación unificada se distribuyen bajo licencia **MIT**, respetando las licencias originales de cada obra y autor citados.
+El código de unión (*glue-code*), scripts de instalación, validador y adaptación unificada se distribuyen bajo licencia **MIT**, respetando las licencias originales de cada obra y autor citados (en especial **Apache-2.0** para `impeccable` y `NastaFour/prompt-shield`):
+
+- **[Gentleman Programming](https://github.com/Gentleman-Programming)**: harness ODD, memoria persistente Engram, protocolo Judgment Day, roster de 21 agentes y verificación pre-commit GGA.
+- **[Google (`elephant-goldfish-model`)](https://github.com/google/elephant-goldfish-model)**: revisión adversarial zero-context con Goldfishes integrada en [`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md) y el Auto-EGM Plan Gate.
+- **[NastaFour (`prompt-shield`)](https://github.com/NastaFour/prompt-shield)**: escáner de prompt injection indirecto y wrapper `safe_read.py` integrado en `ai-safety-agent-guard` (Apache-2.0).
+- **[Anthropic](https://github.com/anthropics/skills)** & **[Vercel Labs](https://github.com/vercel-labs/agent-skills)**: especificación base de Agent Skills, patrones React/Next.js y CLI `skills.sh`.
+- **[Matt Pocock](https://github.com/mattpocock)**: las 23 skills de ingeniería en `12-matt-pocock/`.
+- **[Paul Bakaus (`impeccable`)](https://github.com/pbakaus/impeccable)** (Apache-2.0) & **[Leonxlnx (`taste-skill`)](https://github.com/Leonxlnx/taste-skill)** (MIT): gobernanza visual anti-slop y diales triaxiales.
+- **[Together AI (`Hallmark`)](https://github.com/togethercomputer)**, **`@enmera/ai-design-check`** & **[Benji Taylor (`Stageshow`)](https://github.com/benjitaylor/skills)**: extracción ética de ADN visual, auditoría headless y presentaciones interactivas (`hallmark-design-study`, `ai-design-check-stageshow`).
+- **22-Repo Open-Source Motion Studio**: catálogo curado de GSAP, Motion, Theatre.js, Rive, Lottie, Three.js/R3F y video procedural en [`motion-studio-22.md`](11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md).
+- **[Andrej Karpathy](https://github.com/karpathy)**, **[Addy Osmani](https://addyosmani.com/)**, **Ponytail, Caveman & Graphify**: simplicidad quirúrgica, compresión de `~41,500` tokens sin pérdida de comportamiento y presupuestos de recursos (`karpathy-ponytail-simplicity`, `app-resource-efficiency`).
+- **[msitarzewski (`agency-agents`)](https://github.com/msitarzewski/agency-agents)**, **[Emil Kowalski](https://animations.dev/)**, **[Adam Wathan & Steve Schoger](https://www.refactoringui.com/)**, **[Corey Haines](https://coreyhaines.com/)**, **[Donald Miller](https://storybrand.com/)** & **[Jesse Vincent](https://github.com/obra/superpowers)**: roles especialistas (`bug-hunter`, `defending-code`), física de animaciones, Refactoring UI, CRO, StoryBrand y capacidades agentic.
