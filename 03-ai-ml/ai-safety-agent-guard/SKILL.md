@@ -2,7 +2,7 @@
 name: ai-safety-agent-guard
 description: "Trigger: ai safety, agent guard, cc safety net, prompt injection defense, owasp llm, jailbreak defense, tool execution guardrails, pii redaction. Use when building LLM/agentic applications, MCP servers, tool-calling pipelines, or configuring coding-agent safety nets against destructive commands and indirect prompt injection. Do NOT use for offensive jailbreaking or bypassing safety filters."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity. Requires Node 20+ and pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.4.0+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Bash(node:*,pnpm:*) Glob Grep
 metadata:
   trigger: ["ai safety", "agent guard", "cc safety net", "prompt injection", "jailbreak defense", "owasp llm", "ai governance", "tool guardrails", "seguridad de agentes"]

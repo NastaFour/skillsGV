@@ -1,20 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { join, basename } from 'node:path';
+import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { walkSkillPaths } from '../_shared/catalog-manifest.mjs';
 
 function walkSkills(dir) {
   if (!existsSync(dir)) return [];
-  let out = [];
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const e of entries) {
-    if (['node_modules', '.git', 'gentle-ai-dsh', '_shared'].includes(e.name)) continue;
-    const full = join(dir, e.name);
-    if (e.isDirectory()) out.push(...walkSkills(full));
-    else if (e.isFile() && e.name === 'SKILL.md') out.push(full);
-  }
-  return out;
+  return walkSkillPaths(dir).map((rel) => join(dir, rel));
 }
 
 const skills = walkSkills('.');
@@ -143,5 +137,42 @@ test('installer --tier filters skills properly in dry-run', () => {
   assert.ok(fullMatch, 'Full tier output should report skill count');
   const countFull = parseInt(fullMatch[1], 10);
   assert.ok(countFull > countExt, 'Full count should exceed Extended count');
+});
+
+test('walker excludes dot-dirs, Anti rats, and non-allowlisted root dirs while keeping allowlisted root skills', () => {
+  const root = mkdtempSync(join(tmpdir(), 'walker-hardening-'));
+  try {
+    const touchSkill = (rel) => {
+      const full = join(root, rel);
+      mkdirSync(full, { recursive: true });
+      writeFileSync(join(full, 'SKILL.md'), `---\nname: ${rel.split('/').pop()}\ndescription: fixture.\n---\n`, 'utf8');
+    };
+    touchSkill('00-meta-skills/alpha');
+    touchSkill('12-matt-pocock/beta');
+    touchSkill('professional-planner');
+    touchSkill('rogue-root');
+    touchSkill('Anti rats/gamma');
+    touchSkill('.agents/skills/delta');
+    touchSkill('00-meta-skills/.hidden/epsilon');
+
+    const rootModePaths = walkSkillPaths(root, { isCatalogRoot: true });
+    assert.deepEqual(rootModePaths, [
+      '00-meta-skills/alpha/SKILL.md',
+      '12-matt-pocock/beta/SKILL.md',
+      'professional-planner/SKILL.md',
+    ]);
+
+    const fixtureModePaths = walkSkillPaths(root);
+    assert.ok(fixtureModePaths.includes('rogue-root/SKILL.md'), 'non-catalog-root fixture should allow custom folder names');
+    assert.ok(!fixtureModePaths.some((p) => p.includes('.agents') || p.includes('.hidden') || p.includes('Anti rats')), 'dot-dirs and Anti rats must always be excluded');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('walkSkillPaths matches case-insensitively on Windows for relative "." vs REPO_ROOT', () => {
+  const dotPaths = walkSkillPaths('.');
+  const cwdPaths = walkSkillPaths(resolve(process.cwd()));
+  assert.deepEqual(dotPaths, cwdPaths);
 });
 

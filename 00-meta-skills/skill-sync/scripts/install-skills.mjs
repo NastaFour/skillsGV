@@ -46,6 +46,7 @@ const __dirname = dirname(__filename);
 const CATALOG_ROOT = resolve(__dirname, "../../..");
 
 import { injectKernel, removeKernel, guardGitignore, unguardGitignore, detectVariant, summarizeKernel, collectKernelOwned } from "../../../_shared/kernel-inject.mjs";
+import { walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
 
 const args = process.argv.slice(2);
 let target = null;
@@ -242,7 +243,6 @@ Examples:
 
 function collectSkills(root) {
   const skills = [];
-  const skipDirs = new Set(["copia-de-seguridad", "copia-de-seguridad-2", "node_modules", ".git", "gentle-ai-dsh", "_shared"]);
   const tierMap = new Map();
   const tier0Set = new Set();
   const deprecatedSet = new Set();
@@ -262,51 +262,43 @@ function collectSkills(root) {
 
   function isCategoryDir(relPath) {
     if (!onlyCategories) return true;
-    const topFolder = relPath.split(sep)[0];
+    const topFolder = relPath.split("/")[0];
     return onlyCategories.includes(topFolder);
   }
-  function walk(dir, rel) {
-    const entries = readdirSync(dir, { withFileTypes: true });
-    for (const e of entries) {
-      if (e.isDirectory()) {
-        if (skipDirs.has(e.name)) continue;
-        const subRel = rel ? join(rel, e.name) : e.name;
-        if (rel === "" && !isCategoryDir(subRel)) continue;
-        walk(join(dir, e.name), subRel);
-      } else if (e.isFile() && e.name === "SKILL.md") {
-        let fmMatch = null;
-        if (skipDeprecated || selectedTier !== "full") {
-          try {
-            const content = readFileSync(join(dir, "SKILL.md"), "utf8");
-            fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-          } catch {}
+  for (const rel of walkSkillPaths(root)) {
+    if (!isCategoryDir(rel)) continue;
+    const skillFile = join(root, rel);
+    const dir = dirname(skillFile);
+    let fmMatch = null;
+    if (skipDeprecated || selectedTier !== "full") {
+      try {
+        const content = readFileSync(skillFile, "utf8");
+        fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      } catch {}
+    }
+    const skillName = basename(dir);
+    // Deprecated skills are excluded from every install plan (unless the
+    // user passes --include-deprecated). The catalog.json `deprecated`
+    // flag and the SKILL.md frontmatter are the two sources; both are
+    // honored so a drift between them cannot resurrect a deprecated skill.
+    if (skipDeprecated && (deprecatedSet.has(skillName) || (fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])))) {
+      continue;
+    }
+    if (selectedTier !== "full") {
+      // Tier-0 kernel skills always install, regardless of the --tier rank
+      // filter: the bootstrap kernel must never be silently omitted.
+      if (!tier0Set.has(skillName)) {
+        let skillTier = tierMap.get(skillName);
+        if (!skillTier && fmMatch) {
+          const tm = fmMatch[1].match(/\btier:\s*"?([a-z0-9-]+)"?/i);
+          if (tm) skillTier = tm[1].toLowerCase();
         }
-        const skillName = basename(dir);
-        // Deprecated skills are excluded from every install plan (unless the
-        // user passes --include-deprecated). The catalog.json `deprecated`
-        // flag and the SKILL.md frontmatter are the two sources; both are
-        // honored so a drift between them cannot resurrect a deprecated skill.
-        if (skipDeprecated && (deprecatedSet.has(skillName) || (fmMatch && /\bdeprecated:\s*"?true"?/i.test(fmMatch[1])))) {
-          continue;
-        }
-        if (selectedTier !== "full") {
-          // Tier-0 kernel skills always install, regardless of the --tier rank
-          // filter: the bootstrap kernel must never be silently omitted.
-          if (!tier0Set.has(skillName)) {
-            let skillTier = tierMap.get(skillName);
-            if (!skillTier && fmMatch) {
-              const tm = fmMatch[1].match(/\btier:\s*"?([a-z0-9-]+)"?/i);
-              if (tm) skillTier = tm[1].toLowerCase();
-            }
-            const rank = tierRank[skillTier || "full"] || 3;
-            if (rank > maxRank) continue;
-          }
-        }
-        skills.push(dir);
+        const rank = tierRank[skillTier || "full"] || 3;
+        if (rank > maxRank) continue;
       }
     }
+    skills.push(dir);
   }
-  walk(root, "");
   return skills;
 }
 

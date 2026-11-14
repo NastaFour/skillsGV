@@ -43,7 +43,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(__dirname, "..");
 
 /** Directories that are never part of the skill catalog (mirrors the validator). */
-export const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
+export const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git", "Anti rats"]);
+
+/** Top-level category folders (`00-`..`12-`) and explicit root-level skill allowlist. */
+export const CATALOG_CATEGORY_RE = /^\d{2}-[a-z0-9-]+$/;
+export const ROOT_SKILL_ALLOWLIST = new Set(["professional-planner"]);
+
+export const samePath = (a, b) =>
+  process.platform === "win32"
+    ? resolve(a).toLowerCase() === resolve(b).toLowerCase()
+    : resolve(a) === resolve(b);
+
+export const isExcludedDirName = (name) =>
+  EXCLUDED_DIRS.has(name) || name.startsWith(".") || name.startsWith("copia-de-seguridad");
 
 const INDEX_TABLE_HEADER = /^\|\s*Skill\s*\|\s*Path\s*\|\s*$/;
 const SKILLS_ROW = /^\|\s*([a-z0-9-]+)\s*\|\s*\[([^\]]+)\]\(([^)]+)\)\s*(.*?)\s*\|\s*$/;
@@ -75,23 +87,49 @@ const linesWithEol = (text) => text.split(/(?<=\n)/);
 
 /**
  * Relative POSIX paths of every catalog SKILL.md (sorted), excluding
- * `_shared/`, `gentle-ai-dsh/`, `node_modules/`, `.git/` and
- * `copia-de-seguridad*` directories, exactly like the validator.
+ * `_shared/`, `gentle-ai-dsh/`, `node_modules/`, `.git/`, dot-directories,
+ * `Anti rats/`, and `copia-de-seguridad*` directories. When walking the repo
+ * catalog root (`REPO_ROOT` or `isCatalogRoot: true`), top-level descent is
+ * restricted to numbered category folders (`00-`..`12-`) plus `ROOT_SKILL_ALLOWLIST`.
  */
-export function walkSkillPaths(root) {
+export function walkSkillPaths(root, { isCatalogRoot } = {}) {
+  const rootMode = typeof isCatalogRoot === "boolean" ? isCatalogRoot : samePath(root, REPO_ROOT);
   const out = [];
-  const visit = (dir) => {
+  const visit = (dir, depth) => {
     const stat = statSafe(dir);
     if (!stat || !stat.isDirectory()) return;
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (EXCLUDED_DIRS.has(entry.name) || entry.name.startsWith("copia-de-seguridad")) continue;
-      const full = join(dir, entry.name);
-      if (entry.isDirectory()) visit(full);
-      else if (entry.isFile() && entry.name === "SKILL.md") out.push(toPosix(relative(root, full)));
+      if (entry.isDirectory()) {
+        if (isExcludedDirName(entry.name)) continue;
+        if (rootMode && depth === 0 && !CATALOG_CATEGORY_RE.test(entry.name) && !ROOT_SKILL_ALLOWLIST.has(entry.name)) {
+          continue;
+        }
+        visit(join(dir, entry.name), depth + 1);
+      } else if (entry.isFile() && entry.name === "SKILL.md") {
+        if (rootMode && depth === 0) continue;
+        out.push(toPosix(relative(root, join(dir, entry.name))));
+      }
     }
   };
-  visit(root);
+  visit(root, 0);
   return out.sort();
+}
+
+const VALID_CATALOG_TIERS = new Set(["core", "extended", "full"]);
+
+/** Declared catalog tier (`tier` or `metadata.tier`: core | extended | full). Null if unset/invalid. */
+export function readSkillTier(root, relPath) {
+  try {
+    const fm = parseFrontmatter(readFileUtf8(join(root, relPath)));
+    if (!fm) return null;
+    const raw = (getField(fm, "tier") || getNestedField(fm, "metadata", "tier") || "")
+      .trim()
+      .replace(/^["']|["']$/g, "")
+      .toLowerCase();
+    return VALID_CATALOG_TIERS.has(raw) ? raw : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Declared skill name (frontmatter `name`, folder name as fallback). */
@@ -298,6 +336,7 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
     const name = readSkillName(root, path);
     const prev = prevSkills.get(name);
     const deprecated = readSkillDeprecated(root, path);
+    const declaredTier = readSkillTier(root, path);
     let note = prev ? (prev.note ?? null) : (notes.get(name) ?? null);
     if (deprecated && note && !/DEPRECATED/i.test(note)) {
       note = formatDescriptionNote(readSkillDescription(root, path));
@@ -308,7 +347,7 @@ export function buildManifest(root, { tier0 = new Set(), previous = null, notes 
       name,
       path,
       category: path.includes("/") ? path.split("/")[0] : "(root)",
-      tier: prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full"),
+      tier: declaredTier ?? (prev ? (prev.tier ?? (tier0.has(name) ? "core" : "full")) : (tier0.has(name) ? "core" : "full")),
       tier0: tier0.has(name),
       deprecated,
       note,

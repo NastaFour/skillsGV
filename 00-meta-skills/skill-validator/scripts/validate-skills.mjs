@@ -84,25 +84,12 @@ function statSafe(p) {
 //   carry a SKILL.md marker there, but it is not a skill (name "_shared" is
 //   invalid by spec) — the registry protocol already excludes it; the walker
 //   must not even treat it as a skill candidate.
-const EXCLUDED_DIRS = new Set(["gentle-ai-dsh", "_shared", "node_modules", ".git"]);
-
 function walkSkills(dir) {
-  const out = [];
   const stat = statSafe(dir);
-  if (!stat) return out;
+  if (!stat) return [];
   if (stat.isFile() && basename(dir) === "SKILL.md") return [dir];
-  if (!stat.isDirectory()) return out;
-  const entries = readdirSync(dir, { withFileTypes: true });
-  for (const e of entries) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) {
-      if (EXCLUDED_DIRS.has(e.name) || e.name.startsWith("copia-de-seguridad")) continue;
-      out.push(...walkSkills(full));
-    } else if (e.isFile() && e.name === "SKILL.md") {
-      out.push(full);
-    }
-  }
-  return out;
+  if (!stat.isDirectory()) return [];
+  return walkSkillPaths(dir).map((rel) => join(dir, rel));
 }
 
 

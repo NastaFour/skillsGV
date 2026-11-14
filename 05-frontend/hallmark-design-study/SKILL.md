@@ -2,12 +2,12 @@
 name: hallmark-design-study
 description: "Trigger: hallmark, study design, website cloner, extract design dna, stitch design system, redesign ui, macrostructure. Use when extracting structural and visual DNA from reference URLs or screenshots (study), syncing components with DESIGN_SYSTEM.md (stitch), or executing Hallmark's 4 design verbs (build, audit, redesign, study) without copying proprietary content. Do NOT use for verbatim brand/trademark piracy."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity. Requires Node 20+ and pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.4.0+, Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity. Requires Node 20+ and pnpm 9+."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*,curl:*) Glob Grep WebSearch
 metadata:
   trigger: ["hallmark", "study design", "website cloner", "extract design dna", "stitch skills", "stitch design system", "redesign", "macrostructure", "clonar estructura visual"]
   scope: "global, project"
-  version: "1.0.0"
+  version: "1.1.0"
   author: skillsGV
 ---
 
@@ -61,3 +61,8 @@ When auditing or redesigning an existing screen, systematically replace:
 ## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
 Designers and agents are encouraged to hybridize studied references (`[Beyond-Baseline: <creative synthesis>]`) — for example, combining the typographic discipline of a financial terminal with the tactile warmth of an archival print catalog under Archetype H (`Think Outside the Box`).
+
+## 📚 References
+
+- [`references/hallmark-catalog.md`](references/hallmark-catalog.md) — Curated structural DNA reference catalog (Stripe, Linear, Vercel, Raycast, Chronicle, Supabase, Teenage Engineering, Read.cv).
+- [`../ai-design-check-stageshow/SKILL.md`](../ai-design-check-stageshow/SKILL.md) — Archetype-partitioned pre-build HTML5 preview and 5-category post-build audit rubric.

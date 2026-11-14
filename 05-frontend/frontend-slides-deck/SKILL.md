@@ -2,7 +2,7 @@
 name: frontend-slides-deck
 description: "Trigger: frontend slides, html presentation, slide deck, pitch deck html, diagram design, architecture diagram, svg diagram, mermaid diagram. Use when creating zero-dependency interactive HTML slide presentations, converting PowerPoint/Markdown into web decks, or designing high-craft architectural diagrams (Mermaid, SVG, clean ASCII). Do NOT use for multi-page web apps or CRUD dashboards."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.3.1+, modern browsers, Mermaid, inline SVG, and single-file HTML5. Requires zero external runtime dependencies."
+compatibility: "Compatible with Gentle-AI 4.4.0+, modern browsers, Mermaid, inline SVG, and single-file HTML5. Requires zero external runtime dependencies."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
   trigger: ["frontend slides", "html presentation", "slide deck", "pitch deck", "diagram design", "architecture diagram", "svg diagram", "presentacion html", "diagramas de arquitectura"]

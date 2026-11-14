@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -34,7 +34,7 @@ Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.3.1 Organic Driven Development… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.4.0 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
 | codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
@@ -65,13 +65,14 @@ Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.
 | storybrand-messaging | [01-planning-process/storybrand-messaging/SKILL.md](01-planning-process/storybrand-messaging/SKILL.md) ← Estructuración de narrativa de producto y mensajería usando el marco StoryBrand… |
 | content-studio | [01-planning-process/content-studio/SKILL.md](01-planning-process/content-studio/SKILL.md) ← Generación modular de piezas multicanal (artículos, hilos, notas) desde una ide… |
 | app-flow-spec | [01-planning-process/app-flow-spec/SKILL.md](01-planning-process/app-flow-spec/SKILL.md) ← Generates the canonical APP_FLOW.md specification: route maps, role permissions… |
+| egm-spec-review | [01-planning-process/egm-spec-review/SKILL.md](01-planning-process/egm-spec-review/SKILL.md) ← Mandatory pre-execution adversarial review gate for Large plans, major upgrades… |
 
 ## 02-dev-roles
 
 | Skill | Path |
 |---|---|
 | architecture-designer | [02-dev-roles/architecture-designer/SKILL.md](02-dev-roles/architecture-designer/SKILL.md) ← Generates the canonical TRD.md (Technical Requirements Document): module archit… |
-| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.3.1… |
+| code-reviewer | [02-dev-roles/code-reviewer/SKILL.md](02-dev-roles/code-reviewer/SKILL.md) ← Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.4.0… |
 | dod-checker | [02-dev-roles/dod-checker/SKILL.md](02-dev-roles/dod-checker/SKILL.md) ← Act as the strict Gatekeeper for the Definition of Done (DoD) |
 | expert-debugger | [02-dev-roles/expert-debugger/SKILL.md](02-dev-roles/expert-debugger/SKILL.md) ← DEPRECATED. Use systematic-debugging instead. |
 | security-audit | [02-dev-roles/security-audit/SKILL.md](02-dev-roles/security-audit/SKILL.md) ← Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LL… |
@@ -119,6 +120,7 @@ Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.
 | ai-safety-agent-guard | [03-ai-ml/ai-safety-agent-guard/SKILL.md](03-ai-ml/ai-safety-agent-guard/SKILL.md) ← Use when building LLM/agentic applications, MCP servers, tool-calling pipelines… |
 | multimodal-ai-pipelines | [03-ai-ml/multimodal-ai-pipelines/SKILL.md](03-ai-ml/multimodal-ai-pipelines/SKILL.md) ← Use when building applications that process images, PDFs, screenshots, audio st… |
 | rag-knowledge-systems | [03-ai-ml/rag-knowledge-systems/SKILL.md](03-ai-ml/rag-knowledge-systems/SKILL.md) ← Use when designing or optimizing RAG pipelines, document chunking, hybrid BM25… |
+| prompt-shield | [03-ai-ml/prompt-shield/SKILL.md](03-ai-ml/prompt-shield/SKILL.md) ← Enforces a strict read-only security quarantine and canonical de-obfuscation pi… |
 
 ## 04-backend
 
@@ -210,6 +212,7 @@ Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.
 | frontend-slides-deck | [05-frontend/frontend-slides-deck/SKILL.md](05-frontend/frontend-slides-deck/SKILL.md) ← Use when creating zero-dependency interactive HTML slide presentations, convert… |
 | hallmark-design-study | [05-frontend/hallmark-design-study/SKILL.md](05-frontend/hallmark-design-study/SKILL.md) ← Use when extracting structural and visual DNA from reference URLs or screenshot… |
 | scroll-world-storytelling | [05-frontend/scroll-world-storytelling/SKILL.md](05-frontend/scroll-world-storytelling/SKILL.md) ← Use when building immersive scroll-driven landing pages, product showcases, 3D/… |
+| ai-design-check-stageshow | [05-frontend/ai-design-check-stageshow/SKILL.md](05-frontend/ai-design-check-stageshow/SKILL.md) ← Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow for archet… |
 
 ## 06-code-quality
 
@@ -234,6 +237,8 @@ Catálogo de **246 skills** compatible con [agentskills.io](https://agentskills.
 | elixir-antipatterns | [06-code-quality/elixir-antipatterns/SKILL.md](06-code-quality/elixir-antipatterns/SKILL.md) ← Agent misuse, nested case, bare spawn, GenServer bottleneck |
 | supply-chain-runtime-security | [06-code-quality/supply-chain-runtime-security/SKILL.md](06-code-quality/supply-chain-runtime-security/SKILL.md) ← Use when hardening Node/TypeScript dependency trees, auditing third-party MCP s… |
 | production-readiness-250 | [06-code-quality/production-readiness-250/SKILL.md](06-code-quality/production-readiness-250/SKILL.md) ← Execute the 250-point Senior Production Engineering, Data Precision, Edge-Case,… |
+| app-resource-efficiency | [06-code-quality/app-resource-efficiency/SKILL.md](06-code-quality/app-resource-efficiency/SKILL.md) ← Audits and optimizes CPU offloading, bounded RAM streaming, GPU/VRAM disposal &… |
+| karpathy-ponytail-simplicity | [06-code-quality/karpathy-ponytail-simplicity/SKILL.md](06-code-quality/karpathy-ponytail-simplicity/SKILL.md) ← Synthesizes Andrej Karpathy's anti-stumble coding guidelines, Ponytail veteran… |
 
 ## 07-testing
 

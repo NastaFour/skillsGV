@@ -1,6 +1,6 @@
 ---
 name: odd-workflow
-description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.3.1 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.4.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
 trigger: ["odd workflow", "organic driven development", "flujo odd", "implementar feature multi archivo", "iniciar feature", "trabajo sustancial", "odd task"]
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
@@ -9,15 +9,15 @@ metadata:
   version: "1.3.0"
 ---
 
-# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.3.1)
+# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.4.0)
 
-The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.3.1 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
+The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.4.0 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
 
 ---
 
 ## 🚫 HARD INVARIANTS (Non-Negotiable)
 
-1. **NO WRITING BEFORE TRACKING ON LARGE WORK**: When the resume test fails (large task), NEVER touch a source file before creating `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks`.
+1. **NO WRITING BEFORE TRACKING ON LARGE WORK**: When the resume test fails (large task), NEVER touch a source file before passing the **Auto-EGM Plan Gate** (`egm-spec-review`) and creating `odd/tasks/<feature>.md` + its Engram mirror `odd/<feature>/tasks`.
 2. **NO CLASSIFICATION BY FILE OR STEP COUNT**: Never classify task size by counting files, steps, commands, tests, or a todo list. Use only the 3 Task Size criteria.
 3. **NO GUESSWORK ON PRODUCT DECISIONS**: Never guess unstated business logic. Ask at most ONE focused question and STOP until answered.
 4. **NO VERBAL CLAIMS WITHOUT OBSERVED EVIDENCE & RISK LINE**: Never claim completion without running verification commands, observing output, and closing with `Risk: item N (reason)` or `Risk: none`.
@@ -25,7 +25,7 @@ The universal, disciplined protocol for software delivery across AI agents. Comb
 
 ---
 
-## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.3.1)
+## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.4.0)
 
 ```mermaid
 flowchart TD
@@ -45,7 +45,7 @@ flowchart TD
    - **Contained risk**: Touches none of the 6 High-Risk items below.
    - **Resumable from `git diff` alone** (*Resume Test*): If the session stopped now, someone could finish from the original request and `git diff` alone.
    A task is **Large** only when the Resume Test fails (multi-session, external wait, separate deliverables, or requirements too long to survive compaction). Small work stays inline without durable task files.
-5. **Track before first write**: For large authorized work, create `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks` automatically before the first source edit. Structure in fixed order: Header (Objective, Branch, Delivery, Runner) -> `## Specs` (S1..Sn verbatim quotes & checks) -> `## Tasks` (T1..Tn ID, linked S#, route, status, commit) -> `## Log` (L1 verbatim request, evidence, decisions). Tell user in one line which document was created and task count.
+5. **Auto-EGM Plan Gate & Track before first write**: For large authorized work, major upgrades, or heavy-logic/high-compute plans, pass the initial plan draft through the **Auto-EGM Plan Gate** ([`egm-spec-review`](../../01-planning-process/egm-spec-review/SKILL.md): `3` zero-context Goldfishes by default, `5` for critical architecture; skipped on Small tasks) to refine gaps before writing `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks`. Structure in fixed order: Header (Objective, Branch, Delivery, Runner) -> `## Specs` (S1..Sn verbatim quotes & checks) -> `## Tasks` (T1..Tn ID, linked S#, route, status, commit) -> `## Log` (L1 verbatim request, evidence, decisions). Tell user in one line which document was created and task count.
 6. **Implement task-by-task (with One-Shot Pre-Flight Blueprint)**:
    - **One-Shot Pre-Flight Blueprint (Token Saver)**: Before editing code for a task, synthesize a compact **5-line micro-blueprint** (1. Exact target files, 2. Public signatures/types, 3. Core invariants & helpers to reuse, 4. Edge/lifecycle failure modes, 5. Exact verification probe command). This eliminates trial-and-error edit loops and achieves clean one-shot execution.
    - Work inline by default. Commit work units in reviewable slices of `~400` authored changed lines on the feature branch (with code + tests + docs together). Any unit whose `Risk:` line names a High-Risk item (`1-6`) gets its own isolated commit (closing any pending `under_budget` slice first; if native RDD is unavailable, report `receipt-driven development: unavailable` and follow ordinary repository policy). Record the commit hash holding each task in `odd/tasks/<feature>.md`.
@@ -67,7 +67,7 @@ High risk means a mistake is hard to detect, hard to undo, or reaches beyond the
 
 **Mandatory closure**: Every code change MUST close with `Risk: item N (reason)` or `Risk: none`. Before writing `Risk: none`, check whether the diff touches code used by existing behavior the request did not mention (shared options, parsers, helpers); if so, declare `Risk: item 3 (...)`.
 
-### Delegation Triggers (Gentle-AI 4.3.1)
+### Delegation Triggers (Gentle-AI 4.4.0)
 
 You orchestrate and work inline by default, following your logbook. **A Delegation Trigger holds only when its condition truly holds; none holds by default.**
 

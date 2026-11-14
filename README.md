@@ -1,14 +1,14 @@
 # skillsGV
 
 [![CI](https://github.com/NastaFour/skillsGV/actions/workflows/ci.yml/badge.svg)](https://github.com/NastaFour/skillsGV/actions)
-[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](package.json)
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-246-purple.svg)](#categories)
-[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.3.1)-brightgreen.svg)](#organic-driven-development)
+[![Skills Count](https://img.shields.io/badge/skills-251-purple.svg)](#categories)
+[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.4.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.3.1 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
@@ -22,13 +22,14 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **246 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- 🎯 **251 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
-- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.3.1)**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) on feature branch → Close with `Risk: item N (reason)` or `Risk: none`.
+- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.4.0) + Auto-EGM Plan Gate**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → **Mandatory Zero-Context Goldfish Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md) + external `google/elephant-goldfish-model`: 3 critics default, 5 critical on Large/heavy-logic plans; 0 overhead on Small tasks) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
-- 🛡️ **Defensive Security & Pre-Release Live CVE Gate**: Real-time OSV.dev advisories (`live-cve-security-intel`), runtime command interception & prompt injection guards (`ai-safety-agent-guard`), and supply-chain sandboxing.
+- 🛡️ **Defensive Security, Prompt Shield & Pre-Release Live CVE Gate**: Real-time OSV.dev advisories (`live-cve-security-intel`), runtime command interception & prompt-injection guards (`ai-safety-agent-guard` + `prompt-shield` / `safe_read.py` wrapper), secure coding (`defending-code`, `bug-hunter`), and supply-chain sandboxing.
 - 🏗️ **250-Point Production Engineering & Distributed SRE**: Complete readiness checklist (`production-readiness-250`) and fault-tolerant distributed resilience (`distributed-resilience-sre`) covering monetary math (no floats for money), UTC/IANA timezones, idempotency keys, outbox/DLQ patterns, circuit breakers, and graceful `SIGTERM` shutdowns.
-- 🎨 **Anti-Slop Design Governance & "Think Outside the Box"**: Integrates `impeccable`, `taste-skill`, `design-driven` (8 Archetypal Chassis, 3-line Design Read, lateral creative synthesis), `hallmark-design-study`, `scroll-world-storytelling`, and `frontend-slides-deck`.
+- 🎨 **Anti-Slop Design Governance, Motion Studio & "Think Outside the Box"**: Integrates `impeccable`, `taste-skill`, `design-driven` (8 Archetypal Chassis, 3-line Design Read, lateral creative synthesis), `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `web-animation-sources`, and `motion-video-pipeline` (22-repo Open-Source Motion Studio).
+- ⚡ **Token Efficiency & Simplicity Discipline**: `~41,500` tokens compressed across the catalog without losing behavior, plus `karpathy-ponytail-simplicity` (minimal assumptions, surgical diffs) and `app-resource-efficiency` (lifecycle, battery, and memory budgets).
 - 🌟 **Floor, Not Ceiling Architecture**: Hard invariants prevent regressions and security vulnerabilities, while explicitly empowering models to propose superior modern patterns (`[Beyond-Baseline]`).
 - 🧠 **Cross-Session Memory**: Seamless MCP integration with [Engram](https://github.com/Gentleman-Programming/engram) (`mem_save`, `mem_search`, `mem_judge`).
 - 🤖 **Universal Agent Portability**: One install script works with Claude Code, Gemini CLI, Cursor, Antigravity, OpenCode, Codex, GitHub Copilot, Windsurf, Kiro, and DeepSeek.
@@ -104,7 +105,7 @@ flowchart TD
 |---|:---:|:---:|:---:|
 | **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
 | **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
-| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.3.1 alignment) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.4.0 alignment) |
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
 | **Anti-Slop Design System** | ❌ | ❌ | ✅ (`impeccable` + `taste-skill`) |
@@ -178,21 +179,21 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **246 skills** distributed across structured domains:
+The catalog contains **251 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|
 | **Meta-Skills** | `00-meta-skills/` | `skill-router`, `skill-validator`, `skill-loader`, `skill-creator`, `agent-roster`, `odd-workflow` |
-| **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr` |
+| **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr`, `egm-spec-review` |
 | **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `live-cve-security-intel`, `dod-checker` |
-| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-engineering` |
+| **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-shield`, `prompt-engineering` |
 | **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `distributed-resilience-sre`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
-| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
-| **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
+| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
+| **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `karpathy-ponytail-simplicity`, `app-resource-efficiency`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
 | **Testing** | `07-testing/` | `testing-patterns` (TDD RED/GREEN), `playwright`, `pytest`, `go-testing` |
 | **DevOps** | `08-devops/` | `ci-cd`, `observability`, `monitoring`, `kill-switches`, `store-deployment-eas` |
 | **Media & Graphics** | `09-media-graphics/` | `nano-banana`, `banana-claude` |
-| **MCP Hybrids** | `11-mcp-hybrid/` | `component-scrapper-mcp`, `figma-mcp`, `oklch-theme-injector`, `open-design`, `openseo` |
+| **MCP Hybrids** | `11-mcp-hybrid/` | `component-scrapper-mcp`, `figma-mcp`, `motion-video-pipeline`, `oklch-theme-injector`, `open-design`, `openseo` |
 | **Matt Pocock Suite** | `12-matt-pocock/` | `ask-matt`, `domain-modeling`, `grilling`, `scaffold-exercises`, `tdd`, `writing-for-agents` |
 
 ---
@@ -259,6 +260,12 @@ This repository synthesizes, adapts, and organizes open-source standards and met
 - **[Emil Kowalski](https://animations.dev/)**: Physics-based animations and fluid micro-interactions.
 - **[Donald Miller](https://storybrand.com/)**: StoryBrand SB7 narrative architecture.
 - **[Jesse Vincent](https://github.com/obra/superpowers)**: Superpowers agent capabilities concepts.
+- **[Google (`elephant-goldfish-model`)](https://github.com/google/elephant-goldfish-model)**: Zero-context Goldfish adversarial plan review integrated into [`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md) and the Auto-EGM Plan Gate.
+- **[NastaFour (`prompt-shield`)](https://github.com/NastaFour/prompt-shield)**: Indirect prompt-injection scanner and `safe_read.py` wrapper integrated into `ai-safety-agent-guard` (Apache-2.0).
+- **[Together AI (`Hallmark`)](https://github.com/togethercomputer) / `@enmera/ai-design-check` / [Benji Taylor (`Stageshow`)](https://github.com/benjitaylor/skills)**: Visual DNA extraction, headless UI/interaction verification, and interactive presentation tooling (`hallmark-design-study`, `ai-design-check-stageshow`).
+- **22-Repo Open-Source Motion Studio**: Curated GSAP, Motion, Theatre.js, Rive, Lottie, Three.js/R3F, and procedural video stack cataloged in [`motion-studio-22.md`](11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md) (`motion-video-pipeline`, `web-animation-sources`).
+- **[Andrej Karpathy](https://github.com/karpathy) / [Addy Osmani](https://addyosmani.com/) / Ponytail, Caveman & Graphify**: Surgical simplicity, `~41,500`-token catalog compression without behavior loss, and runtime resource budgeting (`karpathy-ponytail-simplicity`, `app-resource-efficiency`).
+- **[msitarzewski (`agency-agents`)](https://github.com/msitarzewski/agency-agents)**: Specialist agent role archetypes and defensive verification patterns (`bug-hunter`, `defending-code`).
 
 ### License
 

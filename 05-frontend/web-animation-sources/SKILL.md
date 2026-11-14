@@ -1,39 +1,40 @@
 ---
 name: web-animation-sources
-description: Referencias curadas de animaciones web (hover effects, loading animations, entrance animations, microinteracciones, librerías CSS y componentes React) con autor, URL y propósito. Use when searching animation references or inspiration sources.
+description: "Curated index of web animation inspiration sources, CSS/React motion libraries, and the 22-repo Open-Source Motion Studio reference (hover effects, loading animations, entrance animations, micro-interactions, WebGL shaders, and timeline engines). Use when searching animation references or inspiration sources before implementation. Do NOT use as an implementation runtime guide (use motion-framer, motion-gsap, micro-interactions, or motion-video-pipeline)."
 license: MIT
 metadata:
-  trigger: ["hover effects", "loading animation", "entrance animation", "animate.css"]
+  trigger: ["hover effects", "loading animation", "entrance animation", "animate.css", "web animation sources", "animation references"]
   scope: [global, project]
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: Read
 ---
 
 # 🎞️ Web Animation Sources
 
-Lista curada de las 10 referencias de animación web agrupadas por tópico, con autor y propósito por entrada. Es un índice de fuentes para buscar inspiración y ejemplos: NO embebe instrucciones ni código del contenido externo.
+Índice curado de fuentes de animación web agrupadas por tópico (hover, loading, 3D, entrada, microinteracciones, background, cursor, librerías CSS/React) enlazado con la referencia completa de **22 repositorios Open-Source Motion Studio**. Es un mapa de inspiración con atribución: NO embebe instrucciones ni código propietario externo.
 
 ## 📋 When to Use
 
-- Use when searching referencias o inspiración de animación antes de diseñar/implementar
-- Use when necesitas ejemplos canónicos por tópico (hover, loading, entrada, fondo, cursor…)
-- Do NOT use for implementación directa (use `motion-framer`, `motion-gsap`, `micro-interactions` o `visual-effects`)
-- Do NOT use for animación 3D en tiempo real (use `three-js-web`)
+- Use when searching referencias o inspiración de animación antes de diseñar o prototipar en StageShow.
+- Use when necesitas ejemplos canónicos por tópico o evaluar librerías de motion por categoría.
+- Do NOT use for implementación directa en código (use `motion-framer`, `motion-gsap`, `micro-interactions` o `visual-effects`).
+- Do NOT use para pipelines completos de renderizado de video (use `motion-video-pipeline`).
 
 ## 🚦 Hard Rules
 
-- **Always** citar autor/fuente al usar una referencia externa como base
-- **Never** copiar código o procedimientos del sitio fuente sin verificar licencia
-- **Always** preferir el tópico sobre el enlace exacto: si una URL cae, buscar la fuente vigente del mismo autor/tópico
+- **Always** citar autor/fuente al adaptar una referencia externa.
+- **Never** copiar código o assets protegidos del sitio fuente sin verificar su licencia.
+- **Always** priorizar el tópico y la física deseada sobre una URL concreta; si una URL cae, usar el recurso vigente equivalente.
 
 ## 🛠️ Workflow
 
-1. Identificar el tópico de animación en la tabla de [animation-sources.md](references/animation-sources.md)
-2. Abrir la referencia correspondiente y extraer dirección visual/patrones
-3. Implementar con la skill de motion apropiada (`motion-framer`, `motion-gsap`, `micro-interactions`, `visual-effects`)
+1. Localizar el tópico en [references/animation-sources.md](references/animation-sources.md).
+2. Si el caso requiere un motor completo o pipeline `code-to-video` / WebGL / capture, consultar [`../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md`](../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md).
+3. Implementar con la skill de ejecución correspondiente (`motion-framer`, `motion-gsap`, `micro-interactions`, `three-js-web` o `motion-video-pipeline`).
 
 ## 📚 References
 
-- [Animation Sources](references/animation-sources.md) — las 10 referencias curadas agrupadas por tópico
+- [Animation Sources](references/animation-sources.md) — índice curado ampliado por tópico (CSS/React/UX/3D)
+- [Open-Source Motion Studio (22 Repos)](../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md) — stack completo de 22 repositorios Tiers A–D
 - [`micro-interactions`](../../02-dev-roles/micro-interactions/SKILL.md) — implementación de microinteracciones
-- [`motion-framer`](../motion-framer/SKILL.md) — implementación de animaciones en React/mobile
+- [`motion-framer`](../motion-framer/SKILL.md) — implementación declarativa en React/DOM

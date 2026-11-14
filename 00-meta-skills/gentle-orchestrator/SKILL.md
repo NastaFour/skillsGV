@@ -1,6 +1,6 @@
 ---
 name: gentle-orchestrator
-description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, ODD orchestrator. Default-inline ODD orchestrator protocol (Gentle-AI 4.3.1): work inline by default following the logbook, delegate only when a named Delegation Trigger truly holds, and preserve authorized work continuity. Do NOT use to force subagent delegation when no trigger holds."
+description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, ODD orchestrator. Default-inline ODD orchestrator protocol (Gentle-AI 4.4.0): work inline by default following the logbook, delegate only when a named Delegation Trigger truly holds, and preserve authorized work continuity. Do NOT use to force subagent delegation when no trigger holds."
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
@@ -9,30 +9,33 @@ metadata:
   version: "1.3.0"
 ---
 
-# gentle-orchestrator — Default-Inline ODD Orchestrator (Gentle-AI 4.3.1)
+# gentle-orchestrator — Default-Inline ODD Orchestrator (Gentle-AI 4.4.0)
 
 **You orchestrate and work inline by default, following your logbook. A Delegation Trigger holds only when its condition truly holds; none holds by default, and when in doubt work inline.**
 
 ## Regla Alan (lenguaje natural primero)
 
 - Preferí triggers en lenguaje natural («implementá la feature X», «continuá el cambio») antes que comandos slash: el NL siempre funciona; el slash es un alias opcional, no un requisito.
-- En Gentle-AI 4.3.1, ODD (Organic Driven Development) es el flujo nativo y exclusivo. Los comandos heredados de SDD (`sdd-status`, `sdd-continue`) fueron retirados en upstream 4.0.0. ODD opera mediante autorización, exploración proporcionada, clasificación por 3 criterios, tracking antes del primer write en tareas grandes (`odd/tasks/<feature>.md`), micro-blueprint pre-flight de 5 líneas para one-shot, commits en slices revisables de `~400` líneas (alto riesgo aislado) y cierre con evidencia y línea `Risk:`.
+- En Gentle-AI 4.4.0, ODD (Organic Driven Development) es el flujo nativo y exclusivo. Los comandos heredados de SDD (`sdd-status`, `sdd-continue`) fueron retirados en upstream 4.0.0. ODD opera mediante autorización, exploración proporcionada, clasificación por 3 criterios, tracking antes del primer write en tareas grandes (`odd/tasks/<feature>.md`), micro-blueprint pre-flight de 5 líneas para one-shot, commits en slices revisables de `~400` líneas (alto riesgo aislado) y cierre con evidencia y línea `Risk:`.
+- **Antigravity `agy 1.4` & Límite de Regla (`<24 KB`)**: Soporta subagentes declarativos `jd-judge-a`, `jd-judge-b` y `jd-fix-agent` (`inherit`/`flash_lite`/`flash`/`pro`), respetando el techo `<24 KB` para reglas globales siempre cargadas (`AGENTS.md` permanece `<6.5 KB`).
 
-### Delegation Triggers (Gentle-AI 4.3.1)
+### Delegation Triggers (Gentle-AI 4.4.0)
 
 | Acción | Inline (Default) | Delegar (Solo cuando la condición se cumple) |
 |---|---|---|
 | Exploración / Lectura en `<= 1` batch paralelo (`<= 3` llamadas / `~10k` tokens) | ✅ | — |
 | Exploración / Mapeo que supera 1 batch (`> 3` llamadas / `> ~10k` tokens) o `> ~5` búsquedas secuenciales | — | ✅ 1 explorador read-only (`<= 2k` tokens con `path:line`) |
+| Planificación **Large**, upgrade mayor o lógica/cómputo pesado (`Auto-EGM Plan Gate`) | — | ✅ **Obligatorio**: borrador del planeador → panel Goldfish en contexto cero (`3` críticos por defecto: `egm-zoom-out`, `egm-codebase-details`, `egm-implementation-readiness`; `5` en arquitectura/seguridad crítica) vía `egm-spec-review` antes de `odd/tasks/` |
 | Implementar cambio entendido o tarea grande sin paralelismo real | ✅ | — |
 | `2+` unidades conductuales independientes con superficies disjuntas lanzadas juntas | — | ✅ 1 writer acotado por unidad conductual |
 | Verificación de cambio de Alto Riesgo (ítems `1-6`) | — | ✅ verificador independiente en `mktemp -d` (`--escalate-item <1-6> --escalate-reason`) |
 | Backstop de sesión larga (`~150k` tokens de contexto en el padre) | — | ✅ pausar y delegar siguiente unidad acotada |
 | bash (`git`/`gh`) y propiedad de commits/ramas | ✅ | — |
 
-**Reglas duras de delegación (Gentle-AI 4.3.1):**
+**Reglas duras de delegación (Gentle-AI 4.4.0):**
 - **Default-Inline**: ningún trigger aplica por defecto; ante la duda, trabajá inline siguiendo `odd/tasks/<feature>.md`. El conteo de archivos, las líneas totales, el tamaño de la tarea o el ratio de precio de modelos **NUNCA** disparan un writer por sí solos.
 - **Mapping Trigger**: delegá un único explorador read-only solo cuando entender el problema exceda 1 batch paralelo (`> 3` llamadas o `> ~10k` tokens) o requiera `> ~5` búsquedas secuenciales. El explorador devuelve `<= 2k` tokens con evidencia `path:line`; hacé como máximo 1 spot-check en el padre y nunca explores archivos que igual vas a leer inline antes de editar.
+- **Auto-EGM Planning Trigger (Planes Grandes / Alta Lógica)**: en planes **Large**, upgrades mayores o diseños de alta lógica/cómputo, pasá obligatoriamente el borrador del planeador por `egm-spec-review` (`3` Goldfishes en contexto cero en paralelo por defecto; `5` en arquitectura/seguridad crítica; con fallback a críticos read-only sin historial si `~/.gemini/config/plugins/egm/` no existe). **Nunca** lo dispares en tareas chicas.
 - **Writer Trigger**: delegá writers solo por paralelismo real (`2+` unidades conductuales independientes con superficies de edición disjuntas, cada una claramente más pesada que iniciar un subagente, lanzadas juntas) o por el backstop de `~150k` tokens. **Nunca dividas código, tests y docs de un mismo comportamiento entre distintos writers.**
 - **Invariants & Helper Reuse**: al tocar estado compartido, configuración, manifiestos o parsers, reutilizá los helpers existentes del repositorio y preservá las invariantes de ordenamiento, unicidad, validación y normalización.
 - **Verification Trigger (en `mktemp -d` aislado)**: delegá un verificador independiente read-only **SOLO** cuando el cambio active un ítem de Alto Riesgo (`1-6`) (`--escalate-item <1-6> --escalate-reason "<razón>"` son flags CLI para `gentle-ai review assess` cuando el binario nativo está activo). El verificador independiente recibe el ítem de Alto Riesgo, el documento completo (`S#`), el commit base y los comandos de probe, ejecuta las pruebas en un directorio temporal aislado (`mktemp -d` / `os.tmpdir()`) y devuelve un veredicto por `S#`.

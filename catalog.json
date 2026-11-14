@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 246
+    "skills": 251
   },
   "categories": [
     {
@@ -12,7 +12,7 @@
     {
       "id": "01-planning-process",
       "title": "Planning & Process",
-      "count": 23
+      "count": 24
     },
     {
       "id": "02-dev-roles",
@@ -22,7 +22,7 @@
     {
       "id": "03-ai-ml",
       "title": "AI / ML",
-      "count": 11
+      "count": 12
     },
     {
       "id": "04-backend",
@@ -32,12 +32,12 @@
     {
       "id": "05-frontend",
       "title": "Frontend",
-      "count": 55
+      "count": 56
     },
     {
       "id": "06-code-quality",
       "title": "Code Quality",
-      "count": 19
+      "count": 21
     },
     {
       "id": "07-testing",
@@ -444,6 +444,16 @@
     {
       "name": "copywriting",
       "path": "01-planning-process/copywriting/SKILL.md",
+      "category": "01-planning-process",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "egm-spec-review",
+      "path": "01-planning-process/egm-spec-review/SKILL.md",
       "category": "01-planning-process",
       "tier": "full",
       "tier0": false,
@@ -1012,6 +1022,16 @@
       "autoInvoke": false
     },
     {
+      "name": "prompt-shield",
+      "path": "03-ai-ml/prompt-shield/SKILL.md",
+      "category": "03-ai-ml",
+      "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "rag-knowledge-systems",
       "path": "03-ai-ml/rag-knowledge-systems/SKILL.md",
       "category": "03-ai-ml",
@@ -1290,6 +1310,16 @@
       "deprecated": false,
       "note": "← constructor injection, @ConfigurationProperties, @Transactional",
       "autoInvoke": true
+    },
+    {
+      "name": "ai-design-check-stageshow",
+      "path": "05-frontend/ai-design-check-stageshow/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
     },
     {
       "name": "ai-ui-generation",
@@ -1842,6 +1872,16 @@
       "autoInvoke": true
     },
     {
+      "name": "app-resource-efficiency",
+      "path": "06-code-quality/app-resource-efficiency/SKILL.md",
+      "category": "06-code-quality",
+      "tier": "extended",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "biome",
       "path": "06-code-quality/biome/SKILL.md",
       "category": "06-code-quality",
@@ -1949,6 +1989,16 @@
       "tier0": false,
       "deprecated": false,
       "note": "← creación y triage estructurado de issues en GitHub con evidencia técnica",
+      "autoInvoke": false
+    },
+    {
+      "name": "karpathy-ponytail-simplicity",
+      "path": "06-code-quality/karpathy-ponytail-simplicity/SKILL.md",
+      "category": "06-code-quality",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
       "autoInvoke": false
     },
     {

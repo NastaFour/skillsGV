@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.3.1 proportionate review rules (Provider Contract 1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
+description: "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.4.0 proportionate review rules (Provider Contract 1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -10,13 +10,13 @@ metadata:
   version: "2.1.0"
 ---
 
-# 🔍 Code Reviewer & SOLID Auditor (Gentle-AI 4.3.1 & ECC Patterns)
+# 🔍 Code Reviewer & SOLID Auditor (Gentle-AI 4.4.0 & ECC Patterns)
 
-This skill acts as a strict, constructive Senior Peer Reviewer enforcing causal review disposition, the 4R Framework, and Gentle-AI 4.3.1 proportionate verification rules.
+This skill acts as a strict, constructive Senior Peer Reviewer enforcing causal review disposition, the 4R Framework, and Gentle-AI 4.4.0 proportionate verification rules.
 
 ---
 
-## 🔄 ECC Verification Loops & Gentle-AI 4.3.1 Proportionate Review
+## 🔄 ECC Verification Loops & Gentle-AI 4.4.0 Proportionate Review
 
 Choose the review mode proportionate to the candidate's risk assessment:
 
@@ -26,7 +26,7 @@ Choose the review mode proportionate to the candidate's risk assessment:
 | **Checkpoint Review (`~400`-line slice)** | End of a reviewable work-unit slice or before PR creation | Audit across the 4R Framework and 5 review dimensions; record assessed tier/outcome per commit |
 | **Continuous Inline Check (`under_budget`)** | Low/medium-risk task (`Risk: none`) | Author runs focused test and suite inline; no independent verifier spawned for writer model size/effort |
 
-### Fresh Context & Escalation Rules (Gentle-AI 4.3.1)
+### Fresh Context & Escalation Rules (Gentle-AI 4.4.0)
 
 1. **High-Risk Commit Isolation**: Before reviewing or committing a High-Risk unit (`Risk: item 1..6`), ensure any pending `under_budget` slice was committed separately first so the high-risk commit is reviewed alone.
 2. **No Small-Model Verifier Bias**: Independent verification and review escalation (`--escalate-item <1-6> --escalate-reason`) trigger **ONLY** on the 6 High-Risk items (1: data/migrations, 2: security/auth, 3: shared contracts/CLI/parsers, 4: concurrency, 5: delivery/CI/deps, 6: untested regression surface) — never merely because the writer ran on a smaller/cheaper model or lower effort tier.
@@ -96,5 +96,7 @@ When a change carries high architectural or security blast radius, escalate to [
 
 - [`references/4r-framework.md`](references/4r-framework.md) — 4R checklist
 - [`references/review-policy.md`](references/review-policy.md) — Causal review policy
-- `_shared/review-ledger-contract.md` — Native Compact Review Orchestration (Gentle-AI 4.3.1, Provider Contract `1.5`)
-- `../rdd-defect-workflow/SKILL.md` — Receipt-Driven Development workflow
+- [Review Ledger Contract](../../_shared/review-ledger-contract.md) — Native Compact Review Orchestration (Gentle-AI 4.4.0, Provider Contract `1.5`)
+- [`../rdd-defect-workflow/SKILL.md`](../rdd-defect-workflow/SKILL.md) — Receipt-Driven Development workflow
+- [`../../06-code-quality/app-resource-efficiency/SKILL.md`](../../06-code-quality/app-resource-efficiency/SKILL.md) — CPU, RAM, GPU, I/O backpressure & LLM token budgets
+- [`../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md`](../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md) — Surgical diffs, YAGNI & anti-overengineering guards
