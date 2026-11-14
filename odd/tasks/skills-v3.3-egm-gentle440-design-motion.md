@@ -25,8 +25,8 @@ Objective: Install Google's `elephant-goldfish-model` (EGM) plugin into Antigrav
 ## Tasks
 
 - [x] **T1** (`S1`) | Route: `inline` | Install `google/elephant-goldfish-model` into `~/.gemini/config/plugins/egm/` + `rules/AGENTS.md` bridge & draft `concepts_brief.md` with Elephant token-waste audit | Completed (`~/.gemini/config/plugins/egm` + `concepts_brief.md`)
-- [x] **T2** (`S2`) | Route: `inline` | Upgrade `skillsGV` to Gentle-AI `4.4.0` & compress 20 deprecated skills (`-37k tok`) + `decision-gate` / `brainstorming` (`-4.5k tok`) | Verified (`50/50` tests + `catalog-doctor 7/7`, `246` skills)
-- [ ] **T3** (`S3`) | Route: `inline` | Create `05-frontend/ai-design-check-stageshow` and upgrade `hallmark-design-study`, `motion-video-pipeline` (22 repos), and `web-animation-sources` | Pending
+- [x] **T2** (`S2`) | Route: `inline` | Upgrade `skillsGV` to Gentle-AI `4.4.0` & compress 20 deprecated skills (`-37k tok`) + `decision-gate` / `brainstorming` (`-4.5k tok`) | Commit: `0129b64` (`50/50` tests + `catalog-doctor 7/7`, `246` skills)
+- [x] **T3** (`S3`) | Route: `inline` | Create `05-frontend/ai-design-check-stageshow` and upgrade `hallmark-design-study`, `motion-video-pipeline` (22 repos), and `web-animation-sources` | Verified (`validate-skills --strict --skip-index-sync` 4/4 pass, `0` errors/`0` warnings)
 - [ ] **T4** (`S4`) | Route: `inline` | Install `03-ai-ml/prompt-shield` (`NastaFour/prompt-shield`) and enrich `live-cve-security-intel` / `security-audit` (`bug-hunter`, `defending-code`) | Pending
 - [ ] **T5** (`S5`) | Route: `inline` | Create `06-code-quality/app-resource-efficiency`, `06-code-quality/karpathy-ponytail-simplicity`, and `01-planning-process/egm-spec-review` | Pending
 - [ ] **T6** (`S6`) | Route: `inline` | Update router overlap matrix & corpus, run 4-way catalog sync (`251` skills, `v3.3.0`), sync `gentle-ai-dsh`, and pass `--strict` validator, `router-replay`, `catalog-doctor`, `safe_read.py`, and full test suite | Pending

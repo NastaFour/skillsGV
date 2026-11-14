@@ -1,6 +1,8 @@
-# Animation Sources — 10 referencias curadas
+# Animation Sources — Referencias Curadas y Ecosistema Motion Studio
 
-Lista curada de referencias de animación web agrupadas por tópico. Cada entrada declara {título, autor/fuente, URL, propósito}. Formato de lista curada con atribución: este archivo NO embebe instrucciones paso a paso ni código del contenido externo (mitiga rot de URLs y respeta el vendoring con atribución del catálogo).
+Lista curada de referencias de animación web agrupadas por tópico. Cada entrada declara `{título, autor/fuente, URL, propósito}`. Formato de índice con atribución: este archivo NO embebe código ni instrucciones paso a paso de sitios externos (mitiga rot de URLs y respeta el vendoring con atribución del catálogo).
+
+> Para motores completos de UI/3D/Code-to-Video (22 repositorios verificados Tiers A–D: Remotion, Motion Canvas, Manim, GSAP, Motion, Rive, Three.js/R3F, FFmpeg, Playwright), ver [`../../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md`](../../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md).
 
 > Nota de curaduría: las entradas marcadas como «enlace sustituto» corresponden a fuentes históricas citadas por título/autor cuya URL original no pudo verificarse al momento de la curaduría; se enlaza el recurso canónico vigente del mismo tópico.
 
@@ -59,6 +61,13 @@ Lista curada de referencias de animación web agrupadas por tópico. Cada entrad
 |---|---|---|---|
 | React Bits | David Haz | https://reactbits.dev | Componentes React animados copy-paste (textos, fondos, reveals) listos para adaptar |
 
+## Motion Engineers & Studios (Referencia Continua)
+
+| Título | Autor/Fuente | URL | Propósito |
+|---|---|---|---|
+| animations.dev | Emil Kowalski | https://animations.dev | Curvas de easing, resortes naturales y física de transiciones UI interactivas |
+| Motion Studio (22 Repos) | `skillsGV` Tiers A–D | `../../../11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md` | Directorio completo de 22 repositorios open-source (Remotion, Motion, GSAP, Rive, Three.js, FFmpeg) |
+
 ---
 
-Conteo total: **10 referencias**. Al reutilizar cualquier fuente, respetar licencia y atribución del autor.
+Índice curado ampliado (referencias web por tópico + enlace al directorio de 22 repositorios Motion Studio). Al reutilizar cualquier fuente, respetar licencia y atribución del autor.
