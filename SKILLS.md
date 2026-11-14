@@ -65,7 +65,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | storybrand-messaging | [01-planning-process/storybrand-messaging/SKILL.md](01-planning-process/storybrand-messaging/SKILL.md) ← Estructuración de narrativa de producto y mensajería usando el marco StoryBrand… |
 | content-studio | [01-planning-process/content-studio/SKILL.md](01-planning-process/content-studio/SKILL.md) ← Generación modular de piezas multicanal (artículos, hilos, notas) desde una ide… |
 | app-flow-spec | [01-planning-process/app-flow-spec/SKILL.md](01-planning-process/app-flow-spec/SKILL.md) ← Generates the canonical APP_FLOW.md specification: route maps, role permissions… |
-| egm-spec-review | [01-planning-process/egm-spec-review/SKILL.md](01-planning-process/egm-spec-review/SKILL.md) ← Bridges skillsGV ODD planning with the external Google Elephant-Goldfish Model… |
+| egm-spec-review | [01-planning-process/egm-spec-review/SKILL.md](01-planning-process/egm-spec-review/SKILL.md) ← Mandatory pre-execution adversarial review gate for Large plans, major upgrades… |
 
 ## 02-dev-roles
 

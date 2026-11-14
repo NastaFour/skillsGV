@@ -113,7 +113,7 @@
       "id": "spec-ideation-review",
       "canonical": "egm-spec-review",
       "members": ["egm-spec-review", "idea-to-prd-express", "decision-gate"],
-      "note": "egm-spec-review coordina specs con Elephant y críticos Goldfish sin contexto previo antes de codificar; idea-to-prd-express sintetiza PRD.md exprés en 20 min; decision-gate evalúa trade-offs rápidos con matrices binarias/scoring. Distinto de ideation-interview (brainstorming Socrático inicial)."
+      "note": "egm-spec-review ejecuta el Auto-EGM Plan Gate obligatorio para planes Large, upgrades mayores o diseños de alta lógica/cómputo (3 críticos Goldfish por defecto, 5 en arquitectura crítica) antes de odd/tasks/; idea-to-prd-express sintetiza PRD.md exprés en 20 min; decision-gate evalúa trade-offs rápidos con matrices binarias/scoring. Distinto de ideation-interview (brainstorming Socrático inicial)."
     },
     {
       "id": "motion-animation-pipeline",
