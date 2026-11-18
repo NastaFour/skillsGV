@@ -26,3 +26,4 @@ Antes de entregar cualquier pantalla o componente a producción, verificar cada 
 - [ ] **Accesibilidad de Movimiento**: ¿Si `MOTION_INTENSITY > 3`, se incluye soporte obligatorio de `@media (prefers-reduced-motion: reduce)`?
 - [ ] **Límites de Hero**: ¿El Hero Section tiene máximo 4 elementos de texto, padding superior `<= pt-24`, y es visible completo above-the-fold?
 - [ ] **Prosa Ergonómica**: ¿Los bloques de texto de lectura están restringidos a `65ch - 75ch` de ancho?
+- [ ] **UIZZE `UI_CONTRACT.md` Finish Gate**: ¿Toda pantalla interactiva declara explícitamente `1. Primary action` + `2. Recovery action` y verifica que los 5 estados de runtime (`Default`, `Loading`, `Empty`, `Error`, `Success`) sean realmente alcanzables antes de cerrar?

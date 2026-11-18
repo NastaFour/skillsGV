@@ -1,14 +1,14 @@
 # skillsGV
 
 [![CI](https://github.com/NastaFour/skillsGV/actions/workflows/ci.yml/badge.svg)](https://github.com/NastaFour/skillsGV/actions)
-[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](package.json)
+[![Version](https://img.shields.io/badge/version-3.4.0-blue.svg)](package.json)
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
 [![Skills Count](https://img.shields.io/badge/skills-251-purple.svg)](#categories)
-[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.4.0)-brightgreen.svg)](#organic-driven-development)
+[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.5.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.4.0 Organic-Driven Development (ODD), dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.5.0 Organic-Driven Development (ODD), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
@@ -22,13 +22,13 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **251 skills** complying with the open [agentskills.io](https://agentskills.io/specification) standard.
+- 🎯 **251 skills** complying with [agentskills.io](https://agentskills.io/specification), scored `0–100` under **NVIDIA `SkillEvaluator` Tier-1 Quality Score (`--quality-score >= 70`)** and verified across **7 harnesses** (`--harness-check`).
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
-- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.4.0) + Auto-EGM Plan Gate**: Authorize → Explore → Classify (Understood in ≤1 batch of 3 calls/~10k tokens, Contained risk across 6 items, Resumable from `git diff` alone) → **Mandatory Zero-Context Goldfish Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md) + external `google/elephant-goldfish-model`: 3 critics default, 5 critical on Large/heavy-logic plans; 0 overhead on Small tasks) → Task File + Engram Mirror → Reviewable Work-Unit Slices (~400 lines; high-risk isolated) → Close with `Risk: item N (reason)` or `Risk: none`.
+- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.5.0) + Auto-EGM Plan Gate**: Authorize → Explore (CodeGraph first) → Classify → **Auto-EGM Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md): 3 Goldfishes default, 5 critical; 0 overhead on Small) → `odd/tasks/<feature>.md` + `## Allowed edit surfaces` & `## Key Learnings` workers → 3-tier verification (`_shared/verify-method.md` in `mktemp -d` + differential check) → Selective install (`--skills <list>`) & always-on kernel triggers → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
-- 🛡️ **Defensive Security, Prompt Shield & Pre-Release Live CVE Gate**: Real-time OSV.dev advisories (`live-cve-security-intel`), runtime command interception & prompt-injection guards (`ai-safety-agent-guard` + `prompt-shield` / `safe_read.py` wrapper), secure coding (`defending-code`, `bug-hunter`), and supply-chain sandboxing.
+- 🛡️ **Defensive Security, Cloudflare 6-Phase Audit, NVIDIA `SkillSpector` & `prompt-shield`**: Static skill/MCP checks (`TT1–6`, `LP1–4`, `TP1–4`, `RP1–3`, `SC8`, `SC10`), Cloudflare Coverage Ledger & `confirmed` 6-tuple certainty contract (`security-audit`), `prompt-shield` (`safe_read.py`), live OSV.dev CVEs (`live-cve-security-intel`), and runtime `ai-safety-agent-guard`.
 - 🏗️ **250-Point Production Engineering & Distributed SRE**: Complete readiness checklist (`production-readiness-250`) and fault-tolerant distributed resilience (`distributed-resilience-sre`) covering monetary math (no floats for money), UTC/IANA timezones, idempotency keys, outbox/DLQ patterns, circuit breakers, and graceful `SIGTERM` shutdowns.
-- 🎨 **Anti-Slop Design Governance, Motion Studio & "Think Outside the Box"**: Integrates `impeccable`, `taste-skill`, `design-driven` (8 Archetypal Chassis, 3-line Design Read, lateral creative synthesis), `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `web-animation-sources`, and `motion-video-pipeline` (22-repo Open-Source Motion Studio).
+- 🎨 **10x Anti-Slop Design Governance, Typography & Motion Studio**: Unites `impeccable`, `taste-skill` (+ UIZZE `UI_CONTRACT`), `design-driven` (D1b + Think Outside the Box), **Hallmark v2.0** (21 macrostructures, SaaS Section Deck, `P-H-E-S-R-V`), **Hue** Hero Stage physics, **Google Stitch** `extract-design-md`, **UI UX Pro Max v2** (192 palettes, WCAG 2.2 `ime-composition-enter`, DTCG, RTL), **Interface Design** (Anti-Reinvention + `design-deslop`), **Emil Kowalski** (`mobile-native` 11 fixes, `break-ui`, `@starting-style`), **Jakub Krehel** 19 polish rules, **StageShow v1.1.1**, **Official `shadcn/ui` 2026**, **Better Typography** zero-CLS `@font-face`, and 22-repo Motion Studio.
 - ⚡ **Token Efficiency & Simplicity Discipline**: `~41,500` tokens compressed across the catalog without losing behavior, plus `karpathy-ponytail-simplicity` (minimal assumptions, surgical diffs) and `app-resource-efficiency` (lifecycle, battery, and memory budgets).
 - 🌟 **Floor, Not Ceiling Architecture**: Hard invariants prevent regressions and security vulnerabilities, while explicitly empowering models to propose superior modern patterns (`[Beyond-Baseline]`).
 - 🧠 **Cross-Session Memory**: Seamless MCP integration with [Engram](https://github.com/Gentleman-Programming/engram) (`mem_save`, `mem_search`, `mem_judge`).
@@ -266,6 +266,10 @@ This repository synthesizes, adapts, and organizes open-source standards and met
 - **22-Repo Open-Source Motion Studio**: Curated GSAP, Motion, Theatre.js, Rive, Lottie, Three.js/R3F, and procedural video stack cataloged in [`motion-studio-22.md`](11-mcp-hybrid/motion-video-pipeline/references/motion-studio-22.md) (`motion-video-pipeline`, `web-animation-sources`).
 - **[Andrej Karpathy](https://github.com/karpathy) / [Addy Osmani](https://addyosmani.com/) / Ponytail, Caveman & Graphify**: Surgical simplicity, `~41,500`-token catalog compression without behavior loss, and runtime resource budgeting (`karpathy-ponytail-simplicity`, `app-resource-efficiency`).
 - **[msitarzewski (`agency-agents`)](https://github.com/msitarzewski/agency-agents)**: Specialist agent role archetypes and defensive verification patterns (`bug-hunter`, `defending-code`).
+- **[NVIDIA (`SkillSpector` & `SkillEvaluator`)](https://github.com/nvidia/skillspector)**: Static taint/MCP security rules, 7-harness portability checks, Tier-1 Quality Score, Wilson 95% CI, and statistical skill lift metrics ([docs](https://docs.nvidia.com/skills/skillevaluator)).
+- **[Cloudflare (`security-audit-skill`)](https://github.com/cloudflare/security-audit-skill)**: 6-phase Coverage Ledger audit architecture, 6-tuple certainty contract, verifier budget reserve, and race-safe scratch promotion.
+- **[Nutlope (`hallmark` v2)](https://github.com/Nutlope/hallmark) / [Dominik Martin (`hue`)](https://github.com/dominikmartn/hue) / [Google Labs (`stitch-skills`)](https://github.com/google-labs-code/stitch-skills) / [UIZZE (`anti-ui-slop`)](https://github.com/uizze/uizze)**: 21 macrostructures, Hue Hero Stage physics, static `DESIGN_SYSTEM.md` extraction, `UI_CONTRACT`, and `image-to-ui`.
+- **[Jakub Krehel (`make-interfaces-feel-better`)](https://github.com/jakubkrehel/make-interfaces-feel-better) / [Dammyjay93 (`interface-design`)](https://github.com/Dammyjay93/interface-design) / [NextLevelBuilder (`ui-ux-pro-max`)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) / [`shadcn/ui`](https://github.com/shadcn-ui/ui) / [J. Poindexter (`typography-skills`)](https://github.com/jpoindexter/typography-skills)**: 19 polish recipes, Anti-Reinvention & `design-deslop`, WCAG 2.2/DTCG/RTL design intelligence, official 2026 `shadcn/ui` patterns, and zero-CLS Better Typography.
 
 ### License
 

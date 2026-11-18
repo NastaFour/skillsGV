@@ -34,7 +34,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.4.0 Organic Driven Development… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.5.0 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
 | codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
@@ -204,15 +204,15 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | taste-skill | [05-frontend/taste-skill/SKILL.md](05-frontend/taste-skill/SKILL.md) ← Design Read, diales, 10 bans, references/full-guide.md |
 | emil-kowalski | [05-frontend/emil-kowalski/SKILL.md](05-frontend/emil-kowalski/SKILL.md) ← Filosofía de Emil Kowalski (animations.dev): física de resortes, gestos interru… |
 | refactoring-ui | [05-frontend/refactoring-ui/SKILL.md](05-frontend/refactoring-ui/SKILL.md) ← Metodología Wathan & Schoger armonizada con tokens OKLCH: validación de jerarqu… |
-| ui-ux-pro-max | [05-frontend/ui-ux-pro-max/SKILL.md](05-frontend/ui-ux-pro-max/SKILL.md) ← Base de 50+ estilos UI, 160+ paletas y reglas por industria (SaaS, Fintech, E-c… |
+| ui-ux-pro-max | [05-frontend/ui-ux-pro-max/SKILL.md](05-frontend/ui-ux-pro-max/SKILL.md) ← Base de 89 estilos UI, 192 paletas y 120 reglas UX por industria (SaaS, Fintech… |
 | onboarding-cro | [05-frontend/onboarding-cro/SKILL.md](05-frontend/onboarding-cro/SKILL.md) ← Diseño y optimización de flujos de onboarding para reducir Time-to-Value (TTV)… |
 | page-cro | [05-frontend/page-cro/SKILL.md](05-frontend/page-cro/SKILL.md) ← Optimización de conversión para landing pages, precios y páginas de producto se… |
 | popup-cro | [05-frontend/popup-cro/SKILL.md](05-frontend/popup-cro/SKILL.md) ← Diseño de popups, modales de exit-intent y banners de alta conversión sin degra… |
 | signup-flow-cro | [05-frontend/signup-flow-cro/SKILL.md](05-frontend/signup-flow-cro/SKILL.md) ← Reducción de fricción y optimización de conversión en formularios y flujos de r… |
 | frontend-slides-deck | [05-frontend/frontend-slides-deck/SKILL.md](05-frontend/frontend-slides-deck/SKILL.md) ← Use when creating zero-dependency interactive HTML slide presentations, convert… |
-| hallmark-design-study | [05-frontend/hallmark-design-study/SKILL.md](05-frontend/hallmark-design-study/SKILL.md) ← Use when extracting structural and visual DNA from reference URLs or screenshot… |
+| hallmark-design-study | [05-frontend/hallmark-design-study/SKILL.md](05-frontend/hallmark-design-study/SKILL.md) ← Use when extracting structural and visual DNA from reference URLs, codebases, o… |
 | scroll-world-storytelling | [05-frontend/scroll-world-storytelling/SKILL.md](05-frontend/scroll-world-storytelling/SKILL.md) ← Use when building immersive scroll-driven landing pages, product showcases, 3D/… |
-| ai-design-check-stageshow | [05-frontend/ai-design-check-stageshow/SKILL.md](05-frontend/ai-design-check-stageshow/SKILL.md) ← Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow for archet… |
+| ai-design-check-stageshow | [05-frontend/ai-design-check-stageshow/SKILL.md](05-frontend/ai-design-check-stageshow/SKILL.md) ← Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow v1.1.1 for… |
 
 ## 06-code-quality
 
