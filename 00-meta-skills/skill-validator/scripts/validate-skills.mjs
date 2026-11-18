@@ -13,7 +13,7 @@
  *   2 = invalid arguments
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, lstatSync, existsSync } from "node:fs";
 import { join, basename, relative, resolve, sep, dirname, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPO_ROOT, checkCatalog, readTier0Set, walkSkillPaths } from "../../../_shared/catalog-manifest.mjs";
@@ -27,6 +27,8 @@ let jsonOutput = false;
 let strictMode = false;
 let skipIndexSync = false;
 let checkDeps = false;
+let harnessCheck = false;
+let qualityScore = false;
 let forceCatalogRoot = false;
 let targetPath = process.cwd();
 
@@ -35,6 +37,8 @@ for (const arg of args) {
   else if (arg === "--strict") strictMode = true;
   else if (arg === "--skip-index-sync") skipIndexSync = true;
   else if (arg === "--check-deps") checkDeps = true;
+  else if (arg === "--harness-check") harnessCheck = true;
+  else if (arg === "--quality-score") qualityScore = true;
   else if (arg === "--catalog-root") forceCatalogRoot = true;
   else if (arg === "--help" || arg === "-h") {
     printHelp();
@@ -831,7 +835,7 @@ function printHelp() {
   console.log(`Skill Validator — agentskills.io compliance checker
 
 Usage:
-  node validate-skills.mjs [path] [--json] [--strict] [--skip-index-sync] [--check-deps] [--catalog-root]
+  node validate-skills.mjs [path] [--json] [--strict] [--skip-index-sync] [--check-deps] [--harness-check] [--quality-score] [--catalog-root]
 
 Options:
   path                 Directory to scan (default: cwd)
@@ -839,6 +843,8 @@ Options:
   --strict             Treat warnings as errors
   --skip-index-sync    Skip catalog checks against SKILLS.md, AGENTS.md, catalog.json, prose docs and the registry
   --check-deps         Resolve metadata.requires (bin:/env:/node:) with a compatibility fallback; exit 1 on unsatisfied deps
+  --harness-check      Check 7-harness portability (UTF-16 description cap, OpenClaw 15k, OpenCode 51.2k, $ARGUMENTS/slash metadata)
+  --quality-score      Compute NVIDIA SkillEvaluator Tier-1 Quality Score (0-100, >= 70 threshold)
   --catalog-root       Enforce catalog manifest and index checks on the target directory (default: auto-detected if target is REPO_ROOT)
   --help               Show this help
 
@@ -1020,6 +1026,138 @@ function runRegistryConsistencyCheck(skills, targetPath) {
   return issues;
 }
 
+const DESC_WHEN_RE = /(when|use|if|trigger|úsala|usala|cuando usar)/i;
+const CLAUDE_PLACEHOLDER_RE = /\$ARGUMENTS\b|\$\{CLAUDE_SKILL_DIR\}/;
+
+/**
+ * Portable 7-harness compatibility check inspired by NVIDIA SkillEvaluator harness-check
+ * (claude-code, codex, copilot-cli, hermes, openclaw, opencode, antigravity).
+ */
+export function runHarnessCheck(file, content, parsed) {
+  const issues = [];
+  if (!parsed) {
+    return { issues, compatible: false };
+  }
+  const { front, body } = parsed;
+  const desc = (getField(front, "description") || "").replace(/^["']|["']$/g, "");
+  // UTF-16 code units check (Copilot CLI / Codex drop > 1024)
+  if (desc.length > 1024) {
+    issues.push({
+      severity: "error",
+      check: "harness-desc-utf16",
+      msg: `description UTF-16 length (${desc.length}) exceeds 1024-unit Copilot/Codex cap`,
+    });
+  }
+  if (CLAUDE_PLACEHOLDER_RE.test(body)) {
+    issues.push({
+      severity: "info",
+      check: "harness-claude-placeholder",
+      msg: "Contains $ARGUMENTS or ${CLAUDE_SKILL_DIR} placeholder (not natively substituted in Codex/Hermes/Antigravity)",
+    });
+  }
+  const argHint = getField(front, "argument-hint");
+  const disableModel = getField(front, "disable-model-invocation");
+  if (argHint || disableModel === "true") {
+    issues.push({
+      severity: "info",
+      check: "harness-slash-metadata",
+      msg: "Declares slash-invocation frontmatter (argument-hint / disable-model-invocation) optimized for Claude Code",
+    });
+  }
+  if (content.length > 15000) {
+    issues.push({
+      severity: "info",
+      check: "harness-openclaw-size",
+      msg: `SKILL.md is ${content.length} chars (> 15,000 char OpenClaw truncation threshold)`,
+    });
+  }
+  const byteLen = Buffer.byteLength(content, "utf8");
+  const totalLines = content.split(/\r?\n/).length;
+  if (byteLen > 51200 || totalLines > 2000) {
+    issues.push({
+      severity: "warning",
+      check: "harness-opencode-size",
+      msg: `SKILL.md (${byteLen} bytes, ${totalLines} lines) exceeds OpenCode 51,200-byte or 2,000-line ceiling`,
+    });
+  }
+  try {
+    if (lstatSync(file).isSymbolicLink()) {
+      issues.push({
+        severity: "info",
+        check: "harness-symlink",
+        msg: "SKILL.md is a symlink (ignored by Codex/Hermes/OpenClaw)",
+      });
+    }
+  } catch {}
+  const compatible = !issues.some((i) => i.severity === "error" || i.severity === "warning");
+  return { issues, compatible };
+}
+
+/**
+ * NVIDIA SkillEvaluator Tier-1 deterministic Quality Score (0-100, >= 70 threshold):
+ * 0.35 * Correctness + 0.25 * Discoverability + 0.25 * Reliability + 0.15 * Efficiency.
+ */
+export function computeSkillQualityScore(file, content, parsed, existingIssues = []) {
+  const front = parsed?.front || "";
+  const body = parsed?.body || "";
+  const name = (getField(front, "name") || basename(dirname(file))).replace(/^["']|["']$/g, "");
+  const desc = (getField(front, "description") || "").replace(/^["']|["']$/g, "");
+  const isDeprecated =
+    getField(front, "deprecated") === "true" ||
+    getNestedField(front, "metadata", "deprecated") === "true";
+
+  let correctness = 100;
+  for (const iss of existingIssues) {
+    if (iss.severity === "error") correctness -= 25;
+    else if (iss.severity === "warning") correctness -= 10;
+  }
+  correctness = Math.max(0, Math.min(100, correctness));
+
+  let discoverability = 100;
+  const hasWhenIssue = existingIssues.some((i) => i.check === "desc-when");
+  if (!desc || hasWhenIssue || (!isDeprecated && /[A-Za-z]/.test(desc) && !DESC_WHEN_RE.test(desc))) {
+    discoverability -= 15;
+  }
+  if (!isDeprecated) {
+    if (!desc || !DESC_EXCLUSION_RE.test(desc)) discoverability -= 10;
+    const triggers = getNestedField(front, "metadata", "trigger");
+    if (!triggers) discoverability -= 15;
+  }
+  discoverability = Math.max(0, Math.min(100, discoverability));
+
+  let reliability = 100;
+  if (!getField(front, "allowed-tools")) reliability -= 20;
+  const semver = (
+    getField(front, "version") ||
+    getNestedField(front, "metadata", "version") ||
+    ""
+  ).replace(/^["']|["']$/g, "");
+  if (!/^\d+\.\d+\.\d+$/.test(semver)) reliability -= 15;
+  if (existingIssues.some((i) => i.check === "script-audit" && i.severity === "error")) {
+    reliability -= 10;
+  }
+  reliability = Math.max(0, Math.min(100, reliability));
+
+  let efficiency = 100;
+  const bodyLines = body ? body.replace(/\r?\n$/, "").split(/\r?\n/).length : 0;
+  const tokens = estTokens(front + body);
+  if (bodyLines > SKILL_BODY_LINE_BUDGET) efficiency -= 20;
+  if (tokens > SKILL_TOKEN_GUIDANCE) efficiency -= 10;
+  if (tokens > 3500 && !existsSync(join(dirname(file), "references"))) efficiency -= 10;
+  efficiency = Math.max(0, Math.min(100, efficiency));
+
+  const overall = Math.round((0.35 * correctness + 0.25 * discoverability + 0.25 * reliability + 0.15 * efficiency) * 10) / 10;
+  return {
+    name,
+    correctness,
+    discoverability,
+    reliability,
+    efficiency,
+    overall,
+    passed: overall >= 70,
+  };
+}
+
 if (isCliEntry) {
 const skills = walkSkills(targetPath);
 
@@ -1048,6 +1186,8 @@ for (const file of skills) {
 
 const mcpServers = loadMcpManifest(targetPath);
 const declaredMcp = new Map(); // skill name -> declared server ids (MCP parity)
+const qualityScores = [];
+let harnessCompatibleCount = 0;
 
 for (const file of skills) {
   const rel = relative(process.cwd(), file);
@@ -1055,8 +1195,28 @@ for (const file of skills) {
   const gates = validateQualityGates(file, mcpServers === "invalid" ? null : mcpServers);
   issues.push(...gates.issues);
   if (gates.name && gates.mcp.length > 0) declaredMcp.set(gates.name, gates.mcp);
+
+  let qEntry = null;
+  if (harnessCheck || qualityScore) {
+    let rawContent = "";
+    let parsedDoc = null;
+    try {
+      rawContent = readFileSync(file, "utf8");
+      parsedDoc = parseFrontmatter(rawContent);
+    } catch {}
+    if (harnessCheck) {
+      const hRes = runHarnessCheck(file, rawContent, parsedDoc);
+      issues.push(...hRes.issues);
+      if (hRes.compatible) harnessCompatibleCount++;
+    }
+    if (qualityScore) {
+      qEntry = computeSkillQualityScore(file, rawContent, parsedDoc, issues);
+      qualityScores.push(qEntry);
+    }
+  }
+
   countIssues(issues);
-  results.push({ file: rel, issues });
+  results.push(qEntry ? { file: rel, qualityScore: qEntry, issues } : { file: rel, issues });
 }
 
 // Tier 0 token budget: catalog-level advisory (warning; strict escalates it).
@@ -1111,9 +1271,25 @@ if (!skipIndexSync) {
 }
 
 const effectiveErrors = strictMode ? totalErrors + totalWarnings : totalErrors;
+const qualitySummary = qualityScore && qualityScores.length > 0
+  ? {
+      averageScore: Number((qualityScores.reduce((acc, q) => acc + q.overall, 0) / qualityScores.length).toFixed(1)),
+      minScore: Math.min(...qualityScores.map((q) => q.overall)),
+      maxScore: Math.max(...qualityScores.map((q) => q.overall)),
+      passedCount: qualityScores.filter((q) => q.passed).length,
+      totalSkills: qualityScores.length,
+      below70: qualityScores.filter((q) => !q.passed).map((q) => ({ name: q.name, overall: q.overall })),
+    }
+  : null;
+const harnessSummary = harnessCheck
+  ? { compatibleCount: harnessCompatibleCount, totalSkills: skills.length }
+  : null;
 
 if (jsonOutput) {
-  console.log(JSON.stringify({ errors: totalErrors, warnings: totalWarnings, info: totalInfo, results }, null, 2));
+  const jsonPayload = { errors: totalErrors, warnings: totalWarnings, info: totalInfo, results };
+  if (qualitySummary) jsonPayload.qualitySummary = qualitySummary;
+  if (harnessSummary) jsonPayload.harnessSummary = harnessSummary;
+  console.log(JSON.stringify(jsonPayload, null, 2));
 } else {
   // A file "passes" when it has no error/warning; info-only advisories do not
   // break the pass count (they are hints, not gate failures).
@@ -1135,6 +1311,16 @@ if (jsonOutput) {
   console.log(`\n📊 Summary: ${ok.length} pass · ${bad.length} with issues`);
   console.log(`   ${totalErrors} errors · ${totalWarnings} warnings · ${totalInfo} info`);
   if (strictMode) console.log("   (strict mode: warnings counted as errors)");
+  if (qualitySummary || harnessSummary) {
+    const parts = [];
+    if (qualitySummary) {
+      parts.push(`Quality Score: avg ${qualitySummary.averageScore}/100 (min ${qualitySummary.minScore}, ${qualitySummary.passedCount}/${qualitySummary.totalSkills} >= 70 threshold)`);
+    }
+    if (harnessSummary) {
+      parts.push(`Harness compatibility: ${harnessSummary.compatibleCount}/${harnessSummary.totalSkills} load cleanly across all 7 harnesses`);
+    }
+    console.log(`🏆 NVIDIA SkillEvaluator Tier-1 · ${parts.join(" · ")}`);
+  }
 }
 
 process.exitCode = effectiveErrors > 0 ? 1 : 0;

@@ -81,11 +81,43 @@ export function blindRandomize(bareArm, skillArm) {
 }
 
 /**
+ * Wilson score confidence interval (default z = 1.95996 for 95% CI, NVIDIA SkillEvaluator Tier 3).
+ */
+export function wilsonConfidenceInterval(successes = 0, total = 0, z = 1.95996) {
+  if (total <= 0) {
+    return { center: 0, lower: 0, upper: 1, halfWidth: 0.5 };
+  }
+  const p = successes / total;
+  const z2 = z * z;
+  const denom = 1 + z2 / total;
+  const center = (p + z2 / (2 * total)) / denom;
+  const margin = (z * Math.sqrt((p * (1 - p) + z2 / (4 * total)) / total)) / denom;
+  return {
+    center: Number(center.toFixed(4)),
+    lower: Number(Math.max(0, center - margin).toFixed(4)),
+    upper: Number(Math.min(1, center + margin).toFixed(4)),
+    halfWidth: Number(margin.toFixed(4)),
+  };
+}
+
+/**
+ * NVIDIA SkillEvaluator Tier 3 tool efficiency metric: neutral calls are excluded
+ * from both numerator and denominator.
+ */
+export function computeToolEfficiency({ productive = 0, wasted = 0, neutral = 0 } = {}) {
+  void neutral;
+  const denom = productive + wasted;
+  if (denom <= 0) return 1.0;
+  return Number((productive / denom).toFixed(3));
+}
+
+/**
  * Deterministic rubric scoring based on expectation checks and output structure.
  */
 export function scoreRubric(candidateText = "", expectations = []) {
   const text = String(candidateText ?? "");
   let passedChecks = 0;
+  let notContainsFailed = false;
   const totalChecks = expectations.length;
 
   for (const exp of expectations) {
@@ -97,6 +129,7 @@ export function scoreRubric(candidateText = "", expectations = []) {
       if (text.includes(value)) passedChecks++;
     } else if (kind === "not-contains") {
       if (!text.includes(value)) passedChecks++;
+      else notContainsFailed = true;
     } else if (kind === "regex") {
       try {
         const re = new RegExp(value, "i");
@@ -104,7 +137,7 @@ export function scoreRubric(candidateText = "", expectations = []) {
       } catch {
         // ignore invalid regex
       }
-    } else if (kind === "routes-to") {
+    } else if (kind === "routes-to" || kind === "not-routes-to") {
       // Ignored for candidate text evaluation (evaluated offline by harness)
       passedChecks++;
     }
@@ -124,12 +157,24 @@ export function scoreRubric(candidateText = "", expectations = []) {
   }
 
   const totalScore = Number(Math.max(1.0, Math.min(5.0, baseScore)).toFixed(1));
+  const accuracySignals = {
+    ACTION_CORRECT: totalChecks === 0 || complianceRate >= 0.8,
+    FACTUALLY_ACCURATE: !notContainsFailed && text.trim().length > 0,
+    TASK_ADDRESSED: text.trim().length > 30,
+    ACTIONABLE: /```|`[^`]+`|\b(run|use|apply|step|1\.)\b/i.test(text),
+    FORMAT_FOLLOWED: totalChecks === 0 || complianceRate === 1.0,
+  };
+  const signalScore = Number(
+    (Object.values(accuracySignals).filter(Boolean).length / 5).toFixed(2)
+  );
 
   return {
     passedChecks,
     totalChecks,
     complianceRate,
     totalScore,
+    accuracySignals,
+    signalScore,
   };
 }
 
@@ -187,6 +232,7 @@ export function calculateAbSummary(results = []) {
   const skillWinRatePercent = Number(((skillWins / totalTasks) * 100).toFixed(1));
   const bareWinRatePercent = Number(((bareWins / totalTasks) * 100).toFixed(1));
   const tieRatePercent = Number(((ties / totalTasks) * 100).toFixed(1));
+  const skillWinRateWilson95 = wilsonConfidenceInterval(skillWins, totalTasks);
 
   let totalBareScore = 0;
   let totalSkillScore = 0;
@@ -216,6 +262,7 @@ export function calculateAbSummary(results = []) {
     skillWinRatePercent,
     bareWinRatePercent,
     tieRatePercent,
+    skillWinRateWilson95,
     avgBareScore,
     avgSkillScore,
     avgScoreLift,

@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 import { walkSkillPaths, readSkillName } from "./catalog-manifest.mjs";
 
 export const EVALS_FILE = "evals.json";
-export const EXPECTATION_KINDS = ["contains", "not-contains", "regex", "routes-to"];
+export const EXPECTATION_KINDS = ["contains", "not-contains", "regex", "routes-to", "not-routes-to"];
 export const ROUTER_REL_PATH = "00-meta-skills/skill-router/scripts/skill-router.mjs";
 export const ROUTER_TIMEOUT_MS = 60_000;
 
@@ -118,6 +118,9 @@ export function validateEvalSuite(raw, { skill = "(suite)" } = {}) {
     if (typeof item.expected_output !== "string" || !item.expected_output.trim()) {
       push(evalId, "expected_output", "non-empty string required");
     }
+    if (item.should_trigger !== undefined && typeof item.should_trigger !== "boolean") {
+      push(evalId, "should_trigger", "must be a boolean when provided");
+    }
     if (!Array.isArray(item.expectations) || item.expectations.length === 0) {
       push(evalId, "expectations", "must be a non-empty array");
       return;
@@ -134,7 +137,7 @@ export function validateEvalSuite(raw, { skill = "(suite)" } = {}) {
 /** Parse one expectation string into `{ ok, kind, value }` or `{ ok: false, error }`. */
 export function parseExpectation(expectation) {
   if (typeof expectation !== "string") return { ok: false, error: "expectation must be a string" };
-  const match = expectation.match(/^(contains|not-contains|regex|routes-to):(.*)$/s);
+  const match = expectation.match(/^(contains|not-contains|regex|routes-to|not-routes-to):(.*)$/s);
   if (!match) {
     return { ok: false, error: `unknown expectation kind (expected ${EXPECTATION_KINDS.join(" | ")})` };
   }
@@ -178,8 +181,8 @@ export function runRouter(root, prompt) {
 
 /**
  * Evaluate one expectation against a candidate text (offline: the eval's
- * `expected_output`; live: the agent stdout). `routes-to` ignores the text and
- * consults the real router for the eval prompt instead.
+ * `expected_output`; live: the agent stdout). `routes-to` and `not-routes-to`
+ * consult the real router for the eval prompt instead.
  * Returns `{ ok, expectation, kind, detail }`.
  */
 export function evaluateExpectation(expectation, { text = "", prompt = "", root }) {
@@ -205,9 +208,19 @@ export function evaluateExpectation(expectation, { text = "", prompt = "", root 
     const ok = re.test(text);
     return { ok, expectation, kind, detail: `expected output to match /${value}/i` };
   }
-  // routes-to:<skill>
+  // routes-to:<skill> | not-routes-to:<skill>
   const router = runRouter(root, prompt);
   if (!router.ok) return { ok: false, expectation, kind, detail: router.error };
+  if (kind === "not-routes-to") {
+    const loaded = [router.primary, ...(router.tier1toLoad || [])].filter(Boolean);
+    const ok = !loaded.includes(value);
+    return {
+      ok,
+      expectation,
+      kind,
+      detail: `skill-router selected [${loaded.join(", ")}] expected NOT to include "${value}"`,
+    };
+  }
   const ok = router.primary === value;
   return {
     ok,
@@ -217,11 +230,26 @@ export function evaluateExpectation(expectation, { text = "", prompt = "", root 
   };
 }
 
-/** Evaluate every expectation of one eval item. Returns `{ evalId, prompt, ok, checks }`. */
-export function evaluateEval(root, evalItem) {
+/** Evaluate every expectation of one eval item (plus negative trigger check if `should_trigger: false`). */
+export function evaluateEval(root, evalItem, { skill = null } = {}) {
   const text = String(evalItem.expected_output ?? "");
   const prompt = String(evalItem.prompt ?? "");
   const checks = (evalItem.expectations ?? []).map((exp) => evaluateExpectation(exp, { text, prompt, root }));
+  if (evalItem.should_trigger === false && skill) {
+    const router = runRouter(root, prompt);
+    if (!router.ok) {
+      checks.push({ ok: false, expectation: `should_trigger:false (${skill})`, kind: "should_trigger:false", detail: router.error });
+    } else {
+      const loaded = [router.primary, ...(router.tier1toLoad || [])].filter(Boolean);
+      const ok = !loaded.includes(skill);
+      checks.push({
+        ok,
+        expectation: `should_trigger:false (${skill})`,
+        kind: "should_trigger:false",
+        detail: `skill-router selected [${loaded.join(", ")}] expected NOT to trigger "${skill}"`,
+      });
+    }
+  }
   return { evalId: evalItem.id, prompt, ok: checks.every((c) => c.ok), checks };
 }
 
@@ -251,7 +279,7 @@ export function runOfflineEvaluations(root, { skills = null } = {}) {
       suites.push({ ...suite, schemaErrors: errors, results: [], ok: false });
       continue;
     }
-    const results = loaded.raw.evals.map((item) => evaluateEval(root, item));
+    const results = loaded.raw.evals.map((item) => evaluateEval(root, item, { skill: suite.skill }));
     evals += results.length;
     for (const result of results) {
       checks += result.checks.length;
