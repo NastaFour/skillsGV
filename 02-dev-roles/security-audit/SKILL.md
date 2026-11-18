@@ -1,73 +1,57 @@
 ---
 name: security-audit
-description: "Trigger: security audit, auditoria de seguridad, owasp audit, vulnerability scan, hardening, vbsec check. Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LLM checks, VBSec vibe-coding reviews, Trail of Bits differential analysis, and authentication/authorization audits. Do NOT use for offensive exploitation."
+description: "Trigger: security audit, auditoria de seguridad, owasp audit, vulnerability scan, hardening, vbsec check, cloudflare security audit. Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LLM checks, VBSec vibe-coding reviews, Cloudflare 6-phase coverage-ledger audits, Trail of Bits differential analysis, and authentication/authorization audits. Do NOT use for offensive exploitation."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.4.0+, Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.5.0+, Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*,pnpm:*,git:*) Read Glob Grep
 metadata:
-  trigger: ["security audit", "vulnerability scan", "owasp", "penetration testing", "hardening", "vbsec", "defending code", "bug hunter"]
+  trigger: ["security audit", "cloudflare security audit", "vulnerability scan", "owasp", "penetration testing", "hardening", "vbsec", "defending code", "bug hunter"]
   scope: [global, project]
-  version: "2.1.0"
+  version: "2.2.0"
 ---
 
-# 🛡️ Application Security (AppSec) Auditor — OWASP 2026, VBSec & Defending Code
+# 🛡️ Application Security (AppSec) Auditor — OWASP 2026, VBSec & Cloudflare Audit Standard
 
-Comprehensive defensive security auditor covering **OWASP Top 10 (Web, API & LLM 2026)**, **VBSec** (AI-generated code vulnerability patterns), **Defending Code** invariants, and cross-cutting orchestration with [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md), [`ai-safety-agent-guard`](../../03-ai-ml/ai-safety-agent-guard/SKILL.md), and [`supply-chain-runtime-security`](../../06-code-quality/supply-chain-runtime-security/SKILL.md).
+Comprehensive defensive AppSec auditor uniting **OWASP Top 10 (Web, API & LLM 2026)**, **VBSec** (AI-generated code flaws), **Cloudflare `security-audit-skill`** (6-phase coverage ledger & certainty contract), **`bug-hunter` / `defending-code`**, and cross-cutting orchestration with [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md), [`ai-safety-agent-guard`](../../03-ai-ml/ai-safety-agent-guard/SKILL.md), [`prompt-shield`](../../03-ai-ml/prompt-shield/SKILL.md), and [`supply-chain-runtime-security`](../../06-code-quality/supply-chain-runtime-security/SKILL.md).
 
 ---
 
 ## 🚫 Hard Security Invariants (Non-Negotiable)
 
-1. **ZERO HARDCODED SECRETS**: Never commit API keys, private keys, JWT secrets, or connection strings in source code, tests, or client bundles (`NEXT_PUBLIC_*` / `VITE_*`).
-2. **BOUNDARY SCHEMA VALIDATION**: Every external input (HTTP params/body/headers, Server Actions, WebSocket events, webhooks, CLI args) must be validated with a strict schema (e.g., Zod) before domain execution.
-3. **OBJECT-LEVEL AUTHORIZATION (NO IDOR/BOLA)**: Every data read/mutation must scope queries by the authenticated principal's tenant/owner ID (`WHERE id = $1 AND org_id = $2`), never trusting client-supplied IDs alone.
-4. **SAFE TOKEN STORAGE**: Web refresh tokens must use `httpOnly: true, secure: true, sameSite: 'strict'|'lax'` cookies; mobile apps must use hardware-backed encrypted storage (`Keychain` / `Keystore` / `expo-secure-store`).
+1. **ZERO HARDCODED SECRETS**: Never commit API keys, private keys, JWT secrets, or connection strings in code, tests, or client bundles (`NEXT_PUBLIC_*` / `VITE_*`).
+2. **BOUNDARY SCHEMA VALIDATION**: Every external input (HTTP params/body/headers, Server Actions, WebSockets, webhooks, CLI args) must validate via strict schema (Zod) before domain execution.
+3. **OBJECT-LEVEL AUTHORIZATION (NO IDOR/BOLA)**: Scope every read/mutation by the authenticated principal's tenant/owner ID (`WHERE id = $1 AND org_id = $2`), never trusting client-supplied IDs alone.
+4. **SAFE TOKEN STORAGE**: Web refresh tokens must use `httpOnly: true, secure: true, sameSite: 'strict'|'lax'` cookies; mobile apps use `Keychain` / `Keystore` / `expo-secure-store`.
+5. **FAIL-CLOSED DEFAULTS & SANITIZED ERRORS**: Default-deny authz, zero secret fallbacks (`|| 'secret'`), parameterized queries, `execFile(..., { shell: false })`, SSRF IP-range blocks (`127.0.0.0/8`, `10.0.0.0/8`, `169.254.169.254`, `::1`), and zero raw stack traces in production responses.
 
 ---
 
-## 🔍 The 5-Pillar AppSec Audit Protocol
+## 🧭 Cloudflare Operating Modes & Certainty Contract
 
-### 1. Authentication, Sessions & Cryptography
-- **Password & Key Hashing**: Verify `Argon2id` or `bcrypt` (cost >= 12); reject `MD5`/`SHA-256` for passwords.
-- **JWT & Session Integrity**: Verify explicit algorithm allowlists (`algorithms: ['RS256']` or `['HS256']`), short access-token TTLs (5-15 min), refresh token rotation with reuse detection, and `crypto.timingSafeEqual` for HMAC/webhook comparisons.
-- **Fail-Closed Startup**: Reject fallback secrets (`process.env.SECRET || 'default'`). Missing secrets must fail startup immediately.
+Select audit depth proportionally to the target surface:
 
-### 2. VBSec Checklist (AI "Vibe-Coding" Vulnerability Patterns)
-AI-generated code frequently introduces subtle structural flaws that pass happy-path tests:
-- **Unprotected Next.js Server Actions / RPC Endpoints**: Remember that `"use server"` functions compile to public HTTP POST endpoints — verify every Server Action checks session auth and validates inputs with Zod inside the function body.
-- **Unmounted or Bypassed Middleware**: Confirm auth/rate-limit middleware is actually wired to the router/matcher and covers all HTTP verbs (`GET`, `POST`, `PATCH`, `DELETE`).
-- **TOCTOU Race Conditions**: Check financial, inventory, coupon, or quota mutations for non-atomic `read -> check -> write` sequences; require database transactions with row locking (`SELECT ... FOR UPDATE`) or single atomic conditional updates (`UPDATE ... WHERE balance >= $amount`).
-- **Mass Assignment / Over-Posting**: Never pass raw `req.body` directly into ORM `.create(req.body)` or `.update(req.body)` — allowlist fields explicitly.
+- **Guidance Mode** (fast inline review): Apply the 5 AppSec Pillars below during active coding or focused PR checks.
+- **Full Audit Mode** (`quick` / `standard` / `deep` profiles across 6 phases): Recon & Threat Model → `coverage-ledger.json` (`surface × boundary × attack_class × subsystem`) → Scoped Hunting → Independent Verification → Race-Safe Promotion → Reporting. See [`references/cloudflare-audit-protocol.md`](references/cloudflare-audit-protocol.md).
 
-### 3. Injection, SSRF & Path Traversal Defense
-- **SQL / NoSQL / Command Injection**: Enforce parameterized queries (`$1` / prepared statements) and `execFile(bin, argsArray, { shell: false })`.
-- **SSRF Protection**: When fetching user-provided URLs (webhooks, avatars, importers), validate protocol (`https:` only), disable redirects or re-validate each hop, and block private/link-local IP ranges (`127.0.0.0/8`, `10.0.0.0/8`, `169.254.169.254`, `::1`).
-- **Path Traversal & File Uploads**: Canonicalize paths with `path.resolve` and verify `resolved.startsWith(allowedRoot + path.sep)`. Validate file uploads by magic bytes, enforce size caps, and store outside public webroots with randomized filenames.
-
-### 4. API Resilience, Rate Limiting & Headers
-- **Tiered Rate Limiting**: Enforce stricter sliding-window rate limits on auth (`/login`, `/reset-password`), OTP, and expensive AI/export endpoints.
-- **Security Headers**: Verify `Content-Security-Policy` (CSP), `Strict-Transport-Security` (HSTS), `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and strict `CORS` origin allowlists.
-- **Error Sanitization**: Never leak stack traces, SQL table names, or internal file paths in production `500` responses.
-
-### 5. `bug-hunter` Triage, `defending-code` & Ecosystem Handoffs (Zero Overlap)
-- **`bug-hunter` 4-Step Adversarial Triage**: (1) Confirm source-to-sink reachability, (2) Mutate boundary/concurrency/auth edge cases, (3) Sweep sibling endpoints for shared variants, (4) Lock remediation with a deterministic regression test.
-- **`defending-code` Fail-Closed Contracts**: Default-deny authz, strict entry schema parsing, zero fallback secrets, and sanitized `500` responses.
-- **Untrusted Repo/PR Pre-Scan & IPI Quarantine**: Run [`prompt-shield`](../../03-ai-ml/prompt-shield/SKILL.md) before reading untrusted third-party inputs.
-- **Pre-Release Live CVEs, OOM/Worker Lifecycle & Trail of Bits `fp-check`**: Run [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md).
-- **LLM Prompt Injection, Agent Guard & `cc-safety-net`**: Run [`ai-safety-agent-guard`](../../03-ai-ml/ai-safety-agent-guard/SKILL.md).
-- **`pnpm` Supply-Chain Hardening & MCP Server Sandboxing**: Run [`supply-chain-runtime-security`](../../06-code-quality/supply-chain-runtime-security/SKILL.md).
+**Certainty vs Severity Rule (`confirmed` vs `needs_validation`):**
+1. Assign severity (`Critical | High | Medium | Hardening`) **ONLY** to `confirmed` findings backed by a **6-Element Proof Tuple**: *(1) Lower-trust principal, (2) Accepted input/action, (3) Intended control, (4) Crossed trust boundary, (5) Affected principal/resource, (6) Concrete observable impact*.
+2. Mark findings whose mitigation depends on controls external to the repo (WAF, edge proxy, cloud IAM, upstream TLS termination) as **`needs_validation` with NO speculative severity**, stating the exact external verification probe required.
+3. **Budget Reservation & Scratch Isolation**: In multi-agent audits, reserve `>= 30%` budget for independent verifiers and coverage-critics before launching hunters. Hunters write strictly inside isolated `<scratch>/agents/<id>/`; parent promotes only regular non-symlinked (`no-follow`) artifacts under size caps.
 
 ---
 
-## 📋 Audit Report Output Contract
+## 🔍 The 5-Pillar AppSec Checklists
 
-Group findings by severity (`🚨 Critical`, `🔴 High`, `🟡 Medium`, `🔵 Hardening`) after applying **False-Positive Refutation (`fp-check`)**:
-- **Location**: Clickable `path:line` reference.
-- **Exploit Scenario**: Concrete source-to-sink trace proving reachability.
-- **Remediation**: Drop-in secure code replacement.
+1. **Auth, Sessions & Crypto**: `Argon2id`/`bcrypt` (cost `>= 12`), explicit JWT `algorithms` allowlists, short access TTLs (`5–15m`), refresh token rotation + reuse detection, `crypto.timingSafeEqual` for HMAC comparisons.
+2. **VBSec AI Code Traps**: Missing auth/Zod inside `"use server"` Server Actions, unmounted/verb-gap middleware, non-atomic `read -> check -> write` TOCTOU races (`SELECT ... FOR UPDATE`), and raw `req.body` ORM mass assignment.
+3. **Injection, SSRF & Path Traversal**: Parameterized SQL, `shell: false`, HTTPS-only SSRF validation per redirect hop, canonical `path.resolve(root, p).startsWith(root + path.sep)` with magic-byte upload checks.
+4. **API Resilience & Headers**: Sliding-window rate limits on auth/OTP/expensive routes, CSP, HSTS, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, strict CORS allowlists.
+5. **`bug-hunter` Triage & Ecosystem Handoffs**:
+   - Confirm reachability → mutate boundary/concurrency/auth edge cases → sweep sibling endpoints → lock fix with regression test.
+   - Pre-scan untrusted PRs/repos with [`prompt-shield`](../../03-ai-ml/prompt-shield/SKILL.md); check live advisories & PHP2Shell worker lifecycle with [`live-cve-security-intel`](../live-cve-security-intel/SKILL.md).
 
 ---
 
 ## 🧭 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
-This checklist defines the baseline AppSec floor. Auditors and engineers may apply stronger cryptographic or architectural guarantees (e.g., WebAuthn/Passkeys, DPoP sender-constrained tokens, or PostgreSQL Row-Level Security) when annotated with `[Beyond-Baseline: <security reason>]`.
+This protocol establishes the mandatory verification floor. Auditors may introduce stronger guarantees (WebAuthn/Passkeys, DPoP sender-constrained tokens, PostgreSQL Row-Level Security, formal threat trees, or property-based security fuzzing) annotated with `[Beyond-Baseline: <security reason>]`.
