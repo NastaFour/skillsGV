@@ -1,61 +1,49 @@
 ---
 name: ai-design-check-stageshow
-description: "Trigger: ai design check, stageshow, stage show, pre-build visual preview, interactive html preview, visual audit. Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow for archetype-partitioned visual checks (flat-surface A, B, E, F, G vs immersive C, D, H), self-contained HTML5 pre-build interactive previews, and a 5-category post-build audit rubric. Do NOT use for full brand discovery (use design-driven) or direct React/Tailwind setup without a Design Read."
+description: "Trigger: ai design check, stageshow, stage show, pre-build visual preview, interactive html preview, visual audit. Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow v1.1.1 for archetype-partitioned visual checks (flat-surface A, B, E, F, G vs immersive C, D, H), self-contained HTML5 pre-build interactive previews, 24 geometric film-gate invariants, and a 5-category post-build audit rubric. Do NOT use for full brand discovery (use design-driven) or direct React/Tailwind setup without a Design Read."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.4.0+, React 19, Next.js 15, Tailwind CSS 4, HTML5, Playwright visual audits. Requires pnpm 9+."
+compatibility: "Compatible with Gentle-AI 4.5.0+, React 19, Next.js 15, Tailwind CSS 4, HTML5, Playwright visual audits. Requires pnpm 9+."
 allowed-tools: Read Write Edit Bash(pnpm:*,node:*) Glob Grep
 metadata:
   trigger: ["ai design check", "stageshow", "stage show", "pre-build visual preview", "interactive html preview", "visual audit"]
   scope: "global, project"
-  version: "1.0.0"
+  version: "1.1.0"
   author: skillsGV
 ---
 
-# 🎭 AI Design Check & StageShow — Pre-Build Preview & Archetype Audit
+# 🎭 AI Design Check & StageShow v1.1.1 — Pre-Build Preview & Geometric Gate Audit
 
-Combines **@enmera/ai-design-check** (5-category visual quality inspection) with **benjitaylor/skills StageShow** (self-contained single-file HTML5 pre-build preview sandboxes) aligned to `design-driven` archetypes `A–H` and `taste-skill` triaxial dials.
+Combines **@enmera/ai-design-check** (5-category visual quality inspection) with **Benji Taylor's `Stageshow` v1.1.1** (dependency-free interactive previews & geometric `film.mjs --gate` invariants), bound to the canonical archetypes `A–H` and 3-line `Design Read` in [`../design-driven/SKILL.md`](../design-driven/SKILL.md).
 
 ---
 
 ## 🧭 Archetype Surface Partition (`A–H`, Floor Not Ceiling)
 
-Before auditing or previewing, bind checks to the declared archetype from `DESIGN_SYSTEM.md` or the 3-line `Design Read`:
-
 | Surface Class | Archetypes | Mandatory Rules (Floor) | Depth / Motion Policy |
 |---|---|---|---|
-| **Flat-Surface** | **A** Monograph, **B** Spec-Sheet, **E** Precision Instrument, **F** Humanist Companion, **G** System Native | Zero glassmorphism (`backdrop-blur`), zero stacked drop shadows, zero decorative gradient blobs, zero pill-badge confetti | Separation via `1px` hairlines (`var(--border-subtle)`), negative space, and crisp elevation steps (`--surface-0..3`) |
-| **Immersive / Kinetic** | **C** Gallery, **D** Kinetic Utility, **H** Bespoke / Creative Exploration | Zero fake data, WCAG AA contrast, `prefers-reduced-motion`, full interactive states | Intentional glass HUDs (`<= 24px` chrome), shader/WebGL stages, and multi-axis choreography allowed with `[Beyond-Baseline: <reason>]` in the 3-line `Design Read` |
+| **Flat-Surface** | **A** Monograph, **B** Spec-Sheet, **E** Precision Instrument, **F** Humanist Companion, **G** System Native | Zero decorative `backdrop-blur`, zero stacked drop shadows, zero gradient blobs, zero pill confetti | Separation via `1px` hairlines (`var(--border-subtle)`), negative space, and crisp elevation steps (`--surface-0..3`) |
+| **Immersive / Kinetic** | **C** Gallery, **D** Kinetic Utility, **H** Bespoke / Creative Exploration | Zero fake data, WCAG AA contrast, `prefers-reduced-motion`, full interactive states | Intentional glass HUDs (`<= 24px` chrome), shader/WebGL stages, and multi-axis choreography via `[Beyond-Baseline: <reason>]` |
 
 ---
 
-## 🎬 StageShow Pre-Build HTML5 Preview Workflow
+## 🎬 StageShow v1.1.1 Craft Rules & Geometric Gate (`What you see → What you fix`)
 
-When testing a complex layout, motion curve, or interactive flow *before* multi-file React/Next wiring:
-
-1. **Emit Design Read**: State archetype (`A–H`), token hierarchy (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`), and craft signature.
-2. **Generate Single-File StageShow Preview**: Create a dependency-free HTML5 preview embedding semantic CSS variables, realistic domain copy (zero `Lorem ipsum`), interactive state switches (`default`, `loading`, `empty`, `error`), and responsive viewport toggles (`375px`, `768px`, `1280px`, `1440px`).
-3. **Inspect & Refine**: Validate layout proportions, keyboard tab order, and composited transitions (`transform`, `opacity` only) before porting tokens and markup into production components.
-
----
-
-## 🔍 5-Category Post-Build Visual Audit Rubric
-
-Score every candidate surface across these five objective categories before handoff:
-
-1. **Color & Polarity**: Semantic tokens (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`) consistently applied; zero hardcoded raw hex overrides in components; text/UI contrast `>= 4.5:1` / `>= 3:1`.
-2. **Typography & Rhythm**: Intentional display-to-body `clamp()` scale ratio, constrained body measure (`65–75ch`), `tabular-nums` on telemetry/metrics, and consistent vertical cadence.
-3. **Layout & Viewport Budget**: Archetype-compliant surface separation (no flat-surface glass/shadow leaks; no equal-card bloat when hierarchy is needed) and clear above-the-fold entry point.
-4. **Component State Completeness**: Every interactive element implements hover, visible `focus-visible`, active, disabled, loading/skeleton, empty, and error states.
-5. **Accessibility & Motion**: Full keyboard reachability, semantic landmarks/labels, `prefers-reduced-motion` parity, and zero layout-thrashing animations.
-
-Report findings as `[PASS | WARN | BLOCKER]` with concrete selector/file locations (`path:line`) and minimal token-based fixes.
+1. **No AI Sparkles or Purple**: AI features get ZERO sparkle/wand/star icons and ZERO default purple — visually demonstrate what the AI actually produces.
+2. **Scene Copy Budget (3–7 Real Strings)**: Keep `3–7` sharp real strings per preview scene; render secondary lines as varied-width `Bar` abstractions (`60, 45, 70, 52`) matching real line-box height, never blank gray boxes where the eye lands first.
+3. **Optical Currency Centering**: When centering display amounts (`$45`), center ONLY the digits and hang `$` left with `position: absolute; right: 100%`.
+4. **Cap-Height Box Trimming**: Apply `text-box: trim-both cap alphabetic` inside compact pills, badges, icon buttons, avatars, and inputs so text sits visually centered.
+5. **Deterministic Gate Defects (`film.mjs --gate` Audit Table)**:
+   - `tight stack` (`< 3px` title-to-subtitle gap) → fix to `4–6px`.
+   - `tight inset` (copy `< 8px` from frame edge) → fix to `>= 12px`.
+   - `tight control` (`< 8px` between button and input) → widen gap cleanly.
+   - `fat row` (single-line list item `> 3x` its text height) → compact row rhythm or add secondary density.
+   - `onion skin` (translucent overlapping panels visible at rest) → clean state handoffs.
+   - `unit wrapped` / `clipped glyph` / `mixed icons` (filled + outline mixed in one bar) / `anchor drift` / `empty pane` / `avatar alignment` → fix alignment, enforce `whitespace-nowrap` on units, and standardize one icon variant per bar.
 
 ---
 
-## 🔗 Ecosystem Integration
+## 🔍 5-Category Post-Build Audit & Floor-Not-Ceiling (`[Beyond-Baseline]`)
 
-- [`../design-driven/SKILL.md`](../design-driven/SKILL.md) — D1b interview, `A–H` archetypes, and `DESIGN_SYSTEM.md` token source of truth.
-- [`../taste-skill/SKILL.md`](../taste-skill/SKILL.md) — 3-line `Design Read` (1-line Fast-Path `<50` lines) and triaxial dials.
-- [`../impeccable/SKILL.md`](../impeccable/SKILL.md) — Command-driven `/impeccable critique` & `/impeccable polish` execution.
-- [`../hallmark-design-study/SKILL.md`](../hallmark-design-study/SKILL.md) — Ethical structural DNA extraction and curated reference catalog.
-- [`../frontend-slides-deck/SKILL.md`](../frontend-slides-deck/SKILL.md) — Narrative single-file HTML5 presentation patterns when building slide decks.
+Score every candidate surface across **Color & Polarity**, **Typography & Rhythm**, **Layout & Viewport Budget**, **Component State Completeness**, and **Accessibility & Motion** (`[PASS | WARN | BLOCKER]` with exact `path:line` selectors). Beyond these structural checks, bespoke interactive sandboxes or Playwright visual-regression harnesses are encouraged via `[Beyond-Baseline: <reason>]`.
+
+- Links: [`../design-driven/SKILL.md`](../design-driven/SKILL.md) · [`../taste-skill/SKILL.md`](../taste-skill/SKILL.md) · [`../impeccable/SKILL.md`](../impeccable/SKILL.md) · [`../hallmark-design-study/SKILL.md`](../hallmark-design-study/SKILL.md) · [`../frontend-slides-deck/SKILL.md`](../frontend-slides-deck/SKILL.md).
