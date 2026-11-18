@@ -3,35 +3,28 @@
 Contrato de comportamiento y gobernanza cognitiva para cualquier agente de IA (Claude Code, Cursor, Gemini CLI, OpenCode, Codex, Copilot, Antigravity) en este repositorio.
 
 ## 🚀 1. Capa Always-On y Activación (Kernel de Arranque)
-- **Modelo de capas**: Los agentes priorizan lo que reside en su capa always-on. El instalador (`node install.mjs --target <repo>`) inyecta el kernel `skillsGV:kernel` en los archivos autocargados (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`) y blinda `.gitignore`.
-- **En este repositorio**: El catálogo completo está disponible. Las skills son módulos auto-contenidos conforme a la especificación [agentskills.io](https://agentskills.io/specification).
-- **Índice completo**: Consulta [`SKILLS.md`](SKILLS.md) para el árbol de skills y rutas, y [`catalog.json`](catalog.json) para el manifiesto estructurado.
+- **Modelo de capas**: Los agentes priorizan su capa always-on. El instalador (`node install.mjs --target <repo>`) inyecta el kernel `skillsGV:kernel` en archivos autocargados (`AGENTS.md`, `GEMINI.md`, `CLAUDE.md`) y blinda `.gitignore`.
+- **En este repositorio**: Catálogo completo conforme a [agentskills.io](https://agentskills.io/specification); consultar [`SKILLS.md`](SKILLS.md) y [`catalog.json`](catalog.json).
 
-## 🔄 2. Proceso Exclusivo: ODD (Organic-Driven Development)
-Gentle-AI 4.4.0 ODD es la única vía de desarrollo autorizada. El orquestador trabaja inline por defecto (`default-inline`); un trigger de delegación se activa solo cuando su condición realmente se cumple (evidencia >1 batch ≤3 llamadas/~10k tokens o >~5 búsquedas secuenciales, Writer solo por 2+ unidades paralelas disjuntas o backstop ~150k tokens, o verificador independiente para alto riesgo 1-6 en `mktemp -d` con `--escalate-item <1-6> --escalate-reason` cuando `gentle-ai` está activo); conteo de archivos o tamaño nunca deciden la ruta. El review nativo (Provider Contract `1.5`) es proporcionativo (`review_due` solo en riesgo 1-6; candidato medio reporta `under_budget`, eligiendo lentes 4R con `--lenses/--lenses-reason` + `--request-context`/`--target-evidence`). Protocolo:
-1. **Authorize**: Establecé si la solicitud autoriza cambios en código. Auditorías, revisiones o consultas son de solo lectura.
-2. **Explore**: Inspeccioná código antes de proponer o escribir.
-3. **Resolve Uncertainty**: Máximo una pregunta enfocada si hay decisiones de producto ambiguas.
-4. **Classify**: Dimensioná según los 3 criterios de ODD (**Understood** en ≤1 batch de 3 llamadas/~10k tokens, **Contained risk** frente a los 6 ítems de alto riesgo, y **Resumable from `git diff` alone**); nunca clasifiques contando pasos, archivos, comandos o tests. Es *Large/Sustancial* solo cuando falla el resume test.
-5. **Auto-EGM & Track before write**: En planes **Large**, upgrades mayores o alta lógica/cómputo, pasá el borrador por `egm-spec-review` (`3` Goldfishes por defecto, nunca en tareas chicas). Creá `odd/tasks/<feature>.md` y espejo Engram `odd/<feature>/tasks` antes del primer cambio.
-6. **Implement (One-Shot Pre-Flight Blueprint)**: Antes de codificar cada unidad, sintetizá un micro-blueprint de 5 líneas (archivos exactos, firmas/tipos, invariantes, casos borde y probe de verificación) para lograr ejecuciones one-shot sin desperdicio de tokens. Implementá tarea a tarea en feature branch, commiteando unidades de trabajo en slices revisables de ~400 líneas cambiadas de autoría (código + tests + docs juntos). Cualquier unidad cuya línea `Risk:` nombre un ítem de alto riesgo (1-6) recibe su propio commit aislado (cerrando primero cualquier slice `under_budget` pendiente). Registrá el commit que contiene cada tarea en `odd/tasks/<feature>.md`.
-7. **Close, Live CVE Gate & Verify**: Al cierre de un proyecto o release, ejecutá el gate de inteligencia de vulnerabilidades recientes (`live-cve-security-intel`) sobre las versiones exactas del stack y ciclo de vida de memoria/workers. Reportá con evidencia observada (comando + salida). Cero claims de "listo" sin prueba. Cerrá todo cambio de código con `Risk: item N (reason)` o `Risk: none` (verificando el ítem 3 cuando se modifican opciones, parsers o helpers compartidos).
+## 🔄 2. Proceso Exclusivo: ODD (Gentle-AI 4.5.0)
+Gentle-AI `4.5.0` ODD es la única vía autorizada (`default-inline`). Triggers de delegación: exploración `>1` batch (`>3` llamadas/`~10k` tok) o `>5` lookups (`<=2k` tok `path:line`); writers solo por `2+` unidades paralelas disjuntas o backstop `~150k` tok (pasando `## Allowed edit surfaces`, `## Skills to load before work`, y cierre `## Key Learnings` de 1–5 aprendizajes); verificación proporcional en 3 niveles (`passive` readback, `medium` autoverificación, `high` items 1–6 con verificador independiente en `mktemp -d` usando [`_shared/verify-method.md`](_shared/verify-method.md) sin `.git` + spot check del padre + differential check; subagentes reportan scratch sin borrarlo; máx. 1 corrección + 1 recheck). Operación remota requiere autorización explícita y preguntas estructurales usan CodeGraph primero.
+1. **Authorize**: Solo lectura salvo autorización explícita de mutación.
+2. **Explore & Resolve**: Inspeccionar antes de editar; máx. 1 pregunta enfocada si hay ambigüedad de producto.
+3. **Classify**: Small si es **Understood** (`<=1` batch), **Contained risk** (sin items 1–6) y **Resumable from `git diff` alone**; nunca contar archivos/pasos.
+4. **Auto-EGM & Track**: Planes **Large**, upgrades mayores o alta lógica pasan por `egm-spec-review` (`3` Goldfishes; `0` en chicas) antes de `odd/tasks/<feature>.md` + espejo Engram `odd/<feature>/tasks`.
+5. **Implement (One-Shot Blueprint)**: Micro-blueprint de 5 líneas antes de codificar; slices de `~400` líneas (alto riesgo aislado) con evidencia y commit en `odd/tasks/<feature>.md`.
+6. **Close & Live CVE Gate**: En releases, ejecutar `live-cve-security-intel`; reportar comandos + salida observada y cerrar con `Risk: item N (reason)` o `Risk: none` (revisando ítem 3 en helpers/parsers/opciones compartidas).
 
-## 🧭 3. Carga de Skills por Turno (Two-Tier Progressive Disclosure)
-- **Tier 0 (Base)**: House-meta disponible al inicio (`odd-workflow`, `skill-router`, `skill-loader`, `skill-validator`, `testing-patterns`, `code-reviewer`, `engram-integration`, `dod-checker`, `decision-gate`).
-- **Tier 1 (Bajo demanda)**: Cuando la tarea lo requiera o haya ambigüedad, ejecutá el router determinista para resolver las ≤5 skills exactas:
+## 🧭 3. Carga de Skills por Turno (Progressive Disclosure)
+- **Tier 0**: `odd-workflow`, `skill-router`, `skill-loader`, `skill-validator`, `testing-patterns`, `code-reviewer`, `engram-integration`, `dod-checker`, `decision-gate`.
+- **Tier 1 (bajo demanda, `<= 5` skills/turno)**: resolver vía `.atl/skill-registry.md` o:
   ```bash
   node 00-meta-skills/skill-router/scripts/skill-router.mjs --query "<tarea>" [--diff <lineas>] [--json]
   ```
-- **Límite de contexto**: Jamás cargues más de 5 skills en un único turno. No ejecutes el router en bucle si las skills ya están en contexto.
 
 ## 🚦 4. Reglas Globales No Negociables
-- **pnpm only**: `npm` y `npx` están estrictamente rechazados. Usá `pnpm` para scripts/dependencias y `pnpm dlx` en reemplazo de `npx`.
-- **TDD aplicable**: Si existe runner determinista, observá RED antes de implementar, GREEN al completar, y refactorizá manteniendo verde.
-- **Memoria persistente**: Si Engram MCP está disponible, guardá decisiones y descubrimientos con `mem_save` y consultá contexto previo con `mem_search`.
-- **Revisión adversarial**: Cambios de alto impacto pasan por `judgment-day` (dos jueces ciegos independientes) antes de entrega final.
-- **Anti-slop frontend & Design Gate obligatorio**: Toda tarea con superficie visual o código frontend activa obligatoriamente la fase D1b de `design-driven` antes de escribir código UI (en greenfield/pantallas completas vía 5 bloques o inferencia en modo auto con `Design Read` de 3 líneas; en ajustes menores/mantenimiento vía Fast-Path con `Design Read` de 1 línea). El diseño se ancla en uno de los 8 Chasis Arquetípicos (Monograph, Spec-Sheet, Gallery, Kinetic, Precision, Humanist, System Native, o Bespoke / Creative Exploration) y declara sus 3 reglas generativas mecánicas en `DESIGN_SYSTEM.md` o en la cabecera del archivo raíz de entrada (`/* @design-archetype: ... */`). Prohibido generar interfaces sin Design Read previo o inventar estética en el vacío.
-- **Floor, Not Ceiling (Enseñanza > Dogma)**: Las skills proveen el piso de ingeniería y diseño; salvo en invariantes de seguridad (cero credenciales expuestas, auth, sanitización), `pnpm-only` y verificación real con evidencia antes de cerrar, el modelo está autorizado a proponer o aplicar mejoras, APIs modernas o direcciones creativas que superen el baseline de una skill cuando beneficien al proyecto (anotando `[Beyond-Baseline: <razón técnica/creativa>]`).
-
-
-
+- **pnpm only**: `npm` y `npx` rechazados; usar `pnpm` y `pnpm dlx`.
+- **TDD & Prompt-Shield**: Observar RED → GREEN → refactor cuando exista runner. Escanear repos/archivos externos con `python 03-ai-ml/prompt-shield/scripts/safe_read.py "<target>" --paranoia 9 --decode-depth 8 --quarantine-strictness 10` antes de procesarlos.
+- **Anti-slop Frontend & Design Gate D1b**: En toda UI/CSS/componente activar `design-driven` (D1b + Think Outside the Box), emitir `Design Read` de 3 líneas (`1` línea en ajustes `<50` líneas), anclar Chasis `A–H` y persistir `DESIGN_SYSTEM.md`.
+- **Revisión & Memoria**: Cambios críticos pasan por `judgment-day`; guardar decisiones en Engram (`mem_save`/`mem_search`).
+- **Floor, Not Ceiling**: Las skills fijan el piso técnico/estético; mejoras verificadas están habilitadas vía `[Beyond-Baseline: <razón>]`.

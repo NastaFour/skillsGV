@@ -139,6 +139,18 @@ test('installer --tier filters skills properly in dry-run', () => {
   assert.ok(countFull > countExt, 'Full count should exceed Extended count');
 });
 
+test('installer --skills filters exact skills and rejects unknown skills with exit 2', () => {
+  const script = '00-meta-skills/skill-sync/scripts/install-skills.mjs';
+  const out = execFileSync('node', [script, '--dry-run', '--skills', 'odd-workflow,design-driven', '--tool', 'claude-code'], { encoding: 'utf8' });
+  const match = out.match(/Found (\d+) skills in catalog/);
+  assert.ok(match, 'Should report found skills count');
+  assert.equal(parseInt(match[1], 10), 2, '--skills with 2 valid names should install exactly 2 skills');
+  assert.throws(
+    () => execFileSync('node', [script, '--dry-run', '--skills', 'nonexistent-skill-xyz', '--tool', 'claude-code'], { encoding: 'utf8', stdio: 'pipe' }),
+    (err) => err && err.status === 2
+  );
+});
+
 test('walker excludes dot-dirs, Anti rats, and non-allowlisted root dirs while keeping allowlisted root skills', () => {
   const root = mkdtempSync(join(tmpdir(), 'walker-hardening-'));
   try {

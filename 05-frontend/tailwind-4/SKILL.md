@@ -5,9 +5,9 @@ license: Apache-2.0
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Tailwind CSS 4+, Node 20+."
 allowed-tools: Bash(node:*) Read
 metadata:
-  trigger: ["tailwind 4", "tailwind css 4", "cn utility", "clsx twmerge", "dark mode", "responsive", "theme variables"]
+  trigger: ["tailwind 4", "tailwind css 4", "shadcn", "shadcn ui", "cn utility", "clsx twmerge", "dark mode", "responsive", "theme variables"]
   scope: [global, project]
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Tailwind CSS 4
@@ -191,6 +191,12 @@ Prefer switching `--surface-*`, `--text-*`, and `--border-*` in CSS (`.dark`) ra
 // ❌ Never use arbitrary values for colors — register semantic tokens in @theme
 <div className="bg-[#1e293b]" /> // NO
 ```
+
+## `shadcn/ui` 2026 Composition Rules (`pnpm dlx shadcn@latest`)
+
+- **Inspect & Diff Safely**: Run `pnpm dlx shadcn@latest info --json` to read `base` (`radix` uses `asChild` + `sonner`; `base` uses `render` + Base UI `toast`), and preview updates with `pnpm dlx shadcn@latest add <component> --dry-run --diff <path>`.
+- **Forms & Layout**: Wrap controls in `FieldGroup` → `Field` (`data-invalid`) → `FieldLabel` + `aria-invalid` control + `FieldError`; bundle input add-ons with `InputGroup`/`InputGroupAddon`; use `flex gap-*` instead of `space-y-*`/`space-x-*`, and `size-*` instead of `w-* h-*`.
+- **Icons, Buttons & AI Chat**: Pass `data-icon="inline-start"`/`"inline-end"` without `size-4` inside `<Button>`; use `<Spinner data-icon="inline-start" />` + `disabled` (no `isLoading` prop); include `*Title` inside dialogs/sheets; use `MessageScroller`, `Message`, `Bubble`, and `Trace` for AI chat interfaces. See [`references/shadcn-ui-2026.md`](references/shadcn-ui-2026.md).
 
 ## Floor, Not Ceiling (`[Beyond-Baseline]`)
 

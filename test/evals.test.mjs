@@ -198,3 +198,30 @@ test('invalid schema: unknown expectation kind fails naming the slot', () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test('negative trigger (not-routes-to & should_trigger: false) + NVIDIA eval-ab metrics work deterministically', async () => {
+  const { evaluateEval } = await import('../_shared/eval-harness.mjs');
+  const { wilsonConfidenceInterval, computeToolEfficiency, scoreRubric, calculateAbSummary } = await import('../_shared/eval-ab.mjs');
+
+  const negEval = evaluateEval(REPO_ROOT, {
+    id: 'neg-1',
+    prompt: 'optimize PostgreSQL vacuum analyze and connection pool timeouts',
+    should_trigger: false,
+    expected_output: 'Use pgbouncer transaction pooling.',
+    expectations: ['not-routes-to:impeccable'],
+  }, { skill: 'impeccable' });
+  assert.equal(negEval.ok, true, JSON.stringify(negEval.checks));
+  assert.ok(negEval.checks.some((c) => c.kind === 'should_trigger:false' && c.ok));
+
+  const wilson = wilsonConfidenceInterval(10, 10);
+  assert.ok(wilson.lower > 0.7 && wilson.upper === 1);
+  assert.equal(computeToolEfficiency({ productive: 4, wasted: 1, neutral: 10 }), 0.8);
+
+  const scored = scoreRubric('Run `pnpm test` and apply `DESIGN_SYSTEM.md`.', ['contains:pnpm test', 'not-contains:yarn test']);
+  assert.equal(scored.accuracySignals.ACTION_CORRECT, true);
+  assert.equal(scored.accuracySignals.ACTIONABLE, true);
+  assert.equal(scored.accuracySignals.FORMAT_FOLLOWED, true);
+
+  const summary = calculateAbSummary([{ winner: 'skill', bare: { score: 2 }, skill: { score: 5 } }]);
+  assert.ok(summary.skillWinRateWilson95 && summary.skillWinRateWilson95.upper <= 1);
+});

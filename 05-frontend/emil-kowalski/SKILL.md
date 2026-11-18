@@ -1,151 +1,49 @@
 ---
 name: emil-kowalski
-description: "Filosofía de Emil Kowalski (animations.dev): física de resortes, gestos interrumpibles, FLIP, curvas cubic-bezier intencionales por arquetipo y microinteracciones táctiles. Úsala al crear animaciones UI fluidas. No usar para 3D o Canvas."
+description: "Filosofía de Emil Kowalski (animations.dev): física de resortes, gestos interrumpibles, FLIP, curvas cubic-bezier intencionales por arquetipo y microinteracciones táctiles. Úsala al crear animaciones UI fluidas, gestos mobile-native o stress-testing BreakUI. No usar para 3D o Canvas."
 license: MIT
 metadata:
-  version: "1.1.0"
-  trigger: ["emil kowalski", "animations dev", "fisica de resortes", "spring physics", "gestos interrumpibles", "layout animations", "tactile feedback"]
+  version: "2.0.0"
+  trigger: ["emil kowalski", "animations dev", "fisica de resortes", "spring physics", "gestos interrumpibles", "layout animations", "tactile feedback", "mobile native", "break ui", "starting style"]
   scope: [global, project]
 allowed-tools: Read Bash(node:*)
 ---
 
-# 🌀 emil-kowalski — Filosofía de Animación e Interacción Fluida
+# 🌀 emil-kowalski — Design Engineering, Física, Gestos & Mobile-Native Web
 
-Principios de interacción y diseño de movimiento basados en las enseñanzas de Emil Kowalski (*animations.dev*), armonizados con los Arquetipos de Diseño de `design-driven`. Transforma interfaces estáticas en experiencias con intención física mediante resortes calibrados, curvas `cubic-bezier` de alta precisión, gestos táctiles 1:1 interrumpibles y transiciones de layout coordinadas (FLIP).
-
----
-
-## 📋 Cuándo Usar
-
-- Al implementar microinteracciones, transiciones de estados y animaciones de componentes web interactivos.
-- Para elegir con criterio entre **física de resortes** (`stiffness`, `damping`, `mass`) en interfaces táctiles/cinéticas y **curvas `cubic-bezier` deterministas o transiciones instantáneas** en arquetipos sobrios o técnicos.
-- Al desarrollar componentes gestuales (drawers, hojas inferiores, modales expansibles, tarjetas arrastrables) que deben conservar la velocidad del puntero.
-- Para coordinar cambios de dimensiones o reordenamiento en cuadrículas sin saltos bruscos en el DOM mediante animaciones FLIP.
-- **NO usar** para escenas tridimensionales o simulaciones de shaders WebGL/Canvas (usar `three-js-web`).
-- **NO usar** para secuencias lineales de video o narrativas complejas basadas en scroll estricto (usar `motion-gsap`).
+Principios completos de las 19 skills de ingeniería de diseño de **Emil Kowalski** (`animations.dev`, `emil-design-eng`, `animate`, `gestures`, `mobile-native`, `break-ui`, `learn-taste`), armonizados con [`design-driven`](../design-driven/SKILL.md).
 
 ---
 
-## 🧭 Matriz de Movimiento por Arquetipo (`design-driven` Alignment)
+## 🚦 Reglas e Invariantes Duras (Floor, Not Ceiling)
 
-El movimiento nunca se diseña en el vacío; debe responder al chasis arquetípico declarado en `DESIGN_SYSTEM.md`:
-
-| Arquetipo (`design-driven`) | Paradigma de Movimiento Recomendado | Implementación Técnica |
-| :--- | :--- | :--- |
-| **Kinetic Typography & Neo-Brutalist Swiss Grids** / **Precision Dark UI** | **Física de Resortes (Spring Physics) & Gestos 1:1** | Resortes sin rebote excesivo (`stiffness: 400–500`, `damping: 30–35`), conservación de inercia y FLIP (`layoutId`). |
-| **The Atmospheric Minimalist & High-Craft UI** | **Curvas Deterministas Suaves o Resortes Críticamente Amortiguados** | `cubic-bezier(0.22, 1, 0.36, 1)` de `160ms–240ms` para apariciones sutiles, o resortes sin oscilación (`bounce: 0`). |
-| **The Technical Monograph & Spec-Sheet** / **System Native** | **Transiciones Instantáneas o Micro-Easings Ultracortos** | Cambios de estado directos (`0ms–120ms`, `cubic-bezier(0.16, 1, 0.3, 1)`) que priorizan velocidad de lectura e inmediatez operativa. |
-
----
-
-## 🚦 Reglas e Invariantes de Ingeniería
-
-1. **Invariante Duro — Cumplimiento Estricto de `prefers-reduced-motion`**: Si el sistema operativo del usuario solicita reducción de movimiento, eliminar desplazamientos espaciales (`x`, `y`, `scale`) y sustituirlos por cambios de opacidad casi instantáneos (`<= 100ms`) o transiciones inmediatas.
-2. **Gestos Táctiles 1:1 e Interrumpibles**: Cuando el usuario arrastra o manipula directamente un elemento (drawer, swipe, slider), usar física de resortes que preserve la velocidad instantánea acumulada (`preserve velocity`) al soltar o interrumpir a mitad de camino.
-3. **Proporcionalidad entre Resortes y `cubic-bezier`**:
-   - En interacciones impulsadas por gestos o cambios espaciales de layout (FLIP), preferir resortes físicos (`type: "spring"`).
-   - En transiciones de color, opacidad, hover discreto o arquetipos editoriales (*Monograph*, *Atmospheric Minimalist*), las curvas `cubic-bezier(0.22, 1, 0.36, 1)` con duraciones cortas (`150ms–220ms`) son limpias, predecibles y libres de costo de JS. Evitar únicamente curvas por defecto genéricas y lentas (`ease-in-out 500ms`).
-4. **Coordinación Exit-Before-Enter y Flujo Estable**: Cuando un elemento sale y otro entra en el mismo contenedor, prevenir colisiones de altura utilizando animaciones de presencia coordinadas (`mode="popLayout"` o técnica FLIP).
-5. **Microinteracciones Sutiles de Feedback Háptico**: Las reducciones de escala al pulsar un botón (`whileTap` o `:active`) deben ser discretas (`scale: 0.97` a `0.98`), nunca factores exagerados (`scale: 0.8`) que rompan la alineación visual.
+1. **Gate de Frecuencia de Uso (Cuándo NO animar)**:
+   - **`100+ veces/día`** (atajos de teclado, command palette, cambio rápido de tabs/filtros): **CERO animación, jamás**.
+   - **`Decenas de veces/día`**: casi imperceptible (`<= 150ms`).
+   - **`Ocasional`** (modales, drawers, toasts, popovers): animación estándar `< 300ms` (drawers hasta `500ms`).
+   - **`Raro / primera vez`**: presupuesto completo de *delight*.
+2. **Escalera de Herramientas (Menor costo → Mayor expresividad)**:
+   `1. CSS transition` → `2. CSS @starting-style` (entrada en mount sin estado JS) → `3. CSS @keyframes` (compositor inmune a bloqueo de hilo JS) → `4. WAAPI (element.animate)` → `5. Motion 14.2+` (propiedades `x`/`y`/`scale` ya aceleradas por GPU; en `< 14.2` usar `transform` en string).
+3. **Física, Curvas y Compositor Exactos**:
+   - **Prohibido `scale(0)`**: arrancar siempre desde `scale(0.95)` + `opacity: 0`. Anclar popovers/menus/tooltips al trigger con `transform-origin: var(--transform-origin)` (modales permanecen centrados).
+   - **Curvas calibradas**: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, `--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1)`, `--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1)`. Prohibido `ease-in` en UI. Presets: rápidos `{ stiffness: 450, damping: 35, mass: 0.8 }`, medios `{ stiffness: 300, damping: 30, mass: 1.0 }`, drawers `{ stiffness: 220, damping: 28, mass: 1.0 }`.
+   - **Asimetría & Crossfades**: usar timing asimétrico (e.g., `2s linear` en hold-to-confirm vs `200ms ease-out` al soltar); disimular crossfades entre formas distintas con `filter: blur(2px)` (nunca `> 20px`).
+   - **Prohibido animar CSS vars heredadas en un padre**: re-evalúa todo el subárbol; mutar `element.style.transform` directo u operar en compositor (`transform`/`opacity`).
+4. **Invariante `prefers-reduced-motion`**: eliminar traslaciones (`x`/`y`/`scale`) y degradar a fades `<= 100ms` o transición inmediata.
+5. **Gestos 1:1 & Velocity Flick**: capturar puntero (`setPointerCapture`), ignorar segundo dedo multi-touch (`if (isDragging) return`), descartar por velocidad (`Math.abs(distance) / elapsedMs > 0.11`), y aplicar amortiguamiento elástico progresivo en bordes.
 
 ---
 
-## ⚙️ Principios Fundamentales de animations.dev
+## 📱 `mobile-native`, `break-ui` & `learn-taste` (Resumen Operativo)
 
-### 1. Dinámica de los Tres Parámetros del Resorte
-- **Stiffness (Rigidez)**: Fuerza restauradora hacia la posición objetivo. Mayor rigidez = respuesta inicial más ágil.
-- **Damping (Amortiguamiento)**: Fricción que disipa la energía cinética y evita oscilaciones mareantes.
-- **Mass (Masa)**: Inercia percibida del componente.
+- **`mobile-native` (11 Fixes Web)**: `@media (hover: hover) and (pointer: fine)` contra sticky hover; `-webkit-tap-highlight-color: transparent`; `100dvh` para app shells vs `100svh` para heroes; `font-size: 16px` mínimo en `<input>` bajo `@media (pointer: coarse)`; `overscroll-behavior: none` en root y `contain` en sheets; `viewport-fit=cover` + `interactive-widget=resizes-content`.
+- **`break-ui` (Stress-Test)**: validar componentes con nombres de 1 char y 80 chars, contadores de 7 dígitos, vacíos, `Intl.PluralRules` y fechas relativas `> 7 días` pasando a absolutas.
+- **`learn-taste`**: al cierre de sesión, destilar cualquier corrección visual del usuario en una regla explícita dentro de `DESIGN_SYSTEM.md`.
 
-### 2. Presets Calibrados
-- **Interacciones Rápidas (Toggles, pestañas activas)**: `{ stiffness: 450, damping: 35, mass: 0.8 }`
-- **Superficies Medias (Diálogos modales, popovers, menús)**: `{ stiffness: 300, damping: 30, mass: 1.0 }`
-- **Componentes Gestuales Grandes (Drawers, sheets inferiores)**: `{ stiffness: 220, damping: 28, mass: 1.0 }`
-- **Easing Editorial / Minimalista (CSS)**: `transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease-out`
-
-### 3. La Técnica FLIP en Animaciones de Layout
-Al alterar listas o expandir tarjetas, evitar animar directamente propiedades que disparan reflow (`height`, `width`, `top`). Utilizar la técnica FLIP (`First, Last, Invert, Play`) mediante `layout` o `layoutId` sobre `transform` y `opacity` en la GPU.
-
----
-
-## 💻 Ejemplos Prácticos de Implementación
-
-### Ejemplo 1: Selector de Pestañas con Indicador Deslizante FLIP (`layoutId`) y Reducción de Movimiento
-```tsx
-import { motion, useReducedMotion } from "framer-motion";
-import { useState } from "react";
-
-const options = ["Actividad", "Notificaciones", "Seguridad"];
-
-export function TabSelector() {
-  const [selected, setSelected] = useState(options[0]);
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <nav className="inline-flex gap-1 rounded-xl bg-surface-elevated p-1 border border-border-subtle">
-      {options.map((option) => {
-        const isSelected = selected === option;
-        return (
-          <button
-            key={option}
-            type="button"
-            onClick={() => setSelected(option)}
-            className={`relative rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              isSelected ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
-            }`}
-          >
-            {isSelected && (
-              <motion.span
-                layoutId="active-indicator"
-                className="absolute inset-0 rounded-lg bg-surface-primary shadow-xs border border-border-subtle"
-                transition={
-                  shouldReduceMotion
-                    ? { duration: 0.01 }
-                    : { type: "spring", stiffness: 450, damping: 32, mass: 0.8 }
-                }
-              />
-            )}
-            <span className="relative z-10">{option}</span>
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
-```
-
-### Ejemplo 2: Botón Interactivo con Feedback Físico Sutil
-```tsx
-import { motion, useReducedMotion } from "framer-motion";
-
-export function TactileButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileHover={shouldReduceMotion ? undefined : { scale: 1.01 }}
-      whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      className="inline-flex items-center justify-center rounded-xl bg-accent-primary px-4 py-2.5 text-sm font-semibold text-surface-primary shadow-sm hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2"
-    >
-      {children}
-    </motion.button>
-  );
-}
-```
+Ver detalle completo y checklist en [`references/emil-mobile-gestures-breakui.md`](references/emil-mobile-gestures-breakui.md), además de [`references/spring-physics.md`](references/spring-physics.md), [`references/interruptible-gestures.md`](references/interruptible-gestures.md) y [`references/layout-flip.md`](references/layout-flip.md).
 
 ---
 
 ## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
-Los presets de resortes y curvas `cubic-bezier(0.22, 1, 0.36, 1)` constituyen el piso de calidad para evitar animaciones robóticas. Salvo en el invariante innegociable de accesibilidad (`prefers-reduced-motion`) y rendimiento en compositor (`transform`/`opacity`), el equipo puede emplear física personalizada, View Transitions API nativas o coreografías asimétricas cuando el arquetipo visual de `DESIGN_SYSTEM.md` lo demande, documentándolo con `[Beyond-Baseline: <razón técnica/creativa>]`.
-
----
-
-## 📚 Referencias
-
-- [Guía y Calibración de Física de Resortes](references/spring-physics.md)
-- [Implementación de Gestos Táctiles Interrumpibles](references/interruptible-gestures.md)
-- [Animaciones de Layout y Técnica FLIP](references/layout-flip.md)
+Estas reglas forman el piso físico/táctil contra UI torpe o pesada. Preservando `prefers-reduced-motion`, rendimiento de compositor y el Gate de Frecuencia, se habilita View Transitions API, coreografías FLIP avanzadas o física bespoke anotadas con `[Beyond-Baseline: <razón técnica/creativa>]`.

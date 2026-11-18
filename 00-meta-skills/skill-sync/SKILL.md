@@ -44,6 +44,9 @@ node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --target "C:\path\to
 # Install only specific categories
 node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --only "04-backend,05-frontend"
 
+# Install specific individual skills by name
+node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --skills "odd-workflow,design-driven"
+
 # Symlink mode (single source of truth, no duplication)
 node ./00-meta-skills/skill-sync/scripts/install-skills.mjs --symlink
 

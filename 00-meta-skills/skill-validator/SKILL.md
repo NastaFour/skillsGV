@@ -6,9 +6,9 @@ allows-curl: "validate-skills.mjs pattern-matches curl in other skills' scripts 
 allows-script-exec: "validate-skills.mjs pattern-matches eval/Function/child_process in other skills' scripts (audit implementation; never executed)"
 compatibility: Requires Node 20+ and pnpm 9+. No external dependencies.
 metadata:
-  trigger: ["validar skills", "validate skills", "check spec", "skill lint", "spec compliance"]
+  trigger: ["validar skills", "validate skills", "check spec", "skill lint", "spec compliance", "harness check", "quality score", "skillevaluator"]
   scope: [root-only]
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: Bash(node:*) Read
 ---
 
@@ -51,6 +51,9 @@ node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs
 
 # Validate specific folder
 node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs ./01-planning-process
+
+# Multi-harness compatibility + NVIDIA SkillEvaluator Tier-1 Quality Score (0-100, >= 70 threshold)
+node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs --strict --harness-check --quality-score
 
 # JSON output (for CI)
 node ./00-meta-skills/skill-validator/scripts/validate-skills.mjs --json

@@ -40,6 +40,25 @@ test('validate-skills passes with 0 errors in strict mode on entire catalog', ()
   assert.match(stdout, /0 errors · 0 warnings/);
 });
 
+test('validate-skills --harness-check --quality-score passes across catalog with Tier-1 scores >= 70', async () => {
+  const { runHarnessCheck, computeSkillQualityScore } = await import('../00-meta-skills/skill-validator/scripts/validate-skills.mjs');
+  assert.equal(typeof runHarnessCheck, 'function');
+  assert.equal(typeof computeSkillQualityScore, 'function');
+
+  const stdout = execFileSync(
+    'node',
+    ['00-meta-skills/skill-validator/scripts/validate-skills.mjs', '--skip-index-sync', '--strict', '--harness-check', '--quality-score', '--json'],
+    { cwd: REPO_ROOT, encoding: 'utf8' }
+  );
+  const parsed = JSON.parse(stdout);
+  assert.equal(parsed.errors, 0);
+  assert.equal(parsed.warnings, 0);
+  assert.ok(parsed.qualitySummary, 'Should emit qualitySummary with --quality-score');
+  assert.equal(parsed.qualitySummary.below70.length, 0, `Skills below 70 threshold: ${JSON.stringify(parsed.qualitySummary.below70)}`);
+  assert.ok(parsed.qualitySummary.averageScore >= 85, `Expected catalog average quality >= 85, got ${parsed.qualitySummary.averageScore}`);
+  assert.ok(parsed.harnessSummary && parsed.harnessSummary.compatibleCount === parsed.harnessSummary.totalSkills);
+});
+
 test('frontmatter-strict-yaml catches unquoted colon-space in scalars', () => {
   const res = runValidatorOnTempSkill(`---
 name: sample-skill

@@ -9,6 +9,7 @@
  *   node install-skills.mjs --symlink                                # Symlink instead of copy
  *   node install-skills.mjs --dry-run                                # Preview only
  *   node install-skills.mjs --only "04-backend,05-frontend"          # Filter by category
+ *   node install-skills.mjs --skills "odd-workflow,design-driven"    # Filter exact skill names
  *   node install-skills.mjs [--target <path>] --uninstall            # Remove only manifest-owned files
  *   node install-skills.mjs [--target <path>] --rollback             # Revert the last install generation
  *
@@ -54,12 +55,14 @@ const tools = [];
 let useSymlink = false;
 let dryRun = false;
 let onlyCategories = null;
+let onlySkills = null;
 let skipDetect = false;
 let doUninstall = false;
 let doRollback = false;
 let noKernel = false;
 let skipDeprecated = true;
 let selectedTier = "full";
+let tierExplicit = false;
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -68,7 +71,19 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--symlink") useSymlink = true;
   else if (a === "--dry-run") dryRun = true;
   else if (a === "--only") onlyCategories = args[++i].split(",").map((s) => s.trim());
-  else if (a === "--all-tools") skipDetect = true;
+  else if (a === "--skills") {
+    const raw = args[++i];
+    if (!raw || !raw.trim() || raw.startsWith("-")) {
+      console.error("--skills requires a comma-separated list of skill names.");
+      process.exit(2);
+    }
+    const items = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    if (items.length === 0) {
+      console.error("--skills requires at least one skill name.");
+      process.exit(2);
+    }
+    onlySkills = new Set(items);
+  } else if (a === "--all-tools") skipDetect = true;
   else if (a === "--uninstall") doUninstall = true;
   else if (a === "--rollback") doRollback = true;
   else if (a === "--no-kernel") noKernel = true;
@@ -81,6 +96,7 @@ for (let i = 0; i < args.length; i++) {
       process.exit(2);
     }
     selectedTier = val;
+    tierExplicit = true;
   } else if (a === "--help" || a === "-h") {
     printHelp();
     process.exit(0);
@@ -207,6 +223,7 @@ Options:
   --symlink            Use symlinks (junctions on Windows) instead of copy
   --dry-run            Preview changes without writing
   --only <list>        Comma-separated list of categories to install (e.g. "04-backend,05-frontend")
+  --skills <list>      Comma-separated list of individual skill names to install (e.g. "odd-workflow,design-driven")
   --all-tools          Skip detection; install for all known tools
   --uninstall          Remove only files recorded as owned in the manifest (foreign,
                         user-edited, and symlinked entries are retained and listed;
@@ -265,7 +282,16 @@ function collectSkills(root) {
     const topFolder = relPath.split("/")[0];
     return onlyCategories.includes(topFolder);
   }
-  for (const rel of walkSkillPaths(root)) {
+  const allRelPaths = walkSkillPaths(root);
+  if (onlySkills) {
+    const available = new Set(allRelPaths.map((r) => basename(dirname(join(root, r)))));
+    const missing = [...onlySkills].filter((name) => !available.has(name));
+    if (missing.length > 0) {
+      console.error(`Unknown skill(s) in --skills: ${missing.join(", ")}`);
+      process.exit(2);
+    }
+  }
+  for (const rel of allRelPaths) {
     if (!isCategoryDir(rel)) continue;
     const skillFile = join(root, rel);
     const dir = dirname(skillFile);
@@ -277,6 +303,9 @@ function collectSkills(root) {
       } catch {}
     }
     const skillName = basename(dir);
+    if (onlySkills && !onlySkills.has(skillName) && !(tierExplicit && tier0Set.has(skillName))) {
+      continue;
+    }
     // Deprecated skills are excluded from every install plan (unless the
     // user passes --include-deprecated). The catalog.json `deprecated`
     // flag and the SKILL.md frontmatter are the two sources; both are

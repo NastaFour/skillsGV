@@ -1,94 +1,63 @@
 ---
 name: odd-workflow
-description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.4.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+description: "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.5.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, enforce Allowed Edit Surfaces and 3-tier verification in mktemp -d, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
 trigger: ["odd workflow", "organic driven development", "flujo odd", "implementar feature multi archivo", "iniciar feature", "trabajo sustancial", "odd task"]
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
   author: gentleman-programming
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
-# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.4.0)
+# 🌿 odd-workflow — Organic Driven Development (Gentle-AI 4.5.0)
 
-The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.4.0 ODD** with **One-Shot Pre-Flight Blueprinting** (`thinkrail` / `superpowers`) and a **Pre-Release Live CVE Gate** (`live-cve-security-intel`) to deliver verifiable work-unit slices with maximum token efficiency.
+The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 4.5.0 ODD** with **One-Shot Pre-Flight Blueprinting**, **3-Tier Delegated Verification (`_shared/verify-method.md`)**, **Auto-EGM Plan Gate**, and **Pre-Release Live CVE Gate**.
 
 ---
 
 ## 🚫 HARD INVARIANTS (Non-Negotiable)
 
-1. **NO WRITING BEFORE TRACKING ON LARGE WORK**: When the resume test fails (large task), NEVER touch a source file before passing the **Auto-EGM Plan Gate** (`egm-spec-review`) and creating `odd/tasks/<feature>.md` + its Engram mirror `odd/<feature>/tasks`.
+1. **NO WRITING BEFORE TRACKING ON LARGE WORK**: When the resume test fails (large task), NEVER touch a source file before passing **Auto-EGM Plan Gate** (`egm-spec-review`) and creating `odd/tasks/<feature>.md` + its Engram mirror `odd/<feature>/tasks`.
 2. **NO CLASSIFICATION BY FILE OR STEP COUNT**: Never classify task size by counting files, steps, commands, tests, or a todo list. Use only the 3 Task Size criteria.
 3. **NO GUESSWORK ON PRODUCT DECISIONS**: Never guess unstated business logic. Ask at most ONE focused question and STOP until answered.
-4. **NO VERBAL CLAIMS WITHOUT OBSERVED EVIDENCE & RISK LINE**: Never claim completion without running verification commands, observing output, and closing with `Risk: item N (reason)` or `Risk: none`.
-5. **NO UI MUTATION WITHOUT DESIGN GATE (D1b)**: For frontend or visual changes, establish the Creative DNA Archetype (`design-driven` D1b) before emitting UI code.
+4. **NO VERBAL CLAIMS WITHOUT OBSERVED EVIDENCE & `Risk:` LINE**: Never claim completion without running verification commands, observing output, and closing with `Risk: item N (reason)` or `Risk: none`.
+5. **NO UI MUTATION WITHOUT DESIGN GATE (D1b)**: For frontend or visual changes, activate `design-driven` (D1b + Think Outside the Box + 3-line `Design Read`) before emitting UI code.
+6. **REMOTE OPERATION AUTHORIZATION**: Local development access never authorizes remote execution, `git push`, PR creation, or external transfers without explicit human approval for destination, operation, and session.
 
 ---
 
-## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.4.0)
+## 🧭 The 7-Step ODD Protocol (Gentle-AI 4.5.0)
 
-```mermaid
-flowchart TD
-  A["1. Authorize: Explicit mutation permission"] --> B["2. Explore: CodeGraph & bounded inspection"]
-  B --> C["3. Resolve Uncertainty: Max 1 question if blocked"]
-  C --> D["4. Classify: Understood + Contained risk + Resumable from git diff?"]
-  D --> E["5. Track (if Large): odd/tasks/<feature>.md + Engram mirror"]
-  E --> F["6. Implement: 5-Line Pre-Flight Blueprint -> ~400-line slices (High-Risk 1-6 isolated)"]
-  F --> G["7. Close & Verify: Live CVE Gate + Observed output + Risk: item N | none"]
-```
-
-1. **Authorize**: Establish whether the request explicitly authorizes code mutation. Investigations, reviews, audits, and planning remain strictly read-only.
-2. **Explore**: Inspect existing code proportionately (CodeGraph first for structural questions) before proposing or writing.
-3. **Resolve Uncertainty**: Recommend optional research only for a named uncertainty; ask at most ONE focused question for an unresolved product decision, then stop and wait.
-4. **Classify (Task Size & Resume Test)**: A task is **Small** when all three hold:
-   - **Understood**: Outcome and edit locations are proven within `<= 1` parallel batch (`<= 3` calls, `~10k` tokens) with no open product decision.
-   - **Contained risk**: Touches none of the 6 High-Risk items below.
-   - **Resumable from `git diff` alone** (*Resume Test*): If the session stopped now, someone could finish from the original request and `git diff` alone.
-   A task is **Large** only when the Resume Test fails (multi-session, external wait, separate deliverables, or requirements too long to survive compaction). Small work stays inline without durable task files.
-5. **Auto-EGM Plan Gate & Track before first write**: For large authorized work, major upgrades, or heavy-logic/high-compute plans, pass the initial plan draft through the **Auto-EGM Plan Gate** ([`egm-spec-review`](../../01-planning-process/egm-spec-review/SKILL.md): `3` zero-context Goldfishes by default, `5` for critical architecture; skipped on Small tasks) to refine gaps before writing `odd/tasks/<feature>.md` and its Engram mirror `odd/<feature>/tasks`. Structure in fixed order: Header (Objective, Branch, Delivery, Runner) -> `## Specs` (S1..Sn verbatim quotes & checks) -> `## Tasks` (T1..Tn ID, linked S#, route, status, commit) -> `## Log` (L1 verbatim request, evidence, decisions). Tell user in one line which document was created and task count.
-6. **Implement task-by-task (with One-Shot Pre-Flight Blueprint)**:
-   - **One-Shot Pre-Flight Blueprint (Token Saver)**: Before editing code for a task, synthesize a compact **5-line micro-blueprint** (1. Exact target files, 2. Public signatures/types, 3. Core invariants & helpers to reuse, 4. Edge/lifecycle failure modes, 5. Exact verification probe command). This eliminates trial-and-error edit loops and achieves clean one-shot execution.
-   - Work inline by default. Commit work units in reviewable slices of `~400` authored changed lines on the feature branch (with code + tests + docs together). Any unit whose `Risk:` line names a High-Risk item (`1-6`) gets its own isolated commit (closing any pending `under_budget` slice first; if native RDD is unavailable, report `receipt-driven development: unavailable` and follow ordinary repository policy). Record the commit hash holding each task in `odd/tasks/<feature>.md`.
+1. **Authorize**: Establish explicit mutation permission. Investigations, reviews, audits, and planning remain strictly read-only.
+2. **Explore (CodeGraph First)**: For structural questions, consult **CodeGraph** (`codegraph_explore` or read-only `codegraph status|query|impact`) before broad Read/Glob/Grep sweeps; keep inline evidence to `<= 1` batch (`<= 3` calls / `~10k` tokens).
+3. **Resolve Uncertainty**: Optional research only for a named uncertainty; ask at most ONE focused product question, then stop and wait.
+4. **Classify (Task Size & Resume Test)**: **Small** when all three hold: (a) **Understood** within `<= 1` batch (`~10k` tok), (b) **Contained risk** (touches none of High-Risk items `1–6`), (c) **Resumable from `git diff` alone**. Large only when the Resume Test fails.
+5. **Auto-EGM Plan Gate & Track**: For Large plans, major upgrades, or heavy-logic/high-compute specs, pass the plan draft through [`egm-spec-review`](../../01-planning-process/egm-spec-review/SKILL.md) (`3` zero-context Goldfishes by default; `5` on critical security/architecture; `0` on Small tasks) before writing `odd/tasks/<feature>.md` (`Header -> ## Specs -> ## Tasks -> ## Log`) and its Engram mirror (`capture_prompt: false`). Never author custom sync scripts for the mirror.
+6. **Implement (5-Line One-Shot Blueprint + Work Units)**:
+   - Synthesize a 5-line micro-blueprint before each edit (target files, signatures/types, invariants & helpers to reuse, edge/lifecycle failure modes, exact verification probe).
+   - Work inline by default (`default-inline`). Commit work units in reviewable slices (`~400` authored changed lines heuristic, code + tests + docs together). High-Risk (`1–6`) units get their own isolated commit. Delivery strategy per feature: `ask-on-risk` (default), `auto-chain`, `single-pr`, or `exception-ok`. Record every commit hash in `odd/tasks/<feature>.md`.
 7. **Close, Pre-Release Live CVE Gate & Verify**:
-   - Before closing a project or release milestone, run the **Pre-Release Live CVE & Lifecycle Audit** (`../../02-dev-roles/live-cve-security-intel/SKILL.md`) to check the stack's exact dependency/runtime versions against recent CVEs/OSV advisories and audit worker/memory cleanup paths.
-   - Report the verified outcome, every failed/skipped/pending check, and the next step. Close every code change with `Risk: item N (reason)` or `Risk: none`.
+   - Run [`live-cve-security-intel`](../../02-dev-roles/live-cve-security-intel/SKILL.md) on releases; pre-scan untrusted third-party inputs with [`prompt-shield`](../../03-ai-ml/prompt-shield/SKILL.md) (`safe_read.py`); report observed commands/output; close with `Risk: item N (reason)` or `Risk: none` (always checking item 3 if shared helpers/options/parsers changed).
 
 ---
 
-## ⚠️ The 6 High-Risk Items & Mandatory `Risk:` Line
+## ⚠️ The 6 High-Risk Items, Delegation & 3-Tier Verification (Gentle-AI 4.5.0)
 
-High risk means a mistake is hard to detect, hard to undo, or reaches beyond the change:
-1. **Data or irreversible effects**: Migrations, changing/deleting existing stored data, persisted format changes (not saving new records).
-2. **Security**: Auth, permissions, credentials, secrets, guards, sandbox.
-3. **Contracts others consume**: Changing/removing public API, CLI flags, config formats, published exports, mirrored prompts/contracts, or unrequested changes in shared options, parsers, or helpers.
-4. **Concurrency**: Locks, races, async ordering.
-5. **Delivery or environment**: Installers, release, CI, deploy, dependencies.
-6. **Untested surface**: No test would catch a regression in what changes.
+High-Risk items: **(1)** Irreversible data/schema/storage mutation, **(2)** Security (auth, secrets, guards, sandbox), **(3)** Contracts others consume (public API, CLI flags, config formats, mirrored prompts, unrequested breaks in shared helpers), **(4)** Concurrency (locks, races, async ordering), **(5)** Delivery/environment (installers, CI, deploy, dependencies), **(6)** Untested surface.
 
-**Mandatory closure**: Every code change MUST close with `Risk: item N (reason)` or `Risk: none`. Before writing `Risk: none`, check whether the diff touches code used by existing behavior the request did not mention (shared options, parsers, helpers); if so, declare `Risk: item 3 (...)`.
-
-### Delegation Triggers (Gentle-AI 4.4.0)
-
-You orchestrate and work inline by default, following your logbook. **A Delegation Trigger holds only when its condition truly holds; none holds by default.**
-
-- **Ask trigger**: Open product or design decision -> ask 1 focused user question; stop and wait.
-- **Mapping trigger**: Understanding exceeds 1 inline batch (`> 3` calls or `> ~10k` tokens) or needs `> ~5` sequential lookups -> delegate 1 read-only explorer returning `<= 2k` tokens with `path:line` evidence; at most 1 parent spot-check.
-- **Writer trigger**: Delegate bounded writers ONLY for:
-  - *(a) Parallelism*: `2+` independent behavioral units with disjoint edit surfaces, clearly heavier than starting a subagent, launched together. Never split code, tests, and docs of the same behavior across writers.
-  - *(b) Context backstop*: At `~150k` parent-context tokens, pause and delegate the next bounded unit.
-  Never delegate a writer for task size, file count, or model price ratio alone.
-- **Verification trigger**: Delegate an independent read-only verifier ONLY when a High-Risk item (`1-6`) applies, passing `--escalate-item <1-6> --escalate-reason "<reason>"`. Pass the full feature doc (`S#`), baseline commit, and probe commands; the verifier executes probes in an isolated temporary directory (`mktemp -d`) and never mutates the repository.
-- **Invariants & Helper Reuse**: Reuse existing codebase helpers for shared state/parsers/manifests and preserve ordering, uniqueness, validation, and normalization invariants.
-
----
-
-## 🧪 Differential Check & Scratch State Discipline
-
-- **Differential Check (`mktemp -d`)**: When a change touches shared CLI commands, parsers, routers, or helpers (item 3 candidate), verify that unrequested behavior is unchanged by comparing output against a clean baseline worktree created in `mktemp -d` / `os.tmpdir()`.
-- **Scratch State Discipline**: Never leave temporary reproduction scripts or scratch directories inside the repository tree. Subagents must report any scratch paths created outside the workspace so the parent orchestrator removes them before task closure.
+- **Ask / Mapping Triggers**: Mapping triggers ONLY when understanding exceeds 1 inline batch (`> 3` calls / `> ~10k` tokens) or `> ~5` sequential lookups (`<= 2k` tok `path:line` handoff + 1 parent spot-check).
+- **Writer Trigger & Mandatory Worker Contract**: Delegate bounded writers ONLY for `2+` independent behavioral units with disjoint edit surfaces launched together, or at the `~150k` parent-context advisory backstop. Every writer prompt MUST include:
+  1. `## Allowed edit surfaces` (exact repo-relative paths/globs; never `.` or absolute paths),
+  2. `## Skills to load before work` (exact `SKILL.md` paths resolved from `.atl/skill-registry.md` / `skill-router.mjs`, checking `skill_resolution` on return),
+  3. `## Key Learnings` closing block (`1–5` numbered factual sentences `>= 20` chars, `>= 4` words for passive Engram capture; omitted for strict-JSON outputs).
+- **3-Tier Delegated Verification Gate & Differential Check (`_shared/verify-method.md`)**:
+  - `passive` (docs/comments/images): structural readback only.
+  - `medium` (ordinary behavior): writer self-verification + parent spot-check.
+  - `high` (named High-Risk item `1–6`): writer self-verification + independent read-only verifier running [`_shared/verify-method.md`](../../_shared/verify-method.md) inside an isolated scratch copy (`mktemp -d`, without `.git`, `HOME`/`TMPDIR` inside scratch) + differential check (`base` vs `change` on shared code). Max 1 correction batch + 1 scoped recheck.
+- **Scratch State Discipline**: Subagents NEVER delete outside scratch directories — they report exact scratch paths to the parent orchestrator, which cleans them up after use.
 
 ---
 
 ## 🧭 Floor, Not Ceiling (`[Beyond-Baseline]`)
 
-ODD provides the engineering discipline floor. While preserving non-negotiable invariants (security, `pnpm-only`, observed test evidence, and mandatory `Risk:` closure), agents may apply higher-leverage verification such as property-based testing, formal state-machine checks, or automated differential harnesses when annotated with `[Beyond-Baseline: <technical reason>]`.
+ODD establishes the verification and safety floor. Preserving security invariants, `pnpm-only`, observed test proof, and mandatory `Risk:` closure, agents may apply higher-leverage techniques (property-based tests, formal state checks, differential harnesses) annotated with `[Beyond-Baseline: <technical reason>]`.
