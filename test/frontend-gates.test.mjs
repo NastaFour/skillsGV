@@ -224,3 +224,60 @@ test("verify-frontend-gates: catches hardcoded hex and magic z-index 9999", (t) 
   assert.ok(json.summary.errors >= 1);
   assert.ok(json.craftChecks.some((c) => c.check === "magic-z-index"));
 });
+
+test("check-interactions: scans full multiline opening tag so buttons with >5 lines of aria/title attrs are not false-flagged", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "TopBar.tsx"),
+    [
+      "export function TopBar({ privacyMode, onToggle }: { privacyMode: boolean; onToggle: () => void }) {",
+      "  return (",
+      "    <button",
+      '      type="button"',
+      "      aria-pressed={privacyMode}",
+      '      aria-label="Toggle privacy mode"',
+      '      title="Mask balances"',
+      "      onClick={onToggle}",
+      "      className={",
+      '        "inline-flex items-center hover:bg-surface-raised focus-visible:outline-2"',
+      "      }",
+      "    >",
+      "      Toggle",
+      "    </button>",
+      "  );",
+      "}",
+    ].join("\n") + "\n",
+    "utf8"
+  );
+
+  const res = runScript("02-dev-roles/micro-interactions/scripts/check-interactions.mjs", ["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0);
+  const json = JSON.parse(res.stdout);
+  assert.equal(json.issues.filter((i) => i.check === "dead-interactive").length, 0, `False dead-interactive: ${JSON.stringify(json.issues)}`);
+});
+
+test("check-motion-a11y: recognizes global CSS prefers-reduced-motion for CSS transitions while still guarding JS motion libs", (t) => {
+  const dir = makeFixture(t);
+  writeFileSync(
+    join(dir, "index.css"),
+    `@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; } }\n`,
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "Panel.tsx"),
+    `export const Panel = () => <div style={{ transition: "transform 150ms" }}>Hi</div>;\n`,
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "SpringBox.tsx"),
+    `import { motion } from "framer-motion";\nexport const SpringBox = () => <motion.div animate={{ x: 10 }} />;\n`,
+    "utf8"
+  );
+
+  const res = runScript("05-frontend/motion-accessibility/scripts/check-motion-a11y.mjs", ["--srcDir", dir, "--json"]);
+  assert.equal(res.code, 0);
+  const json = JSON.parse(res.stdout);
+  const reducedIssues = json.issues.filter((i) => i.check === "no-reduced-motion");
+  assert.equal(reducedIssues.length, 1, `Expected only SpringBox.tsx to warn, got: ${JSON.stringify(reducedIssues)}`);
+  assert.match(reducedIssues[0].file, /SpringBox\.tsx$/);
+});
