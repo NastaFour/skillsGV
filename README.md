@@ -105,10 +105,10 @@ flowchart TD
 |---|:---:|:---:|:---:|
 | **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
 | **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
-| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.4.0 alignment) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.6.0 alignment) |
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
-| **Anti-Slop Design System** | ❌ | ❌ | ✅ (`impeccable` + `taste-skill`) |
+| **Anti-Slop Design System** | ❌ | ❌ | ✅ (3-Phase Engine + `verify-frontend-gates.mjs`) |
 | **Multi-Agent Roster Switcher** | ❌ | ❌ | ✅ (21 agents across strong/mid/cheap) |
 | **Automated Validator** | ❌ | ❌ | ✅ (`validate-skills.mjs --strict`) |
 

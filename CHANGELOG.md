@@ -2,6 +2,43 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/); versionado [SemVer](https://semver.org/lang/es/).
 
+## [3.5.0] — 2026-11-19
+
+Alineación completa con **Gentle-AI 4.6.0** (`Provider Contract 1.6.0`), **Motor Frontend en 3 Fases**, runner unificado `verify-frontend-gates.mjs` y endurecimiento transversal de scripts del ecosistema.
+
+### Added
+
+- **Motor Frontend en 3 Fases (`design-driven` v3.2.0 + `d1b-questionnaire.md`)**: Fase 1 con entrevista D1b interactiva concisa en 1 mensaje por defecto en proyectos greenfield (incluyendo geometría/radios y espacio vs. bordes; `One-Shot` solo bajo pedido explícito o swarms), Fase 2 por capacidades reales del producto, y Fase 3 post-build obligatoria.
+- **Runner unificado `verify-frontend-gates.mjs`** (`05-frontend/design-driven/scripts/verify-frontend-gates.mjs`): sin dependencias de `_shared/`, ejecutable en catálogo, `.agents/skills/` y `gentle-ai-dsh/skills/`, con detección automática de stack, salida `--json`, deduplicación entre checkers solapados y detector de `z-index` mágicos.
+- **Baseline offline en `web-design-guidelines`** (`1.1.0`): 25 reglas críticas de accesibilidad, foco, toque, formularios, tipografía y movimiento embebidas sin depender de `WebFetch` en red.
+- **Suites de regresión TDD**: [`test/ecosystem-scripts.test.mjs`](test/ecosystem-scripts.test.mjs) y [`test/frontend-gates.test.mjs`](test/frontend-gates.test.mjs).
+
+### Changed
+
+- **Alineación Gentle-AI 4.6.0 (`ODD`, `gentle-orchestrator`, `gentle-ai-review-4r`, kernels)**: adopción de `Provider Contract 1.6.0`, continuidad del trabajo autorizado, decisiones humanas vía herramienta interactiva compatible, `## Allowed edit surfaces` adjudicadas por el padre, dueño del siguiente paso en el orquestador tras agotar correcciones, y retiro del bloque obligatorio `## Key Learnings` en workers.
+- **Anti-Slop Anti-Wireframe & Cero Barras `/`**: endurecimiento de Gates 46a, 54, 63 y 64 en `hallmark-design-study`, `taste-skill` y `ai-design-check-stageshow` contra muros de cajas `0–2px`, confetti de pastillas, etiquetas `"A / B"` y `font-mono` decorativo.
+- **Documentación técnica sincronizada**: actualización de `design-system-tokens`, `tailwind-4` (namespace `--color-*` y `pnpm 11` `allowBuilds` en Windows), `motion-framer`, `impeccable`, `oklch-theme-injector` y `build-config-validator`.
+
+### Fixed
+
+- **Endurecimiento de 28 scripts del ecosistema**: reemplazo global de `findProjectRoot(__dirname)` por `process.cwd()` / `--dir`, soporte automático `--json` en [`_shared/script-utils.mjs`](_shared/script-utils.mjs), eliminación de falsos positivos en `check-module-level-loads.mjs` (`new Map()` JS estándar), `check-pkg-exists.mjs` (`node:*` builtins), `token-audit.mjs` (CSS custom properties multilínea), `check-tokens.mjs` (`#1842`, `height: 2px`/`width: 14px` y variables multilínea), `check-lottie.mjs` (`--srcDir`), `check-deep-links.mjs` / `check-eas-config.mjs` (`--dir` + `JSON.parse` seguro) y `validate-build-config.mjs` (soporte nativo para Tailwind CSS v4, proyectos no-Vite y `tsconfig.json`/`tsconfig.app.json` standalone).
+
+## [3.4.0] — 2026-11-18
+
+Alineación con **Gentle-AI 4.5.0**, gates de evaluación **NVIDIA `SkillSpector` + `SkillEvaluator`**, auditoría **Cloudflare AppSec** y suite frontend anti-slop 10x (`Hallmark v2`, `Hue`, Google Stitch `extract-design-md`, `UIZZE`, `Emil Kowalski`, `Jakub Krehel`, `StageShow v1.1.1`, `Interface Design`, `UI UX Pro Max v2`, `shadcn/ui 2026`, `Better Typography`), además de instalación selectiva `--skills <lista>`.
+
+## [3.3.0] — 2026-11-14
+
+Integración de **Auto-EGM Plan Gate** (`egm-spec-review` + `elephant-goldfish-model`), escáner de cuarentena `prompt-shield` (`safe_read.py`), `app-resource-efficiency`, `karpathy-ponytail-simplicity` y alineación con **Gentle-AI 4.4.0** (251 skills).
+
+## [3.2.0] — 2026-10-29
+
+Alineación con **Gentle-AI 4.3.1** (`Provider Contract 1.5`), revisión dual ciega `Judgment Day`, `production-readiness-250` y `distributed-resilience-sre` (246 skills).
+
+## [3.1.0] — 2026-10-24
+
+Sincronización completa de índices 4-way y alineación con **Gentle-AI 4.2** (237 skills).
+
 ## [3.0.0] — 2026-10-07
 
 Alineación completa con **gentle-ai 4.0.0** (ODD-exclusivo) y retiro de la tubería SDD.
