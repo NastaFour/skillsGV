@@ -10,7 +10,7 @@
 Este repositorio tiene el catálogo `skillsGV` instalado sobre `Gentle-AI 4.5.0` (`ODD` exclusivo, `default-inline`, verificación proporcional en `mktemp -d`, `## Allowed edit surfaces` y `## Key Learnings` en workers).
 
 - **Skills & Resolver**: resolvé `<= 5` skills relevantes vía `.atl/skill-registry.md` o `skill-router.mjs` y pasá rutas exactas `SKILL.md` a workers; leé solo esos `SKILL.md`.
-- **Design Gate D1b + Think Outside the Box (`design-driven`)**: obligatorio antes de emitir UI (`Design Read` de 3 líneas o 1 línea `<50` líneas, Chasis `A–H`, sincronizar `DESIGN_SYSTEM.md`, consultar hermanas `taste-skill`, `impeccable`, `hallmark-design-study`, `ui-ux-pro-max`, `interface-design`, `emil-kowalski`, `ai-design-check-stageshow`, `tailwind-4`, `design-system-tokens`).
+- **Design Gate D1b en 3 Fases (`design-driven`)**: obligatorio en UI — Fase 1 D1b interactivo en 1 mensaje (salvo `one-shot`/swarm) + `Design Read` + `DESIGN_SYSTEM.md`; Fase 2 skills por capacidad; Fase 3 post-build obligatoria: correr `verify-frontend-gates.mjs` y en builds greenfield/mayores pasar crítica visual (`hallmark-design-study`, `impeccable`, `ai-design-check-stageshow`/`interface-design`) + navegador. Cero muros de cajas `0–2px` ni `" / "` en etiquetas.
 - **Auto-EGM Plan Gate**: en planes **Large**, upgrades mayores o lógica/cómputo pesado, pasá el borrador por `egm-spec-review` (`3` Goldfishes en contexto cero; `0` en tareas chicas) antes de `odd/tasks/<feature>.md`.
 - **Seguridad (`prompt-shield` + `live-cve-security-intel`)**: escaneá archivos/repos externos con `safe_read.py` (`9/8/10`) antes de leer en contexto, y ejecutá el CVE gate al cierre.
 - **Instalaciones ya gitignoradas** (`.skills-install/`, `.atl/` y skills): no las commitees.

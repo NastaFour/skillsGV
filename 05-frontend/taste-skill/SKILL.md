@@ -41,15 +41,7 @@ Framework de control de calidad visual y erradicación determinista de "AI slop"
 
 $$\vec{T} = \begin{bmatrix} \text{DESIGN\_VARIANCE} \\ \text{MOTION\_INTENSITY} \\ \text{VISUAL\_DENSITY} \end{bmatrix}$$
 
-- **Presets de Chasis**:
-  - `Technical Monograph`: [7, 2, 8] (Grid asimétrico 1:3, hairlines 1D, sin cards)
-  - `Industrial Spec-Sheet`: [3, 1, 9] (12-col hairlines, tabular nums, monospace zonificado)
-  - `The Gallery`: [9, 4, 2] (Vacío ≥45%, escala bipolar, escalón intermedio)
-  - `The Kinetic Utility`: [4, 8, 7] (100dvh fijo, canvas hero, HUDs flotantes ≤24px)
-  - `The Precision Instrument`: [4, 5, 7] (Linear-style, atajos, micro-radios 6-8px)
-  - `The Humanist Companion`: [5, 4, 5] (Notion/Airbnb style, orgánico, conversacional)
-  - `The System Native`: [3, 2, 7] (Enterprise workhorse, Shadcn/Radix/Tailwind nativo, tokens heredados)
-  - `Bespoke / Creative Exploration (Think Outside the Box)`: [Diales libres + protocolo de Inversión de 3 Clichés + 3 reglas generativas mecánicas justificadas con `[Beyond-Baseline: <razón>]`]
+> **Fuente Única de Verdad**: El formato canónico del `Design Read` de 3 líneas y la tabla completa de los **8 Chasis Arquetípicos (`A–H`)** viven en [`design-driven`](../design-driven/SKILL.md) (no se duplican aquí). `taste-skill` calibra el vector `[V, M, D]` y audita la salida contra Nivel 1 (invariantes) y Nivel 2 (heurísticas contextuales), vigilando tanto el slop de tarjetas genéricas redondeadas como el extremo opuesto (**muros de cajitas `0–2px` con borde `1px` y 0 sombras**).
 
 ## 🛠️ Flujo de Verificación (Preflight)
 

@@ -40,7 +40,7 @@ Framework de control estético y gobernanza de interfaz basado en el vocabulario
 
 ## 🛠️ Pasos de Ejecución (Path Feliz)
 
-1. **Escanear**: ejecutar `/impeccable init` para analizar CSS/Tailwind y generar [PRODUCT.md](assets/PRODUCT.template.md).
+1. **Escanear**: si **no** existe `DESIGN_SYSTEM.md`, ejecutar `/impeccable init` para analizar CSS/Tailwind y generar [PRODUCT.md](assets/PRODUCT.template.md). *(En Fase 3 Post-Build o modo autónomo cuando `DESIGN_SYSTEM.md` ya existe, saltar directo a los pasos 5–6: `critique` → `polish` / `distill` / `quieter`).*
 2. **Documentar**: ejecutar `/impeccable document` para volcar tokens a [DESIGN.md](assets/DESIGN.template.md) (o `DESIGN_SYSTEM.md`).
 3. **Planificar**: correr `/impeccable shape` para estructurar el árbol de componentes y accesibilidad.
 4. **Implementar**: ejecutar `/impeccable craft` componiendo UI real contra los tokens establecidos.

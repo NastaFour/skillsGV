@@ -25,6 +25,6 @@ Gentle-AI `4.5.0` ODD es la única vía autorizada (`default-inline`). Triggers 
 ## 🚦 4. Reglas Globales No Negociables
 - **pnpm only**: `npm` y `npx` rechazados; usar `pnpm` y `pnpm dlx`.
 - **TDD & Prompt-Shield**: Observar RED → GREEN → refactor cuando exista runner. Escanear repos/archivos externos con `python 03-ai-ml/prompt-shield/scripts/safe_read.py "<target>" --paranoia 9 --decode-depth 8 --quarantine-strictness 10` antes de procesarlos.
-- **Anti-slop Frontend & Design Gate D1b**: En toda UI/CSS/componente activar `design-driven` (D1b + Think Outside the Box), emitir `Design Read` de 3 líneas (`1` línea en ajustes `<50` líneas), anclar Chasis `A–H` y persistir `DESIGN_SYSTEM.md`.
+- **Anti-slop Frontend & Motor en 3 Fases (`design-driven`)**: En toda UI/CSS/componente activar `design-driven` (Fase 1 D1b interactivo en 1 mensaje salvo `one-shot`/swarm + `Design Read` + `DESIGN_SYSTEM.md`; Fase 2 construcción por capacidades; Fase 3 post-build obligatoria con `verify-frontend-gates.mjs` + crítica visual `hallmark`/`impeccable`/`ai-design-check-stageshow` + navegador en builds greenfield/mayores). Cero muros de cajas `0–2px` ni metadatos con `" / "`.
 - **Revisión & Memoria**: Cambios críticos pasan por `judgment-day`; guardar decisiones en Engram (`mem_save`/`mem_search`).
 - **Floor, Not Ceiling**: Las skills fijan el piso técnico/estético; mejoras verificadas están habilitadas vía `[Beyond-Baseline: <razón>]`.

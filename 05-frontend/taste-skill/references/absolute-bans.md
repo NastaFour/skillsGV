@@ -43,9 +43,9 @@ Estas heurísticas señalan patrones que los modelos de lenguaje suelen abusar s
    - *Por qué suele ser cliché*: Prefijar secciones arbitrarias con números genera falsa jerarquía sin valor de lectura.
    - *Libertad contextual*: En guías paso a paso, flujos de onboarding, tutoriales, cronologías históricas o publicaciones editoriales, es bienvenido y aporta orden.
 
-4. **Radios de Borde Generosos (`rounded-2xl`, `rounded-3xl`, `rounded-full`)**:
-   - *Por qué suele ser cliché*: Sobre-redondear tarjetas densas de telemetría o dashboards compactos reduce el área útil.
-   - *Libertad contextual*: En productos de consumo masivo, apps infantiles, interfaces móviles o diseño lúdico y cercano, los radios suaves (16px a 24px) o pastillas completas son altamente efectivos.
+4. **Radios de Borde y "Wireframe Box-Wall Slop"**:
+   - *Por qué suele ser cliché*: Sobre-redondear dashboards compactos reduce el área útil, **pero el extremo opuesto es igual de genérico**: quitar todas las sombras y radios para encerrar cada botón, etiqueta, subtítulo, código y bloque en cientos de cajitas cuadradas `0–2px` con `border 1px`.
+   - *Libertad contextual*: Adaptá radios y elevación al producto (`10px–24px` suaves y sombras multicapa en productos de consumo/táctiles/humanistas; `6px–8px` en instrumentos de precisión; `0–4px` solo en telemetría densa tipo Spec-Sheet). Reemplazá tarjetas redundantes por **espacio negativo y jerarquía tipográfica**, nunca por una grilla de rectangulitos con borde.
 
 5. **Guiones Tipográficos (— / –)**:
    - *Por qué suele ser cliché*: La IA abusa de los em-dashes como muletilla para pausas artificiales en microcopy publicitario.

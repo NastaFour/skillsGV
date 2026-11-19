@@ -28,6 +28,7 @@ Run when the task involves perceptual color, OKLCH/OKHSL, generating accessible 
 
 | Situation | Action |
 |---|---|
+| Greenfield Tailwind v4 / modern CSS app | **Fast-Path**: emit native OKLCH semantic tokens directly in `:root` / `.dark` + `@theme inline` (no HSL shims or MCP server required) |
 | Existing tokens are HSL/hex | Generate OKLCH equivalents + optional HSL shims |
 | Need dark mode | Derive dark scale from the OKLCH lightness axis, not hue rotation |
 | MCP color tool available | Use it for interpolation/gamut mapping; else compute in-node |
