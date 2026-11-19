@@ -1,11 +1,11 @@
 {
-  "generatedAt": 1794979355026,
+  "generatedAt": 1795069717453,
   "schemaVersion": 1,
   "skillCount": 9,
   "skills": [
     {
       "name": "odd-workflow",
-      "description": "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.5.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, resolve uncertainty, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, enforce Allowed Edit Surfaces and 3-tier verification in mktemp -d, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+      "description": "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.6.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, keep authorized work moving, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, enforce parent-adjudicated Allowed Edit Surfaces and 3-tier verification in mktemp -d, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
     },
     {
       "name": "skill-router",

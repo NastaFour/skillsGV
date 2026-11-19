@@ -1,23 +1,23 @@
 ---
 name: gentle-ai-review-4r
-description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.5. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 4.4.0. Do NOT use for informal prose proofreading or non-code document editing."
+description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.6. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 4.6.0. Do NOT use for informal prose proofreading or non-code document editing."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.4.0+ (Provider Contract 1.5), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
+compatibility: "Compatible with Gentle-AI 4.6.0+ (Provider Contract 1.6.0), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
 allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 metadata:
-  trigger: ["gentle-ai review", "4R lenses", "review assess", "review_due", "under_budget", "lentes 4R", "revision proporcional", "provider contract 1.5"]
+  trigger: ["gentle-ai review", "4R lenses", "review assess", "review_due", "under_budget", "lentes 4R", "revision proporcional", "provider contract 1.6"]
   scope: "global, project"
-  version: "1.1.0"
+  version: "1.2.0"
   author: skillsGV
 ---
 
 # 🛡️ Gentle-AI Review 4R — Proportionate Native Review & RDD Facade
 
-Operational guide for the **Gentle-AI 4.4.0** native review facade (`gentle-ai review`, Provider Contract `1.5`). Replaces rigid line-count review gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, `--request-context` / `--target-evidence` binding, and cryptographically bound receipt lineage when Receipt-Driven Development (RDD) is enabled.
+Operational guide for the **Gentle-AI 4.6.0** native review facade (`gentle-ai review`, Provider Contract `1.6.0`). Replaces rigid line-count review gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, `--request-context` / `--target-evidence` binding, non-blocking finding propagation on stopped reviews, orchestrator-owned next steps when a worker exhausts corrections, and cryptographically bound receipt lineage when Receipt-Driven Development (RDD) is enabled.
 
 ---
 
-## 🚫 Core Invariants (Gentle-AI 4.4.0 / Contract 1.5)
+## 🚫 Core Invariants (Gentle-AI 4.6.0 / Contract 1.6.0)
 
 1. **OPT-IN USER AUTHORITY & GRACEFUL FALLBACK**: RDD mode is strictly user-owned (`gentle-ai review mode enable --scope global`). Never enable or disable RDD autonomously. When `gentle-ai review mode status` reports disabled, operate under ordinary repository policy (`disabled/unmanaged`). When the `gentle-ai` binary is absent or the repository is on an unsupported SMB/UNC network path (`\\server\share`), report `receipt-driven development: unavailable` and continue under ordinary repository policy.
 2. **HIGH-RISK ONLY `review_due`**: In Gentle-AI 4.4.0, `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk (`items 1..6`). A medium-risk candidate reports `under_budget` regardless of authored line count.
