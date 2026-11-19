@@ -15,30 +15,30 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--srcDir" && args[i + 1]) srcDirs.push(resolve(args[++i]));
 }
 if (srcDirs.length === 0) {
-  const root = findProjectRoot(__dirname);
-  srcDirs = root ? [join(root, "apps", "web", "src"), join(root, "apps")] : [resolve(process.cwd(), "src")];
+  const root = findProjectRoot(process.cwd());
+  const defaultCandidates = [
+    root ? join(root, "apps", "web", "src") : null,
+    resolve(process.cwd(), "src"),
+  ].filter((p) => p && existsSync(p));
+  srcDirs = defaultCandidates.length > 0 ? [defaultCandidates[0]] : [resolve(process.cwd(), "src")];
 }
 
 const issues = [];
 
-// Check for large .json/.lottie files
+// Check for large .json/.lottie files strictly within the resolved srcDirs
 for (const srcDir of srcDirs) {
-  const root = findProjectRoot(__dirname);
-  const searchDirs = root ? [join(root, "apps")] : [srcDir];
-  for (const sd of searchDirs) {
-    if (!existsSync(sd)) continue;
-    const lottieFiles = walkFiles(sd, (name) => /\.(lottie|json)$/.test(name) && /animation|lottie/i.test(name));
-    for (const file of lottieFiles) {
-      const stat = statSync(file);
-      const sizeKB = Math.round(stat.size / 1024);
-      if (sizeKB > 100) {
-        issues.push({
-          severity: "warning",
-          check: "large-lottie",
-          msg: `Lottie file is ${sizeKB}KB (> 100KB). Optimize: use .lottie format, simplify keyframes, reduce frame rate.`,
-          file: relative(process.cwd(), file),
-        });
-      }
+  if (!existsSync(srcDir)) continue;
+  const lottieFiles = walkFiles(srcDir, (name) => /\.(lottie|json)$/.test(name) && /animation|lottie/i.test(name));
+  for (const file of lottieFiles) {
+    const stat = statSync(file);
+    const sizeKB = Math.round(stat.size / 1024);
+    if (sizeKB > 100) {
+      issues.push({
+        severity: "warning",
+        check: "large-lottie",
+        msg: `Lottie file is ${sizeKB}KB (> 100KB). Optimize: use .lottie format, simplify keyframes, reduce frame rate.`,
+        file: relative(process.cwd(), file),
+      });
     }
   }
 }

@@ -103,11 +103,17 @@ function statSafe(p) {
 }
 
 /**
- * Format and print a ScriptResult to console.
+ * Format and print a ScriptResult to console (or JSON when --json is passed).
  * @param {ScriptResult} result
  * @param {string} scriptName
+ * @param {{ json?: boolean }} [opts]
  */
-export function printResult(result, scriptName) {
+export function printResult(result, scriptName, opts = {}) {
+  const useJson = opts.json ?? process.argv.includes("--json");
+  if (useJson) {
+    console.log(JSON.stringify({ script: scriptName, ...result }));
+    return;
+  }
   const cwd = process.cwd();
   console.log(`\n📋 ${scriptName} — ${result.issues.length} issue(s)\n`);
   if (result.issues.length === 0) {

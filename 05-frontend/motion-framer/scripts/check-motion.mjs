@@ -14,7 +14,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--srcDir" && args[i + 1]) srcDirs.push(resolve(args[++i]));
 }
 if (srcDirs.length === 0) {
-  const root = findProjectRoot(__dirname);
+  const root = findProjectRoot(process.cwd());
   srcDirs = root ? [join(root, "apps", "web", "src")] : [resolve(process.cwd(), "src")];
 }
 

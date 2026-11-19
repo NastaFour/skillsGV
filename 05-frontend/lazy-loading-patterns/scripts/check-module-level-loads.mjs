@@ -11,11 +11,9 @@
  * Exit codes: 0 = OK, 1 = module-level load detected
  */
 
+import { existsSync } from "node:fs";
 import { resolve, join, relative } from "node:path";
-import { fileURLToPath } from "node:url";
 import { walkFiles, readFileUtf8, buildResult, printResult, exitFromResult, exitFromResultGuarded, findProjectRoot } from "../../../_shared/script-utils.mjs";
-
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const args = process.argv.slice(2);
 let srcDir = null;
@@ -23,20 +21,25 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--srcDir" && args[i + 1]) srcDir = resolve(args[++i]);
 }
 if (!srcDir) {
-  const root = findProjectRoot(__dirname);
-  srcDir = root ? join(root, "apps", "web", "src") : resolve(process.cwd(), "apps/web/src");
+  const root = findProjectRoot(process.cwd());
+  const candidates = [
+    root ? join(root, "apps", "web", "src") : null,
+    resolve(process.cwd(), "src"),
+    resolve(process.cwd(), "apps", "web", "src"),
+  ].filter(Boolean);
+  srcDir = candidates.find((p) => existsSync(p)) || resolve(process.cwd(), "src");
 }
 
 const issues = [];
 
 const srcFiles = walkFiles(srcDir, (name) => /\.(t|j)sx?$/.test(name));
 
-// Heavy library calls to detect at module level
+// Heavy library calls to detect at module level (excludes standard JS `new Map()`)
 const heavyCalls = [
   { regex: /loadStripe\s*\(/g, name: "loadStripe", fix: "Wrap in getStripe() singleton lazy function" },
   { regex: /new\s+L\.map\s*\(/g, name: "new L.map()", fix: "Move into useEffect or dynamic import('leaflet')" },
   { regex: /L\.map\s*\(/g, name: "L.map()", fix: "Move into useEffect or dynamic import('leaflet')" },
-  { regex: /new\s+Map\s*\(/g, name: "new Map()", fix: "Move into hook/component (may be a Leaflet Map)" },
+  { regex: /new\s+(?:mapboxgl|maplibregl|google\.maps)\.Map\s*\(/g, name: "new Map SDK", fix: "Move map SDK initialization into useEffect or dynamic import" },
 ];
 
 for (const file of srcFiles) {

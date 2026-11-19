@@ -25,7 +25,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--fix") { fix = true; }
 }
 
-const root = findProjectRoot(__dirname);
+const root = findProjectRoot(process.cwd());
 if (!webDir) {
   webDir = root ? join(root, "apps", "web") : resolve(process.cwd(), "apps", "web");
 }

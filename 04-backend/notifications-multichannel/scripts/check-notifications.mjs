@@ -23,7 +23,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--apiDir" && args[i + 1]) apiDir = resolve(args[++i]);
 }
 if (!apiDir) {
-  const root = findProjectRoot(__dirname);
+  const root = findProjectRoot(process.cwd());
   apiDir = root ? join(root, "apps", "api", "src") : resolve(process.cwd(), "apps/api/src");
 }
 
