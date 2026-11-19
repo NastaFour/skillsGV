@@ -194,12 +194,30 @@ function scanFile(absPath, srcDir, findings) {
 
   const lines = content.split(/\r?\n/);
   const reportedTailwindLines = new Set();
+  let inCssCustomProp = false;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const lineNumber = i + 1;
     const snippet = line.trim();
 
-    const exemptCssTokenLine = isCssFile && CSS_CUSTOM_PROPERTY_RE.test(line);
+    let exemptCssTokenLine = false;
+    if (isCssFile) {
+      const codePart = line.replace(/\/\*[\s\S]*?\*\//g, "");
+      const isCommentOnly = /^\s*(?:\/\*|\*)/.test(line);
+      if (inCssCustomProp && !isCommentOnly && /^\s*[a-zA-Z][\w-]*\s*:/.test(codePart)) {
+        inCssCustomProp = false;
+      }
+      const match = !isCommentOnly ? codePart.match(CSS_CUSTOM_PROPERTY_RE) : null;
+      const startsCustomProp = Boolean(match);
+      exemptCssTokenLine = startsCustomProp || inCssCustomProp;
+      if (startsCustomProp) {
+        const afterColon = codePart.slice(match.index + match[0].length);
+        inCssCustomProp = !/[;}]/.test(afterColon);
+      } else if (inCssCustomProp && !isCommentOnly && /[;}]/.test(codePart)) {
+        inCssCustomProp = false;
+      }
+    }
+
     if (!isTokenFile && !exemptCssTokenLine && HEX_COLOR_RE.test(line)) {
       findings.push({ file, line: lineNumber, rule: RULE_HEX, snippet });
     }

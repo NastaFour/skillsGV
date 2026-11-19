@@ -65,6 +65,11 @@ Tailwind CSS 4 replaces `tailwind.config.js` with CSS-first `@theme` definitions
 }
 ```
 
+> **Tailwind v4 Namespace & Windows `pnpm` 11 Guardrails**:
+> - Always register color utilities under `--color-*` inside `@theme inline` (NEVER define color tokens as `--text-*` inside `@theme`, which collides with Tailwind v4 font-size utilities!).
+> - Keep token definitions inside CSS custom properties (`--*:`) or files matching `*token*`, `*theme*`, or `*variables*` so `token-audit.mjs` and `verify-frontend-gates.mjs` pass cleanly.
+> - In standalone Vite + Tailwind v4 apps on Windows with `pnpm` 11+, include a local `pnpm-workspace.yaml` with `allowBuilds: { esbuild: true, "@tailwindcss/oxide": true }` and run plain `pnpm install` (do NOT pass `--ignore-workspace`, which suppresses local `allowBuilds`).
+
 ## Critical Rules
 
 ### Never Use `var()` in `className`

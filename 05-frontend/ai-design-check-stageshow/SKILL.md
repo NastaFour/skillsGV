@@ -21,8 +21,10 @@ Combines **@enmera/ai-design-check** (5-category visual quality inspection) with
 
 | Surface Class | Archetypes | Mandatory Rules (Floor) | Depth / Motion Policy |
 |---|---|---|---|
-| **Flat-Surface** | **A** Monograph, **B** Spec-Sheet, **E** Precision Instrument, **F** Humanist Companion, **G** System Native | Zero decorative `backdrop-blur`, zero stacked drop shadows, zero gradient blobs, zero pill confetti | Separation via `1px` hairlines (`var(--border-subtle)`), negative space, and crisp elevation steps (`--surface-0..3`) |
-| **Immersive / Kinetic** | **C** Gallery, **D** Kinetic Utility, **H** Bespoke / Creative Exploration | Zero fake data, WCAG AA contrast, `prefers-reduced-motion`, full interactive states | Intentional glass HUDs (`<= 24px` chrome), shader/WebGL stages, and multi-axis choreography via `[Beyond-Baseline: <reason>]` |
+| **Flat-Surface** | **A** Monograph, **B** Spec-Sheet, **E** Precision Instrument, **F** Humanist Companion, **G** System Native | Zero decorative `backdrop-blur`, zero muddy stacked shadows, zero gradient blobs, zero pill confetti, zero wireframe box-walls (`border 1px` around every label/link) | Lead with **negative space and subtle tonal surface elevation** (`--surface-0..3`); use `1px` hairlines only for major structural seams; preserve organic radii (`6–16px`) for `E/F/G` instead of forcing `0–2px` squares |
+| **Immersive / Kinetic** | **C** Gallery, **D** Kinetic Utility, **H** Bespoke / Creative Exploration | Zero fake data, WCAG AA contrast, `prefers-reduced-motion`, full interactive states | Intentional glass HUDs (`<= 24px` chrome), tactile depth/elevation, shader/WebGL stages, and multi-axis choreography via `[Beyond-Baseline: <reason>]` |
+
+> **Greenfield Phase 3 Audit vs Pre-Build Preview**: On greenfield apps, run the **5-Category Post-Build Audit** and **Deterministic Gate Defects** directly against the live rendered browser view during `design-driven` Phase 3 (skip building a separate static HTML preview file unless the user explicitly asks for an interactive Stageshow mockup).
 
 ---
 

@@ -24,12 +24,12 @@ The default animation library for React. Covers web (Motion/framer-motion) and m
 
 ## 🚦 Hard Rules
 
-- **Always** use `variants` for orchestrated animations (not inline `animate` props)
-- **Always** use `type: "spring"` for physical feel (not `ease` for UI elements)
-- **Always** clean up `AnimatePresence` children with `exit` variants
-- **Never** animate layout properties (`width`, `height`, `top`, `left`) — use `layout` prop instead
-- **Always** respect `prefers-reduced-motion` (see `motion-accessibility`)
-- **Always** use `useGSAP()` or `gsap.context()` for GSAP cleanup (not `useEffect`)
+- **Frequency Gate (aligned with `emil-kowalski`)**: Use CSS transitions (`transform`, `opacity`) for simple hover/press/dialog states (`0ms` for frequent search/filter/palette controls); reach for `motion` (`motion/react`) springs when you need interruptible physics, shared `layoutId` indicators, `AnimatePresence` exits, or gestures.
+- **Always** use `variants` for orchestrated multi-child animations (not ad-hoc inline `animate` props)
+- **Always** use `type: "spring"` for physical UI motion (not generic `ease` for spatial drags/sheets)
+- **Always** clean up `AnimatePresence` children with explicit `exit` variants and stable keys
+- **Never** animate layout properties (`width`, `height`, `top`, `left`) — use `layout` prop or `transform` instead
+- **Always** respect `prefers-reduced-motion` (`useReducedMotion()` / `<MotionConfig reducedMotion="user">`, see `motion-accessibility`)
 
 ## 🛠️ Workflow
 
@@ -37,9 +37,9 @@ The default animation library for React. Covers web (Motion/framer-motion) and m
 2. Read AnimatePresence (exit animations): [animate-presence.md](references/animate-presence.md)
 3. Read variants + stagger: [variants-stagger.md](references/variants-stagger.md)
 4. Read mobile (Reanimated 3): [mobile-reanimated.md](references/mobile-reanimated.md)
-5. Run the checker:
+5. Run the checker (or the unified `verify-frontend-gates.mjs` runner from `design-driven`):
    ```bash
-   node 05-frontend/motion-framer/scripts/check-motion.mjs
+   node 05-frontend/motion-framer/scripts/check-motion.mjs --srcDir src
    ```
 
 ## 📚 References

@@ -20,7 +20,7 @@ let rootDir = null;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--rootDir" && args[i + 1]) rootDir = resolve(args[++i]);
 }
-if (!rootDir) rootDir = findProjectRoot(__dirname) || process.cwd();
+if (!rootDir) rootDir = findProjectRoot(process.cwd()) || process.cwd();
 
 const issues = [];
 

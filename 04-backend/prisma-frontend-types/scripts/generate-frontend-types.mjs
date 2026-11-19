@@ -28,7 +28,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--dry-run") dryRun = true;
 }
 
-const root = findProjectRoot(__dirname);
+const root = findProjectRoot(process.cwd());
 if (!schemaPath) {
   schemaPath = root ? join(root, "apps", "api", "prisma", "schema.prisma") : resolve(process.cwd(), "apps/api/prisma/schema.prisma");
 }

@@ -223,7 +223,7 @@ function getStagedFiles() {
   }
 }
 
-const projectRoot = findProjectRoot(__dirname) || process.cwd();
+const projectRoot = findProjectRoot(process.cwd()) || process.cwd();
 const scanDir = target || projectRoot;
 
 let files;
@@ -251,7 +251,7 @@ for (const file of files) {
       if (aliases.some((p) => spec.startsWith(p))) continue;
     }
     const pkg = basePackage(spec);
-    if (BUILTINS.has(pkg)) continue;
+    if (pkg.startsWith("node:") || BUILTINS.has(pkg)) continue;
     if (seen.has(pkg + "@" + file)) continue;
     seen.add(pkg + "@" + file);
 

@@ -34,7 +34,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
-| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.5.0 Organic Driven Development… |
+| odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.6.0 Organic Driven Development… |
 | skill-distiller | [00-meta-skills/skill-distiller/SKILL.md](00-meta-skills/skill-distiller/SKILL.md) ← Analyzes an external project workspace to discover applicable catalog skills an… |
 | codegraph-intelligence | [00-meta-skills/codegraph-intelligence/SKILL.md](00-meta-skills/codegraph-intelligence/SKILL.md) ← Use when answering structural, architectural, call-flow, dependency, symbol-ref… |
 
@@ -102,7 +102,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
 | archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) ← Usala para crear diagramas Excalidraw, flujos y mapas de arquitectura visual té… |
-| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 5 |
+| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 6 |
 | live-cve-security-intel | [02-dev-roles/live-cve-security-intel/SKILL.md](02-dev-roles/live-cve-security-intel/SKILL.md) ← Use at the end of a project, before release, or during High-Risk (Item 2/5) rev… |
 
 ## 03-ai-ml

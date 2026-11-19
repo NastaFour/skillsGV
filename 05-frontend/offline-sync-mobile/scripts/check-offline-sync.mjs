@@ -15,7 +15,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === "--srcDir" && args[i + 1]) srcDir = resolve(args[++i]);
 }
 if (!srcDir) {
-  const root = findProjectRoot(__dirname);
+  const root = findProjectRoot(process.cwd());
   srcDir = root ? join(root, "apps", "mobile-client", "src") : resolve(process.cwd(), "apps/mobile-client/src");
 }
 
