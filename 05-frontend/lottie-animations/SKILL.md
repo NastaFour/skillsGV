@@ -46,4 +46,5 @@ Illustrated vector animations for onboarding, empty states, success, and loading
 - [Use Cases](references/lottie-use-cases.md) — onboarding, empty, success, loading
 - [Optimization](references/lottie-optimization.md) — reduce file size, lazy load
 - [`motion-accessibility`](../motion-accessibility/SKILL.md) — reduced-motion fallbacks
+- [`emil-kowalski — Disney Choreography`](../emil-kowalski/references/disney-choreography.md) — timing, anticipation & staging rules
 - [`lazy-loading-patterns`](../lazy-loading-patterns/SKILL.md) — lazy load strategy

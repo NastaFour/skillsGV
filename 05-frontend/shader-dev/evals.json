@@ -1,0 +1,37 @@
+{
+  "evals": [
+    {
+      "id": "shader-dev-webgl-sdf",
+      "prompt": "build a fragment shader with signed distance field fluid background for hero focal zone",
+      "files": [],
+      "expected_output": "Apply shader-dev within DESIGN_SYSTEM.md Craft Budget (max 1 focal canvas, dpr <= 2, smoothstep contrast guard for WCAG >= 4.5:1, prefers-reduced-motion static fallback, webglcontextlost + .dispose() cleanup, IntersectionObserver offscreen pause).",
+      "expectations": [
+        "routes-to:shader-dev",
+        "contains:Craft Budget",
+        "contains:prefers-reduced-motion",
+        "contains:webglcontextlost"
+      ]
+    },
+    {
+      "id": "shader-dev-glsl-shadertoy",
+      "prompt": "adapt a shadertoy glsl procedural noise effect with astro client:visible",
+      "files": [],
+      "expected_output": "Use shader-dev GLSL ES 3.00 cosine palette matched to OKLCH tokens with lazy client:visible hydration, astro:before-swap cleanup, and offscreen rAF pause.",
+      "expectations": [
+        "routes-to:shader-dev",
+        "contains:client:visible",
+        "contains:astro:before-swap"
+      ]
+    },
+    {
+      "id": "shader-dev-negative-crud",
+      "prompt": "design an admin dashboard form validation with react-hook-form and zod",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use forms-validation-react and refactoring-ui rather than shader-dev for admin form validation.",
+      "expectations": [
+        "not-routes-to:shader-dev"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "evals": [
+    {
+      "id": "mwg-native-popover-container",
+      "prompt": "modern web guidance using native css popover api and container queries",
+      "files": [],
+      "expected_output": "Run legacy-scan.mjs first to surface specific guideRef anchors in references/modern-platform-map.md, then replace custom modal/ResizeObserver JS with native <dialog>/[popover], CSS Anchor Positioning, @container, subgrid, and animation-timeline: view().",
+      "expectations": [
+        "routes-to:modern-web-guidance",
+        "contains:legacy-scan.mjs",
+        "contains:modern-platform-map.md",
+        "contains:@container"
+      ]
+    },
+    {
+      "id": "mwg-legacy-scan-cli",
+      "prompt": "run legacy scan for 100vh and scroll listeners on web codebase",
+      "files": [],
+      "expected_output": "Execute node 05-frontend/modern-web-guidance/scripts/legacy-scan.mjs --srcDir src --json and modernize only flagged patterns (100svh/100dvh, animation-timeline: view(), navigator.clipboard.writeText).",
+      "expectations": [
+        "routes-to:modern-web-guidance",
+        "contains:legacy-scan.mjs",
+        "contains:100svh"
+      ]
+    },
+    {
+      "id": "mwg-negative-backend",
+      "prompt": "write postgresql indexing strategy and drizzle migration script",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use postgresql and modern-ts-backend rather than modern-web-guidance for server-side SQL migrations.",
+      "expectations": [
+        "not-routes-to:modern-web-guidance"
+      ]
+    }
+  ]
+}
