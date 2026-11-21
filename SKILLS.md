@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **255 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -11,7 +11,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | find-skills | [00-meta-skills/find-skills/SKILL.md](00-meta-skills/find-skills/SKILL.md) ← descubrimiento e instalación de skills del ecosistema abierto |
 | skill-improver | [00-meta-skills/skill-improver/SKILL.md](00-meta-skills/skill-improver/SKILL.md) ← auditoría, evaluación y refactorización de calidad de skills |
 | skill-registry | [00-meta-skills/skill-registry/SKILL.md](00-meta-skills/skill-registry/SKILL.md) ← sincronización y actualización del registro tras cambios en skills |
-| agent-roster | [00-meta-skills/agent-roster/SKILL.md](00-meta-skills/agent-roster/SKILL.md) ← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models) |
+| agent-roster | [00-meta-skills/agent-roster/SKILL.md](00-meta-skills/agent-roster/SKILL.md) ← declarative 23-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models) |
 | catalog-usage | [00-meta-skills/catalog-usage/SKILL.md](00-meta-skills/catalog-usage/SKILL.md) ← onboarding y operación del catálogo para agentes: instalar, uso diario, mantenimiento |
 | skill-creator | [00-meta-skills/skill-creator/SKILL.md](00-meta-skills/skill-creator/SKILL.md) ← Generates new skills following the official agentskills.io spec (name lowercase… |
 | skill-loader | [00-meta-skills/skill-loader/SKILL.md](00-meta-skills/skill-loader/SKILL.md) ← two-tier loading, session telemetry, route-first enforcement |
@@ -31,7 +31,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | sdd-archive | [00-meta-skills/sdd-archive/SKILL.md](00-meta-skills/sdd-archive/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
 | sdd-onboard | [00-meta-skills/sdd-onboard/SKILL.md](00-meta-skills/sdd-onboard/SKILL.md) ← DEPRECATED. Use odd-workflow instead. |
 | skill-harvest | [00-meta-skills/skill-harvest/SKILL.md](00-meta-skills/skill-harvest/SKILL.md) ← post-project: draft new-skill proposals into _inbox from Engram, never auto-create |
-| gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 20-agent roster + retry-on-failure |
+| gentle-orchestrator | [00-meta-skills/gentle-orchestrator/SKILL.md](00-meta-skills/gentle-orchestrator/SKILL.md) ← coordinator: delegation rules + 23-agent roster + retry-on-failure |
 | catalog-doctor | [00-meta-skills/catalog-doctor/SKILL.md](00-meta-skills/catalog-doctor/SKILL.md) ← Run unified catalog diagnostic checks: validate --strict, install dry-run, load… |
 | skill-spector | [00-meta-skills/skill-spector/SKILL.md](00-meta-skills/skill-spector/SKILL.md) ← Auditoría de seguridad y análisis estático para skills de agentes según Hermes… |
 | odd-workflow | [00-meta-skills/odd-workflow/SKILL.md](00-meta-skills/odd-workflow/SKILL.md) ← Use when executing development under Gentle-AI 4.6.0 Organic Driven Development… |
@@ -152,6 +152,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | spring-boot-3 | [04-backend/spring-boot-3/SKILL.md](04-backend/spring-boot-3/SKILL.md) ← constructor injection, @ConfigurationProperties, @Transactional |
 | modern-ts-backend | [04-backend/modern-ts-backend/SKILL.md](04-backend/modern-ts-backend/SKILL.md) ← Use when architecting greenfield TypeScript APIs, edge/serverless services, typ… |
 | distributed-resilience-sre | [04-backend/distributed-resilience-sre/SKILL.md](04-backend/distributed-resilience-sre/SKILL.md) ← Architect resilient distributed systems, fault-tolerant messaging, and SRE prod… |
+| backend-driven | [04-backend/backend-driven/SKILL.md](04-backend/backend-driven/SKILL.md) ← 3-phase backend engine + verify-backend-gates |
 
 ## 05-frontend
 
@@ -199,7 +200,7 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | web-design-guidelines | [05-frontend/web-design-guidelines/SKILL.md](05-frontend/web-design-guidelines/SKILL.md) ← review UI code for Web Interface Guidelines compliance, accessibility, UX audit |
 | interface-design | [05-frontend/interface-design/SKILL.md](05-frontend/interface-design/SKILL.md) ← craft-first UI for dashboards, SaaS apps, admin panels, tokens (Linear/Stripe standard) |
 | figma-implement | [05-frontend/figma-implement/SKILL.md](05-frontend/figma-implement/SKILL.md) ← plegado Capa 1: Figma → código 1:1 (canónico del grupo figma), design context + screenshots vía MCP |
-| design-driven | [05-frontend/design-driven/SKILL.md](05-frontend/design-driven/SKILL.md) ← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop |
+| design-driven | [05-frontend/design-driven/SKILL.md](05-frontend/design-driven/SKILL.md) ← 3-phase Frontend Engine v4 (D1b pitch → Craft Budget → ui-diff gate) |
 | impeccable | [05-frontend/impeccable/SKILL.md](05-frontend/impeccable/SKILL.md) ← Comandos Bakaus, PRODUCT.md/DESIGN.md, references/commands.md |
 | taste-skill | [05-frontend/taste-skill/SKILL.md](05-frontend/taste-skill/SKILL.md) ← Design Read, diales, 10 bans, references/full-guide.md |
 | emil-kowalski | [05-frontend/emil-kowalski/SKILL.md](05-frontend/emil-kowalski/SKILL.md) ← Filosofía de Emil Kowalski (animations.dev): física de resortes, gestos interru… |
@@ -213,6 +214,9 @@ Catálogo de **251 skills** compatible con [agentskills.io](https://agentskills.
 | hallmark-design-study | [05-frontend/hallmark-design-study/SKILL.md](05-frontend/hallmark-design-study/SKILL.md) ← Use when extracting structural and visual DNA from reference URLs, codebases, o… |
 | scroll-world-storytelling | [05-frontend/scroll-world-storytelling/SKILL.md](05-frontend/scroll-world-storytelling/SKILL.md) ← Use when building immersive scroll-driven landing pages, product showcases, 3D/… |
 | ai-design-check-stageshow | [05-frontend/ai-design-check-stageshow/SKILL.md](05-frontend/ai-design-check-stageshow/SKILL.md) ← Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow v1.1.1 for… |
+| modern-web-guidance | [05-frontend/modern-web-guidance/SKILL.md](05-frontend/modern-web-guidance/SKILL.md) ← baseline web features + legacy-scan |
+| shader-dev | [05-frontend/shader-dev/SKILL.md](05-frontend/shader-dev/SKILL.md) ← custom GLSL / SDF shaders |
+| ui-diff | [05-frontend/ui-diff/SKILL.md](05-frontend/ui-diff/SKILL.md) ← visual regression, DOM geometry & 2x2 contact sheet |
 
 ## 06-code-quality
 

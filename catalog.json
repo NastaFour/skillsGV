@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 251
+    "skills": 255
   },
   "categories": [
     {
@@ -27,12 +27,12 @@
     {
       "id": "04-backend",
       "title": "Backend",
-      "count": 26
+      "count": 27
     },
     {
       "id": "05-frontend",
       "title": "Frontend",
-      "count": 56
+      "count": 59
     },
     {
       "id": "06-code-quality",
@@ -78,7 +78,7 @@
       "tier": "core",
       "tier0": false,
       "deprecated": false,
-      "note": "← declarative 20-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models)",
+      "note": "← declarative 23-agent roster (roster.json) + per-runtime generator (apply.mjs) + provider switcher (set-models)",
       "autoInvoke": true
     },
     {
@@ -128,7 +128,7 @@
       "tier": "core",
       "tier0": false,
       "deprecated": false,
-      "note": "← coordinator: delegation rules + 20-agent roster + retry-on-failure",
+      "note": "← coordinator: delegation rules + 23-agent roster + retry-on-failure",
       "autoInvoke": false
     },
     {
@@ -1072,6 +1072,16 @@
       "autoInvoke": true
     },
     {
+      "name": "backend-driven",
+      "path": "04-backend/backend-driven/SKILL.md",
+      "category": "04-backend",
+      "tier": "core",
+      "tier0": false,
+      "deprecated": false,
+      "note": "← 3-phase backend engine + verify-backend-gates",
+      "autoInvoke": true
+    },
+    {
       "name": "background-jobs-queues",
       "path": "04-backend/background-jobs-queues/SKILL.md",
       "category": "04-backend",
@@ -1388,7 +1398,7 @@
       "tier": "full",
       "tier0": false,
       "deprecated": false,
-      "note": "← formal design pipeline (D1 brief → D6 design-review), decision gates, anti-slop",
+      "note": "← 3-phase Frontend Engine v4 (D1b pitch → Craft Budget → ui-diff gate)",
       "autoInvoke": true
     },
     {
@@ -1540,6 +1550,16 @@
       "deprecated": false,
       "note": null,
       "autoInvoke": true
+    },
+    {
+      "name": "modern-web-guidance",
+      "path": "05-frontend/modern-web-guidance/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": "← baseline web features + legacy-scan",
+      "autoInvoke": false
     },
     {
       "name": "motion-accessibility",
@@ -1722,6 +1742,16 @@
       "autoInvoke": false
     },
     {
+      "name": "shader-dev",
+      "path": "05-frontend/shader-dev/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": "← custom GLSL / SDF shaders",
+      "autoInvoke": false
+    },
+    {
       "name": "signup-flow-cro",
       "path": "05-frontend/signup-flow-cro/SKILL.md",
       "category": "05-frontend",
@@ -1779,6 +1809,16 @@
       "tier0": false,
       "deprecated": false,
       "note": "← `references/core-threejs.md`, `references/r3f-patterns.md`, `references/drei-helpers.md`, `references/performance-webgl.md`, `references/spline-no-code.md`",
+      "autoInvoke": true
+    },
+    {
+      "name": "ui-diff",
+      "path": "05-frontend/ui-diff/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": "← visual regression, DOM geometry & 2x2 contact sheet",
       "autoInvoke": true
     },
     {
