@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage", ".ui-diff"]);
 const CODE_EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".css", ".astro", ".vue", ".svelte"]);
-const TOKEN_FILE_RE = /(token|theme|variables)/i;
+const TOKEN_FILE_RE = /(?:^|[\\/])(?:tokens?|themes?|variables|design-tokens)(?:[-_.][a-z0-9]+)*\.(?:css|scss|ts|js|json)$/i;
 
 const isCliEntry =
   Boolean(process.argv[1]) &&
@@ -47,9 +47,6 @@ function walkCodeFiles(dir, out = []) {
 export function scanLegacyPatterns(txt, relFile) {
   const issues = [];
   const lines = txt.split(/\r?\n/);
-  const hasModernVh = /\b100[ds]vh\b/.test(txt);
-  const hasScrollTimeline = /animation-timeline\s*:/.test(txt);
-  const hasContainerQuery = /@container\b|container-type\s*:/.test(txt);
   const isCssLike = /\.(css|astro|vue|svelte)$/.test(relFile);
 
   let inKeyframes = false;
@@ -82,7 +79,7 @@ export function scanLegacyPatterns(txt, relFile) {
       if (kfDepth <= 0 && line.includes("}")) inKeyframes = false;
     }
 
-    if (!hasScrollTimeline && /addEventListener\s*\(\s*["']scroll["']/.test(line)) {
+    if (/addEventListener\s*\(\s*["']scroll["']/.test(line)) {
       issues.push({
         severity: "warning",
         check: "legacy-scroll-listener",
@@ -104,7 +101,7 @@ export function scanLegacyPatterns(txt, relFile) {
       });
     }
 
-    if (!hasContainerQuery && /\bnew\s+ResizeObserver\b/.test(line)) {
+    if (/\bnew\s+ResizeObserver\b/.test(line)) {
       issues.push({
         severity: "warning",
         check: "legacy-resize-observer-breakpoint",
@@ -126,7 +123,7 @@ export function scanLegacyPatterns(txt, relFile) {
       });
     }
 
-    if (!TOKEN_FILE_RE.test(relFile) && !hasModernVh && /(?:\bh-screen\b|\b100vh\b)/.test(line)) {
+    if (!TOKEN_FILE_RE.test(relFile) && /(?:\bh-screen\b|\b100vh\b)/.test(line)) {
       issues.push({
         severity: "warning",
         check: "legacy-100vh",

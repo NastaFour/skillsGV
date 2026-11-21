@@ -213,3 +213,46 @@ test("verify-frontend-gates scans .astro files, enforces v4 static checks, and a
   assert.equal(goodJson.ok, true);
   assert.ok(goodJson.liveAudit && goodJson.liveAudit.status === "degraded");
 });
+
+test("v4.1: evaluateVisualDiffs enforces --max-diff-percent and detects per-file kinetic leaks & ThemeSwitcher.tsx", async (t) => {
+  const { evaluateVisualDiffs } = await import("../05-frontend/ui-diff/scripts/ui-diff.mjs");
+  const diffCheck = evaluateVisualDiffs(
+    [{ label: "desktop-light", changedPercent: 4.5, heightDelta: 24 }],
+    2.0
+  );
+  assert.equal(diffCheck.ok, false);
+  assert.equal(diffCheck.errors, 1);
+  assert.equal(diffCheck.warnings, 1);
+  assert.ok(diffCheck.issues.some((i) => i.check === "pixel-diff-threshold-exceeded"));
+  assert.ok(diffCheck.issues.some((i) => i.check === "layout-height-shift"));
+
+  const dir = makeFixture(t, "skillsgv-v41-kinetic-");
+  mkdirSync(join(dir, "src"), { recursive: true });
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({ name: "kinetic-check", dependencies: { gsap: "^3.12.0", three: "^0.170.0" } }),
+    "utf8"
+  );
+  // File 1 has cleanup + reduced motion
+  writeFileSync(
+    join(dir, "src", "CleanHero.tsx"),
+    'import gsap from "gsap";\nexport function a() { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; const ctx = gsap.context(() => {}); ctx.revert(); }\n',
+    "utf8"
+  );
+  // File 2 is named ThemeSwitcher.tsx (must NOT be exempted as a token file) and leaks Three.js without .dispose()
+  writeFileSync(
+    join(dir, "src", "ThemeSwitcher.tsx"),
+    'import * as THREE from "three";\nexport const ThemeSwitcher = () => <div className="h-screen" style={{ color: "#ff0055" }}>{String(Boolean(THREE.Scene))}</div>;\n',
+    "utf8"
+  );
+
+  const res = runCli(FRONTEND_GATES_CLI, ["--srcDir", join(dir, "src"), "--webDir", dir, "--skip-build-config", "--json"]);
+  assert.equal(res.code, 1);
+  const report = JSON.parse(res.stdout);
+  const kineticErr = report.craftChecks.find(
+    (c) => c.check === "kinetic-missing-cleanup-or-reduced-motion" && c.file === "ThemeSwitcher.tsx"
+  );
+  assert.ok(kineticErr, `Expected per-file kinetic cleanup error on ThemeSwitcher.tsx, got ${JSON.stringify(report.craftChecks)}`);
+  const vhErr = report.craftChecks.find((c) => c.check === "legacy-100vh" && c.file === "ThemeSwitcher.tsx");
+  assert.ok(vhErr, "ThemeSwitcher.tsx must not be exempted by TOKEN_FILE_RE");
+});

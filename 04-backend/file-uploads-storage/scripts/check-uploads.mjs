@@ -30,14 +30,54 @@ const issues = [];
 
 const srcFiles = walkFiles(apiDir, (name) => /\.(t|j)s$/.test(name));
 
+function extractMulterConfigs(content) {
+  const configs = [];
+  const callRe = /\bmulter\s*\(\s*\{/g;
+  let m;
+  while ((m = callRe.exec(content)) !== null) {
+    const openBraceIdx = content.indexOf("{", m.index);
+    if (openBraceIdx === -1) continue;
+    let depth = 0;
+    let quote = null;
+    let escaped = false;
+    for (let i = openBraceIdx; i < content.length; i++) {
+      const ch = content[i];
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+        if (ch === "\\") {
+          escaped = true;
+          continue;
+        }
+        if (ch === quote) quote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === "`") {
+        quote = ch;
+        continue;
+      }
+      if (ch === "{") depth++;
+      else if (ch === "}") {
+        depth--;
+        if (depth === 0) {
+          configs.push(content.slice(openBraceIdx + 1, i));
+          break;
+        }
+      }
+    }
+  }
+  return configs;
+}
+
 for (const file of srcFiles) {
   const content = readFileUtf8(file);
   const relFile = relative(process.cwd(), file);
 
-  // Find multer config: multer({ ... })
-  const multerMatches = [...content.matchAll(/multer\s*\(\s*\{([^}]*)\}/gs)];
-  for (const match of multerMatches) {
-    const config = match[1];
+  // Find multer config: multer({ ... }) with balanced brace extraction
+  const multerConfigs = extractMulterConfigs(content);
+  for (const config of multerConfigs) {
 
     if (!/fileFilter/i.test(config)) {
       issues.push({

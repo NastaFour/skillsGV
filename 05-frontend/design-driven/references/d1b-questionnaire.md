@@ -27,12 +27,14 @@ Para que esta interfaz salga única y con impacto real (sin plantillas genérica
 2. **Interactive Kinetic ([Chasis])** — [Paleta luz/acento + ritmo]. *Pieza firma*: [elemento interactivo útil pensado para el usuario — ej. ruleta de estilos, comparador vivo o timeline con ScrollTrigger]. *(Skills Phase 2: `emil-kowalski`, `motion-gsap`, `micro-interactions`)*
 3. **[Immersive Stage / Editorial SVG según Dominio] ([Chasis H])** — [Inversión lateral de cliché]. *Pieza firma `[Beyond-Baseline]`*: [escena 3D/shader acotada en zona focal o diagrama SVG arquitectónico]. *(Skills Phase 2: [`scroll-world-storytelling` / `three-js-web` / `shader-dev` | `frontend-slides-deck`])*
 
-### B. Preguntas D1b (respondé eligiendo `1`, `2` o `3` y/o ajustando cualquiera de estos 5 puntos)
-1. **Personalidad y Anti-Referencia**: ¿Qué 3 adjetivos definen la marca y a qué cliché NO querés que se parezca jamás?
-2. **Geometría y Estructura (Chasis A–H)**: ¿Preferís amplitud editorial (`Gallery`/`Monograph`), precisión densa (`Precision`/`Spec-Sheet`) o algo disruptivo (`Bespoke H`)?
-3. **Luz y Acento (OKLCH)**: ¿Modo claro cálido, oscuro profundo o adaptativo, y qué tono de acento principal?
-4. **Voz Tipográfica**: ¿Editorial con Serif de alto contraste, Sans geométrica limpia o técnica con telemetría `tabular-nums`?
-5. **Pieza Firma (`[Beyond-Baseline]`) y Modelo Constructor**: ¿Qué interacción única sumamos en la zona focal (`Rule of One`) y con qué modelo de tu API key querés que corra `frontend-builder` `[opcional · default: actual]`?
+> 👉 **Respuesta rápida**: Respondé solo **`1`**, **`2`** o **`3`** para avanzar directo con ese concepto completo, o contestá/ajustá cualquiera de las **5 preguntas D1b** abajo para personalizarlo:
+
+### B. 5 Preguntas D1b (para afinar tu sistema visual a medida)
+1. **Personalidad y Anti-Referencia**: ¿Qué 3 palabras describen la esencia de tu marca y a qué tipo de web genérica NO querés que se parezca jamás?
+2. **Estructura y Espacio (Chasis A–H)**: ¿Preferís un diseño editorial amplio con mucho aire (`Gallery`/`Monograph`), un panel compacto de alta precisión (`Precision`/`Spec-Sheet`) o un layout experimental a medida (`Bespoke H`)?
+3. **Tema de Luz y Color Principal**: ¿Arrancamos en modo claro cálido, modo oscuro profundo o ambos, y qué color de acento querés para guiar las acciones clave?
+4. **Personalidad Tipográfica**: ¿Títulos con carácter editorial (Serif de alto contraste), limpieza moderna (Sans geométrica) o estética técnica con números alineados para métricas y tablas?
+5. **Interacción Firma y Modelo Constructor**: ¿Qué elemento interactivo memorable querés en la sección principal y querés usar algún modelo específico de tu API key para construirlo `[opcional · default: modelo actual]`?
 ```
 
 - **One-Shot (`"one-shot"` / `"sin preguntas"` / `"sorprendeme"` / Swarms)**: elegí automáticamente la Opción 2 o 3 habilitada por la Matriz de Dominio, respondé la síntesis D1b y escribí `DESIGN_SYSTEM.md` completo antes de codificar.

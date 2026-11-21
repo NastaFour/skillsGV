@@ -91,3 +91,54 @@ test("pure backend prompts have zero UI false positives and set isBackendTask = 
     assert.equal(res.isBackendTask, true, `Expected isBackendTask=true on "${q}", got ${JSON.stringify(res)}`);
   }
 });
+
+test("v4.1: skill-router --phase-plan and --phase 2a enforce Positive-Only Canvas and fullstack co-routing", () => {
+  const planOut = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        ROUTER_CLI,
+        "--query",
+        "build a Next.js landing page with scroll trigger pinning, 3D R3F canvas, and impeccable visual hierarchy",
+        "--phase-plan",
+        "--json",
+      ],
+      { cwd: REPO_ROOT, encoding: "utf8" }
+    )
+  );
+  assert.ok(planOut.phasePlan, "expected phasePlan object when --phase-plan is passed");
+  assert.equal(planOut.phasePlan.needsBuilder2B, true, "expected needsBuilder2B=true when 3D/GSAP triggers match");
+  for (const key of ["phase1", "phase2a", "phase2b", "phase3a", "phase3b"]) {
+    assert.ok(Array.isArray(planOut.phasePlan[key]), `missing ${key}`);
+    assert.ok(planOut.phasePlan[key].length <= 5, `${key} exceeded 5-skill cap`);
+  }
+  const criticOnly = ["impeccable", "taste-skill", "refactoring-ui", "interface-design", "ai-design-check-stageshow", "web-design-guidelines", "ux-auditor-agent"];
+  for (const c of criticOnly) {
+    assert.equal(planOut.phasePlan.phase2a.includes(c), false, `phase2a leaked critic skill ${c}`);
+    assert.equal(planOut.phasePlan.phase2b.includes(c), false, `phase2b leaked critic skill ${c}`);
+  }
+
+  const phase2aOut = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [
+        ROUTER_CLI,
+        "--query",
+        "create a React dashboard with impeccable visual hierarchy and refactoring ui spacing",
+        "--phase",
+        "2a",
+        "--json",
+      ],
+      { cwd: REPO_ROOT, encoding: "utf8" }
+    )
+  );
+  for (const c of criticOnly) {
+    assert.equal(phase2aOut.tier1toLoad.includes(c), false, `--phase 2a tier1toLoad must strip critic skill ${c}`);
+  }
+
+  const fullstackOut = runRouter("build a React dashboard form and Express REST API endpoint with Prisma migration");
+  assert.equal(fullstackOut.isUiTask, true);
+  assert.equal(fullstackOut.isBackendTask, true);
+  assert.ok(fullstackOut.tier1toLoad.includes("design-driven"), "fullstack query must keep design-driven");
+  assert.ok(fullstackOut.tier1toLoad.includes("backend-driven"), "fullstack query must keep backend-driven");
+});

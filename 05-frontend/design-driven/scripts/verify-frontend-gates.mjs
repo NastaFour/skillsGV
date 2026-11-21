@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage", ".ui-diff"]);
 const CODE_EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".css", ".vue", ".svelte", ".astro"]);
-const TOKEN_FILE_RE = /(token|theme|variables)/i;
+const TOKEN_FILE_RE = /(?:^|[\\/])(?:tokens?|themes?|variables|design-tokens)(?:[-_.][a-z0-9]+)*\.(?:css|scss|ts|js|json)$/i;
 
 function printHelp() {
   console.log(`verify-frontend-gates — Unified Frontend Post-Build Audit Runner (Phase 3)
@@ -193,21 +193,24 @@ function extractOpeningTagAttrs(lines, startLineIdx, tagNameRegex) {
 function runV4StaticChecks(srcDir, files, signals) {
   const findings = [];
   let hasReducedMotionAnywhere = false;
-  let hasKineticCleanupAnywhere = false;
-  let firstKineticFile = null;
+  const kineticFiles = [];
 
   for (const f of files) {
     const rel = relative(srcDir, f).split(sep).join("/");
     let txt;
     try { txt = readFileSync(f, "utf8"); } catch { continue; }
 
-    if (/prefers-reduced-motion|useReducedMotion/.test(txt)) hasReducedMotionAnywhere = true;
-    if (/\.revert\s*\(|\.dispose\s*\(|ScrollTrigger\.getAll|astro:before-swap/.test(txt)) hasKineticCleanupAnywhere = true;
-    if (!firstKineticFile && /from\s+["'](?:gsap|three|@react-three\/fiber)/.test(txt)) firstKineticFile = rel;
+    const hasLocalReducedMotion = /prefers-reduced-motion|useReducedMotion|matchMedia\s*\(\s*["'][^"']*prefers-reduced-motion/i.test(txt);
+    if (hasLocalReducedMotion) hasReducedMotionAnywhere = true;
+
+    const isKineticFile = /from\s+["'](?:gsap(?:\/[^"']*)?|three|@react-three\/fiber)["']|ShaderMaterial|gl_FragColor/.test(txt);
+    if (isKineticFile) {
+      const hasCleanup = /\.revert\s*\(|\.dispose\s*\(|useGSAP\s*\(|ScrollTrigger\.getAll|astro:before-swap/.test(txt);
+      kineticFiles.push({ file: rel, hasCleanup, hasLocalReducedMotion });
+    }
 
     const lines = txt.split(/\r?\n/);
     const isUiFile = /\.(tsx|jsx|astro|vue|svelte|html)$/.test(f);
-    const hasModernVh = /\b100[ds]vh\b/.test(txt);
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -226,7 +229,7 @@ function runV4StaticChecks(srcDir, files, signals) {
         }
       }
 
-      if (!TOKEN_FILE_RE.test(rel) && !hasModernVh && /(?:\bh-screen\b|\b100vh\b)/.test(line)) {
+      if (!TOKEN_FILE_RE.test(rel) && /(?:\bh-screen\b|\b100vh\b)/.test(line)) {
         findings.push({
           severity: "error",
           check: "legacy-100vh",
@@ -278,14 +281,18 @@ function runV4StaticChecks(srcDir, files, signals) {
     }
   }
 
-  if ((signals.hasThree || signals.hasGsap || signals.hasShaders) && firstKineticFile && (!hasReducedMotionAnywhere || !hasKineticCleanupAnywhere)) {
-    findings.push({
-      severity: "error",
-      check: "kinetic-missing-cleanup-or-reduced-motion",
-      file: firstKineticFile,
-      line: 1,
-      msg: "GSAP/Three.js/Shader usage requires both prefers-reduced-motion support and lifecycle cleanup (.revert() / .dispose() / astro:before-swap).",
-    });
+  if (signals.hasThree || signals.hasGsap || signals.hasShaders) {
+    for (const k of kineticFiles) {
+      if (!k.hasCleanup || (!k.hasLocalReducedMotion && !hasReducedMotionAnywhere)) {
+        findings.push({
+          severity: "error",
+          check: "kinetic-missing-cleanup-or-reduced-motion",
+          file: k.file,
+          line: 1,
+          msg: "GSAP/Three.js/Shader file requires lifecycle cleanup (.revert() / .dispose() / useGSAP / astro:before-swap) and prefers-reduced-motion support.",
+        });
+      }
+    }
   }
 
   return findings;
@@ -437,6 +444,7 @@ function main() {
     { name: "check-module-level-loads", category: "05-frontend", skill: "lazy-loading-patterns", file: "check-module-level-loads.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasHeavySdk, dedupe: [] },
     { name: "check-hardcoded-strings", category: "05-frontend", skill: "i18n-localization", file: "check-hardcoded-strings.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasI18n, dedupe: [] },
     { name: "check-offline-sync", category: "05-frontend", skill: "offline-sync-mobile", file: "check-offline-sync.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
+    { name: "check-deep-links", category: "05-frontend", skill: "deep-linking-mobile", file: "check-deep-links.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
     { name: "legacy-scan", category: "05-frontend", skill: "modern-web-guidance", file: "legacy-scan.mjs", args: ["--srcDir", srcDir, "--json"], run: Boolean(resolveSiblingScript("05-frontend", "modern-web-guidance", "legacy-scan.mjs")), dedupe: ["legacy-100vh"] },
   ];
 

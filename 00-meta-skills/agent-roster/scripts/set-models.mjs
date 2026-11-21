@@ -344,9 +344,9 @@ function resolveModels(opts, profiles) {
   };
   const overrides = { ...baseOverrides };
   const frontend = opts.frontend || base.frontend || null;
-  if (opts.frontend) {
-    overrides["frontend-builder"] = opts.frontend;
-    overrides["frontend-critic"] = opts.frontend;
+  if (frontend) {
+    if (!overrides["frontend-builder"] || opts.frontend) overrides["frontend-builder"] = frontend;
+    if (!overrides["frontend-critic"] || opts.frontend) overrides["frontend-critic"] = frontend;
   }
   for (const [k, v] of Object.entries(opts.agentOverrides || {})) {
     overrides[k] = v;
@@ -478,7 +478,7 @@ function detectedRuntimes() {
 function modelForAgent(agent, resolved) {
   if (resolved.overrides && resolved.overrides[agent.name]) return resolved.overrides[agent.name];
   const tierNorm = normalizeTier(agent.tier);
-  if (tierNorm === "frontend") return resolved.frontend || resolved.strong;
+  if (tierNorm === "frontend" || agent.group === "frontend") return resolved.frontend || resolved.strong;
   if (tierNorm === "mid") return resolved.mid;
   if (tierNorm === "cheap") return resolved.cheap;
   return resolved.strong;

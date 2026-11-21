@@ -195,3 +195,90 @@ test("verify-backend-gates chains sibling 04-backend checkers and fails closed o
     rmSync(tmp, { recursive: true, force: true });
   }
 });
+
+test("v4.1: detects multi-line SQL interpolation, per-handler unvalidated body, N+1 query in loop, unsafe migration DDL, and balanced multer braces", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "backend-gates-v41-"));
+  const srcDir = join(tmp, "src");
+  const migDir = join(tmp, "migrations");
+  mkdirSync(srcDir, { recursive: true });
+  mkdirSync(migDir, { recursive: true });
+
+  writeFileSync(
+    join(tmp, "package.json"),
+    JSON.stringify({ name: "v41-api", dependencies: { express: "^4.19.0", multer: "^1.4.5-lts.1", zod: "^3.23.0" } }),
+  );
+
+  // 1. Upload config with nested limits: { fileSize: ... } BEFORE fileFilter (must PASS check-uploads.mjs!)
+  writeFileSync(
+    join(srcDir, "upload.ts"),
+    [
+      'import multer from "multer";',
+      "export const upload = multer({",
+      "  limits: { fileSize: 5 * 1024 * 1024 },",
+      "  fileFilter: (_req, file, cb) => cb(null, file.mimetype === 'image/png'),",
+      "});",
+    ].join("\n"),
+  );
+
+  // 2. Multi-line SQL interpolation + 2 POST handlers (first validated, second unvalidated) + N+1 query in loop
+  writeFileSync(
+    join(srcDir, "orders.routes.ts"),
+    [
+      'import { z } from "zod";',
+      "const OrderSchema = z.object({ orgId: z.string() });",
+      "export function orderRoutes(app, pool, prisma) {",
+      '  app.post("/orders/safe", async (req, res) => {',
+      "    const body = OrderSchema.parse(req.body);",
+      "    return res.json(body);",
+      "  });",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      '  app.post("/orders/unsafe", async (req, res) => {',
+      "    const rawName = req.body.name;",
+      "    const rows = await pool.query(`",
+      "      SELECT id, total",
+      "      FROM orders",
+      "      WHERE name = '${rawName}'",
+      "    `);",
+      "    for (const row of rows) {",
+      "      await prisma.audit.create({ data: { orderId: row.id } });",
+      "    }",
+      "    return res.json(rows);",
+      "  });",
+      "}",
+    ].join("\n"),
+  );
+
+  // 3. Unsafe migration DDL (.sql)
+  writeFileSync(
+    join(migDir, "001_drop.sql"),
+    "DROP TABLE legacy_accounts;\nALTER TABLE users ADD COLUMN tenant_id UUID NOT NULL;\n",
+  );
+
+  try {
+    const res = runScript(["--srcDir", srcDir, "--rootDir", tmp, "--json"]);
+    assert.equal(res.status, 1, res.stderr || res.stdout);
+    const data = JSON.parse(res.stdout);
+    const checks = new Set(data.issues.map((i) => i.check));
+    assert.equal(checks.has("upload-no-filter"), false, `Balanced multer braces should not fail upload-no-filter: ${JSON.stringify(data.issues)}`);
+    assert.equal(checks.has("raw-sql-interpolation"), true, "Expected multi-line raw-sql-interpolation");
+    assert.equal(checks.has("unvalidated-mutation-body"), true, "Expected per-handler unvalidated-mutation-body on 2nd route");
+    assert.equal(checks.has("n-plus-one-query-in-loop"), true, "Expected n-plus-one-query-in-loop");
+    assert.equal(checks.has("unsafe-migration-ddl"), true, "Expected unsafe-migration-ddl on .sql migration");
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});

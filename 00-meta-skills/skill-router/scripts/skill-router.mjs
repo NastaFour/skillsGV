@@ -105,19 +105,236 @@ const TIER0_SKILLS = new Set([
   "decision-gate",
 ]);
 
+/**
+ * Phase 3 audit/critique skills that must NEVER occupy Phase 2 builder slots
+ * (enforcing the Phase 2 Positive-Only Canvas deterministically).
+ */
+export const PHASE3_CRITIC_ONLY_SKILLS = new Set([
+  "impeccable",
+  "taste-skill",
+  "refactoring-ui",
+  "interface-design",
+  "ai-design-check-stageshow",
+  "web-design-guidelines",
+  "ux-auditor-agent",
+]);
+
+export const PHASE_SKILL_POOLS = {
+  phase1: [
+    "design-driven",
+    "hallmark-design-study",
+    "brand-identity-wizard",
+    "design-system-tokens",
+    "design-md",
+    "stitch-design-md",
+    "oklch-theme-injector",
+    "figma-implement",
+    "figma-mcp",
+    "stitch-to-code",
+    "stitch-loop",
+    "idea-to-prd-express",
+    "app-flow-spec",
+    "architecture-designer",
+    "ui-design-system",
+  ],
+  phase2a: [
+    "react-19",
+    "nextjs-15",
+    "tailwind-4",
+    "shadcn-ui",
+    "astro",
+    "astro-seo",
+    "vue3-nuxt3",
+    "svelte-5",
+    "angular",
+    "remix",
+    "solidjs",
+    "qwik",
+    "htmx-alpine",
+    "typescript-5",
+    "frontend-design",
+    "ui-ux-pro-max",
+    "modern-web-guidance",
+    "bento-grid-generator",
+    "responsive-design",
+    "form-handling",
+    "forms-validation-ux",
+    "data-tables-filters",
+    "data-fetching",
+    "tanstack-query",
+    "trpc",
+    "zustand-jotai",
+    "redux-toolkit",
+    "xstate",
+    "i18n-localization",
+    "accessibility-a11y",
+    "dark-mode-theming",
+    "pwa-service-workers",
+    "web-performance",
+    "seo-meta",
+    "frontend-slides-deck",
+    "ai-ui-generation",
+    "asset-generator-mcp",
+    "component-scrapper-mcp",
+    "prisma-frontend-types",
+    "react-native-expo",
+    "flutter",
+    "swift-ios",
+    "kotlin-android",
+    "mobile-ui-patterns",
+    "offline-first-mobile",
+    "deep-linking-mobile",
+    "mobile-performance",
+    "push-notifications-mobile",
+    "app-store-deployment",
+    "expo-production-auditor",
+    "electron",
+    "tauri",
+    "micro-interactions",
+    "emil-kowalski",
+  ],
+  phase2b: [
+    "motion-framer",
+    "motion-gsap",
+    "three-js-web",
+    "shader-dev",
+    "scroll-world-storytelling",
+    "visual-effects",
+    "svg-animations",
+    "interactive-3d-web",
+    "web-animation-sources",
+    "chart-visualization",
+    "motion-video-pipeline",
+    "remotion-best-practices",
+    "nano-banana",
+    "banana-claude",
+    "micro-interactions",
+    "emil-kowalski",
+  ],
+  phase3a: [
+    "impeccable",
+    "taste-skill",
+    "refactoring-ui",
+    "interface-design",
+    "ui-diff",
+  ],
+  phase3b: [
+    "ai-design-check-stageshow",
+    "web-design-guidelines",
+    "ux-auditor-agent",
+    "accessibility-a11y",
+    "frontend-debugging-protocol",
+  ],
+};
+
+const HEAVY_KINETIC_2B_SKILLS = new Set([
+  "motion-framer",
+  "motion-gsap",
+  "three-js-web",
+  "shader-dev",
+  "scroll-world-storytelling",
+  "visual-effects",
+  "svg-animations",
+  "interactive-3d-web",
+  "web-animation-sources",
+  "chart-visualization",
+  "motion-video-pipeline",
+  "remotion-best-practices",
+  "nano-banana",
+  "banana-claude",
+]);
+
+function normalizePhaseArg(raw) {
+  if (!raw) return null;
+  const v = String(raw).trim().toLowerCase();
+  if (v === "1" || v === "phase1") return "phase1";
+  if (v === "2" || v === "2a" || v === "phase2" || v === "phase2a") return "phase2a";
+  if (v === "2b" || v === "phase2b") return "phase2b";
+  if (v === "3" || v === "3a" || v === "phase3" || v === "phase3a") return "phase3a";
+  if (v === "3b" || v === "phase3b") return "phase3b";
+  return "invalid";
+}
+
+export function buildPhasePlan(scoredEntries, validSkillNames) {
+  const pickBucket = (pool, defaults = [], excludeSet = null) => {
+    const poolSet = new Set(pool);
+    const out = [];
+    for (const s of scoredEntries) {
+      if (!poolSet.has(s.name)) continue;
+      if (TIER0_SKILLS.has(s.name)) continue;
+      if (excludeSet && excludeSet.has(s.name)) continue;
+      if (validSkillNames.has(s.name) && !out.includes(s.name)) {
+        out.push(s.name);
+        if (out.length === 5) return out;
+      }
+    }
+    for (const d of defaults) {
+      if (excludeSet && excludeSet.has(d)) continue;
+      if (validSkillNames.has(d) && !TIER0_SKILLS.has(d) && !out.includes(d)) {
+        out.push(d);
+        if (out.length === 5) return out;
+      }
+    }
+    return out;
+  };
+
+  const phase1 = pickBucket(
+    PHASE_SKILL_POOLS.phase1,
+    ["design-driven", "design-system-tokens", "hallmark-design-study"]
+  );
+  const phase2a = pickBucket(
+    PHASE_SKILL_POOLS.phase2a,
+    ["frontend-design", "modern-web-guidance", "micro-interactions", "emil-kowalski"],
+    PHASE3_CRITIC_ONLY_SKILLS
+  );
+  const phase2bScored = scoredEntries.filter(
+    (s) => HEAVY_KINETIC_2B_SKILLS.has(s.name) && s.triggerScore >= 1
+  );
+  const needsBuilder2B = phase2bScored.length > 0;
+  const phase2b = pickBucket(
+    PHASE_SKILL_POOLS.phase2b,
+    ["micro-interactions", "emil-kowalski"],
+    PHASE3_CRITIC_ONLY_SKILLS
+  );
+  const phase3a = pickBucket(
+    PHASE_SKILL_POOLS.phase3a,
+    ["impeccable", "taste-skill", "refactoring-ui", "interface-design", "ui-diff"]
+  );
+  const phase3b = pickBucket(
+    PHASE_SKILL_POOLS.phase3b,
+    ["ai-design-check-stageshow", "web-design-guidelines", "ux-auditor-agent", "accessibility-a11y", "frontend-debugging-protocol"]
+  );
+
+  return {
+    needsBuilder2B,
+    phase1,
+    phase2a,
+    phase2b,
+    phase3a,
+    phase3b,
+  };
+}
+
 if (isCliEntry) {
 const args = process.argv.slice(2);
-let query = null, diffLines = null, jsonOut = false, turnCache = null;
+let query = null, diffLines = null, jsonOut = false, turnCache = null, phasePlanFlag = false, requestedPhase = null;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--") continue;
   if (args[i] === "--query") query = args[++i];
   else if (args[i] === "--diff") diffLines = parseInt(args[++i], 10);
   else if (args[i] === "--json") jsonOut = true;
   else if (args[i] === "--turn-cache") turnCache = args[++i];
+  else if (args[i] === "--phase-plan") phasePlanFlag = true;
+  else if (args[i] === "--phase") requestedPhase = normalizePhaseArg(args[++i]);
   else if (args[i] === "--help" || args[i] === "-h") {
-    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json] [--turn-cache <path>]");
+    console.log("Usage: skill-router.mjs --query \"<text>\" [--diff <n>] [--json] [--phase-plan] [--phase <1|2a|2b|3a|3b>] [--turn-cache <path>]");
     process.exit(0);
   }
+}
+
+if (requestedPhase === "invalid") {
+  console.error("Invalid --phase value. Expected one of: 1, 2a, 2b, 3a, 3b");
+  process.exit(2);
 }
 
 if (!query) { console.error("Missing --query"); process.exit(2); }
@@ -320,6 +537,7 @@ const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animaciones|animation|animations|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
 const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
 const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|rest\s+api|graphql|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|postgres|postgresql|prisma|state\s+machine|resolver|vista\s+materializada|materialized\s+view|fastify|express|nestjs|bullmq|jwt|rate\s+limit)\b/i;
+const FULLSTACK_BACKEND_MARKERS = /\b(fullstack|full-stack|backend|rest\s+api|graphql|endpoint|endpoints|controller|middleware|migration|prisma|fastify|express|nestjs|bullmq)\b/i;
 
 const isUiTask =
   UNAMBIGUOUS_UI_MARKERS.test(query) ||
@@ -328,9 +546,9 @@ const isUiTask =
     !PURE_LOGIC_BACKEND_MARKERS.test(query) &&
     !PURE_LOGIC_BACKEND_MARKERS.test(qLower));
 
-const isBackendTask =
-  !isUiTask &&
-  (PURE_LOGIC_BACKEND_MARKERS.test(query) || PURE_LOGIC_BACKEND_MARKERS.test(qLower));
+const isBackendTask = isUiTask
+  ? (FULLSTACK_BACKEND_MARKERS.test(query) || FULLSTACK_BACKEND_MARKERS.test(qLower))
+  : (PURE_LOGIC_BACKEND_MARKERS.test(query) || PURE_LOGIC_BACKEND_MARKERS.test(qLower));
 
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {
@@ -345,7 +563,7 @@ if (isBackendTask && validSkillNames.has("backend-driven")) {
 
 const baseSlice = distinctExact.length >= 4 ? Math.min(distinctExact.length - 1, 4) : 2;
 const secondarySliceCount = (isUiTask || isBackendTask) ? Math.max(baseSlice, 3) : baseSlice;
-const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, secondarySliceCount)] : secondary.slice(0, (isUiTask || isBackendTask) ? 4 : 3))]
+let tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, secondarySliceCount)] : secondary.slice(0, (isUiTask || isBackendTask) ? 4 : 3))]
   .filter((name) => !TIER0_SKILLS.has(name))
   .slice(0, 5);
 if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven")) {
@@ -353,8 +571,32 @@ if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("d
   else tier1toLoad[4] = "design-driven";
 }
 if (isBackendTask && validSkillNames.has("backend-driven") && !tier1toLoad.includes("backend-driven")) {
-  if (tier1toLoad.length < 5) tier1toLoad.push("backend-driven");
-  else tier1toLoad[4] = "backend-driven";
+  if (tier1toLoad.length < 5) {
+    tier1toLoad.push("backend-driven");
+  } else {
+    // Avoid evicting design-driven on fullstack tasks
+    const replaceIdx = tier1toLoad[4] === "design-driven" ? 3 : 4;
+    tier1toLoad[replaceIdx] = "backend-driven";
+  }
+}
+
+const computedPhasePlan = (phasePlanFlag || requestedPhase || isUiTask)
+  ? buildPhasePlan(scored, validSkillNames)
+  : null;
+
+if (requestedPhase && computedPhasePlan) {
+  const phaseBucket = computedPhasePlan[requestedPhase] || [];
+  if (requestedPhase === "phase2a" || requestedPhase === "phase2b") {
+    // Enforce Phase 2 Positive-Only Canvas deterministically
+    const nonCriticScored = scored
+      .map((s) => s.name)
+      .filter((name) => !TIER0_SKILLS.has(name) && !PHASE3_CRITIC_ONLY_SKILLS.has(name));
+    tier1toLoad = [...new Set([...phaseBucket, ...nonCriticScored])]
+      .filter((name) => !PHASE3_CRITIC_ONLY_SKILLS.has(name) && validSkillNames.has(name))
+      .slice(0, 5);
+  } else {
+    tier1toLoad = [...phaseBucket].slice(0, 5);
+  }
 }
 
 const output = {
@@ -368,6 +610,7 @@ const output = {
   skipJudgmentDay,
   deprecatedHit,
   tier1toLoad,
+  ...(phasePlanFlag || requestedPhase ? { phasePlan: computedPhasePlan } : {}),
 };
 
 // Validate output against the contract

@@ -14,7 +14,11 @@ tier: Tier-1 # Tier-0 (inline <50 lines) | Tier-1 (Frontend Studio)
 builder_model: inherit # explicit user API-key ID or inherit (never silent cheap)
 critic_model: inherit
 dispatch_receipt: "[ModelDispatch: role=frontend-builder requested=inherit resolved=active level=L4]"
-allowed_edit_surfaces: ["src/**", "DESIGN_SYSTEM.md"]
+allowed_edit_surfaces:
+  phase2a_core: ["src/components/**", "src/sections/**", "src/pages/**", "src/styles/**"]
+  phase2b_kinetic: ["src/kinetic/**", "src/shaders/**"] # used only when needsBuilder2B == true
+  phase3_critics: [] # frontend-critic 3A/3B are strictly read-only evaluators
+api_contract_paths: ["src/types/api.ts"] # fullstack bridge shared with backend-driven
 ```
 
 ## Craft Budget
@@ -23,6 +27,10 @@ allowed_edit_surfaces: ["src/**", "DESIGN_SYSTEM.md"]
 craft_budget:
   signature_skill: "none" # motion-gsap | three-js-web | scroll-world-storytelling | shader-dev | frontend-slides-deck | none
   focal_zone: "src/sections/HeroSignature.tsx"
+  kinetic_anchors:
+    root: "[data-kinetic-root='hero-stage']"
+    items: "[data-kinetic-item]"
+    canvas: "[data-kinetic-canvas='hero-webgl']"
   quiet_zones: "all remaining sections (calm readable canvas + CSS transitions <= 200ms)"
   guards:
     gpu_only_props: ["transform", "opacity"]

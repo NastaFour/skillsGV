@@ -39,7 +39,7 @@ const SOURCE_EXTENSIONS = new Set([
   ".css",
 ]);
 
-const TOKEN_FILE_RE = /(token|theme|variables)/i;
+const TOKEN_FILE_RE = /(?:^|[\\/])(?:tokens?|themes?|variables|design-tokens)(?:[-_.][a-z0-9]+)*\.(?:css|scss|ts|js|json)$/i;
 
 // #RGB / #RRGGBB / #RRGGBBAA, never a prefix of a longer hex run.
 // The 4-digit #RGBA form must contain at least one hex letter so decimal

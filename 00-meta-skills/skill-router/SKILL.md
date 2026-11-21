@@ -50,12 +50,14 @@ The agent calls this **first**, reads the output, then loads only `primary` (and
 ## Run
 
 ```bash
-node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "add OAuth login" [--diff <staged-lines>] [--json]
+node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "add OAuth login" [--diff <staged-lines>] [--phase-plan] [--phase <1|2a|2b|3a|3b>] [--json]
 ```
 
 Flags:
 - `--query "<text>"` — user input or task description (required).
 - `--diff <N>` — number of staged lines (enables trivial/skipJudgmentDay heuristics).
+- `--phase-plan` — partitions frontend/UI skills deterministically across `phasePlan: { needsBuilder2B, phase1, phase2a, phase2b, phase3a, phase3b }` (each bucket capped at `<= 5` skills, with Phase 3 critique skills excluded from `phase2a`/`phase2b`).
+- `--phase <1|2a|2b|3a|3b>` — scopes `tier1toLoad` directly to the requested phase bucket and enforces the Phase 2 Positive-Only Canvas when `2a` or `2b` is selected.
 - `--json` — machine output for piping.
 
 ## Matching algorithm (all deterministic)

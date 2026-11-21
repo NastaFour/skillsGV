@@ -234,7 +234,7 @@ function desiredModelFor(agent, profile) {
     return profile.overrides[agent.name];
   }
   const norm = normalizeTier(agent.tier);
-  if (norm === "frontend") return profile.frontend || profile["sdd-strong"] || profile.strong;
+  if (norm === "frontend" || agent.group === "frontend") return profile.frontend || profile["sdd-strong"] || profile.strong;
   if (norm === "strong") return profile["sdd-strong"] || profile.strong;
   if (norm === "mid") return profile["sdd-mid"] || profile.mid || profile["sdd-cheap"] || profile.flash || profile.cheap;
   if (norm === "cheap") return profile["sdd-cheap"] || profile.cheap || profile.flash || profile["sdd-mid"] || profile.mid;

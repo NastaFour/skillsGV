@@ -41,7 +41,7 @@
       "id": "hybrid-asset-generator",
       "canonical": "asset-generator-mcp",
       "members": ["asset-generator-mcp"],
-      "note": "Grupo unitario de delimitación: asset-generator-mcp produce assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo consistente. Sus triggers (asset generator, generate icon/logo) se acotan contra frontend-designer (SVG codificado a mano) y ai-ui-generation (UI completa)."
+      "note": "Grupo unitario de delimitación: asset-generator-mcp produce assets de imagen (iconos, logos, ilustraciones) vía generación MCP con brief de estilo consistente. Sus triggers (asset generator, generate icon/logo) se acotan contra frontend-design (SVG/UI codificado a mano) y ai-ui-generation (UI completa)."
     },
     {
       "id": "three-js-web",

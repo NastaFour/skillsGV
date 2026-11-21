@@ -40,25 +40,26 @@ Divide work across **phase-scoped subagents** (`<= 5` skills per subagent contex
      - *Visual Assets*: `nano-banana`, `banana-claude`, `asset-generator-mcp`
    - Persist [`references/design-system-template.md`](references/design-system-template.md) into `DESIGN_SYSTEM.md` (`## Runtime Contract`, `## Craft Budget`, and `## Capability & Skill Manifest` listing the exact `phase2a`, `phase2b`, `phase3a`, `phase3b` skills).
 
-2. **Phase 2 — Positive-Only Canvas (`frontend-builder` Subagents `2A` & `2B`, Zero Audit Skills)**:
-   - Split multi-domain builds across **2 disjoint `frontend-builder` subagents** (`<= 5` skills each) so every relevant build skill is loaded:
-     - **Builder `2A` (Core Stack, UI Foundations, Forms, State & Platform)**:
-       - *Web Stack*: `tailwind-4`, `react-19`, `nextjs-15`, `react-vite`, `vercel-composition-patterns`, `vercel-react-best-practices`
-       - *UI Foundations*: `frontend-design`, `frontend-designer`, `ui-ux-pro-max`, `ai-ui-generation`, `modern-web-guidance`
-       - *Forms, Data, State, i18n & Perf*: `forms-validation-react`, `zod-4`, `zustand-5`, `state-management`, `prisma-frontend-types`, `i18n-localization`, `lazy-loading-patterns`, `openseo` (`references/astro-local-seo.md`)
-       - *Angular / Mobile / Desktop*: `angular-core`, `angular-architecture`, `angular-forms`, `angular-performance`, `react-native`, `pwa-capacitor`, `electronjs`, `deep-linking-mobile`, `offline-sync-mobile`, `push-notifications`, `maps-gps`
-     - **Builder `2B` (Tactile Craft, 2D/3D Motion, Shaders, Scrollytelling & Decks)**:
-       - *Tactile & Physics Choreography*: `micro-interactions` (concentric radii, optical padding, press `0.96`, OKLCH shadows), `emil-kowalski` (+ `references/disney-choreography.md`), `motion-framer`, `lottie-animations`, `page-transitions`, `vercel-react-view-transitions`
-       - *Scroll, 3D, Shaders & Visual Studio*: `motion-gsap` (ScrollTrigger/pinning/timelines), `scroll-animations`, `scroll-world-storytelling`, `three-js-web`, `shader-dev`, `visual-effects`, `web-animation-sources`, `motion-video-pipeline`
-       - *Presentations & Editorial SVG Diagrams*: `frontend-slides-deck` (+ `references/editorial-diagrams.md`)
-   - **Prohibition**: Audit/critique skills (`taste-skill`, `impeccable`, `web-design-guidelines`, `ai-design-check-stageshow`, `refactoring-ui`, `interface-design`, `ux-auditor-agent`) are **FORBIDDEN** during Phase 2 so rules never block creation.
+2. **Phase 2 — Positive-Only Canvas (`frontend-builder`: 1-Builder Default vs. `data-kinetic-*` Disjoint Island Split)**:
+   - **Default Topology (`<= 5` build skills or `< 250` UI lines)**: Spawn **1 `frontend-builder`** that includes `micro-interactions` + `emil-kowalski` in its baseline so tactile choreography and structure are authored in one pass with zero handoff overhead.
+   - **Multi-Domain Island Topology (`needsBuilder2B == true`, `> 5` build skills, or heavy 3D/Shader/GSAP focal island)**: Split **vertically by disjoint file surfaces** using the **TRIZ `data-kinetic-*` Anchor Contract** declared in `DESIGN_SYSTEM.md`:
+     - **Builder `2A` (Core Stack, Structure, Forms, State & Platform — `src/components/**`, `src/sections/**`, `src/pages/**`, `src/styles/**`)**:
+       - Stamps declarative `data-kinetic-root`, `data-kinetic-item`, and `data-kinetic-canvas` hooks on the focal zone DOM without importing heavy WebGL/GSAP timelines.
+       - *Web Stack & Foundations*: `tailwind-4`, `react-19`, `nextjs-15`, `react-vite`, `vercel-composition-patterns`, `vercel-react-best-practices`, `frontend-design`, `ui-ux-pro-max`, `ai-ui-generation`, `modern-web-guidance`, `micro-interactions`, `emil-kowalski`
+       - *Forms, Data, State, i18n & Perf*: `forms-validation-react`, `zod-4`, `zustand-5`, `prisma-frontend-types`, `i18n-localization`, `lazy-loading-patterns`, `openseo` (Astro Local SEO)
+       - *Angular / Mobile / Desktop*: `angular-core`, `angular-architecture`, `angular-forms`, `angular-performance`, `react-native`, `pwa-capacitor`, `electron`, `deep-linking-mobile`, `offline-sync-mobile`, `push-notifications`, `maps-gps`
+     - **Builder `2B` (Isolated Kinetic / 3D / Shader / Deck Island — `src/kinetic/**`, `src/shaders/**`)**:
+       - Attaches GSAP/ScrollTrigger timelines, R3F/Three.js canvases, or GLSL shaders exclusively via `[data-kinetic-*]` selectors or isolated island components in `src/kinetic/**` and `src/shaders/**` (zero file overlap with `2A`).
+       - *Tactile & Physics Choreography*: `micro-interactions`, `emil-kowalski` (Disney choreography), `motion-framer`, `lottie-animations`, `page-transitions`, `vercel-react-view-transitions`
+       - *Scroll, 3D, Shaders & Decks*: `motion-gsap`, `scroll-animations`, `scroll-world-storytelling`, `three-js-web`, `shader-dev`, `visual-effects`, `web-animation-sources`, `motion-video-pipeline`, `frontend-slides-deck` (editorial SVG diagrams)
+   - **Prohibition**: Audit/critique skills (`taste-skill`, `impeccable`, `web-design-guidelines`, `ai-design-check-stageshow`, `refactoring-ui`, `interface-design`, `ux-auditor-agent`) are **FORBIDDEN** during Phase 2 (`skill-router.mjs --phase 2a|2b` strips them deterministically).
 
-3. **Phase 3 — Deterministic Geometry First + Blind Subtractive Critics (`frontend-critic` `3A` & `3B`)**:
-   - **Layer 0 (`0` LLM tokens — ALL edits)**: Run `node 05-frontend/design-driven/scripts/verify-frontend-gates.mjs --srcDir src --webDir .` (add `--live <url>` on live/greenfield/major builds to chain `ui-diff`, `legacy-scan`, `token-audit`, `check-interactions`, `motion-accessibility`, `build-config-validator`, and `expo-production-auditor` on mobile). Short-circuit back to builder on geometry failures.
-   - **Layer 1 (Blind Subtractive `frontend-critic` Subagents — split into `3A` & `3B` when >5 evaluation skills apply)**:
+3. **Phase 3 — Deterministic Geometry First + Read-Only Blind Subtractive Critics (`frontend-critic` `3A` & `3B`)**:
+   - **Layer 0 (`0` LLM tokens — ALL edits)**: Run `node 05-frontend/design-driven/scripts/verify-frontend-gates.mjs --srcDir src --webDir .` (add `--live <url>` on live/greenfield/major builds to chain `ui-diff`, `legacy-scan`, `token-audit`, `check-interactions`, `motion-accessibility`, `build-config-validator`, and `check-offline-sync` / `check-deep-links` on mobile). Short-circuit back to builder on geometry failures.
+   - **Layer 1 (Strictly Read-Only Blind Subtractive `frontend-critic` Subagents — 1 critic by default; split into `3A` & `3B` only on major builds when `> 5` evaluation skills apply)**:
      - **Critic `3A` (Visual Craft, Dials, Hierarchy & Anti-Slop)**: `impeccable`, `taste-skill`, `refactoring-ui`, `interface-design`, `ai-design-check-stageshow`
      - **Critic `3B` (UX, Accessibility, Guidelines, Copy Deslop & Debugging)**: `web-design-guidelines`, `ux-auditor-agent`, `motion-accessibility`, `humanizer` (`deslop`), `frontend-debugging-protocol`
-     - **Subtractive-Only Charter**: Critics receive `(DESIGN_SYSTEM.md, git diff, Layer 0 telemetry, 2×2 Contact Sheet PNG)` to align, declutter, and polish legibility — **forbidden** from reverting `[Beyond-Baseline]` into generic SaaS cards (max 1 fix + 1 Layer 0 recheck).
+     - **Read-Only Subtractive Charter**: Critics are **read-only evaluators** (`allowed_edit_surfaces: []`) that inspect `(DESIGN_SYSTEM.md, git diff, Layer 0 telemetry, 2×2 Contact Sheet PNG)` and return 1 unified subtractive punchlist (align, declutter, polish legibility — **forbidden** from reverting `[Beyond-Baseline]` into generic SaaS cards). The builder executes at most **1 remediation pass + 1 Layer 0 recheck**.
 
 ## 🏛️ The 8 Archetypal Chassis & Unified 3-Line `Design Read`
 

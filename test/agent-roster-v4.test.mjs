@@ -202,4 +202,26 @@ test("apply.mjs --runtime claude-code patches .claude/agents/*.md frontmatter su
   assert.equal(second.code, 0, second.stdout);
   assert.match(second.stdout, /Already in sync/i);
   assert.equal(readdirSync(agentsDir).filter((f) => f.includes(".roster.bak-")).length, 1);
+
+  // Verify profile.frontend applies to group === "frontend" agents even without explicit overrides map
+  const profFrontendOnly = join(dir, "profiles-frontend-tier.json");
+  writeFileSync(
+    profFrontendOnly,
+    JSON.stringify({
+      version: 1,
+      current: "custom",
+      profiles: {
+        custom: {
+          strong: "sonnet",
+          mid: "sonnet",
+          cheap: "haiku",
+          frontend: "opus-frontend",
+        },
+      },
+    }, null, 2),
+    "utf8"
+  );
+  const resGroup = run(APPLY, ["--runtime", "claude-code", "--config", agentsDir, "--profiles", profFrontendOnly, "--apply"]);
+  assert.equal(resGroup.code, 0, resGroup.stdout);
+  assert.match(readFileSync(builderMd, "utf8"), /^model: opus-frontend$/m);
 });

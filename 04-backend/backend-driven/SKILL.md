@@ -30,14 +30,15 @@ Emit before touching backend code:
 
 ### Phase 2 — Composable Backend Capability Matrix (`<= 5` skills/turn)
 Load only relevant domain skills cleanly alongside `backend-driven`:
-- **Contracts & Auth**: `api-design`, `modern-ts-backend`, `api-response-normalizer`, `jwt-bcrypt`, `security-audit`
+- **Contracts, Fullstack Bridge & Auth**: `api-design`, `modern-ts-backend`, `api-response-normalizer`, `prisma-frontend-types`, `jwt-bcrypt`, `security-audit`
 - **Data & Concurrency**: `postgresql`, `prisma-orm`, `booking-scheduling-domain`
 - **Resilience & Ops**: `rate-limiting-design`, `background-jobs-queues`, `file-uploads-storage`, `notifications-multichannel`, `reports-exports`, `nodejs-module-loading`, `performance-refactor`, `observability`, `monitoring`
+- **Fullstack Contract Bridge**: On fullstack work (`isUiTask && isBackendTask`), freeze `api_contract_paths` (e.g. `src/types/api.ts` or OpenAPI/Zod schema) in Phase 1 before parallel `frontend-builder` and backend implementation.
 
 ### Phase 3 — Deterministic Gate (`verify-backend-gates.mjs`)
 Run after implementation and before completion:
 ```bash
-node 04-backend/backend-driven/scripts/verify-backend-gates.mjs --srcDir <src-dir> --rootDir <root-dir> --json
+node 04-backend/backend-driven/scripts/verify-backend-gates.mjs --srcDir <src-dir> --rootDir <root-dir> [--live <http://localhost:PORT>] [--strict] --json
 ```
 - Automatically chains applicable sibling checkers (`check-id-consistency`, `check-limiters`, `check-jobs`, `check-booking-queries`, `check-uploads`, `check-notifications`, `check-reports`, `check-env-loading`) based on detected stack signals.
-- Runs 6 built-in deterministic guards (`raw-sql-interpolation`, `hardcoded-secret-fallback`, `unsafe-cors-wildcard-credentials`, `empty-catch-block`, `unvalidated-mutation-body`, `unbounded-list-query`). Pass `--strict` in CI/release audits to fail on warnings.
+- Runs 8 built-in deterministic static guards (`raw-sql-interpolation` single & multi-line, `hardcoded-secret-fallback`, `unsafe-cors-wildcard-credentials`, `empty-catch-block`, per-handler `unvalidated-mutation-body`, `unbounded-list-query` across Prisma/SQL/Drizzle, `n-plus-one-query-in-loop`, and `unsafe-migration-ddl` in `.sql` migrations) plus optional `--live <url>` HTTP CORS/header/status probing. Pass `--strict` in CI/release audits to fail on warnings.

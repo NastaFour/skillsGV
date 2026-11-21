@@ -20,17 +20,18 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage", ".next", ".turbo"]);
-const CODE_EXTS = new Set([".ts", ".mts", ".cts", ".js", ".mjs", ".cjs"]);
+const CODE_EXTS = new Set([".ts", ".mts", ".cts", ".js", ".mjs", ".cjs", ".sql", ".prisma"]);
 
 function printHelp() {
   console.log(`verify-backend-gates — Unified Backend Post-Build Audit Runner (Phase 3)
 
 Usage:
-  node verify-backend-gates.mjs --srcDir <dir> [--rootDir <dir>] [--json] [--strict]
+  node verify-backend-gates.mjs --srcDir <dir> [--rootDir <dir>] [--live <url>] [--json] [--strict]
 
 Options:
   --srcDir <dir>    Backend source directory to scan (default: ./src, ./apps/api/src, or cwd)
   --rootDir <dir>   Project root directory containing package.json (default: parent of srcDir or cwd)
+  --live <url>      Probe a live HTTP endpoint for CORS origin reflection, headers, and 500 leaks
   --json            Emit structured JSON report
   --strict          Fail with exit code 1 when warnings are present
   --help, -h        Show this help message
@@ -119,22 +120,56 @@ function runBuiltinChecks(rootDir, files) {
   for (const file of files) {
     const content = readFileSync(file, "utf8");
     const rel = relative(rootDir, file).replace(/\\/g, "/");
+    const ext = extname(file).toLowerCase();
     const lines = content.split(/\r?\n/);
 
-    const hasMutationHandler = /(?:router|app|fastify)\.(?:post|put|patch)\s*\(/i.test(content);
-    const hasSchemaValidation = /\.(?:parse|safeParse|validate|validateAsync)\s*\(|\bz\.\w+|\b(?:joi|yup|valibot|arktype|ajv)\b|class-validator|\b(?:validateBody|parseBody|BodySchema)\b/i.test(content);
-    let flaggedUnvalidatedBody = false;
+    // SQL Migration DDL Safety Check (Analyzer C)
+    if (ext === ".sql") {
+      if (!/--\s*@allow-destructive/i.test(content)) {
+        const dropRe = /\bDROP\s+(?:TABLE|COLUMN)\b/gi;
+        let dm;
+        while ((dm = dropRe.exec(content)) !== null) {
+          issues.push({
+            severity: "warning",
+            check: "unsafe-migration-ddl",
+            msg: "Destructive DROP TABLE/COLUMN in SQL migration without '-- @allow-destructive' annotation; use expand-and-contract migration phases.",
+            file: rel,
+            line: offsetToLine(content, dm.index),
+          });
+        }
+        const addNotNullRe = /\bALTER\s+TABLE\b[\s\S]{0,160}?\bADD\s+(?:COLUMN\s+)?[\w"`']+\s+[\w()]+\s+NOT\s+NULL\b(?![\s\S]{0,80}?\bDEFAULT\b)/gi;
+        let am;
+        while ((am = addNotNullRe.exec(content)) !== null) {
+          issues.push({
+            severity: "warning",
+            check: "unsafe-migration-ddl",
+            msg: "ALTER TABLE ... ADD COLUMN ... NOT NULL without DEFAULT locks and fails on non-empty tables; add nullable or DEFAULT first.",
+            file: rel,
+            line: offsetToLine(content, am.index),
+          });
+        }
+      }
+      continue;
+    }
+
+    if (ext === ".prisma") continue;
+
+    const hasMutationHandler = /(?:router|app|fastify)\.(?:post|put|patch)\s*\(|@(?:Post|Put|Patch)\s*\(/i.test(content);
+    const flaggedSqlLines = new Set();
+    const flaggedUnboundedLines = new Set();
+    let lastFlaggedBodyLine = -100;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (isCommentLine(line)) continue;
       const lineNo = i + 1;
 
-      // 1. Raw SQL string interpolation or concatenation
+      // 1. Raw SQL string interpolation or concatenation (single-line)
       const sqlCallTpl = /\.(?:query|execute|\$queryRawUnsafe|\$executeRawUnsafe|raw)\s*\(\s*`[^`]*\$\{[^}]+\}/.test(line);
       const sqlVerbConcat = /\b(?:SELECT|INSERT|UPDATE|DELETE)\b[\s\S]*?(?:\$\{[^}]+\}|\+\s*(?:req\.|params\.|query\.|body\.|args\.|input\.|\w+Id\b))/i.test(line);
       const safePlaceholder = /\$\d+|\?\s*,|\?\s*\)/.test(line) && !/\$\{/.test(line) && !/\+\s*(?:req\.|params\.|query\.|body\.)/.test(line);
       if ((sqlCallTpl || (sqlVerbConcat && !safePlaceholder))) {
+        flaggedSqlLines.add(lineNo);
         issues.push({
           severity: "error",
           check: "raw-sql-interpolation",
@@ -172,22 +207,30 @@ function runBuiltinChecks(rootDir, files) {
         }
       }
 
-      // 5. Unvalidated mutation body (file has POST/PUT/PATCH + reads req.body without schema validation)
-      if (!flaggedUnvalidatedBody && hasMutationHandler && /\b(?:req|request)\.body\b/.test(line) && !hasSchemaValidation) {
-        flaggedUnvalidatedBody = true;
-        issues.push({
-          severity: "warning",
-          check: "unvalidated-mutation-body",
-          msg: "Mutation handler accesses req.body directly without visible schema validation (zod/valibot/joi/parse); validate payloads before persistence.",
-          file: rel,
-          line: lineNo,
-        });
+      // 5. Per-handler unvalidated mutation body (checks +/- 15 lines around each req.body access)
+      if (hasMutationHandler && /\b(?:req|request)\.body\b/.test(line) && lineNo - lastFlaggedBodyLine > 15) {
+        const handlerWindow = lines.slice(Math.max(0, i - 15), Math.min(lines.length, i + 15)).join("\n");
+        const hasLocalValidation =
+          /\.(?:parse|safeParse|validate|validateAsync)\s*\(|\bzValidator\s*\(|\bschema\s*:\s*\{[\s\S]*?\bbody\b|\bValidationPipe\b|\b(?:validateBody|parseBody|BodySchema)\b/i.test(
+            handlerWindow
+          );
+        if (!hasLocalValidation) {
+          lastFlaggedBodyLine = lineNo;
+          issues.push({
+            severity: "warning",
+            check: "unvalidated-mutation-body",
+            msg: "Mutation handler accesses req.body directly without visible schema validation in handler scope (zod/valibot/joi/parse); validate payloads before persistence.",
+            file: rel,
+            line: lineNo,
+          });
+        }
       }
 
-      // 6. Unbounded ORM/SQL list queries
+      // 6. Unbounded ORM/SQL list queries (single-line + multi-line window + Drizzle .select().from())
       if (/\.findMany\s*\(/.test(line)) {
         const window6 = lines.slice(i, Math.min(i + 6, lines.length)).join(" ");
         if (!/\b(?:take|limit|cursor|pageSize|first|last)\s*:/.test(window6)) {
+          flaggedUnboundedLines.add(lineNo);
           issues.push({
             severity: "warning",
             check: "unbounded-list-query",
@@ -196,9 +239,10 @@ function runBuiltinChecks(rootDir, files) {
             line: lineNo,
           });
         }
-      } else if (/\bSELECT\b[\s\S]*\bFROM\b/i.test(line)) {
-        const window4Sql = lines.slice(i, Math.min(i + 4, lines.length)).join(" ");
-        if (!/\b(?:WHERE|LIMIT|TOP\s+\d+|FETCH\s+FIRST|COUNT\s*\(|EXISTS\s*\()\b/i.test(window4Sql)) {
+      } else if (/\bSELECT\b/i.test(line)) {
+        const window6Sql = lines.slice(i, Math.min(i + 6, lines.length)).join(" ");
+        if (/\bSELECT\b[\s\S]*?\bFROM\b/i.test(window6Sql) && !/\b(?:WHERE|LIMIT|TOP\s+\d+|FETCH\s+FIRST|COUNT\s*\(|EXISTS\s*\()\b/i.test(window6Sql)) {
+          flaggedUnboundedLines.add(lineNo);
           issues.push({
             severity: "warning",
             check: "unbounded-list-query",
@@ -207,6 +251,63 @@ function runBuiltinChecks(rootDir, files) {
             line: lineNo,
           });
         }
+      } else if (/\.\s*select\s*\([^)]*\)\s*\.\s*from\s*\(/.test(line)) {
+        const window5Drizzle = lines.slice(i, Math.min(i + 5, lines.length)).join(" ");
+        if (!/\.\s*(?:limit|where)\s*\(/.test(window5Drizzle)) {
+          flaggedUnboundedLines.add(lineNo);
+          issues.push({
+            severity: "warning",
+            check: "unbounded-list-query",
+            msg: "Query builder .select().from() lacks .limit() or .where(); enforce pagination bounds.",
+            file: rel,
+            line: lineNo,
+          });
+        }
+      }
+
+      // 7. N+1 query inside loop body (Analyzer A)
+      if (/\b(?:for|while)\s*(?:await\s*)?\([^)]*\)\s*\{|\.(?:map|forEach)\s*\(\s*async\b[^)]*=>\s*\{/.test(line)) {
+        let depth = 0;
+        const maxEnd = Math.min(lines.length, i + 35);
+        for (let j = i; j < maxEnd; j++) {
+          const l = lines[j];
+          if (isCommentLine(l)) continue;
+          for (const ch of l) {
+            if (ch === "{") depth++;
+            else if (ch === "}") depth--;
+          }
+          if (
+            j > i &&
+            /\bawait\s+(?:prisma|db|pool|client|knex|supabase|tx|trx)\b[\s\S]*?\.(?:find\w+|query|execute|select|insert|update|delete|create|upsert)\s*\(/.test(l)
+          ) {
+            issues.push({
+              severity: "warning",
+              check: "n-plus-one-query-in-loop",
+              msg: "Database query awaited inside loop body causes N+1 latency spikes; batch with IN (...), findMany({ where: { id: { in: ids } } }), or bulk insert.",
+              file: rel,
+              line: j + 1,
+            });
+            break;
+          }
+          if (depth <= 0 && j > i) break;
+        }
+      }
+    }
+
+    // 1b. Multi-line SQL template literal interpolation across lines
+    const multiSqlRe = /\.(?:query|execute|\$queryRawUnsafe|\$executeRawUnsafe|raw)\s*\(\s*`(?:\\[\s\S]|(?!`)[\s\S])*?\$\{[^}]+\}(?:\\[\s\S]|(?!`)[\s\S])*?`/g;
+    let sm;
+    while ((sm = multiSqlRe.exec(content)) !== null) {
+      const lNo = offsetToLine(content, sm.index);
+      if (!flaggedSqlLines.has(lNo)) {
+        flaggedSqlLines.add(lNo);
+        issues.push({
+          severity: "error",
+          check: "raw-sql-interpolation",
+          msg: "Multi-line dynamic SQL template interpolation detected; use bound parameters ($1, ?) or tagged parameterized helpers.",
+          file: rel,
+          line: lNo,
+        });
       }
     }
 
@@ -222,6 +323,52 @@ function runBuiltinChecks(rootDir, files) {
         line: offsetToLine(content, m.index),
       });
     }
+  }
+  return issues;
+}
+
+export async function probeLiveBackend(liveUrl) {
+  const issues = [];
+  try {
+    const preflight = await fetch(liveUrl, {
+      method: "OPTIONS",
+      headers: {
+        Origin: "https://evil.example.com",
+        "Access-Control-Request-Method": "POST",
+      },
+    });
+    const allowOrigin = preflight.headers.get("access-control-allow-origin") || "";
+    const allowCreds = (preflight.headers.get("access-control-allow-credentials") || "").toLowerCase();
+    if ((allowOrigin === "https://evil.example.com" || allowOrigin === "*") && allowCreds === "true") {
+      issues.push({
+        severity: "error",
+        check: "live-cors-origin-reflection",
+        msg: `Live endpoint ${liveUrl} reflected untrusted Origin (${allowOrigin}) with Access-Control-Allow-Credentials: true.`,
+      });
+    }
+
+    const getRes = await fetch(liveUrl, { method: "GET" });
+    if (getRes.status >= 500) {
+      issues.push({
+        severity: "error",
+        check: "live-server-error-500",
+        msg: `Live endpoint ${liveUrl} returned HTTP ${getRes.status} on GET probe.`,
+      });
+    }
+    const nosniff = (getRes.headers.get("x-content-type-options") || "").toLowerCase();
+    if (nosniff !== "nosniff") {
+      issues.push({
+        severity: "warning",
+        check: "live-missing-nosniff-header",
+        msg: `Live endpoint ${liveUrl} is missing 'X-Content-Type-Options: nosniff' security header.`,
+      });
+    }
+  } catch (err) {
+    issues.push({
+      severity: "error",
+      check: "live-endpoint-unreachable",
+      msg: `Live backend probe failed to reach ${liveUrl}: ${(err?.message || String(err)).slice(0, 160)}`,
+    });
   }
   return issues;
 }
@@ -306,10 +453,15 @@ function runSiblingCheckers(srcDir, signals, rootDir) {
   return { siblingResults, siblingIssues };
 }
 
-function main() {
+const isCliEntry =
+  Boolean(process.argv[1]) &&
+  resolve(process.argv[1]).toLowerCase() === resolve(fileURLToPath(import.meta.url)).toLowerCase();
+
+async function main() {
   const args = process.argv.slice(2);
   let srcDirArg = null;
   let rootDirArg = null;
+  let liveUrl = null;
   let jsonOut = false;
   let strict = false;
 
@@ -320,6 +472,7 @@ function main() {
     else if (a === "--strict") strict = true;
     else if (a === "--srcDir") { srcDirArg = args[++i]; if (!srcDirArg) usageError("Missing value for --srcDir"); }
     else if (a === "--rootDir") { rootDirArg = args[++i]; if (!rootDirArg) usageError("Missing value for --rootDir"); }
+    else if (a === "--live") { liveUrl = args[++i]; if (!liveUrl) usageError("Missing value for --live"); }
     else usageError(`Unknown option: ${a}`);
   }
 
@@ -333,11 +486,19 @@ function main() {
   }
   if (!existsSync(srcDir)) usageError(`Source directory not found: ${srcDir}`);
 
-  const files = walkCodeFiles(srcDir);
+  const fileSet = new Set(walkCodeFiles(srcDir));
+  for (const migSubdir of ["migrations", "prisma", "drizzle"]) {
+    const migPath = join(rootDir, migSubdir);
+    if (existsSync(migPath)) {
+      for (const mf of walkCodeFiles(migPath)) fileSet.add(mf);
+    }
+  }
+  const files = [...fileSet];
   const stackSignals = detectSignals(rootDir, srcDir, files);
   const builtinIssues = runBuiltinChecks(rootDir, files);
   const { siblingResults, siblingIssues } = runSiblingCheckers(srcDir, stackSignals, rootDir);
-  const issues = [...builtinIssues, ...siblingIssues];
+  const liveIssues = liveUrl ? await probeLiveBackend(liveUrl) : [];
+  const issues = [...builtinIssues, ...siblingIssues, ...liveIssues];
 
   let errors = 0;
   let warnings = 0;
@@ -378,4 +539,9 @@ function main() {
   process.exit(ok ? 0 : 1);
 }
 
-main();
+if (isCliEntry) {
+  main().catch((err) => {
+    console.error(`verify-backend-gates fatal error: ${err?.message || err}`);
+    process.exit(1);
+  });
+}

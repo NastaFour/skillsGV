@@ -86,5 +86,44 @@ export function validateRouterOutput(output, ctx) {
     violations.push(`confidence=1.0 requires triggeredExact=true (got triggeredExact=${triggeredExact})`);
   }
 
+  // Invariant 5: phasePlan (when present) must have valid <=5 unique skill buckets
+  // and Phase 2 build buckets (phase2a, phase2b) must never contain Phase 3 critic-only skills.
+  if (output.phasePlan != null) {
+    if (typeof output.phasePlan !== "object" || Array.isArray(output.phasePlan)) {
+      violations.push("phasePlan must be an object when present");
+    } else {
+      const criticOnly = new Set([
+        "impeccable",
+        "taste-skill",
+        "refactoring-ui",
+        "interface-design",
+        "ai-design-check-stageshow",
+        "web-design-guidelines",
+        "ux-auditor-agent",
+      ]);
+      for (const bucketKey of ["phase1", "phase2a", "phase2b", "phase3a", "phase3b"]) {
+        const arr = output.phasePlan[bucketKey];
+        if (!Array.isArray(arr)) {
+          violations.push(`phasePlan.${bucketKey} must be an array`);
+          continue;
+        }
+        if (arr.length > 5) {
+          violations.push(`phasePlan.${bucketKey} exceeds 5-skill cap (${arr.length})`);
+        }
+        if (new Set(arr).size !== arr.length) {
+          violations.push(`phasePlan.${bucketKey} entries must be unique`);
+        }
+        for (const name of arr) {
+          if (!validSkillNames.has(name)) {
+            violations.push(`phasePlan.${bucketKey} entry "${name}" not found in catalog`);
+          }
+          if ((bucketKey === "phase2a" || bucketKey === "phase2b") && criticOnly.has(name)) {
+            violations.push(`phasePlan.${bucketKey} must not contain Phase 3 critic skill "${name}"`);
+          }
+        }
+      }
+    }
+  }
+
   return { ok: violations.length === 0, violations };
 }

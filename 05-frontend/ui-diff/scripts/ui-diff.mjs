@@ -46,6 +46,7 @@ Options:
   --viewports <list>   Comma-separated presets: desktop,mobile (default: desktop,mobile)
   --themes <list>      Comma-separated themes: light,dark (default: light,dark)
   --ready-timeout <ms> Dev server HTTP timeout in ms (default: 30000)
+  --max-diff-percent <n> Fail if pixel diff changedPercent exceeds <n>% in diff mode
   --strict-browser     Exit 3 instead of 0 when Playwright is unavailable
   --json               Emit machine-readable JSON report
   --help, -h           Show this help
@@ -181,6 +182,39 @@ export function evaluateDomGeometry(metrics) {
     });
   }
 
+  const errors = issues.filter((i) => i.severity === "error").length;
+  const warnings = issues.filter((i) => i.severity === "warning").length;
+  return { ok: errors === 0, errors, warnings, issues };
+}
+
+/**
+ * Pure deterministic visual diff threshold and height-shift evaluator (unit-testable without a browser).
+ */
+export function evaluateVisualDiffs(diffResults, maxDiffPercent = null) {
+  const issues = [];
+  for (const d of diffResults || []) {
+    if (typeof d.heightDelta === "number" && d.heightDelta > 0) {
+      issues.push({
+        severity: "warning",
+        check: "layout-height-shift",
+        viewport: d.label,
+        msg: `Document height shifted by ${d.heightDelta}px between baseline and current render.`,
+      });
+    }
+    if (
+      typeof maxDiffPercent === "number" &&
+      !Number.isNaN(maxDiffPercent) &&
+      typeof d.changedPercent === "number" &&
+      d.changedPercent > maxDiffPercent
+    ) {
+      issues.push({
+        severity: "error",
+        check: "pixel-diff-threshold-exceeded",
+        viewport: d.label,
+        msg: `Visual diff ${d.changedPercent}% exceeds --max-diff-percent ${maxDiffPercent}% threshold.`,
+      });
+    }
+  }
   const errors = issues.filter((i) => i.severity === "error").length;
   const warnings = issues.filter((i) => i.severity === "warning").length;
   return { ok: errors === 0, errors, warnings, issues };
@@ -409,6 +443,7 @@ async function computeCanvasDiffAndSheet(browser, pairs, sheetTiles) {
           changedPixels: changed,
           totalPixels: total,
           changedPercent: Number(((changed / total) * 100).toFixed(2)),
+          heightDelta: Math.abs(imgA.height - imgB.height),
           diffPngB64: cD.toDataURL("image/png").split(",")[1],
         };
       }, { b64A: beforeB64, b64B: afterB64 });
@@ -419,6 +454,7 @@ async function computeCanvasDiffAndSheet(browser, pairs, sheetTiles) {
         changedPixels: res.changedPixels,
         totalPixels: res.totalPixels,
         changedPercent: res.changedPercent,
+        heightDelta: res.heightDelta,
         diffPath: pair.diffPath,
       });
     }
@@ -483,6 +519,7 @@ async function main() {
   let viewports = ["desktop", "mobile"];
   let themes = ["light", "dark"];
   let readyTimeout = 30000;
+  let maxDiffPercent = null;
   let strictBrowser = false;
   let jsonOut = false;
 
@@ -497,6 +534,10 @@ async function main() {
     else if (a === "--viewports") viewports = args[++i].split(",").map((s) => s.trim()).filter(Boolean);
     else if (a === "--themes") themes = args[++i].split(",").map((s) => s.trim()).filter(Boolean);
     else if (a === "--ready-timeout") readyTimeout = Number(args[++i]);
+    else if (a === "--max-diff-percent") {
+      maxDiffPercent = Number(args[++i]);
+      if (Number.isNaN(maxDiffPercent) || maxDiffPercent < 0) usageError("--max-diff-percent requires a non-negative number");
+    }
     else if (a === "--strict-browser") strictBrowser = true;
     else if (a === "--json") jsonOut = true;
     else if (a === "--help" || a === "-h") {
@@ -613,6 +654,8 @@ async function main() {
     }
 
     const { diffResults, contactSheetB64 } = await computeCanvasDiffAndSheet(browser, diffPairs, sheetTiles);
+    const diffEval = evaluateVisualDiffs(diffResults, maxDiffPercent);
+    allIssues.push(...diffEval.issues);
     const contactSheetPath = contactSheetB64 ? join(resolvedOut, "contact-sheet-2x2.png") : null;
     if (contactSheetPath && contactSheetB64) {
       writeFileSync(contactSheetPath, Buffer.from(contactSheetB64, "base64"));
