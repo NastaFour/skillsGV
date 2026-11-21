@@ -1061,9 +1061,9 @@ function runList(opts, roster, profile) {
     const presetPlan = computeDshPresetChanges(presetText, profile);
     console.log("dsh — preset fallback defaults (env-var routing: DSH_* wins over defaults):");
     const pairs = [
-      { label: "DSH_STRONG_PROVIDER", current: presetPlan.current.strongProvider, desired: splitProviderModel(profile.strong).provider },
+      { label: "DSH_STRONG_PROVIDER", current: presetPlan.current.strongProvider, desired: splitProviderModel(profile.strong).provider ?? presetPlan.current.strongProvider },
       { label: "DSH_STRONG_MODEL", current: presetPlan.current.strongModel, desired: splitProviderModel(profile.strong).model },
-      { label: "DSH_FLASH_PROVIDER", current: presetPlan.current.flashProvider, desired: splitProviderModel(profile.flash).provider },
+      { label: "DSH_FLASH_PROVIDER", current: presetPlan.current.flashProvider, desired: splitProviderModel(profile.flash).provider ?? presetPlan.current.flashProvider },
       { label: "DSH_FLASH_MODEL", current: presetPlan.current.flashModel, desired: splitProviderModel(profile.flash).model },
     ];
     for (const p of pairs) {

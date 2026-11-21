@@ -125,6 +125,37 @@ function detectStackSignals(webDir, srcDir) {
   };
 }
 
+function extractOpeningTagAttrs(tagWindow, tagNameRegex) {
+  const startMatch = tagWindow.match(tagNameRegex);
+  if (!startMatch || startMatch.index === undefined) return null;
+  const startIdx = startMatch.index + startMatch[0].length;
+  let quote = null;
+  let braceDepth = 0;
+  for (let j = startIdx; j < tagWindow.length; j++) {
+    const ch = tagWindow[j];
+    if (quote) {
+      if (ch === quote && tagWindow[j - 1] !== "\\") quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") {
+      quote = ch;
+      continue;
+    }
+    if (ch === "{") {
+      braceDepth++;
+      continue;
+    }
+    if (ch === "}") {
+      if (braceDepth > 0) braceDepth--;
+      continue;
+    }
+    if (ch === ">" && braceDepth === 0 && tagWindow[j - 1] !== "=") {
+      return tagWindow.slice(startIdx, j);
+    }
+  }
+  return tagWindow.slice(startIdx);
+}
+
 function runV4StaticChecks(srcDir, files, signals) {
   const findings = [];
   let hasReducedMotionAnywhere = false;
@@ -151,8 +182,7 @@ function runV4StaticChecks(srcDir, files, signals) {
       const tagWindow = lines.slice(i, Math.min(i + 6, lines.length)).join(" ");
 
       if (isUiFile && /<(?:div|span)\b/i.test(line)) {
-        const tagMatch = tagWindow.match(/<(?:div|span)\b([^>]*)>/i);
-        const attrs = tagMatch ? tagMatch[1] : line;
+        const attrs = extractOpeningTagAttrs(tagWindow, /<(?:div|span)\b/i) ?? line;
         if (/\bonClick\s*=/i.test(attrs) && !/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(attrs)) {
           findings.push({
             severity: "error",
@@ -185,8 +215,7 @@ function runV4StaticChecks(srcDir, files, signals) {
       }
 
       if (isUiFile && /<p\b/i.test(line)) {
-        const pMatch = tagWindow.match(/<p\b([^>]*)>/i);
-        const pAttrs = pMatch ? pMatch[1] : line;
+        const pAttrs = extractOpeningTagAttrs(tagWindow, /<p\b/i) ?? line;
         if (/\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(pAttrs)) {
           findings.push({
             severity: "error",
@@ -199,9 +228,8 @@ function runV4StaticChecks(srcDir, files, signals) {
       }
 
       if (isUiFile && /<img\b/i.test(line)) {
-        const imgTagMatch = tagWindow.match(/<img\b([^>]*)>/i);
-        if (imgTagMatch) {
-          const attrs = imgTagMatch[1] || "";
+        const attrs = extractOpeningTagAttrs(tagWindow, /<img\b/i);
+        if (attrs !== null) {
           const hasAlt = /\balt\s*=/.test(attrs);
           const hasSize = /\b(?:width|height)\s*=|\baspect-|\bfill\b/.test(attrs);
           if (!hasAlt || !hasSize) {

@@ -166,3 +166,32 @@ test("skill-router routes backend queries to backend-driven with isBackendTask=t
   const names = parsed.tier1toLoad || [];
   assert.ok(names.includes("backend-driven"), `Expected backend-driven in ${names.join(", ")}`);
 });
+
+test("verify-backend-gates chains sibling 04-backend checkers and fails closed on sibling errors", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "backend-gates-sibling-"));
+  const srcDir = join(tmp, "src");
+  mkdirSync(srcDir, { recursive: true });
+  writeFileSync(
+    join(srcDir, "user.routes.ts"),
+    [
+      "export function userRoutes(router, prisma) {",
+      '  router.get("/users/:id", async (req, res) => {',
+      "    const u = await prisma.user.findUnique({",
+      "      where: { userId: req.params.id },",
+      "    });",
+      "    return res.json({ data: u });",
+      "  });",
+      "}",
+    ].join("\n"),
+  );
+
+  try {
+    const res = runScript(["--srcDir", srcDir, "--rootDir", tmp, "--json"]);
+    assert.equal(res.status, 1, "sibling id-mismatch error must fail verify-backend-gates");
+    const data = JSON.parse(res.stdout);
+    assert.equal(data.ok, false);
+    assert.ok(data.issues.some((i) => i.check === "id-mismatch" && i.source === "api-response-normalizer"));
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});

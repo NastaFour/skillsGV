@@ -183,7 +183,7 @@ test("verify-frontend-gates scans .astro files, enforces v4 static checks, and a
     [
       "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /></head>",
       "<body>",
-      '  <main class="min-h-[100svh]"><button type="button" class="focus-visible:outline-2 active:scale-95">Ver</button><img src="/hero.webp" alt="Escenario" width="1200" height="800" /></main>',
+      '  <main class="min-h-[100svh]"><button type="button" class="focus-visible:outline-2 active:scale-95">Ver</button><div onClick={() => openModal()} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && openModal()}>Menu</div><img onLoad={() => ready()} src="/hero.webp" alt="Escenario" width="1200" height="800" /></main>',
       "</body></html>",
     ].join("\n"),
     "utf8"

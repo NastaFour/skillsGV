@@ -275,20 +275,32 @@ async function collectPageMetrics(page, viewportName, viewport) {
       }
     }
 
-    for (const grid of document.querySelectorAll("[data-uniform-grid], [class*='grid'], [class*='bento']")) {
+    for (const grid of document.querySelectorAll("[data-uniform-grid]")) {
       if (!isVisible(grid)) continue;
       const children = [...grid.children].filter(isVisible);
       if (children.length < 2) continue;
-      const xs = children.map((c) => c.getBoundingClientRect().left);
-      if (new Set(xs.map((x) => Math.round(x / 10))).size > 1) {
-        siblingGroups.push({
-          kind: "uniform-grid",
-          selector: grid.tagName.toLowerCase() + (grid.className ? `.${String(grid.className).trim().split(/\s+/)[0]}` : ""),
-          items: children.map((c, idx) => {
-            const r = c.getBoundingClientRect();
-            return { label: String(idx), top: r.top, height: r.height };
-          }),
-        });
+      // Group children by horizontal row (top offset within 8px) so multi-row grids compare same-row peers only
+      const rows = [];
+      for (let idx = 0; idx < children.length; idx++) {
+        const r = children[idx].getBoundingClientRect();
+        let row = rows.find((grp) => Math.abs(grp.top - r.top) <= 8);
+        if (!row) {
+          row = { top: r.top, items: [] };
+          rows.push(row);
+        }
+        row.items.push({ label: String(idx), top: r.top, left: r.left, height: r.height });
+      }
+      const baseSel = grid.tagName.toLowerCase() + (grid.className ? `.${String(grid.className).trim().split(/\s+/)[0]}` : "");
+      for (let rIdx = 0; rIdx < rows.length; rIdx++) {
+        const row = rows[rIdx];
+        if (row.items.length < 2) continue;
+        if (new Set(row.items.map((it) => Math.round(it.left / 10))).size > 1) {
+          siblingGroups.push({
+            kind: "uniform-grid",
+            selector: `${baseSel}[row=${rIdx}]`,
+            items: row.items.map(({ label, top, height }) => ({ label, top, height })),
+          });
+        }
       }
     }
 

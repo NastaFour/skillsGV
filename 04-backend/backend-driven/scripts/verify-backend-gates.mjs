@@ -264,11 +264,21 @@ function runSiblingCheckers(srcDir, signals, rootDir) {
       for (const iss of parsed.issues) {
         siblingIssues.push({ ...iss, source: spec.skill });
       }
+      const failedExit = (res.status !== 0 || Boolean(res.error)) && !(parsed.errors > 0);
+      if (failedExit) {
+        siblingIssues.push({
+          severity: "error",
+          check: "sibling-script-exec",
+          source: spec.skill,
+          msg: `Sibling checker ${spec.skill}/${spec.file} exited non-zero (${res.status}) without reporting an error issue.`,
+        });
+      }
+      const errCount = (parsed.errors || 0) + (failedExit ? 1 : 0);
       siblingResults.push({
         skill: spec.skill,
         script: spec.file,
-        status: parsed.errors > 0 ? "failed" : "passed",
-        errors: parsed.errors || 0,
+        status: errCount > 0 ? "failed" : "passed",
+        errors: errCount,
         warnings: parsed.warnings || 0,
       });
     } else {
