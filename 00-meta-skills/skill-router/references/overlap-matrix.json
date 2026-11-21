@@ -46,14 +46,14 @@
     {
       "id": "three-js-web",
       "canonical": "three-js-web",
-      "members": ["three-js-web"],
-      "note": "Grupo unitario de delimitación: three-js-web cubre 3D en tiempo real vía WebGL (three.js + react-three-fiber + drei como unidad; Spline documentado dentro como sección no-code). Se delimita contra motion-framer/motion-gsap (animación UI 2D) y visual-effects (CSS 3D transforms ≠ WebGL): una query 'css 3d transform' sigue siendo de visual-effects. Los términos cortos '3d'/'r3f' (<4 chars, MIN_TRIGGER_LENGTH) no pueden ser triggers y se cubren vía keywords de la description."
+      "members": ["three-js-web", "shader-dev"],
+      "note": "Grupo de gráficos WebGL/GLSL en tiempo real: three-js-web cubre escenas WebGL (three.js + react-three-fiber + drei + Spline); shader-dev cubre fragmentos GLSL/WGSL y técnicas ShaderToy/SDF on-demand. Se delimitan contra motion-framer/motion-gsap (animación UI 2D) y visual-effects (CSS 3D transforms). Acrónimos uppercase 2-3 chars ('3D', 'R3F', 'SVG') SÍ pasan passesTriggerLengthGate."
     },
     {
       "id": "anti-slop-frontend",
       "canonical": "design-driven",
-      "members": ["design-driven", "taste-skill", "impeccable", "hallmark-design-study", "ai-design-check-stageshow"],
-      "note": "design-driven es el pipeline/entrevista. taste-skill gobierna Design Read + diales + bans. impeccable es el vocabulario de comandos PRODUCT/DESIGN. hallmark-design-study analiza referencias/estilos y ai-design-check-stageshow ejecuta previews HTML5 pre-build + auditoría visual de superficie. Si puntúan juntas, gana design-driven; las otras quedan secondary/tier1toLoad. No pisan frontend-design (dirección estética de marketing), interface-design (dashboards) ni figma-implement (Figma→código)."
+      "members": ["design-driven", "taste-skill", "impeccable", "hallmark-design-study", "ai-design-check-stageshow", "refactoring-ui", "ui-diff", "modern-web-guidance"],
+      "note": "design-driven es el orquestador/entrevista en 3 fases. taste-skill gobierna diales/bans; impeccable comandos PRODUCT/DESIGN; hallmark-design-study analiza referencias; ai-design-check-stageshow audita superficie/previews; refactoring-ui calibra jerarquía/escala; ui-diff ejecuta geometría DOM y diff visual; modern-web-guidance aporta APIs web nativas y legacy-scan. Si puntúan juntas, gana design-driven y las demás quedan en secondary/tier1toLoad."
     },
     {
       "id": "pull-request-workflow",
@@ -118,8 +118,20 @@
     {
       "id": "motion-animation-pipeline",
       "canonical": "motion-framer",
-      "members": ["motion-framer", "motion-gsap", "web-animation-sources", "motion-video-pipeline"],
-      "note": "motion-framer es el motor canónico de animación UI React/Expo (spring/layout/gestures); motion-gsap cubre timelines SVG/ScrollTrigger complejos; web-animation-sources provee inspiración y fuentes Motion Studio; motion-video-pipeline orquesta exportación a video MP4/WebM/Remotion/FFmpeg (cubierto también por el grupo unitario hybrid-motion-video)."
+      "members": ["motion-framer", "motion-gsap", "scroll-world-storytelling", "web-animation-sources", "motion-video-pipeline"],
+      "note": "motion-framer es el motor canónico de animación UI React/Expo (spring/layout/gestures); motion-gsap cubre timelines SVG/ScrollTrigger complejos; scroll-world-storytelling cubre scrollytelling inmersivo y scroll-driven narratives; web-animation-sources provee inspiración y fuentes Motion Studio; motion-video-pipeline orquesta exportación a video MP4/WebM/Remotion/FFmpeg."
+    },
+    {
+      "id": "presentation-diagram-suite",
+      "canonical": "frontend-slides-deck",
+      "members": ["frontend-slides-deck"],
+      "note": "Grupo unitario de presentaciones web sin dependencias y diagramas editoriales HTML+SVG (distinto de archify/Excalidraw cuando el objetivo es entrega web o deck)."
+    },
+    {
+      "id": "backend-orchestration",
+      "canonical": "backend-driven",
+      "members": ["backend-driven", "modern-ts-backend", "api-design"],
+      "note": "backend-driven gobierna el motor backend en 3 fases (Backend Read, despacho de capacidades y verify-backend-gates); modern-ts-backend y api-design cubren arquitectura Hono/Drizzle y contratos REST."
     }
   ]
 }

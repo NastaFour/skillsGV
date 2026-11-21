@@ -328,18 +328,32 @@ const isUiTask =
     !PURE_LOGIC_BACKEND_MARKERS.test(query) &&
     !PURE_LOGIC_BACKEND_MARKERS.test(qLower));
 
+const isBackendTask =
+  !isUiTask &&
+  (PURE_LOGIC_BACKEND_MARKERS.test(query) || PURE_LOGIC_BACKEND_MARKERS.test(qLower));
+
 if (isUiTask && validSkillNames.has("design-driven")) {
   if (primary !== "design-driven" && !secondary.includes("design-driven")) {
-    secondary = ["design-driven", ...secondary].slice(0, 4);
+    secondary = [...secondary, "design-driven"].slice(0, 5);
+  }
+}
+if (isBackendTask && validSkillNames.has("backend-driven")) {
+  if (primary !== "backend-driven" && !secondary.includes("backend-driven")) {
+    secondary = [...secondary, "backend-driven"].slice(0, 5);
   }
 }
 
-const secondarySliceCount = distinctExact.length >= 4 ? Math.min(distinctExact.length - 1, 4) : 2;
-const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, secondarySliceCount)] : secondary.slice(0, 3))].filter(
-  (name) => !TIER0_SKILLS.has(name)
-);
-if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven") && tier1toLoad.length < 5) {
-  tier1toLoad.push("design-driven");
+const baseSlice = distinctExact.length >= 4 ? Math.min(distinctExact.length - 1, 4) : 2;
+const secondarySliceCount = (isUiTask || isBackendTask) ? Math.max(baseSlice, 3) : baseSlice;
+const tier1toLoad = [...new Set(primary ? [primary, ...secondary.slice(0, secondarySliceCount)] : secondary.slice(0, (isUiTask || isBackendTask) ? 4 : 3))]
+  .filter((name) => !TIER0_SKILLS.has(name))
+  .slice(0, 5);
+if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("design-driven")) {
+  if (tier1toLoad.length < 5) tier1toLoad.push("design-driven");
+  else tier1toLoad[4] = "design-driven";
+}
+if (isBackendTask && validSkillNames.has("backend-driven") && !tier1toLoad.includes("backend-driven") && tier1toLoad.length < 5) {
+  tier1toLoad.push("backend-driven");
 }
 
 const output = {
@@ -348,6 +362,7 @@ const output = {
   confidence: Math.round(confidence * 100) / 100,
   suggestsStructuredFlow,
   isUiTask,
+  isBackendTask,
   trivial,
   skipJudgmentDay,
   deprecatedHit,

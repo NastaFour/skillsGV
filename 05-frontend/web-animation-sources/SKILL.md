@@ -3,7 +3,7 @@ name: web-animation-sources
 description: "Curated index of web animation inspiration sources, CSS/React motion libraries, and the 22-repo Open-Source Motion Studio reference (hover effects, loading animations, entrance animations, micro-interactions, WebGL shaders, and timeline engines). Use when searching animation references or inspiration sources before implementation. Do NOT use as an implementation runtime guide (use motion-framer, motion-gsap, micro-interactions, or motion-video-pipeline)."
 license: MIT
 metadata:
-  trigger: ["hover effects", "loading animation", "entrance animation", "animate.css", "web animation sources", "animation references"]
+  trigger: ["hover effects", "loading animation", "entrance animation", "animate.css", "web animation sources", "animation references", "animation inspiration", "motion ideas", "wow animation", "efectos interactivos"]
   scope: [global, project]
   version: "1.1.0"
 allowed-tools: Read

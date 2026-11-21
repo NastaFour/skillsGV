@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Gentle-AI 4.4.0+, React 19, Next.js, Astro, Three.js/R3F, GSAP/Motion, CSS Scroll-Driven Animations. Requires pnpm 9+."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
-  trigger: ["scroll world", "scroll storytelling", "scrollytelling", "scroll-scrubbed", "3d diorama", "apple scroll", "design to motion", "canvas sequence", "animacion por scroll"]
+  trigger: ["scroll world", "scroll storytelling", "scrollytelling", "scroll-scrubbed", "3d diorama", "apple scroll", "design to motion", "canvas sequence", "animacion por scroll", "narrative landing", "3d scroll", "historia interactiva"]
   scope: "global, project"
   version: "1.0.0"
   author: skillsGV

@@ -4,7 +4,7 @@ description: "Metodología Wathan & Schoger armonizada con tokens OKLCH: validac
 license: MIT
 metadata:
   version: "1.1.0"
-  trigger: ["refactoring ui", "jerarquia visual", "escala de grises", "sombras multicapa", "espaciado fijo", "contraste sutil"]
+  trigger: ["refactoring ui", "visual hierarchy", "spacing scale", "ui polish", "layered shadows", "clean up ui", "jerarquia visual", "escala de grises", "sombras multicapa", "espaciado fijo", "contraste sutil"]
   scope: [global, project]
 allowed-tools: Read Bash(node:*)
 ---

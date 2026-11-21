@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Gentle-AI 4.4.0+, modern browsers, Mermaid, inline SVG, and single-file HTML5. Requires zero external runtime dependencies."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
-  trigger: ["frontend slides", "html presentation", "slide deck", "pitch deck", "diagram design", "architecture diagram", "svg diagram", "presentacion html", "diagramas de arquitectura"]
+  trigger: ["frontend slides", "html presentation", "slide deck", "pitch deck", "presentation slides", "presentacion web", "diapositivas", "diagram design", "architecture diagram", "editorial diagram", "diagrama editorial", "svg diagram", "presentacion html", "diagramas de arquitectura"]
   scope: "global, project"
   version: "1.0.0"
   author: skillsGV
