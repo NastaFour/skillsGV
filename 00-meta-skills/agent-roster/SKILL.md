@@ -1,6 +1,6 @@
 ---
 name: agent-roster
-description: "Trigger: cambiar proveedor/modelo de los agentes, roster de agentes, routing por agente, configurar modelos de sub-agentes, perfiles de modelo, set-models, aplicar roster. Sistema declarativo portable: 21 agentes (tier, effort, delegate_only) en una sola fuente de verdad, generador de configuración por runtime y switcher de proveedor con un comando. Use when changing the model/provider of all agents at once, syncing the agent roster across runtimes, or adding a new runtime adapter."
+description: "Trigger: cambiar proveedor/modelo de los agentes, roster de agentes, routing por agente, configurar modelos de sub-agentes, perfiles de modelo, set-models, aplicar roster. Sistema declarativo portable para todos los agentes del roster (tier, effort, delegate_only, overrides por rol) en una sola fuente de verdad, generador de configuración por runtime (OpenCode, Claude Code, dsh) y escalera L1-L4 con override por API key del usuario. Use when changing the model/provider of all agents or frontend roles, syncing the agent roster across runtimes, or adding a new runtime adapter."
 license: MIT
 allows-script-exec: "set-models/apply spawn the runtime CLI to project and patch agent configs"
 compatibility: "Requiere Node 20+. Windows-first: scripts Node puro sin dependencias externas."
@@ -13,7 +13,7 @@ allowed-tools: Read Write Edit Bash(node:*)
 
 # 🤖 agent-roster — Roster de agentes portable
 
-Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier, effort, delegate_only) que se proyecta a cada runtime con un generador, y se cambia de proveedor/modelo para TODOS los agentes con un solo comando.
+Una fuente de verdad declarativa para todos los agentes del ecosistema (tier, effort, delegate_only y overrides por rol como `frontend-builder`/`frontend-critic`) que se proyecta a cada runtime con un generador, y se cambia de proveedor/modelo para TODOS los agentes o por rol con un solo comando.
 
 ## 📋 Cuándo usar
 
@@ -28,7 +28,7 @@ Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier, e
 
 | Archivo | Rol |
 |---|---|
-| `_shared/agent-roster/roster.json` | **Fuente de verdad**: los 21 agentes con `tier` (`strong`/`mid`/`cheap`, con aliases legacy `sdd-*`), `effort` (max/high/medium/low), `delegate_only`, más declaración de tiers y fases/roles ODD. |
+| `_shared/agent-roster/roster.json` | **Fuente de verdad**: todos los agentes del roster (`tier`, `effort`, `delegate_only`, `group`) más declaración de tiers y fases/roles ODD y Frontend Studio. |
 | `_shared/agent-roster/profiles.json` | Perfiles de proveedor con nombre (`deepseek`, `glm`) + campo `current` (perfil activo) y proveedores custom. |
 | `scripts/apply.mjs` | Generador por runtime: lee el roster + perfil y produce/parchea la configuración de cada runtime. |
 | `scripts/set-models.mjs` + `set-models.cmd` | Switcher: resuelve tier→modelo, emite args de sync nativos y delega en `apply.mjs` para cada runtime detectado. |
@@ -36,11 +36,12 @@ Una fuente de verdad declarativa para los **21 agentes** del ecosistema (tier, e
 
 Regla de oro: **`roster.json` es la única fuente de verdad**. Ningún runtime se edita a mano para el routing de agentes; siempre se regenera desde el roster.
 
-## 👥 El roster de 21 agentes
+## 👥 Roster de agentes y escalera portable L1–L4
 
 | Grupo | Agentes | Tier | delegate_only |
 |---|---|---|---|
 | coordinator | `gentle-orchestrator` (effort max) | strong | no (corre inline) |
+| frontend | `frontend-builder`, `frontend-critic` | strong | sí |
 | judgment-day | `jd-judge-a`, `jd-judge-b` | strong | sí |
 | sdd | `sdd-research`, `sdd-propose`, `sdd-design` | strong | sí |
 | sdd | `sdd-apply`, `sdd-spec`, `sdd-verify` | mid | sí |
@@ -49,9 +50,18 @@ Regla de oro: **`roster.json` es la única fuente de verdad**. Ningún runtime s
 | sdd | `sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive` | cheap | sí |
 | sdd | `sdd-onboard` | cheap | **no** (excepción documentada: walkthrough interactivo corre inline) |
 
-- **Strong (`strong`, alias `sdd-strong`, 6 agentes)**: el orquestador (`gentle-orchestrator`), los 2 jueces de Judgment Day (`jd-judge-a`, `jd-judge-b`), `sdd-research`, `sdd-propose` y `sdd-design`.
+- **Strong (`strong`, alias `sdd-strong`, 8 agentes)**: `gentle-orchestrator`, `frontend-builder`, `frontend-critic`, `jd-judge-a`, `jd-judge-b`, `sdd-research`, `sdd-propose` y `sdd-design`.
 - **Mid (`mid`, alias `sdd-mid`, 4 agentes)**: `sdd-apply`, `sdd-spec`, `sdd-verify` y `jd-fix-agent`.
 - **Cheap (`cheap`, alias `sdd-cheap`, 11 agentes)**: los 6 lentes de review y los 5 agentes SDD restantes (`sdd-init`, `sdd-explore`, `sdd-tasks`, `sdd-archive`, `sdd-onboard`).
+
+### Protocolo de modelo por API key del usuario + Escalera L1–L4
+
+1. **Override explícito (`--frontend <m>` / `--agent <name>:<m>` o D1b)**: el usuario indica un ID de modelo soportado por su API key o runtime. **Si el runtime o la API key rechaza o no expone ese modelo, fallar rápido y pedir al usuario un ID válido (o `inherit` explícito); JAMÁS degradar en silencio a `cheap`.**
+2. **Degradación portable L1–L4** (emitir recibo `[ModelDispatch: role=<r> requested=<p> resolved=<m> level=L<1-4>]`):
+   - **L1**: override exacto por llamada (OpenCode / runtimes con override por string).
+   - **L2**: mapeo a enum/tier nativo (`opus`/`sonnet` en Claude Code, `pro`/`flash`).
+   - **L3**: materialización estática vía `apply.mjs` (`.claude/agents/*.md`, `opencode.json`, `dsh` `subagent_strong`).
+   - **L4**: herencia transparente del modelo fuerte activo en runtimes sin override por subagente (Antigravity, Codex, Cursor).
 
 ## 🔄 Alineación con perfiles nativos (`gentle-ai sync`)
 
@@ -60,7 +70,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 - El catálogo declara los tiers (`strong`, `mid`, `cheap` y aliases `sdd-*`) y su razonamiento/economía en `_shared/agent-roster/roster.json`.
 - `set-models.mjs --emit-sync-args` emite los argumentos exactos de sync listos para invocar el binario.
 - La aplicación de los perfiles por fase queda delegada enteramente a la mecánica nativa de sync.
-- El catálogo se limita a aplicar la asignación de modelos de los **21 agentes** (`agent.<name>.model` en OpenCode, preset en dsh).
+- El catálogo proyecta la asignación de modelos para todos los agentes declarados en `roster.json` (`agent.<name>.model` en OpenCode, frontmatter `model:` en `.claude/agents/*.md`, preset en dsh).
 
 ## 🛠️ Workflow
 
@@ -113,7 +123,8 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 
 - **Nunca escribir sin `--apply`**: el modo por defecto es `--dry-run` en ambos scripts.
 - **Backup antes de escribir**: `apply.mjs` crea `<target>.roster.bak-<timestamp>` antes de tocar una configuración existente.
-- **Merge quirúrgico**: en OpenCode solo se parchea `agent.<name>.model` de los 21 agentes; toda otra clave queda byte a byte intacta.
+- **Merge quirúrgico**: en OpenCode solo se parchea `agent.<name>.model` de los agentes presentes; toda otra clave queda byte a byte intacta.
+- **Cero degradación silenciosa a `cheap`**: cualquier tier `"frontend"` o desconocido cae como mínimo a `strong` (o se detiene pidiendo modelo válido al usuario).
 - **Regla de prueba**: NO ejecutar `--apply` contra el `opencode.json` global real en tests; usar una copia temporal con `apply.mjs --config <copia>`.
 - **Regenerar, no editar**: `preset/roster.routing.json` es un artefacto derivado del roster; se regenera con `--runtime dsh --apply`.
 - **Sin dependencias**: todos los scripts son Node puro (Windows-first, sin paquetes externos).
@@ -123,8 +134,9 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 | Runtime | Mecanismo | Adapter |
 |---|---|---|
 | OpenCode | `agent.<name>.model` en `opencode.json` (merge quirúrgico de solo esa clave) | incluido |
-| dsh (DeepSeek Harness) | No hay modelo por agente: herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `gentle-ai-dsh/preset/roster.routing.json` y sincroniza los literales fallback del preset | incluido |
-| Claude Code | Frontmatter `model: <alias>` por sub-agente en `.claude/agents/*.md` (documentado en references, adaptador futuro) | documentado |
+| Claude Code | Frontmatter `model: <alias>` por sub-agente en `.claude/agents/<name>.md` | incluido (`--runtime claude-code`) |
+| dsh (DeepSeek Harness) | Herramientas `subagent` (cheap/mid) vs `subagent_strong` (strong/frontend) con env `DSH_FLASH_MODEL`/`DSH_STRONG_MODEL`. Emite `roster.routing.json` y sincroniza literales fallback | incluido |
+| Codex / Cursor / Antigravity | Nivel L4: herencia transparente del modelo fuerte de sesión o config nativa declarativa (`[ModelDispatch: ... level=L4]`) | fallback declarativo |
 
 ### Cómo agregar un adaptador de runtime nuevo
 
@@ -137,7 +149,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 ## 📚 Referencias
 
 - [references/model-mapping.md](references/model-mapping.md) — explicación de tier/effort/delegate_only por runtime, tiers nativos y no-duplicación con `sync`.
-- [roster.json](../../_shared/agent-roster/roster.json) — fuente de verdad del roster (21 agentes + tiers y fases).
+- [roster.json](../../_shared/agent-roster/roster.json) — fuente de verdad del roster (agentes + tiers y fases).
 - [profiles.json](../../_shared/agent-roster/profiles.json) — perfiles de proveedor y tiers nativos.
 - [apply.mjs](scripts/apply.mjs) — generador por runtime.
 - [set-models.mjs](scripts/set-models.mjs) — switcher de proveedor y emisor de args de sync.
@@ -146,7 +158,7 @@ El catálogo se alinea con el mecanismo de perfiles de `gentle-ai` (`sync --prof
 
 ## 🔄 Relación con otras meta-skills
 
-- `gentle-orchestrator` — describe el uso de los 21 agentes; este sistema materializa su routing en cada runtime.
+- `gentle-orchestrator` — describe el uso del roster de agentes (ODD + Frontend Studio); este sistema materializa su routing en cada runtime.
 - `sdd-orchestrator` — rutea fases del DAG SDD; el routing por fase (`_shared/model-routing/`) convive con este routing por agente.
 - `skill-sync` — instala skills; este sistema configura los modelos de los agentes que las ejecutan.
 - `skill-validator` — valida el catálogo; los scripts de este sistema salen con 0 cuando el roster está íntegro.

@@ -146,6 +146,18 @@
       "reasoning_effort": "high",
       "effort": "high",
       "description": "Judgment Day blind judges: read-only adversarial review"
+    },
+    "frontend-build": {
+      "tier": "strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "Frontend Studio builder: positive-only creative UI construction from DESIGN_SYSTEM.md"
+    },
+    "frontend-eval": {
+      "tier": "strong",
+      "reasoning_effort": "high",
+      "effort": "high",
+      "description": "Frontend Studio blind critic: subtractive visual & UX evaluation over Contact Sheet + DOM geometry"
     }
   },
   "agents": [
@@ -316,6 +328,22 @@
       "tier": "cheap",
       "effort": "high",
       "delegate_only": false
+    },
+    {
+      "name": "frontend-builder",
+      "group": "frontend",
+      "role": "Frontend Studio UI & Motion builder (Positive-Only Canvas from DESIGN_SYSTEM.md)",
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true
+    },
+    {
+      "name": "frontend-critic",
+      "group": "frontend",
+      "role": "Blind subtractive UI/UX evaluator over Contact Sheet + DOM telemetry (max 1 fix round)",
+      "tier": "strong",
+      "effort": "high",
+      "delegate_only": true
     }
   ]
 }

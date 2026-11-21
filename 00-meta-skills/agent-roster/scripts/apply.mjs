@@ -7,8 +7,9 @@
  * anything without --apply; the default is a dry-run plan.
  *
  * Usage:
- *   node apply.mjs --runtime opencode [--config <path>] [--profiles <path>] [--dry-run|--apply] [--json]
- *   node apply.mjs --runtime dsh      [--profiles <path>] [--dry-run|--apply] [--json]
+ *   node apply.mjs --runtime opencode    [--config <path>] [--profiles <path>] [--roster <path>] [--dry-run|--apply] [--json]
+ *   node apply.mjs --runtime dsh         [--profiles <path>] [--roster <path>] [--dry-run|--apply] [--json]
+ *   node apply.mjs --runtime claude-code [--config <agents-dir>] [--profiles <path>] [--roster <path>] [--dry-run|--apply] [--json]
  *   node apply.mjs --runtime list
  *   node apply.mjs --runtime opencode --apply --config "<temp-copy>"   # test-only rule
  *
@@ -20,8 +21,9 @@
  * dsh has no provider block: it reports the limitation without failing.
  *
  * Overrides (internal, used by set-models.mjs):
- *   --override '{"strong":"provider/model","flash":"provider/model"}'
+ *   --override '{"strong":"provider/model","flash":"provider/model","overrides":{"frontend-builder":"..."}}'
  *   --profiles <path>   profiles.json override for tests/fixtures
+ *   --roster <path>     roster.json override for tests/fixtures
  *
  * Exit codes: 0 = ok, 2 = invalid arguments.
  */
@@ -59,6 +61,12 @@ const DEFAULT_OPENCODE_CONFIG = join(
   "opencode.json"
 );
 
+function defaultClaudeAgentsDir() {
+  const localDir = join(process.cwd(), ".claude", "agents");
+  if (existsSync(localDir)) return localDir;
+  return join(homedir(), ".claude", "agents");
+}
+
 // ---------------------------------------------------------------------------
 // CLI
 // ---------------------------------------------------------------------------
@@ -68,6 +76,7 @@ function parseArgs(argv) {
     runtime: "list",
     config: null,
     profilesPath: null,
+    rosterPath: null,
     dryRun: false,
     apply: false,
     json: false,
@@ -78,6 +87,7 @@ function parseArgs(argv) {
     if (a === "--runtime") opts.runtime = argv[++i];
     else if (a === "--config") opts.config = resolve(argv[++i]);
     else if (a === "--profiles") opts.profilesPath = resolve(argv[++i]);
+    else if (a === "--roster") opts.rosterPath = resolve(argv[++i]);
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--apply") opts.apply = true;
     else if (a === "--json") opts.json = true;
@@ -90,8 +100,8 @@ function parseArgs(argv) {
       process.exit(2);
     }
   }
-  if (!["opencode", "dsh", "list"].includes(opts.runtime)) {
-    console.error(`--runtime must be one of: opencode, dsh, list (got "${opts.runtime}")`);
+  if (!["opencode", "dsh", "claude-code", "list"].includes(opts.runtime)) {
+    console.error(`--runtime must be one of: opencode, dsh, claude-code, list (got "${opts.runtime}")`);
     process.exit(2);
   }
   if (!opts.dryRun && !opts.apply) opts.dryRun = true; // never write without --apply
@@ -102,16 +112,17 @@ function printHelp() {
   console.log(`apply.mjs — per-runtime generator for the agent roster
 
 Usage:
-  node apply.mjs --runtime <opencode|dsh|list> [options]
+  node apply.mjs --runtime <opencode|dsh|claude-code|list> [options]
 
 Options:
-  --runtime <id>   opencode | dsh | list (default: list)
-  --config <path>  Target opencode config file (default: %USERPROFILE%\\.config\\opencode\\opencode.json)
-  --profiles <p>   profiles.json override (custom providers live there)
+  --runtime <id>   opencode | dsh | claude-code | list (default: list)
+  --config <path>  Target config file (opencode.json) or agents dir (.claude/agents)
+  --profiles <p>   profiles.json override (custom providers & overrides live there)
+  --roster <p>     roster.json override for tests/fixtures
   --dry-run        Print the plan without writing (DEFAULT)
   --apply          Write changes (timestamped backup first)
-  --json           Emit the computed patch as JSON (opencode/dsh)
-  --override <j>   Internal: inline {"strong","flash"} resolution for set-models.mjs
+  --json           Emit the computed patch as JSON (opencode/dsh/claude-code)
+  --override <j>   Internal: inline {"strong","flash","frontend","overrides"} for set-models.mjs
 
 Rules:
   - Never writes without --apply; dry-run is the default.
@@ -178,6 +189,8 @@ function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
       mid,
       cheap: cheap || flash,
       flash: flash || cheap,
+      frontend: typeof o.frontend === "string" ? o.frontend : null,
+      overrides: o.overrides && typeof o.overrides === "object" && !Array.isArray(o.overrides) ? o.overrides : {},
       "sdd-strong": strong,
       "sdd-mid": mid,
       "sdd-cheap": cheap || flash,
@@ -200,12 +213,16 @@ function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
     console.error(`profiles.json: profile "${profiles.current}" is missing or malformed`);
     process.exit(2);
   }
+  const topOverrides = profiles.overrides && typeof profiles.overrides === "object" && !Array.isArray(profiles.overrides) ? profiles.overrides : {};
+  const profileOverrides = current.overrides && typeof current.overrides === "object" && !Array.isArray(current.overrides) ? current.overrides : {};
   return {
     name: profiles.current,
     strong,
     mid,
     cheap: cheap || flash,
     flash: flash || cheap,
+    frontend: typeof current.frontend === "string" ? current.frontend : null,
+    overrides: { ...topOverrides, ...profileOverrides },
     "sdd-strong": strong,
     "sdd-mid": mid,
     "sdd-cheap": cheap || flash,
@@ -213,10 +230,16 @@ function resolveProfile(profiles, override, profilesPath = PROFILES_PATH) {
 }
 
 function desiredModelFor(agent, profile) {
+  if (profile.overrides && typeof profile.overrides[agent.name] === "string" && profile.overrides[agent.name].trim()) {
+    return profile.overrides[agent.name];
+  }
   const norm = normalizeTier(agent.tier);
+  if (norm === "frontend") return profile.frontend || profile["sdd-strong"] || profile.strong;
   if (norm === "strong") return profile["sdd-strong"] || profile.strong;
   if (norm === "mid") return profile["sdd-mid"] || profile.mid || profile["sdd-cheap"] || profile.flash || profile.cheap;
-  return profile["sdd-cheap"] || profile.cheap || profile.flash || profile["sdd-mid"] || profile.mid;
+  if (norm === "cheap") return profile["sdd-cheap"] || profile.cheap || profile.flash || profile["sdd-mid"] || profile.mid;
+  // Never silently downgrade unknown/specialized tiers to cheap: default safely to strong.
+  return profile["sdd-strong"] || profile.strong;
 }
 
 function splitProviderModel(full) {
@@ -705,13 +728,103 @@ function runOpenCode(opts, roster, profile, providers) {
 }
 
 // ---------------------------------------------------------------------------
+// Claude Code adapter (.claude/agents/<name>.md YAML frontmatter model:)
+// ---------------------------------------------------------------------------
+
+function patchFrontmatterModel(text, desired) {
+  const fmMatch = text.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/);
+  if (!fmMatch) return { kind: "no-frontmatter", current: null, nextText: text };
+  const eol = fmMatch[1].includes("\r\n") ? "\r\n" : "\n";
+  const body = fmMatch[2];
+  const modelRe = /^([ \t]*model:[ \t]*)([^\r\n]*)$/m;
+  const m = body.match(modelRe);
+  if (m) {
+    const current = m[2].trim().replace(/^["']|["']$/g, "");
+    if (current === desired) return { kind: "none", current, nextText: text };
+    const updatedBody = body.replace(modelRe, `$1${desired}`);
+    const nextText = fmMatch[1] + updatedBody + fmMatch[3] + text.slice(fmMatch[0].length);
+    return { kind: "replace", current, nextText };
+  }
+  const updatedBody = `${body}${eol}model: ${desired}`;
+  const nextText = fmMatch[1] + updatedBody + fmMatch[3] + text.slice(fmMatch[0].length);
+  return { kind: "insert", current: null, nextText };
+}
+
+function runClaudeCode(opts, roster, profile) {
+  const agentsDir = opts.config || defaultClaudeAgentsDir();
+  if (!existsSync(agentsDir)) {
+    console.error(`❌ Claude Code agents directory not found: ${agentsDir}`);
+    process.exit(1);
+  }
+  const results = [];
+  for (const agent of roster.agents) {
+    const desired = desiredModelFor(agent, profile);
+    const mdPath = join(agentsDir, `${agent.name}.md`);
+    if (!existsSync(mdPath)) {
+      results.push({ agent: agent.name, file: mdPath, status: "missing-file", current: null, desired, nextText: null });
+      continue;
+    }
+    const raw = readUtf8(mdPath);
+    const patch = patchFrontmatterModel(raw, desired);
+    if (patch.kind === "none") {
+      results.push({ agent: agent.name, file: mdPath, status: "ok", current: patch.current, desired, nextText: null });
+    } else if (patch.kind === "no-frontmatter") {
+      results.push({ agent: agent.name, file: mdPath, status: "no-frontmatter", current: null, desired, nextText: null });
+    } else {
+      results.push({ agent: agent.name, file: mdPath, status: "changed", current: patch.current, desired, nextText: patch.nextText });
+    }
+  }
+
+  const changed = results.filter((r) => r.status === "changed");
+  if (opts.json) {
+    console.log(
+      JSON.stringify(
+        {
+          runtime: "claude-code",
+          agentsDir,
+          profile: profile.name,
+          changes: results.map(({ nextText: _drop, ...rest }) => rest),
+        },
+        null,
+        2
+      )
+    );
+    return;
+  }
+
+  console.log(`\nRuntime: claude-code`);
+  console.log(`Target:  ${agentsDir}`);
+  console.log(`Profile: ${profile.name} (strong=${profile.strong}, flash=${profile.flash})`);
+  console.log(`Mode:    ${opts.apply ? "apply" : "dry-run"}\n`);
+  for (const r of results) {
+    if (r.status === "changed") console.log(`  [CHANGED] ${r.agent}: ${r.current ?? "(unset)"} -> ${r.desired}`);
+    else if (r.status === "ok") console.log(`  [OK] ${r.agent}: ${r.current}`);
+  }
+  console.log(`\n${changed.length} agent markdown file(s) would change.`);
+
+  if (opts.apply && changed.length > 0) {
+    for (const r of changed) {
+      const backup = backupAndWrite(r.file, r.nextText);
+      console.log(`✅ Updated ${r.file} (backup: ${backup})`);
+    }
+  } else if (opts.apply) {
+    console.log("✅ Already in sync — nothing written, no backup created.");
+  } else {
+    console.log("✨ Dry-run complete. No changes written (use --apply to write).");
+  }
+}
+
+// ---------------------------------------------------------------------------
 // dsh adapter (subagent vs subagent_strong semantics)
 // ---------------------------------------------------------------------------
 
 function dshRoutingFor(agent) {
   let tool = "main";
   if (agent.delegate_only) {
-    tool = normalizeTier(agent.tier) === "strong" ? "subagent_strong" : "subagent";
+    const norm = normalizeTier(agent.tier);
+    tool = (norm === "strong" || norm === "frontend" || agent.group === "frontend")
+      ? "subagent_strong"
+      : "subagent";
   }
   return {
     tier: agent.tier,
@@ -959,19 +1072,41 @@ function runList(opts, roster, profile) {
 // Main
 // ---------------------------------------------------------------------------
 
-function main() {
-  const opts = parseArgs(process.argv.slice(2));
-  const roster = loadJson(ROSTER_PATH);
-  if (!roster || !Array.isArray(roster.agents) || roster.agents.length !== 21) {
-    console.error(`❌ roster.json is missing or does not declare exactly 21 agents: ${ROSTER_PATH}`);
+function validateRoster(roster, rosterPath) {
+  if (!roster || !Array.isArray(roster.agents) || roster.agents.length === 0) {
+    console.error(`❌ roster.json is missing or declares 0 agents: ${rosterPath}`);
     process.exit(1);
   }
+  const seen = new Set();
+  for (const a of roster.agents) {
+    if (!a || typeof a.name !== "string" || !a.name.trim()) {
+      console.error(`❌ roster.json contains an agent without a valid name: ${rosterPath}`);
+      process.exit(1);
+    }
+    if (seen.has(a.name)) {
+      console.error(`❌ roster.json declares duplicate agent "${a.name}": ${rosterPath}`);
+      process.exit(1);
+    }
+    seen.add(a.name);
+    if (typeof a.tier !== "string" || !a.tier.trim() || typeof a.effort !== "string" || typeof a.delegate_only !== "boolean") {
+      console.error(`❌ roster.json agent "${a.name}" has invalid tier/effort/delegate_only metadata: ${rosterPath}`);
+      process.exit(1);
+    }
+  }
+}
+
+function main() {
+  const opts = parseArgs(process.argv.slice(2));
+  const rosterPath = opts.rosterPath || ROSTER_PATH;
+  const roster = loadJson(rosterPath);
+  validateRoster(roster, rosterPath);
   const profilesPath = opts.profilesPath || PROFILES_PATH;
   const profiles = loadJson(profilesPath);
   const profile = resolveProfile(profiles, opts.override, profilesPath);
   const providers = loadProviders(profiles);
 
   if (opts.runtime === "opencode") runOpenCode(opts, roster, profile, providers);
+  else if (opts.runtime === "claude-code") runClaudeCode(opts, roster, profile);
   else if (opts.runtime === "dsh") runDsh(opts, roster, profile, providers);
   else runList(opts, roster, profile);
 }

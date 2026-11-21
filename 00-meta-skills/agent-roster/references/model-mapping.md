@@ -26,7 +26,16 @@ El catálogo define la economía de modelos por fase y por agente en `roster.jso
 1. Para **perfiles de fase**: el catálogo **no** implementa un motor propio de aplicación. En su lugar, `set-models.mjs --emit-sync-args` emite los argumentos exactos:
    `gentle-ai sync --profile sdd-strong:<model> --profile sdd-mid:<model> --profile sdd-cheap:<model> --profile-phase <perfil>:<fase>:<model> ...`
    La aplicación efectiva en los entornos la ejecuta el binario nativo `gentle-ai sync`.
-2. Para el **roster de 21 agentes**: `apply.mjs` sigue siendo el mecanismo responsable de proyectar la configuración concreta a cada runtime soportado (`agent.<name>.model` en OpenCode, preset en dsh).
+2. Para los **agentes declarados en `roster.json`**: `apply.mjs` sigue siendo el mecanismo responsable de proyectar la configuración concreta a cada runtime soportado (`agent.<name>.model` en OpenCode, `model:` en `.claude/agents/*.md` para Claude Code, preset en dsh).
+
+## Escalera L1–L4 y Override por API Key del Usuario
+
+- **Protocolo de API key**: si el usuario indica un modelo explícito (`--frontend <model>` o `--agent <name>:<model>`), se respeta primero `profile.overrides[agent.name]`. Si la API key o el runtime del usuario rechaza o no expone ese ID, **fallar rápido y pedir un modelo válido (o `inherit`)** — jamás degradar en silencio a `cheap`.
+- **Niveles**:
+  - **L1**: override exacto por llamada (OpenCode / harnesses con string libre).
+  - **L2**: mapeo a enum/tier nativo (`opus`/`sonnet`/`haiku`, `pro`/`flash`).
+  - **L3**: materialización estática en disco vía `apply.mjs` (`.claude/agents/*.md`, `opencode.json`, `dsh`).
+  - **L4**: herencia transparente del modelo fuerte de sesión en runtimes sin override por subagente (Antigravity, Codex, Cursor), registrando `[ModelDispatch: role=<r> requested=<p> resolved=<m> level=L<1-4>]`.
 
 ## OpenCode (`--runtime opencode`)
 
@@ -34,13 +43,13 @@ Mecanismo: `agent.<name>.model` dentro del objeto `"agent"` de `opencode.json`.
 
 | Campo del roster | Traducción OpenCode |
 |---|---|
-| `tier` | El valor de `agent.<name>.model`: strong → `<profile>.strong` (`sdd-strong`), mid → `<profile>.mid` (`sdd-mid`), cheap → `<profile>.cheap` (`sdd-cheap`). |
+| `tier` | `profile.overrides[agent.name]` > `frontend`/`strong` → `<profile>.strong`, `mid` → `<profile>.mid`, `cheap` → `<profile>.cheap`. |
 | `effort` | Informativo: OpenCode lo expresa como `variant` (`max`/`high`/`medium`), que el adaptador **no** toca — solo se parchea `model`. |
 | `delegate_only` | Informativo: corresponde a `hidden: true`, `mode: "subagent"` y `permission` restrictiva en la config; el adaptador no las modifica. |
 
 Comportamiento del adaptador:
 
-- **Merge quirúrgico**: se ubica cada bloque de los 21 agentes por búsqueda textual (`"<name>": {`) con brace-matching; solo se reemplaza el valor de la línea `"model"`. Toda otra clave conserva sus bytes exactos (incluido formato y orden).
+- **Merge quirúrgico**: se ubica cada bloque de los agentes del roster por búsqueda textual (`"<name>": {`) con brace-matching; solo se reemplaza el valor de la línea `"model"`. Toda otra clave conserva sus bytes exactos (incluido formato y orden).
 - Si un agente del roster no tiene bloque en la config, se reporta como `MISSING-BLOCK` y se omite (no se inventan bloques).
 - Si un agente tiene bloque pero sin clave `model`, se inserta una línea `"model"` tras la llave de apertura.
 - Backup: `<config>.roster.bak-<timestamp>` antes de escribir; si no hay cambios no se escribe ni se crea backup (idempotencia).
@@ -65,21 +74,21 @@ Traducción en dsh:
 
 Comportamiento del adaptador:
 
-1. **Emite** `gentle-ai-dsh/preset/roster.routing.json`: artefacto derivado con `agent → { tier, effort, delegate_only, tool }` para los 21 agentes. Se regenera completo en cada apply (es derivado, no fuente).
+1. **Emite** `gentle-ai-dsh/preset/roster.routing.json`: artefacto derivado con `agent → { tier, effort, delegate_only, tool }` para todos los agentes declarados en `roster.json` (incluidos `frontend-builder` y `frontend-critic` en `subagent_strong`). Se regenera completo en cada apply (es derivado, no fuente).
 2. **Actualiza solo lo trivialmente seguro del preset**: los literales fallback (`DSH_STRONG_PROVIDER`, `DSH_STRONG_MODEL`, `DSH_FLASH_PROVIDER`, `DSH_FLASH_MODEL`). Si el perfil activo difiere, se reemplaza el literal entre comillas simples; nada más del preset se toca. Con backup previo.
 3. Nunca se reescribe el preset completo ni se agregan filas nuevas.
 
-## Claude Code (documentado, adaptador futuro)
+## Claude Code (`--runtime claude-code`)
 
 Mecanismo: frontmatter `model: <alias>` en `.claude/agents/<nombre>.md` por sub-agente.
 
 | Campo del roster | Traducción Claude Code |
 |---|---|
-| `tier` | `model: <alias-strong>`, `model: <alias-mid>` o `model: <alias-cheap>` según el alias disponible en el plan del runtime. |
+| `tier` | `profile.overrides[agent.name]` o `strong`/`frontend` → `<alias-strong>`, `mid` → `<alias-mid>`, `cheap` → `<alias-cheap>`. |
 | `effort` | Informativo: los aliases del plan (p. ej. haiku/sonnet/opus) expresan la clase de esfuerzo. |
 | `delegate_only` | `true` → el archivo de agente se usa solo con `Task`/`--agents`; `false` → puede ser agente principal. |
 
-Al implementarlo: leer `list()` del runtime (según el protocolo de `00-meta-skills/sdd-orchestrator/references/model-routing.md`), resolver los aliases y parchear solo la línea `model:` de los 21 archivos, con backup.
+`apply.mjs --runtime claude-code` parcha quirúrgicamente la línea `model:` del frontmatter YAML en cada `<agent>.md` existente bajo `.claude/agents/`, preservando el resto de bytes y creando `.roster.bak-<timestamp>` antes de escribir.
 
 ## Notas de diseño
 

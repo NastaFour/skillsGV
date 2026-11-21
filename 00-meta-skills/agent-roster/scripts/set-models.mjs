@@ -19,6 +19,8 @@
  *   node set-models.mjs --strong <model> --apply
  *   node set-models.mjs --mid <model> --apply
  *   node set-models.mjs --cheap <model> --apply
+ *   node set-models.mjs --frontend <model> --apply
+ *   node set-models.mjs --agent frontend-builder:<model> --apply
  *   node set-models.mjs --emit-sync-args [--json]
  *   node set-models.mjs --save-profile <name> --apply
  *   node set-models.mjs --save-provider <id> --base-url <u> --api-key-env <VAR> --models m1,m2 [--apply]
@@ -86,6 +88,8 @@ function parseArgs(argv) {
     mid: null,
     cheap: null,
     flash: null,
+    frontend: null,
+    agentOverrides: {},
     all: null,
     profile: null,
     saveProfile: null,
@@ -106,6 +110,28 @@ function parseArgs(argv) {
     else if (a === "--mid" || a === "--sdd-mid") opts.mid = argv[++i];
     else if (a === "--cheap" || a === "--sdd-cheap") opts.cheap = argv[++i];
     else if (a === "--flash") opts.flash = argv[++i];
+    else if (a === "--frontend") {
+      const m = argv[++i];
+      if (!m || !m.trim() || looksLikeSecret(m)) {
+        console.error("--frontend requires a valid model id (never a secret/API key).");
+        process.exit(2);
+      }
+      opts.frontend = m.trim();
+    } else if (a === "--agent") {
+      const raw = argv[++i];
+      const colon = raw ? raw.indexOf(":") : -1;
+      if (!raw || colon <= 0 || colon === raw.length - 1) {
+        console.error("--agent expects <name>:<model> (e.g. frontend-builder:anthropic/claude-opus-4-6).");
+        process.exit(2);
+      }
+      const agentName = raw.slice(0, colon).trim();
+      const modelId = raw.slice(colon + 1).trim();
+      if (!agentName || !modelId || looksLikeSecret(modelId)) {
+        console.error(`Invalid --agent override "${raw}" (must be <name>:<model> and never a secret).`);
+        process.exit(2);
+      }
+      opts.agentOverrides[agentName] = modelId;
+    }
     else if (a === "--all") opts.all = argv[++i];
     else if (a === "--profile") opts.profile = argv[++i];
     else if (a === "--save-profile") opts.saveProfile = argv[++i];
@@ -176,6 +202,8 @@ Options:
   --mid <model>         Override the mid-tier model (alias: --sdd-mid)
   --cheap <model>       Override the cheap-tier model (alias: --sdd-cheap, --flash)
   --flash <model>       Alias for --cheap
+  --frontend <model>    Override frontend-builder & frontend-critic (never falls back to cheap)
+  --agent <name>:<m>    Override a specific roster agent (repeatable)
   --emit-sync-args      Emit exact native 'gentle-ai sync' arguments for profiles
   --json                Emit output as JSON (used with --emit-sync-args)
   --save-profile <n>    Save the resolved strong/mid/cheap as a named profile
@@ -295,12 +323,28 @@ function resolveModels(opts, profiles) {
     process.exit(2);
   }
 
+  const baseOverrides = {
+    ...(profiles.overrides && typeof profiles.overrides === "object" ? profiles.overrides : {}),
+    ...(base.overrides && typeof base.overrides === "object" ? base.overrides : {}),
+  };
+  const overrides = { ...baseOverrides };
+  const frontend = opts.frontend || base.frontend || null;
+  if (opts.frontend) {
+    overrides["frontend-builder"] = opts.frontend;
+    overrides["frontend-critic"] = opts.frontend;
+  }
+  for (const [k, v] of Object.entries(opts.agentOverrides || {})) {
+    overrides[k] = v;
+  }
+
   return {
     baseName,
     strong,
     mid: mid || flash,
     cheap: cheap || flash,
     flash,
+    frontend,
+    overrides,
     "sdd-strong": strong,
     "sdd-mid": mid || flash,
     "sdd-cheap": cheap || flash,
@@ -336,8 +380,21 @@ function profileEditsFor(opts, profiles, resolved) {
       edits.changed = true;
     }
   }
+  if (opts.frontend || Object.keys(opts.agentOverrides || {}).length > 0) {
+    if (opts.frontend && cur.frontend !== opts.frontend) {
+      cur.frontend = opts.frontend;
+      edits.changed = true;
+    }
+    if (!cur.overrides || typeof cur.overrides !== "object") cur.overrides = {};
+    for (const [k, v] of Object.entries(resolved.overrides || {})) {
+      if (cur.overrides[k] !== v) {
+        cur.overrides[k] = v;
+        edits.changed = true;
+      }
+    }
+  }
   if (opts.saveProfile) {
-    profiles.profiles[opts.saveProfile] = {
+    const saved = {
       "sdd-strong": resolved.strong,
       "sdd-mid": resolved.mid,
       "sdd-cheap": resolved.cheap,
@@ -346,6 +403,9 @@ function profileEditsFor(opts, profiles, resolved) {
       cheap: resolved.cheap,
       flash: resolved.flash,
     };
+    if (resolved.frontend) saved.frontend = resolved.frontend;
+    if (resolved.overrides && Object.keys(resolved.overrides).length > 0) saved.overrides = { ...resolved.overrides };
+    profiles.profiles[opts.saveProfile] = saved;
     edits.saveProfile = opts.saveProfile;
     edits.changed = true;
   }
@@ -368,7 +428,18 @@ export function buildSyncArgs(roster, resolved, profileName) {
   if (roster && roster.phases && typeof roster.phases === "object") {
     for (const [phase, info] of Object.entries(roster.phases)) {
       const tierNorm = normalizeTier(info.tier);
-      const model = tierNorm === "strong" ? resolved.strong : (tierNorm === "mid" ? resolved.mid : resolved.cheap);
+      let model = resolved.strong;
+      if (phase === "frontend-build" && resolved.overrides?.["frontend-builder"]) {
+        model = resolved.overrides["frontend-builder"];
+      } else if (phase === "frontend-eval" && resolved.overrides?.["frontend-critic"]) {
+        model = resolved.overrides["frontend-critic"];
+      } else if (tierNorm === "frontend") {
+        model = resolved.frontend || resolved.strong;
+      } else if (tierNorm === "mid") {
+        model = resolved.mid;
+      } else if (tierNorm === "cheap") {
+        model = resolved.cheap;
+      }
       args.push("--profile-phase", `${profileName}:${phase}:${model}`);
     }
   }
@@ -386,13 +457,21 @@ function detectedRuntimes() {
   return list;
 }
 
+function modelForAgent(agent, resolved) {
+  if (resolved.overrides && resolved.overrides[agent.name]) return resolved.overrides[agent.name];
+  const tierNorm = normalizeTier(agent.tier);
+  if (tierNorm === "frontend") return resolved.frontend || resolved.strong;
+  if (tierNorm === "mid") return resolved.mid;
+  if (tierNorm === "cheap") return resolved.cheap;
+  return resolved.strong;
+}
+
 function printSummaryTable(roster, resolved, runtime) {
   console.log(`\nSummary — ${runtime}: ${roster.agents.length} agents (profile "${resolved.baseName}")`);
   console.log("  agent".padEnd(24) + "tier".padEnd(14) + "model");
   console.log("  " + "-".repeat(74));
   for (const a of roster.agents) {
-    const tierNorm = normalizeTier(a.tier);
-    const model = tierNorm === "strong" ? resolved.strong : (tierNorm === "mid" ? resolved.mid : resolved.cheap);
+    const model = modelForAgent(a, resolved);
     console.log(`  ${a.name.padEnd(24)}${a.tier.padEnd(14)}${model}`);
   }
 }
@@ -411,6 +490,8 @@ function delegateToApply(opts, resolved) {
     mid: resolved.mid,
     cheap: resolved.cheap,
     flash: resolved.flash,
+    ...(resolved.frontend ? { frontend: resolved.frontend } : {}),
+    ...(resolved.overrides && Object.keys(resolved.overrides).length > 0 ? { overrides: resolved.overrides } : {}),
   });
   const extra = opts.profilesPath ? ["--profiles", opts.profilesPath] : [];
   for (const r of runtimes) {
