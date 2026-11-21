@@ -34,9 +34,12 @@ craft_budget:
 
 ```yaml
 chassis: H # A-H
-phase2_skills: ["tailwind-4", "micro-interactions"] # <= 5 positive craft/stack skills only (zero audit skills)
-phase3_skills: ["web-design-guidelines", "impeccable"] # <= 3 subtractive evaluation skills
-gates: ["verify-frontend-gates", "ui-diff"]
+phase1_discovery_skills: ["design-system-tokens", "storybrand-messaging", "page-cro"] # <= 5 DNA/tokens/CRO/copy/asset skills
+phase2a_core_skills: ["tailwind-4", "react-19", "ui-ux-pro-max", "modern-web-guidance", "openseo"] # <= 5 per frontend-builder slice (stack/layout/forms/SEO)
+phase2b_signature_skills: ["micro-interactions", "emil-kowalski", "motion-gsap", "three-js-web", "shader-dev"] # <= 5 per frontend-builder slice (2D/3D/shaders/scroll/decks; zero audit skills)
+phase3a_craft_critic_skills: ["impeccable", "taste-skill", "refactoring-ui", "interface-design", "ai-design-check-stageshow"] # <= 5 visual craft/anti-slop critic skills
+phase3b_ux_critic_skills: ["web-design-guidelines", "ux-auditor-agent", "motion-accessibility", "humanizer"] # <= 5 UX/a11y/copy critic skills
+gates: ["verify-frontend-gates", "ui-diff", "legacy-scan"]
 ```
 
 ---
