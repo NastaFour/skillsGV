@@ -125,16 +125,50 @@ function detectStackSignals(webDir, srcDir) {
   };
 }
 
-function extractOpeningTagAttrs(tagWindow, tagNameRegex) {
-  const startMatch = tagWindow.match(tagNameRegex);
+function extractOpeningTagAttrs(lines, startLineIdx, tagNameRegex) {
+  const rawWindow = lines.slice(startLineIdx, Math.min(startLineIdx + 30, lines.length)).join("\n");
+  const startMatch = rawWindow.match(tagNameRegex);
   if (!startMatch || startMatch.index === undefined) return null;
   const startIdx = startMatch.index + startMatch[0].length;
   let quote = null;
+  let escaped = false;
+  let inLineComment = false;
+  let inBlockComment = false;
   let braceDepth = 0;
-  for (let j = startIdx; j < tagWindow.length; j++) {
-    const ch = tagWindow[j];
+  for (let j = startIdx; j < rawWindow.length; j++) {
+    const ch = rawWindow[j];
+    const next = rawWindow[j + 1];
+    if (inLineComment) {
+      if (ch === "\n") inLineComment = false;
+      continue;
+    }
+    if (inBlockComment) {
+      if (ch === "*" && next === "/") {
+        inBlockComment = false;
+        j++;
+      }
+      continue;
+    }
     if (quote) {
-      if (ch === quote && tagWindow[j - 1] !== "\\") quote = null;
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = true;
+        continue;
+      }
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === "/" && next === "/") {
+      inLineComment = true;
+      j++;
+      continue;
+    }
+    if (ch === "/" && next === "*") {
+      inBlockComment = true;
+      j++;
       continue;
     }
     if (ch === '"' || ch === "'" || ch === "`") {
@@ -149,11 +183,11 @@ function extractOpeningTagAttrs(tagWindow, tagNameRegex) {
       if (braceDepth > 0) braceDepth--;
       continue;
     }
-    if (ch === ">" && braceDepth === 0 && tagWindow[j - 1] !== "=") {
-      return tagWindow.slice(startIdx, j);
+    if (ch === ">" && braceDepth === 0 && rawWindow[j - 1] !== "=") {
+      return rawWindow.slice(startIdx, j);
     }
   }
-  return tagWindow.slice(startIdx);
+  return null;
 }
 
 function runV4StaticChecks(srcDir, files, signals) {
@@ -179,11 +213,9 @@ function runV4StaticChecks(srcDir, files, signals) {
       const line = lines[i];
       if (/^\s*(?:\/\/|\/\*|\*|<!--)/.test(line)) continue;
 
-      const tagWindow = lines.slice(i, Math.min(i + 6, lines.length)).join(" ");
-
       if (isUiFile && /<(?:div|span)\b/i.test(line)) {
-        const attrs = extractOpeningTagAttrs(tagWindow, /<(?:div|span)\b/i) ?? line;
-        if (/\bonClick\s*=/i.test(attrs) && !/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(attrs)) {
+        const attrs = extractOpeningTagAttrs(lines, i, /<(?:div|span)\b/i);
+        if (attrs !== null && /\bonClick\s*=/i.test(attrs) && !/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(attrs)) {
           findings.push({
             severity: "error",
             check: "non-semantic-clickable",
@@ -215,8 +247,8 @@ function runV4StaticChecks(srcDir, files, signals) {
       }
 
       if (isUiFile && /<p\b/i.test(line)) {
-        const pAttrs = extractOpeningTagAttrs(tagWindow, /<p\b/i) ?? line;
-        if (/\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(pAttrs)) {
+        const pAttrs = extractOpeningTagAttrs(lines, i, /<p\b/i);
+        if (pAttrs !== null && /\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(pAttrs)) {
           findings.push({
             severity: "error",
             check: "mono-prose",
@@ -228,7 +260,7 @@ function runV4StaticChecks(srcDir, files, signals) {
       }
 
       if (isUiFile && /<img\b/i.test(line)) {
-        const attrs = extractOpeningTagAttrs(tagWindow, /<img\b/i);
+        const attrs = extractOpeningTagAttrs(lines, i, /<img\b/i);
         if (attrs !== null) {
           const hasAlt = /\balt\s*=/.test(attrs);
           const hasSize = /\b(?:width|height)\s*=|\baspect-|\bfill\b/.test(attrs);
