@@ -4,7 +4,7 @@ description: Advanced animation with GSAP for cases that exceed Motion — compl
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and GSAP."
 metadata:
-  trigger: ["gsap", "timeline animation", "SplitText", "DrawSVG", "MorphSVG", "Flip animation", "ScrollSmoother", "useGSAP", "gsap context", "complex timeline", "svg morph", "text reveal animation", "layout flip"]
+  trigger: ["gsap", "timeline animation", "SplitText", "DrawSVG", "MorphSVG", "Flip animation", "ScrollSmoother", "useGSAP", "gsap context", "complex timeline", "svg morph", "text reveal animation", "layout flip", "scroll trigger", "scroll animation", "pinning", "scrub", "animacion al hacer scroll", "timeline complejo"]
   scope: [global, project]
   version: "1.0.0"
 allowed-tools: Bash(node:*) Read

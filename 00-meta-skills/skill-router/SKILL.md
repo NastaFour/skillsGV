@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 251 skills to 3-5.
+description: Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 255 skills to 3-5.
 license: MIT
 allows-script-exec: "router-replay.mjs spawns the router CLI for deterministic replay"
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex, DeepSeek. Requires Node 20+."
@@ -50,12 +50,14 @@ The agent calls this **first**, reads the output, then loads only `primary` (and
 ## Run
 
 ```bash
-node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "add OAuth login" [--diff <staged-lines>] [--json]
+node ./00-meta-skills/skill-router/scripts/skill-router.mjs --query "add OAuth login" [--diff <staged-lines>] [--phase-plan] [--phase <1|2a|2b|3a|3b>] [--json]
 ```
 
 Flags:
 - `--query "<text>"` — user input or task description (required).
 - `--diff <N>` — number of staged lines (enables trivial/skipJudgmentDay heuristics).
+- `--phase-plan` — partitions frontend/UI skills deterministically across `phasePlan: { needsBuilder2B, phase1, phase2a, phase2b, phase3a, phase3b }` (each bucket capped at `<= 5` skills, with Phase 3 critique skills excluded from `phase2a`/`phase2b`).
+- `--phase <1|2a|2b|3a|3b>` — scopes `tier1toLoad` directly to the requested phase bucket and enforces the Phase 2 Positive-Only Canvas when `2a` or `2b` is selected.
 - `--json` — machine output for piping.
 
 ## Matching algorithm (all deterministic)

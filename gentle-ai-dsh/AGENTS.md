@@ -34,7 +34,7 @@ Hay 14 skills "tier 0" siempre-activas, definidas en
 skill-validator, skill-sync, professional-planner, sdd-orchestrator, ...).
 
 Regla dura: **antes de cada turno que pueda cargar otra skill, corré
-skill-router** para bajar 251 → 3-5 candidatas. No leas el cuerpo de una skill
+skill-router** para bajar 255 → 3-5 candidatas. No leas el cuerpo de una skill
 fuera de la selección del router sin re-routear antes.
 
 ## 1 · Cómo trabajar (el pipeline)
@@ -58,11 +58,11 @@ la implementación se delega a flash salvo `sdd-apply` y los jueces críticos.
 
 **Delegación (regla dura)**: fix pequeño y mecánico (1 archivo) → inline; todo lo
 demás → delegar. Cargá **gentle-orchestrator** para el protocolo completo + el
-roster de 20 agentes. **Si un subagente falla o devuelve vacío → RE-LANZALO una
+roster de 23 agentes. **Si un subagente falla o devuelve vacío → RE-LANZALO una
 vez + investigá el porqué** (leé el error, no asumas). Un SEGUNDO fallo detiene
 la cadena: reportá y pará — sin tercer intento automático.
 
-**Roster de agentes (20)**: la fuente de verdad declarativa vive en el catálogo
+**Roster de agentes (23)**: la fuente de verdad declarativa vive en el catálogo
 skillsGV (`_shared/agent-roster/roster.json` + meta-skill **agent-roster**); el
 routing de este preset se sincroniza con
 `node 00-meta-skills/agent-roster/scripts/apply.mjs --runtime dsh`.
@@ -77,9 +77,9 @@ el binario, la mecánica determinista (congelamiento, recibos, presupuestos).
 
 ## 2 · De dónde salen las skills
 
-El catálogo (251 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
+El catálogo (255 skills de skillsGV) vive en **~/.agents/skills**. Cargá una por
 nombre con la herramienta **skill**. Antes de cualquier turno que pueda cargar
-otra skill, usá **skill-router** para reducir 251 → 3-5 candidatas. El catálogo
+otra skill, usá **skill-router** para reducir 255 → 3-5 candidatas. El catálogo
 es la fuente de verdad; no lo edites desde la sesión salvo que te lo pidan.
 
 ## 3 · Memoria y documentación

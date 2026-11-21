@@ -5,7 +5,7 @@ license: MIT
 allowed-tools: Read Bash(node:*)
 metadata:
   version: "1.0.0"
-  trigger: ["openseo", "seo tecnico", "datos estructurados", "json-ld", "sitemap dinamico", "open graph", "auditoria seo", "visibilidad ia"]
+  trigger: ["openseo", "seo tecnico", "datos estructurados", "json-ld", "sitemap dinamico", "open graph", "auditoria seo", "visibilidad ia", "astro seo", "local seo", "seo local"]
   scope: [global, project]
   requires-mcp: ["openseo"]
   mcp-fallback: "Servidor OpenSEO ausente -> auditar metadatos estáticos en HTML/TSX y diferir a recomendaciones locales de Schema.org y OpenGraph"
@@ -195,5 +195,6 @@ Sitemap: https://example.com/sitemap.xml
 
 - [`05-frontend/nextjs-15`](../../05-frontend/nextjs-15/SKILL.md) — Manejo de metadatos estáticos y dinámicos en App Router.
 - [`05-frontend/react-vite`](../../05-frontend/react-vite/SKILL.md) — Inyección de meta-tags y Helmet en Vite.
+- [Astro Technical & Local SEO](references/astro-local-seo.md) — `<SeoHead.astro />`, `set:html` JSON-LD `LocalBusiness`, `astro:assets <Image />`, `@astrojs/sitemap`.
 - [`11-mcp-hybrid/ux-auditor-agent`](../ux-auditor-agent/SKILL.md) — Auditoría de accesibilidad y experiencia de usuario.
 - [Schema.org Full Hierarchy](https://schema.org) — Especificación canónica de tipos y vocabularios.

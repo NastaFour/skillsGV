@@ -40,7 +40,7 @@ Principios completos de las 19 skills de ingeniería de diseño de **Emil Kowals
 - **`break-ui` (Stress-Test)**: validar componentes con nombres de 1 char y 80 chars, contadores de 7 dígitos, vacíos, `Intl.PluralRules` y fechas relativas `> 7 días` pasando a absolutas.
 - **`learn-taste`**: al cierre de sesión, destilar cualquier corrección visual del usuario en una regla explícita dentro de `DESIGN_SYSTEM.md`.
 
-Ver detalle completo y checklist en [`references/emil-mobile-gestures-breakui.md`](references/emil-mobile-gestures-breakui.md), además de [`references/spring-physics.md`](references/spring-physics.md), [`references/interruptible-gestures.md`](references/interruptible-gestures.md) y [`references/layout-flip.md`](references/layout-flip.md).
+Ver detalle completo y checklist en [`references/emil-mobile-gestures-breakui.md`](references/emil-mobile-gestures-breakui.md), además de [`references/spring-physics.md`](references/spring-physics.md), [`references/interruptible-gestures.md`](references/interruptible-gestures.md), [`references/layout-flip.md`](references/layout-flip.md) y [`references/disney-choreography.md`](references/disney-choreography.md) (Disney 12 Principles bajo Gate de Frecuencia).
 
 ---
 

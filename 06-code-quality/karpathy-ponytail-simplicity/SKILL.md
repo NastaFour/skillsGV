@@ -37,6 +37,10 @@ Eliminates premature abstraction, silent assumptions, unrequested drive-by rewri
 - Catching and swallowing unexpected errors silently with fake defaults (`return []`).
 - Rewriting working neighboring functions cosmetically just to match personal style.
 - Deleting docstrings or comments needed by callers to save arbitrary lines.
+- **AI Code-Diff Slop (`deslop`)**:
+  - Narration comments that merely restate the next line (`// Return the filtered array`, `// Initialize user state`). Comment *why*, never *what*.
+  - Single-use passthrough wrapper helpers/hooks that add indirection without isolating an invariant.
+  - Redundant defensive `null`/`typeof` cascades inside trusted internal modules already validated at the boundary.
 
 ## 🔗 Cross-References
 

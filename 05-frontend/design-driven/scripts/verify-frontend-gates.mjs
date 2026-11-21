@@ -20,19 +20,20 @@ import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage"]);
+const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage", ".ui-diff"]);
 const CODE_EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".css", ".vue", ".svelte", ".astro"]);
-const TOKEN_FILE_RE = /(token|theme|variables)/i;
+const TOKEN_FILE_RE = /(?:^|[\\/])(?:tokens?|themes?|variables|design-tokens)(?:[-_.][a-z0-9]+)*\.(?:css|scss|ts|js|json)$/i;
 
 function printHelp() {
   console.log(`verify-frontend-gates — Unified Frontend Post-Build Audit Runner (Phase 3)
 
 Usage:
-  node verify-frontend-gates.mjs --srcDir <dir> [--webDir <dir>] [--json] [--strict-craft] [--skip-build-config]
+  node verify-frontend-gates.mjs --srcDir <dir> [--webDir <dir>] [--live <url>] [--json] [--strict-craft] [--skip-build-config]
 
 Options:
   --srcDir <dir>        Source directory to scan (default: <webDir>/src or ./src)
   --webDir <dir>        Project root directory containing package.json (default: parent of srcDir or cwd)
+  --live <url>          Run live Playwright DOM-geometry & /ui-diff audit against running URL
   --json                Emit structured JSON report
   --strict-craft        Treat mechanical craft warnings (e.g. magic-z-index) as errors
   --skip-build-config   Skip validate-build-config check
@@ -86,21 +87,32 @@ function detectStackSignals(webDir, srcDir) {
   let hasScrollApi = false;
   let hasHeavySdk = false;
   let hasInteractiveJsx = false;
+  let hasThreeCode = false;
+  let hasGsapCode = false;
+  let hasShaders = false;
+  let hasAstro = existsSync(join(webDir, "astro.config.mjs")) || existsSync(join(webDir, "astro.config.ts"));
 
   for (const f of files) {
     let txt;
     try { txt = readFileSync(f, "utf8"); } catch { continue; }
+    if (f.endsWith(".astro")) hasAstro = true;
     if (/\buseForm\s*\(/.test(txt)) hasUseForm = true;
     if (/\buseLocation\s*\(|<Routes\b/.test(txt)) hasRouter = true;
     if (/ScrollTrigger|addEventListener\s*\(\s*["']scroll["']/.test(txt)) hasScrollApi = true;
     if (/loadStripe\s*\(|\bL\.map\s*\(|mapboxgl\.Map|maplibregl\.Map|google\.maps\.Map/.test(txt)) hasHeavySdk = true;
-    if (/\.(t|j)sx$/.test(f) && /<button\b|<a\b|onClick=/.test(txt)) hasInteractiveJsx = true;
+    if (/\.(tsx|jsx|astro|vue|svelte)$/.test(f) && /<button\b|<a\b|onClick=|@click=/.test(txt)) hasInteractiveJsx = true;
+    if (/from\s+["'](?:three|@react-three\/fiber)["']/.test(txt)) hasThreeCode = true;
+    if (/from\s+["']gsap(?:\/[^"']*)?["']/.test(txt)) hasGsapCode = true;
+    if (/ShaderMaterial|gl_FragColor|\.glsl|\.wgsl/.test(txt)) hasShaders = true;
   }
 
   return {
     hasPkg: Boolean(pkg),
     hasMotion: Boolean(deps.motion || deps["framer-motion"]),
-    hasGsap: Boolean(deps.gsap),
+    hasGsap: Boolean(deps.gsap || hasGsapCode),
+    hasThree: Boolean(deps.three || deps["@react-three/fiber"] || hasThreeCode),
+    hasShaders,
+    hasAstro,
     hasLottie: Boolean(deps["lottie-react"] || deps["lottie-web"] || deps["@lottiefiles/dotlottie-react"] || deps["lottie-react-native"]),
     hasForms: Boolean(deps["react-hook-form"] || hasUseForm),
     hasRouter: Boolean(deps["react-router"] || deps["react-router-dom"] || hasRouter),
@@ -111,6 +123,179 @@ function detectStackSignals(webDir, srcDir) {
     hasInteractiveJsx,
     files,
   };
+}
+
+function extractOpeningTagAttrs(lines, startLineIdx, tagNameRegex) {
+  const rawWindow = lines.slice(startLineIdx, Math.min(startLineIdx + 30, lines.length)).join("\n");
+  const startMatch = rawWindow.match(tagNameRegex);
+  if (!startMatch || startMatch.index === undefined) return null;
+  const startIdx = startMatch.index + startMatch[0].length;
+  let quote = null;
+  let escaped = false;
+  let inLineComment = false;
+  let inBlockComment = false;
+  let braceDepth = 0;
+  for (let j = startIdx; j < rawWindow.length; j++) {
+    const ch = rawWindow[j];
+    const next = rawWindow[j + 1];
+    if (inLineComment) {
+      if (ch === "\n") inLineComment = false;
+      continue;
+    }
+    if (inBlockComment) {
+      if (ch === "*" && next === "/") {
+        inBlockComment = false;
+        j++;
+      }
+      continue;
+    }
+    if (quote) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = true;
+        continue;
+      }
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === "/" && next === "/") {
+      inLineComment = true;
+      j++;
+      continue;
+    }
+    if (ch === "/" && next === "*") {
+      inBlockComment = true;
+      j++;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") {
+      quote = ch;
+      continue;
+    }
+    if (ch === "{") {
+      braceDepth++;
+      continue;
+    }
+    if (ch === "}") {
+      if (braceDepth > 0) braceDepth--;
+      continue;
+    }
+    if (ch === ">" && braceDepth === 0 && rawWindow[j - 1] !== "=") {
+      return rawWindow.slice(startIdx, j);
+    }
+  }
+  return null;
+}
+
+function runV4StaticChecks(srcDir, files, signals) {
+  const findings = [];
+  let hasReducedMotionAnywhere = false;
+  const kineticFiles = [];
+
+  for (const f of files) {
+    const rel = relative(srcDir, f).split(sep).join("/");
+    let txt;
+    try { txt = readFileSync(f, "utf8"); } catch { continue; }
+
+    const hasLocalReducedMotion = /prefers-reduced-motion|useReducedMotion|matchMedia\s*\(\s*["'][^"']*prefers-reduced-motion/i.test(txt);
+    if (hasLocalReducedMotion) hasReducedMotionAnywhere = true;
+
+    const isKineticFile = /from\s+["'](?:gsap(?:\/[^"']*)?|three|@react-three\/fiber)["']|ShaderMaterial|gl_FragColor/.test(txt);
+    if (isKineticFile) {
+      const hasCleanup = /\.revert\s*\(|\.dispose\s*\(|useGSAP\s*\(|ScrollTrigger\.getAll|astro:before-swap/.test(txt);
+      kineticFiles.push({ file: rel, hasCleanup, hasLocalReducedMotion });
+    }
+
+    const lines = txt.split(/\r?\n/);
+    const isUiFile = /\.(tsx|jsx|astro|vue|svelte|html)$/.test(f);
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (/^\s*(?:\/\/|\/\*|\*|<!--)/.test(line)) continue;
+
+      if (isUiFile && /<(?:div|span)\b/i.test(line)) {
+        const attrs = extractOpeningTagAttrs(lines, i, /<(?:div|span)\b/i);
+        if (attrs !== null && /\bonClick\s*=/i.test(attrs) && !/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(attrs)) {
+          findings.push({
+            severity: "error",
+            check: "non-semantic-clickable",
+            file: rel,
+            line: i + 1,
+            msg: "Interactive <div>/<span> with onClick lacks role/tabIndex/keyboard handler — use <button> or add full keyboard semantics.",
+          });
+        }
+      }
+
+      if (!TOKEN_FILE_RE.test(rel) && /(?:\bh-screen\b|\b100vh\b)/.test(line)) {
+        findings.push({
+          severity: "error",
+          check: "legacy-100vh",
+          file: rel,
+          line: i + 1,
+          msg: "Legacy 100vh/h-screen clips on mobile browser bars — use 100svh (heroes) or 100dvh (app shells).",
+        });
+      }
+
+      if (/<meta\b[^>]*name=["']viewport["'][^>]*>/i.test(line) && /(?:maximum-scale\s*=\s*1(?:\.0)?\b|user-scalable\s*=\s*no)/i.test(line)) {
+        findings.push({
+          severity: "error",
+          check: "zoom-disabled-viewport",
+          file: rel,
+          line: i + 1,
+          msg: "Never disable pinch-to-zoom (maximum-scale=1 / user-scalable=no violates WCAG).",
+        });
+      }
+
+      if (isUiFile && /<p\b/i.test(line)) {
+        const pAttrs = extractOpeningTagAttrs(lines, i, /<p\b/i);
+        if (pAttrs !== null && /\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(pAttrs)) {
+          findings.push({
+            severity: "error",
+            check: "mono-prose",
+            file: rel,
+            line: i + 1,
+            msg: "font-mono used on <p> prose — reserve monospace strictly for numeric/code telemetry.",
+          });
+        }
+      }
+
+      if (isUiFile && /<img\b/i.test(line)) {
+        const attrs = extractOpeningTagAttrs(lines, i, /<img\b/i);
+        if (attrs !== null) {
+          const hasAlt = /\balt\s*=/.test(attrs);
+          const hasSize = /\b(?:width|height)\s*=|\baspect-|\bfill\b/.test(attrs);
+          if (!hasAlt || !hasSize) {
+            findings.push({
+              severity: "error",
+              check: "img-missing-alt-or-size",
+              file: rel,
+              line: i + 1,
+              msg: "<img> must declare both alt and explicit dimensions (width/height or aspect-*) to prevent CLS.",
+            });
+          }
+        }
+      }
+    }
+  }
+
+  if (signals.hasThree || signals.hasGsap || signals.hasShaders) {
+    for (const k of kineticFiles) {
+      if (!k.hasCleanup || (!k.hasLocalReducedMotion && !hasReducedMotionAnywhere)) {
+        findings.push({
+          severity: "error",
+          check: "kinetic-missing-cleanup-or-reduced-motion",
+          file: k.file,
+          line: 1,
+          msg: "GSAP/Three.js/Shader file requires lifecycle cleanup (.revert() / .dispose() / useGSAP / astro:before-swap) and prefers-reduced-motion support.",
+        });
+      }
+    }
+  }
+
+  return findings;
 }
 
 function runMagicZIndexCheck(srcDir, files) {
@@ -203,6 +388,7 @@ function main() {
   let jsonOut = false;
   let strictCraft = false;
   let skipBuildConfig = false;
+  let liveUrl = null;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -212,6 +398,9 @@ function main() {
     } else if (arg === "--webDir") {
       webDirArg = args[++i];
       if (!webDirArg || webDirArg.startsWith("--")) usageError("--webDir requires a path");
+    } else if (arg === "--live") {
+      liveUrl = args[++i];
+      if (!liveUrl || liveUrl.startsWith("--")) usageError("--live requires a URL");
     } else if (arg === "--json") {
       jsonOut = true;
     } else if (arg === "--strict-craft") {
@@ -255,6 +444,8 @@ function main() {
     { name: "check-module-level-loads", category: "05-frontend", skill: "lazy-loading-patterns", file: "check-module-level-loads.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasHeavySdk, dedupe: [] },
     { name: "check-hardcoded-strings", category: "05-frontend", skill: "i18n-localization", file: "check-hardcoded-strings.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasI18n, dedupe: [] },
     { name: "check-offline-sync", category: "05-frontend", skill: "offline-sync-mobile", file: "check-offline-sync.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
+    { name: "check-deep-links", category: "05-frontend", skill: "deep-linking-mobile", file: "check-deep-links.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
+    { name: "legacy-scan", category: "05-frontend", skill: "modern-web-guidance", file: "legacy-scan.mjs", args: ["--srcDir", srcDir, "--json"], run: Boolean(resolveSiblingScript("05-frontend", "modern-web-guidance", "legacy-scan.mjs")), dedupe: ["legacy-100vh"] },
   ];
 
   const scriptResults = [];
@@ -275,9 +466,57 @@ function main() {
     );
   }
 
-  const craftChecks = runMagicZIndexCheck(srcDir, signals.files);
+  const craftChecks = [...runMagicZIndexCheck(srcDir, signals.files), ...runV4StaticChecks(srcDir, signals.files, signals)];
   if (strictCraft) {
     for (const c of craftChecks) c.severity = "error";
+  }
+
+  let liveAudit = null;
+  if (liveUrl) {
+    const uiDiffScript = resolveSiblingScript("05-frontend", "ui-diff", "ui-diff.mjs");
+    if (uiDiffScript) {
+      const liveExec = spawnSync(process.execPath, [uiDiffScript, "--url", liveUrl, "--mode", "auto", "--json"], {
+        cwd: webDir,
+        encoding: "utf8",
+        timeout: 60000,
+      });
+      const rawOut = (liveExec.stdout || "").trim();
+      try {
+        if (liveExec.error || !rawOut) {
+          throw new Error((liveExec.stderr || liveExec.error?.message || `ui-diff exited with code ${liveExec.status ?? 1}`).trim());
+        }
+        const parsed = JSON.parse(rawOut);
+        if (liveExec.status !== 0 && (typeof parsed.errors !== "number" || parsed.errors === 0)) {
+          liveAudit = {
+            ...parsed,
+            status: "error",
+            ok: false,
+            errors: 1,
+            warnings: parsed.warnings || 0,
+            issues: [
+              ...(Array.isArray(parsed.issues) ? parsed.issues : []),
+              {
+                severity: "error",
+                check: "ui-diff-exec",
+                msg: (liveExec.stderr || `ui-diff exited with status ${liveExec.status}`).trim().slice(0, 200),
+              },
+            ],
+          };
+        } else {
+          liveAudit = parsed;
+        }
+      } catch (err) {
+        liveAudit = {
+          status: "error",
+          ok: false,
+          errors: 1,
+          warnings: 0,
+          issues: [{ severity: "error", check: "ui-diff-parse", msg: (liveExec.stderr || err?.message || "invalid json").trim().slice(0, 200) }],
+        };
+      }
+    } else {
+      liveAudit = { status: "skipped", reason: "ui-diff not installed", ok: true, errors: 0, warnings: 0, issues: [] };
+    }
   }
 
   let totalErrors = 0;
@@ -296,6 +535,10 @@ function main() {
     else if (c.severity === "warning") totalWarnings++;
     else totalInfo++;
   }
+  if (liveAudit && typeof liveAudit.errors === "number") {
+    totalErrors += liveAudit.errors;
+    totalWarnings += liveAudit.warnings || 0;
+  }
 
   const report = {
     srcDir,
@@ -310,6 +553,7 @@ function main() {
     },
     scripts: scriptResults,
     craftChecks,
+    ...(liveAudit ? { liveAudit } : {}),
   };
 
   if (jsonOut) {
@@ -331,9 +575,16 @@ function main() {
       }
     }
     if (craftChecks.length > 0) {
-      console.log(`\n  ${strictCraft ? "🔴" : "🟡"} mechanical-craft (${craftChecks.length}):`);
+      const hasCraftErrors = strictCraft || craftChecks.some((c) => c.severity === "error");
+      console.log(`\n  ${hasCraftErrors ? "🔴" : "🟡"} mechanical-craft (${craftChecks.length}):`);
       for (const c of craftChecks) {
         console.log(`      - [${c.check}] ${c.file}:${c.line} ${c.msg}`);
+      }
+    }
+    if (liveAudit) {
+      console.log(`\n  🌐 live-audit (ui-diff): ${liveAudit.status} (${liveAudit.errors || 0} errors · ${liveAudit.warnings || 0} warnings)`);
+      for (const issue of (liveAudit.issues || []).slice(0, 8)) {
+        console.log(`      - [${issue.check}] ${issue.viewport || ""} ${issue.msg}`);
       }
     }
     console.log(`\n📊 Total: ${totalErrors} errors · ${totalWarnings} warnings · ${totalInfo} info\n`);

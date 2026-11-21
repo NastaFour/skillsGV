@@ -5,10 +5,10 @@
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-251-purple.svg)](#categories)
+[![Skills Count](https://img.shields.io/badge/skills-255-purple.svg)](#categories)
 [![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.6.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.6.0 Organic-Driven Development (ODD, Provider Contract `1.6.0`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine + unified `verify-frontend-gates.mjs` runner**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.6.0 Organic-Driven Development (ODD, Provider Contract `1.6.0`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine v4 (`design-driven`, `/ui-diff`, `verify-frontend-gates.mjs`)**, a **3-Phase Backend Engine (`backend-driven`, `verify-backend-gates.mjs`)**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
@@ -22,7 +22,7 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **251 skills** complying with [agentskills.io](https://agentskills.io/specification), scored `0–100` under **NVIDIA `SkillEvaluator` Tier-1 Quality Score (`--quality-score >= 70`)** and verified across **7 harnesses** (`--harness-check`).
+- 🎯 **255 skills** complying with [agentskills.io](https://agentskills.io/specification), scored `0–100` under **NVIDIA `SkillEvaluator` Tier-1 Quality Score (`--quality-score >= 70`)** and verified across **7 harnesses** (`--harness-check`).
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
 - 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.6.0) + Auto-EGM Plan Gate**: Authorize → Explore (CodeGraph first) → Keep authorized work moving (tool-backed human decisions) → Classify → **Auto-EGM Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md): 3 Goldfishes default, 5 critical; 0 overhead on Small) → `odd/tasks/<feature>.md` + parent-adjudicated `## Allowed edit surfaces` (no `## Key Learnings` bloat) → 3-tier verification (`_shared/verify-method.md` in `mktemp -d` + differential check + orchestrator-owned next step when corrections exhaust) → Selective install (`--skills <list>`) & always-on kernel triggers → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
@@ -109,7 +109,7 @@ flowchart TD
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
 | **Anti-Slop Design System** | ❌ | ❌ | ✅ (3-Phase Engine + `verify-frontend-gates.mjs`) |
-| **Multi-Agent Roster Switcher** | ❌ | ❌ | ✅ (21 agents across strong/mid/cheap) |
+| **Multi-Agent Roster Switcher** | ❌ | ❌ | ✅ (23 agents across strong/mid/cheap) |
 | **Automated Validator** | ❌ | ❌ | ✅ (`validate-skills.mjs --strict`) |
 
 ### 📊 Benchmark: With vs Without skillsGV Harness
@@ -179,7 +179,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **251 skills** distributed across structured domains:
+The catalog contains **255 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|
@@ -187,8 +187,8 @@ The catalog contains **251 skills** distributed across structured domains:
 | **Planning & Process** | `01-planning-process/` | `idea-to-prd-express`, `app-flow-spec`, `engram-integration`, `brainstorming`, `tech-escalation-adr`, `egm-spec-review` |
 | **Dev Roles** | `02-dev-roles/` | `architecture-designer`, `code-reviewer`, `systematic-debugging`, `judgment-day`, `security-audit`, `live-cve-security-intel`, `dod-checker` |
 | **AI & MLOps** | `03-ai-ml/` | `ai-orchestration`, `ai-sdk-5`, `llm-integration`, `rag-knowledge-systems`, `multimodal-ai-pipelines`, `ai-safety-agent-guard`, `prompt-shield`, `prompt-engineering` |
-| **Backend** | `04-backend/` | `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `distributed-resilience-sre`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
-| **Frontend** | `05-frontend/` | `react-19`, `nextjs-15`, `design-driven`, `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
+| **Backend** | `04-backend/` | `backend-driven`, `nodejs`, `expressjs`, `prisma-orm`, `postgresql`, `distributed-resilience-sre`, `socketio`, `django-drf`, `spring-boot-3`, `java-21` |
+| **Frontend** | `05-frontend/` | `design-driven` (v4), `ui-diff`, `modern-web-guidance`, `shader-dev`, `react-19`, `nextjs-15`, `hallmark-design-study`, `ai-design-check-stageshow`, `scroll-world-storytelling`, `frontend-slides-deck`, `tailwind-4`, `impeccable`, `taste-skill` |
 | **Code Quality** | `06-code-quality/` | `production-readiness-250`, `typescript`, `solid-clean-code`, `karpathy-ponytail-simplicity`, `app-resource-efficiency`, `pnpm-workspaces`, `biome`, `turborepo`, `work-unit-commits` |
 | **Testing** | `07-testing/` | `testing-patterns` (TDD RED/GREEN), `playwright`, `pytest`, `go-testing` |
 | **DevOps** | `08-devops/` | `ci-cd`, `observability`, `monitoring`, `kill-switches`, `store-deployment-eas` |
@@ -200,13 +200,13 @@ The catalog contains **251 skills** distributed across structured domains:
 
 ## 🤖 Agent Roster & Multi-Model Switching
 
-Manage model assignments across all **21 agents** in the ecosystem (`strong`, `mid`, `cheap` tiers) with zero vendor lock-in:
+Manage model assignments across all **23 agents** in the ecosystem (`strong`, `mid`, `cheap` tiers) with zero vendor lock-in:
 
 ```powershell
 # Preview provider changes without applying
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --dry-run
 
-# Switch all 21 agents to GLM profile
+# Switch all 23 agents to GLM profile
 node 00-meta-skills/agent-roster/scripts/set-models.mjs --profile glm --apply
 
 # Set individual tiers dynamically
@@ -249,7 +249,7 @@ node 00-meta-skills/skill-loader/scripts/skills-loader.mjs --status
 
 This repository synthesizes, adapts, and organizes open-source standards and methodologies from exceptional engineers across the tech community:
 
-- **[Gentleman Programming](https://github.com/Gentleman-Programming)**: ODD process harness, Engram persistent memory, Judgment Day protocol, 21-agent roster, GGA pre-commit verification.
+- **[Gentleman Programming](https://github.com/Gentleman-Programming)**: ODD process harness, Engram persistent memory, Judgment Day protocol, 23-agent roster, GGA pre-commit verification.
 - **[Anthropic](https://github.com/anthropics/skills)**: Core Agent Skills patterns, directory structure, and foundational prompts.
 - **[Vercel Labs](https://github.com/vercel-labs/agent-skills)**: React/Next.js composition and performance patterns.
 - **[Matt Pocock](https://github.com/mattpocock)**: The 23 engineering skills in `12-matt-pocock/`.
@@ -270,6 +270,7 @@ This repository synthesizes, adapts, and organizes open-source standards and met
 - **[Cloudflare (`security-audit-skill`)](https://github.com/cloudflare/security-audit-skill)**: 6-phase Coverage Ledger audit architecture, 6-tuple certainty contract, verifier budget reserve, and race-safe scratch promotion.
 - **[Nutlope (`hallmark` v2)](https://github.com/Nutlope/hallmark) / [Dominik Martin (`hue`)](https://github.com/dominikmartn/hue) / [Google Labs (`stitch-skills`)](https://github.com/google-labs-code/stitch-skills) / [UIZZE (`anti-ui-slop`)](https://github.com/uizze/uizze)**: 21 macrostructures, Hue Hero Stage physics, static `DESIGN_SYSTEM.md` extraction, `UI_CONTRACT`, and `image-to-ui`.
 - **[Jakub Krehel (`make-interfaces-feel-better`)](https://github.com/jakubkrehel/make-interfaces-feel-better) / [Dammyjay93 (`interface-design`)](https://github.com/Dammyjay93/interface-design) / [NextLevelBuilder (`ui-ux-pro-max`)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) / [`shadcn/ui`](https://github.com/shadcn-ui/ui) / [J. Poindexter (`typography-skills`)](https://github.com/jpoindexter/typography-skills)**: 19 polish recipes, Anti-Reinvention & `design-deslop`, WCAG 2.2/DTCG/RTL design intelligence, official 2026 `shadcn/ui` patterns, and zero-CLS Better Typography.
+- **[Modern Web Guidance 1.0 (`web.dev/baseline`)](https://web.dev/baseline) / [MiniMax-AI (`shader-dev`)](https://github.com/MiniMax-AI/skills) / [LottieFiles (`motion-design-skill`)](https://github.com/LottieFiles/motion-design-skill) / [Zara Zhang (`frontend-slides`)](https://github.com/zarazhangrui/frontend-slides) / [etodanik (`deslop`)](https://github.com/etodanik/deslop) / [wondelai (`refactoring-ui`)](https://skills.wondel.ai) / Dionis (`/ui-diff`)**: Baseline web platform scanner (`modern-web-guidance` + `legacy-scan.mjs`), 36 ShaderToy/GLSL/SDF/fluid techniques (`shader-dev`), Disney 12-principle UI motion choreography (`disney-choreography.md`), zero-dependency HTML presentations & editorial SVG diagrams (`frontend-slides-deck`), psycholinguistic prose/code deslop deltas (`humanizer`, `karpathy-ponytail-simplicity`), zero-dependency Playwright DOM-geometry probe & `2×2` visual diff (`ui-diff`), generalized Astro local SEO (`openseo/references/astro-local-seo.md`), and the 3-Phase Backend Engine (`backend-driven` + `verify-backend-gates.mjs`).
 
 ### License
 

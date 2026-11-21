@@ -1,11 +1,11 @@
 ---
 name: ai-design-check-stageshow
-description: "Trigger: ai design check, stageshow, stage show, pre-build visual preview, interactive html preview, visual audit. Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow v1.1.1 for archetype-partitioned visual checks (flat-surface A, B, E, F, G vs immersive C, D, H), self-contained HTML5 pre-build interactive previews, 24 geometric film-gate invariants, and a 5-category post-build audit rubric. Do NOT use for full brand discovery (use design-driven) or direct React/Tailwind setup without a Design Read."
+description: "Trigger: ai design check, stageshow, stage show, pre-build visual preview, interactive html preview, visual audit, visual polish, ui critique, layout audit. Synthesizes @enmera/ai-design-check and benjitaylor/skills Stageshow v1.1.1 for archetype-partitioned visual checks (flat-surface A, B, E, F, G vs immersive C, D, H), self-contained HTML5 pre-build interactive previews, geometric gate invariants (enforced live via verify-frontend-gates.mjs --live / ui-diff), and a 5-category post-build audit rubric. Do NOT use for full brand discovery (use design-driven) or direct React/Tailwind setup without a Design Read."
 license: MIT
 compatibility: "Compatible with Gentle-AI 4.5.0+, React 19, Next.js 15, Tailwind CSS 4, HTML5, Playwright visual audits. Requires pnpm 9+."
 allowed-tools: Read Write Edit Bash(pnpm:*,node:*) Glob Grep
 metadata:
-  trigger: ["ai design check", "stageshow", "stage show", "pre-build visual preview", "interactive html preview", "visual audit"]
+  trigger: ["ai design check", "stageshow", "stage show", "pre-build visual preview", "interactive html preview", "visual audit", "visual polish", "ui critique", "revisar diseño", "revisar diseno", "layout audit"]
   scope: "global, project"
   version: "1.1.0"
   author: skillsGV
@@ -13,7 +13,7 @@ metadata:
 
 # 🎭 AI Design Check & StageShow v1.1.1 — Pre-Build Preview & Geometric Gate Audit
 
-Combines **@enmera/ai-design-check** (5-category visual quality inspection) with **Benji Taylor's `Stageshow` v1.1.1** (dependency-free interactive previews & geometric `film.mjs --gate` invariants), bound to the canonical archetypes `A–H` and 3-line `Design Read` in [`../design-driven/SKILL.md`](../design-driven/SKILL.md).
+Combines **@enmera/ai-design-check** (5-category visual quality inspection) with **Benji Taylor's `Stageshow` v1.1.1** (dependency-free interactive previews & geometric gate invariants verified live via `verify-frontend-gates.mjs --live` / `ui-diff`), bound to the canonical archetypes `A–H` and 3-line `Design Read` in [`../design-driven/SKILL.md`](../design-driven/SKILL.md).
 
 ---
 
@@ -34,7 +34,7 @@ Combines **@enmera/ai-design-check** (5-category visual quality inspection) with
 2. **Scene Copy Budget (3–7 Real Strings)**: Keep `3–7` sharp real strings per preview scene; render secondary lines as varied-width `Bar` abstractions (`60, 45, 70, 52`) matching real line-box height, never blank gray boxes where the eye lands first.
 3. **Optical Currency Centering**: When centering display amounts (`$45`), center ONLY the digits and hang `$` left with `position: absolute; right: 100%`.
 4. **Cap-Height Box Trimming**: Apply `text-box: trim-both cap alphabetic` inside compact pills, badges, icon buttons, avatars, and inputs so text sits visually centered.
-5. **Deterministic Gate Defects (`film.mjs --gate` Audit Table)**:
+5. **Deterministic Gate Defects (`verify-frontend-gates.mjs --live` / `ui-diff` Audit Table)**:
    - `tight stack` (`< 3px` title-to-subtitle gap) → fix to `4–6px`.
    - `tight inset` (copy `< 8px` from frame edge) → fix to `>= 12px`.
    - `tight control` (`< 8px` between button and input) → widen gap cleanly.

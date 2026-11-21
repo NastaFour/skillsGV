@@ -26,7 +26,7 @@
 {"id":"ai-safety-guard-direct","query":"ai safety agent guard cc safety net y prompt injection defense","expectedPrimary":"ai-safety-agent-guard","group":"security-defense-suite","source":"overlap-matrix"}
 {"id":"hallmark-study-direct","query":"hallmark study design y extract design dna de esta referencia","expectedPrimary":"hallmark-design-study","group":"anti-slop-frontend","source":"overlap-matrix"}
 {"id":"scroll-world-direct","query":"scroll world scrollytelling con 3d diorama y scroll-scrubbed canvas","expectedPrimary":"scroll-world-storytelling","source":"v3.2-routing"}
-{"id":"frontend-slides-direct","query":"frontend slides html presentation y slide deck interactivo","expectedPrimary":"frontend-slides-deck","source":"v3.2-routing"}
+{"id":"frontend-slides-direct","query":"frontend slides html presentation y slide deck interactivo","expectedPrimary":"frontend-slides-deck","group":"presentation-diagram-suite","source":"v3.2-routing"}
 {"id":"rag-knowledge-direct","query":"rag retrieval augmented generation con hybrid search y reranking","expectedPrimary":"rag-knowledge-systems","source":"v3.2-routing"}
 {"id":"multimodal-ai-direct","query":"multimodal ai vision pipeline y document ocr estructurado","expectedPrimary":"multimodal-ai-pipelines","source":"v3.2-routing"}
 {"id":"distributed-resilience-direct","query":"distributed resilience circuit breaker exponential backoff jitter idempotency key transactional outbox","expectedPrimary":"distributed-resilience-sre","source":"v3.2-routing"}
@@ -40,3 +40,4 @@
 {"id":"motion-framer-canonical","query":"implement spring physics layout animation in react with framer motion","expectedPrimary":"motion-framer","group":"motion-animation-pipeline","source":"overlap-matrix"}
 {"id":"web-animation-sources-direct","query":"search curated web animation sources and hover effects animation references","expectedPrimary":"web-animation-sources","group":"motion-animation-pipeline","source":"v3.3-routing"}
 {"id":"egm-large-plan-gate","query":"mejorar este plan grande y arquitectura de alta logica antes de codear con heavy logic plan gate","expectedPrimary":"egm-spec-review","group":"spec-ideation-review","source":"v3.3-routing"}
+{"id":"backend-driven-canonical","query":"run verify-backend-gates check before releasing the API service","expectedPrimary":"backend-driven","group":"backend-orchestration","source":"overlap-matrix"}

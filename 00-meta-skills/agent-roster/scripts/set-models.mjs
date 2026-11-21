@@ -19,6 +19,8 @@
  *   node set-models.mjs --strong <model> --apply
  *   node set-models.mjs --mid <model> --apply
  *   node set-models.mjs --cheap <model> --apply
+ *   node set-models.mjs --frontend <model> --apply
+ *   node set-models.mjs --agent frontend-builder:<model> --apply
  *   node set-models.mjs --emit-sync-args [--json]
  *   node set-models.mjs --save-profile <name> --apply
  *   node set-models.mjs --save-provider <id> --base-url <u> --api-key-env <VAR> --models m1,m2 [--apply]
@@ -61,6 +63,7 @@ const SECRET_SHAPE_PATTERNS = [
   /^AKIA[0-9A-Z]{8,}$/, // AWS access key id
   /^ASIA[0-9A-Z]{8,}$/, // AWS temporary access key id
   /^sk_live_|^sk_test_/, // Stripe secret keys
+  /^sk-[A-Za-z0-9_-]{10,}/, // OpenAI / Anthropic secret keys (sk-..., sk-ant-..., sk-proj-...)
   /^xox[baprs]-/, // Slack tokens
   /^ya29\./, // Google OAuth access token
   /^AIza[0-9A-Za-z_-]{10,}$/, // Google API key
@@ -86,6 +89,8 @@ function parseArgs(argv) {
     mid: null,
     cheap: null,
     flash: null,
+    frontend: null,
+    agentOverrides: {},
     all: null,
     profile: null,
     saveProfile: null,
@@ -99,6 +104,8 @@ function parseArgs(argv) {
     list: false,
     dryRun: false,
     apply: false,
+    noSync: false,
+    sync: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -106,6 +113,28 @@ function parseArgs(argv) {
     else if (a === "--mid" || a === "--sdd-mid") opts.mid = argv[++i];
     else if (a === "--cheap" || a === "--sdd-cheap") opts.cheap = argv[++i];
     else if (a === "--flash") opts.flash = argv[++i];
+    else if (a === "--frontend") {
+      const m = argv[++i];
+      if (!m || !m.trim() || looksLikeSecret(m)) {
+        console.error("--frontend requires a valid model id (never a secret/API key).");
+        process.exit(2);
+      }
+      opts.frontend = m.trim();
+    } else if (a === "--agent") {
+      const raw = argv[++i];
+      const colon = raw ? raw.indexOf(":") : -1;
+      if (!raw || colon <= 0 || colon === raw.length - 1) {
+        console.error("--agent expects <name>:<model> (e.g. frontend-builder:anthropic/claude-opus-4-6).");
+        process.exit(2);
+      }
+      const agentName = raw.slice(0, colon).trim();
+      const modelId = raw.slice(colon + 1).trim();
+      if (!agentName || !modelId || looksLikeSecret(modelId)) {
+        console.error(`Invalid --agent override "${raw}" (must be <name>:<model> and never a secret).`);
+        process.exit(2);
+      }
+      opts.agentOverrides[agentName] = modelId;
+    }
     else if (a === "--all") opts.all = argv[++i];
     else if (a === "--profile") opts.profile = argv[++i];
     else if (a === "--save-profile") opts.saveProfile = argv[++i];
@@ -119,6 +148,8 @@ function parseArgs(argv) {
     else if (a === "--list") opts.list = true;
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--apply") opts.apply = true;
+    else if (a === "--no-sync") opts.noSync = true;
+    else if (a === "--sync") opts.sync = true;
     else if (a === "--help" || a === "-h") {
       printHelp();
       process.exit(0);
@@ -140,7 +171,17 @@ function parseArgs(argv) {
       console.error(`--save-provider id must be lowercase-hyphen (got "${opts.saveProvider}")`);
       process.exit(2);
     }
-    if (opts.all || opts.strong || opts.mid || opts.cheap || opts.flash || opts.profile || opts.saveProfile) {
+    if (
+      opts.all ||
+      opts.strong ||
+      opts.mid ||
+      opts.cheap ||
+      opts.flash ||
+      opts.frontend ||
+      (opts.agentOverrides && Object.keys(opts.agentOverrides).length > 0) ||
+      opts.profile ||
+      opts.saveProfile
+    ) {
       console.error("--save-provider cannot be combined with tier/profile flags.");
       process.exit(2);
     }
@@ -176,6 +217,8 @@ Options:
   --mid <model>         Override the mid-tier model (alias: --sdd-mid)
   --cheap <model>       Override the cheap-tier model (alias: --sdd-cheap, --flash)
   --flash <model>       Alias for --cheap
+  --frontend <model>    Override frontend-builder & frontend-critic (never falls back to cheap)
+  --agent <name>:<m>    Override a specific roster agent (repeatable)
   --emit-sync-args      Emit exact native 'gentle-ai sync' arguments for profiles
   --json                Emit output as JSON (used with --emit-sync-args)
   --save-profile <n>    Save the resolved strong/mid/cheap as a named profile
@@ -295,12 +338,28 @@ function resolveModels(opts, profiles) {
     process.exit(2);
   }
 
+  const baseOverrides = {
+    ...(profiles.overrides && typeof profiles.overrides === "object" ? profiles.overrides : {}),
+    ...(base.overrides && typeof base.overrides === "object" ? base.overrides : {}),
+  };
+  const overrides = { ...baseOverrides };
+  const frontend = opts.frontend || base.frontend || null;
+  if (frontend) {
+    if (!overrides["frontend-builder"] || opts.frontend) overrides["frontend-builder"] = frontend;
+    if (!overrides["frontend-critic"] || opts.frontend) overrides["frontend-critic"] = frontend;
+  }
+  for (const [k, v] of Object.entries(opts.agentOverrides || {})) {
+    overrides[k] = v;
+  }
+
   return {
     baseName,
     strong,
     mid: mid || flash,
     cheap: cheap || flash,
     flash,
+    frontend,
+    overrides,
     "sdd-strong": strong,
     "sdd-mid": mid || flash,
     "sdd-cheap": cheap || flash,
@@ -336,8 +395,21 @@ function profileEditsFor(opts, profiles, resolved) {
       edits.changed = true;
     }
   }
+  if (opts.frontend || Object.keys(opts.agentOverrides || {}).length > 0) {
+    if (opts.frontend && cur.frontend !== opts.frontend) {
+      cur.frontend = opts.frontend;
+      edits.changed = true;
+    }
+    if (!cur.overrides || typeof cur.overrides !== "object") cur.overrides = {};
+    for (const [k, v] of Object.entries(resolved.overrides || {})) {
+      if (cur.overrides[k] !== v) {
+        cur.overrides[k] = v;
+        edits.changed = true;
+      }
+    }
+  }
   if (opts.saveProfile) {
-    profiles.profiles[opts.saveProfile] = {
+    const saved = {
       "sdd-strong": resolved.strong,
       "sdd-mid": resolved.mid,
       "sdd-cheap": resolved.cheap,
@@ -346,6 +418,9 @@ function profileEditsFor(opts, profiles, resolved) {
       cheap: resolved.cheap,
       flash: resolved.flash,
     };
+    if (resolved.frontend) saved.frontend = resolved.frontend;
+    if (resolved.overrides && Object.keys(resolved.overrides).length > 0) saved.overrides = { ...resolved.overrides };
+    profiles.profiles[opts.saveProfile] = saved;
     edits.saveProfile = opts.saveProfile;
     edits.changed = true;
   }
@@ -368,7 +443,18 @@ export function buildSyncArgs(roster, resolved, profileName) {
   if (roster && roster.phases && typeof roster.phases === "object") {
     for (const [phase, info] of Object.entries(roster.phases)) {
       const tierNorm = normalizeTier(info.tier);
-      const model = tierNorm === "strong" ? resolved.strong : (tierNorm === "mid" ? resolved.mid : resolved.cheap);
+      let model = resolved.strong;
+      if (phase === "frontend-build" && resolved.overrides?.["frontend-builder"]) {
+        model = resolved.overrides["frontend-builder"];
+      } else if (phase === "frontend-eval" && resolved.overrides?.["frontend-critic"]) {
+        model = resolved.overrides["frontend-critic"];
+      } else if (tierNorm === "frontend") {
+        model = resolved.frontend || resolved.strong;
+      } else if (tierNorm === "mid") {
+        model = resolved.mid;
+      } else if (tierNorm === "cheap") {
+        model = resolved.cheap;
+      }
       args.push("--profile-phase", `${profileName}:${phase}:${model}`);
     }
   }
@@ -383,7 +469,19 @@ function detectedRuntimes() {
   const list = [];
   if (existsSync(DEFAULT_OPENCODE_CONFIG)) list.push("opencode");
   if (existsSync(DSH_PRESET_PATH)) list.push("dsh");
+  const localClaude = join(process.cwd(), ".claude", "agents");
+  const homeClaude = join(homedir(), ".claude", "agents");
+  if (existsSync(localClaude) || existsSync(homeClaude)) list.push("claude-code");
   return list;
+}
+
+function modelForAgent(agent, resolved) {
+  if (resolved.overrides && resolved.overrides[agent.name]) return resolved.overrides[agent.name];
+  const tierNorm = normalizeTier(agent.tier);
+  if (tierNorm === "frontend" || agent.group === "frontend") return resolved.frontend || resolved.strong;
+  if (tierNorm === "mid") return resolved.mid;
+  if (tierNorm === "cheap") return resolved.cheap;
+  return resolved.strong;
 }
 
 function printSummaryTable(roster, resolved, runtime) {
@@ -391,13 +489,17 @@ function printSummaryTable(roster, resolved, runtime) {
   console.log("  agent".padEnd(24) + "tier".padEnd(14) + "model");
   console.log("  " + "-".repeat(74));
   for (const a of roster.agents) {
-    const tierNorm = normalizeTier(a.tier);
-    const model = tierNorm === "strong" ? resolved.strong : (tierNorm === "mid" ? resolved.mid : resolved.cheap);
+    const model = modelForAgent(a, resolved);
     console.log(`  ${a.name.padEnd(24)}${a.tier.padEnd(14)}${model}`);
   }
 }
 
 function delegateToApply(opts, resolved) {
+  const isCustomProfilesFixture =
+    Boolean(opts.profilesPath) && resolve(opts.profilesPath).toLowerCase() !== resolve(PROFILES_PATH).toLowerCase();
+  if (opts.noSync || (opts.apply && isCustomProfilesFixture && !opts.sync)) {
+    return;
+  }
   const runtimes = detectedRuntimes();
   if (runtimes.length === 0) {
     console.log("\n⚠️  No runtime detected (no opencode config, no dsh preset). Nothing to delegate.");
@@ -411,6 +513,8 @@ function delegateToApply(opts, resolved) {
     mid: resolved.mid,
     cheap: resolved.cheap,
     flash: resolved.flash,
+    ...(resolved.frontend ? { frontend: resolved.frontend } : {}),
+    ...(resolved.overrides && Object.keys(resolved.overrides).length > 0 ? { overrides: resolved.overrides } : {}),
   });
   const extra = opts.profilesPath ? ["--profiles", opts.profilesPath] : [];
   for (const r of runtimes) {

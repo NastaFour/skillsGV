@@ -42,8 +42,15 @@
         "init": { "$ref": "#/$defs/phaseProfile" },
         "research": { "$ref": "#/$defs/phaseProfile" },
         "archive": { "$ref": "#/$defs/phaseProfile" },
-        "judgment-day": { "$ref": "#/$defs/phaseProfile" }
+        "judgment-day": { "$ref": "#/$defs/phaseProfile" },
+        "frontend-build": { "$ref": "#/$defs/phaseProfile" },
+        "frontend-eval": { "$ref": "#/$defs/phaseProfile" }
       }
+    },
+    "overrides": {
+      "type": "object",
+      "description": "Optional per-agent model overrides (e.g., frontend-builder, frontend-critic) supplied via user API key or config.",
+      "additionalProperties": { "type": "string", "minLength": 1 }
     },
     "providers": {
       "type": "object",

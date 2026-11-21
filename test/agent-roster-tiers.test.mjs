@@ -98,16 +98,16 @@ function opencodeConfigFixture(dir, agentNames) {
 // 1. Roster JSON declarative integrity
 // ---------------------------------------------------------------------------
 
-test("roster.json declares exactly 21 agents and sdd-research with correct metadata", () => {
+test("roster.json declares all 23 agents (core + frontend roles) and sdd-research with correct metadata", () => {
   const roster = readJson(ROSTER_PATH);
   assert.equal(roster.version, 1);
   assert.ok(Array.isArray(roster.agents), "agents must be an array");
-  assert.equal(roster.agents.length, 21, "roster must declare exactly 21 agents (1 coordinator + 20 subagents)");
+  assert.equal(roster.agents.length, 23, "roster must declare 23 agents (1 coordinator + 22 subagents)");
 
   // Check unique agent names
   const names = roster.agents.map((a) => a.name);
   const uniqueNames = new Set(names);
-  assert.equal(uniqueNames.size, 21, "all 21 agent names must be unique");
+  assert.equal(uniqueNames.size, roster.agents.length, "all agent names must be unique");
 
   // Verify sdd-research
   const research = roster.agents.find((a) => a.name === "sdd-research");
@@ -118,10 +118,10 @@ test("roster.json declares exactly 21 agents and sdd-research with correct metad
   assert.equal(research.effort, "high");
   assert.match(research.role, /evidence|research/i, "role must be descriptive");
 
-  // Verify strong tier agents (coordinator, research, judges, proposal and design)
+  // Verify strong tier agents (coordinator, frontend Studio, research, judges, proposal and design)
   const strongAgents = roster.agents.filter((a) => a.tier === "sdd-strong" || a.tier === "strong");
   const strongNames = strongAgents.map((a) => a.name).sort();
-  assert.deepEqual(strongNames, ["gentle-orchestrator", "jd-judge-a", "jd-judge-b", "sdd-design", "sdd-propose", "sdd-research"]);
+  assert.deepEqual(strongNames, ["frontend-builder", "frontend-critic", "gentle-orchestrator", "jd-judge-a", "jd-judge-b", "sdd-design", "sdd-propose", "sdd-research"]);
 
   // Verify mid tier agents (apply, fix-agent, spec and verify)
   const midAgents = roster.agents.filter((a) => a.tier === "sdd-mid" || a.tier === "mid");
@@ -281,14 +281,14 @@ test("set-models.mjs --list uses the resolved profile name in the printed sync c
   assert.doesNotMatch(res.stdout, /deepseek:research:/);
 });
 
-test("set-models.mjs dry-run produces 21 agent summary and does not touch profiles", (t) => {
+test("set-models.mjs dry-run produces roster agent summary and does not touch profiles", (t) => {
   const dir = makeDir(t);
   const prof = profilesFixture(dir);
   const original = readFileSync(prof, "utf8");
 
   const res = run(SET_MODELS, ["--profile", "glm", "--profiles", prof, "--dry-run"]);
   assert.equal(res.code, 0, res.stdout);
-  assert.match(res.stdout, /Summary — .*: 21 agents/);
+  assert.match(res.stdout, /Summary — .*: 23 agents/);
   assert.match(res.stdout, /sdd-research/);
   assert.match(res.stdout, /Dry-run complete/);
   assert.equal(readFileSync(prof, "utf8"), original, "dry-run must not write profiles.json");
@@ -321,11 +321,11 @@ test("set-models.mjs rejects conflicting --all and tier overrides", () => {
 // 4. OpenCode adapter with all 21 agents
 // ---------------------------------------------------------------------------
 
-test("apply.mjs --runtime opencode updates all 21 agents correctly with backup", (t) => {
+test("apply.mjs --runtime opencode updates all roster agents correctly with backup", (t) => {
   const dir = makeDir(t);
   const roster = readJson(ROSTER_PATH);
   const agentNames = roster.agents.map((a) => a.name);
-  assert.equal(agentNames.length, 21);
+  assert.equal(agentNames.length, 23);
 
   const cfg = opencodeConfigFixture(dir, agentNames);
   const prof = profilesFixture(dir);
@@ -333,14 +333,14 @@ test("apply.mjs --runtime opencode updates all 21 agents correctly with backup",
   // 1. Dry run
   const dry = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--dry-run"]);
   assert.equal(dry.code, 0, dry.stdout);
-  assert.match(dry.stdout, /Agents \(21\):/);
-  assert.match(dry.stdout, /21 agent model\(s\) would change/);
+  assert.match(dry.stdout, /Agents \(23\):/);
+  assert.match(dry.stdout, /23 agent model\(s\) would change/);
   assert.equal(backupsIn(dir).length, 0, "dry-run must not create backups");
 
   // 2. Apply
   const applied = run(APPLY, ["--runtime", "opencode", "--config", cfg, "--profiles", prof, "--apply"]);
   assert.equal(applied.code, 0, applied.stdout);
-  assert.match(applied.stdout, /Applied 21 change\(s\)/);
+  assert.match(applied.stdout, /Applied 23 change\(s\)/);
   assert.equal(backupsIn(dir).length, 1, "exactly one backup created");
 
   const doc = readJson(cfg);
@@ -387,7 +387,7 @@ test("apply.mjs --runtime dsh routes 21 agents with correct tool mapping", (t) =
 test("apply.mjs rejects an unknown runtime argument with exit 2", () => {
   const res = run(APPLY, ["--runtime", "unsupported-runtime"]);
   assert.equal(res.code, 2);
-  assert.match(res.stdout, /--runtime must be one of: opencode, dsh, list/);
+  assert.match(res.stdout, /--runtime must be one of: opencode, dsh, claude-code, list/);
 });
 
 test("normalizeTier canonicalizes tier aliases properly", () => {

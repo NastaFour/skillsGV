@@ -1,0 +1,38 @@
+{
+  "skill": "backend-driven",
+  "version": "1.0.0",
+  "evals": [
+    {
+      "id": "backend-driven-routes-api-task",
+      "prompt": "backend-driven Backend Read para diseñar API REST y contratos de base de datos con validacion",
+      "files": [],
+      "expected_output": "Phase 1 3-line Backend Read (Runtime & Boundary, Schema & Validation, Data & Bounds) -> Phase 2 load composable <=5 skills (api-design, modern-ts-backend, rate-limiting-design, booking-scheduling-domain) -> Phase 3 run verify-backend-gates.mjs --json.",
+      "expectations": [
+        "routes-to:backend-driven",
+        "contains:Backend Read",
+        "contains:verify-backend-gates.mjs"
+      ]
+    },
+    {
+      "id": "backend-driven-gates-contract",
+      "prompt": "run verify-backend-gates check before releasing the API service",
+      "files": [],
+      "expected_output": "Run verify-backend-gates.mjs to execute sibling 04-backend checkers plus raw-sql-interpolation, hardcoded-secret-fallback, unsafe-cors-wildcard-credentials, empty-catch-block, unvalidated-mutation-body, and unbounded-list-query.",
+      "expectations": [
+        "routes-to:backend-driven",
+        "contains:raw-sql-interpolation",
+        "contains:unvalidated-mutation-body"
+      ]
+    },
+    {
+      "id": "backend-driven-negative-ui-only",
+      "prompt": "Build an interactive 3D shader landing page with floating hero typography and dark theme hover states",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use design-driven and shader-dev rather than backend-driven for purely visual frontend landing page tasks.",
+      "expectations": [
+        "not-routes-to:backend-driven"
+      ]
+    }
+  ]
+}

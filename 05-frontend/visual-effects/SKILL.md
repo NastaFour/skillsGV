@@ -26,7 +26,7 @@ The difference between "AI slop" and premium design. Covers glassmorphism (real 
 
 - **Always** provide a solid fallback for `backdrop-blur` (older browsers)
 - **Never** use `opacity: 0.5` on background without a color underneath
-- **Always** use `hsl()` with alpha for transparency (`hsl(0 0% 100% / 0.1)`)
+- **Always** use `oklch()` with alpha for transparency (`oklch(1 0 0 / 0.1)`, falling back to `hsl()` only in legacy Tailwind 3)
 - **Never** nest glassmorphism inside glassmorphism (muddy, unreadable)
 - **Always** use `transform` and `opacity` for animations (GPU-accelerated, never `width`/`height`/`top`)
 - **Never** use `filter: blur()` on large elements (performance killer — use `backdrop-filter` instead)

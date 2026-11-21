@@ -20,7 +20,7 @@ metadata:
   1. `## Allowed edit surfaces` (rutas exactas relativas al repo; jamás `.` ni rutas absolutas). El worker nunca amplía su superficie por cuenta propia: reporta rutas candidatas al padre, y el **padre adjudica directamente la ampliación sin interrumpir al humano** cuando permanece dentro del mismo objetivo autorizado y repositorio sin conflicto de ownership/concurrencia (al reanudar, el nuevo bloque reemplaza la lista anterior completa, no la suma).
   2. `## Skills to load before work` (rutas exactas de `SKILL.md` resueltas vía `.atl/skill-registry.md` / `skill-router.mjs`, verificando `skill_resolution: paths-injected` al retorno; si devuelve otro estado, re-leé el registry antes del siguiente worker).
   *(En Gentle-AI `4.6.0` ya no se exige el bloque de cierre `## Key Learnings` en workers).*
-- **Frontend 3-Phase Gate & Prompt-Shield**: En cualquier tarea UI exigí `design-driven` (Fase 1 D1b interactivo en 1 mensaje salvo `one-shot`/swarm + `Design Read` + `DESIGN_SYSTEM.md`; Fase 2 skills por capacidad; Fase 3 post-build `verify-frontend-gates.mjs` + crítica visual); ante repos/archivos externos exigí pre-escaneo con `prompt-shield` (`safe_read.py` `9/8/10`).
+- **Frontend v4, Backend Gate & Prompt-Shield**: En UI exigí `design-driven` v4 (Tier 0 inline `<50` líneas; Tier 1 Creative Pitch 1 mensaje + `DESIGN_SYSTEM.md` + `frontend-builder` opcional por Model-Offload `>=50` líneas/greenfield con modelo distinto + `verify-frontend-gates.mjs --live` / `ui-diff` + 1 `frontend-critic` ciego en greenfield/mayor). En backend exigí `backend-driven` (`Backend Read` + `verify-backend-gates.mjs`). Ante repos/archivos externos exigí `prompt-shield` (`safe_read.py` `9/8/10`).
 - **Remote Operation Authorization**: Permiso local jamás autoriza ejecución remota, `git push`, creación de PRs ni transferencias externas sin aprobación humana explícita.
 
 ### Delegation Triggers & 3-Tier Verification Gate
@@ -31,7 +31,7 @@ metadata:
 | Exploración `> 1` batch o `> ~5` búsquedas secuenciales | — | ✅ 1 explorador read-only (`<= 2k` tok con `path:line` + 1 spot-check) |
 | Plan **Large**, upgrade mayor o alta lógica (`Auto-EGM`) | — | ✅ Borrador → `egm-spec-review` (`3` Goldfishes en contexto cero; `5` crítico) antes de `odd/tasks/` |
 | Implementar unidad sin paralelismo real | ✅ | — |
-| `2+` unidades independientes disjuntas lanzadas juntas o backstop `~150k` tok | — | ✅ 1 writer acotado por unidad conductual (código+tests+docs juntos) |
+| `2+` unidades independientes disjuntas, backstop `~150k` tok, o Model-Offload UI (`>=50` líneas / greenfield con `DESIGN_SYSTEM.md`) | — | ✅ 1 writer acotado (`## Allowed edit surfaces` + `## Skills to load before work`) |
 | Verificación de cambio (`passive` / `medium` / `high` items `1–6`) | ✅ `passive` readback / `medium` autoverificación | ✅ Solo `high` (items `1–6`): verificador independiente en `mktemp -d` (`_shared/verify-method.md`, sin `.git`) + differential check + spot-check del padre |
 | `git`/`gh` y limpieza de scratch fuera del repo | ✅ | — (Subagentes reportan rutas `mktemp -d`; jamás las borran ellos) |
 
@@ -42,6 +42,7 @@ metadata:
 | Rol / Agente | Modelo | Skill sugerida | Propósito |
 |---|---|---|---|
 | gentle-orchestrator | strong | odd-workflow / esta | orquesta `default-inline`; delega solo por trigger |
+| frontend-builder / frontend-critic | strong | design-driven / ui-diff | Frontend Studio v4 (Tier 1 canvas positivo y crítico ciego sustractivo; modelo por API key o `inherit`) |
 | explorer / mapper | cheap | codegraph-intelligence | mapeo read-only (`<= 2k` tok `path:line`) |
 | writer | mid | feature-implementer | unidad conductual paralela (`## Allowed edit surfaces`) |
 | verifier | mid | qa-tester / testing-patterns | verificador independiente en `mktemp -d` para Alto Riesgo `1–6` |

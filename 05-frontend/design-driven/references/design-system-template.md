@@ -3,7 +3,52 @@
 > **Artefacto Canónico**: `DESIGN_SYSTEM.md`  
 > *(Unifica y reemplaza de forma retrocompatible a `design-dna.md`, `DESIGN.md` y `.interface-design/system.md`)*  
 > **Estado**: Aprobado  
-> **Versión**: 1.0.0  
+> **Versión**: 4.0.0  
+
+---
+
+## Runtime Contract
+
+```yaml
+tier: Tier-1 # Tier-0 (inline <50 lines) | Tier-1 (Frontend Studio)
+builder_model: inherit # explicit user API-key ID or inherit (never silent cheap)
+critic_model: inherit
+dispatch_receipt: "[ModelDispatch: role=frontend-builder requested=inherit resolved=active level=L4]"
+allowed_edit_surfaces:
+  phase2a_core: ["src/components/**", "src/sections/**", "src/pages/**", "src/styles/**"]
+  phase2b_kinetic: ["src/kinetic/**", "src/shaders/**"] # used only when needsBuilder2B == true
+  phase3_critics: [] # frontend-critic 3A/3B are strictly read-only evaluators
+api_contract_paths: ["src/types/api.ts"] # fullstack bridge shared with backend-driven
+```
+
+## Craft Budget
+
+```yaml
+craft_budget:
+  signature_skill: "none" # motion-gsap | three-js-web | scroll-world-storytelling | shader-dev | frontend-slides-deck | none
+  focal_zone: "src/sections/HeroSignature.tsx"
+  kinetic_anchors:
+    root: "[data-kinetic-root='hero-stage']"
+    items: "[data-kinetic-item]"
+    canvas: "[data-kinetic-canvas='hero-webgl']"
+  quiet_zones: "all remaining sections (calm readable canvas + CSS transitions <= 200ms)"
+  guards:
+    gpu_only_props: ["transform", "opacity"]
+    max_canvases: 1
+    reduced_motion: "instant-final-frame"
+```
+
+## Capability & Skill Manifest
+
+```yaml
+chassis: H # A-H
+phase1_discovery_skills: ["design-system-tokens", "storybrand-messaging", "page-cro"] # <= 5 DNA/tokens/CRO/copy/asset skills
+phase2a_core_skills: ["tailwind-4", "react-19", "ui-ux-pro-max", "modern-web-guidance", "openseo"] # <= 5 per frontend-builder slice (stack/layout/forms/SEO)
+phase2b_signature_skills: ["micro-interactions", "emil-kowalski", "motion-gsap", "three-js-web", "shader-dev"] # <= 5 per frontend-builder slice (2D/3D/shaders/scroll/decks; zero audit skills)
+phase3a_craft_critic_skills: ["impeccable", "taste-skill", "refactoring-ui", "interface-design", "ai-design-check-stageshow"] # <= 5 visual craft/anti-slop critic skills
+phase3b_ux_critic_skills: ["web-design-guidelines", "ux-auditor-agent", "motion-accessibility", "humanizer"] # <= 5 UX/a11y/copy critic skills
+gates: ["verify-frontend-gates", "ui-diff", "legacy-scan"]
+```
 
 ---
 
@@ -95,14 +140,14 @@ Formato preferido: **OKLCH** (moderno, uniforme en luminosidad). Compatible con 
 - **Radios de Borde**:
   - Botones, inputs y badges: `6px` a `8px` (`rounded-md` / `rounded-lg`) o `9999px` (pastilla completa).
   - Tarjetas y contenedores: `12px` a `16px` (`rounded-xl`).
-- **Elevación / Sombras**:
-  - `shadow-sm`: `0 1px 2px 0 rgb(0 0 0 / 0.05)`
-  - `shadow-md`: `0 4px 6px -1px rgb(0 0 0 / 0.08)`
-  - `shadow-popover`: `0 10px 15px -3px rgb(0 0 0 / 0.1)`
-- **Física de Movimiento**:
-  - Transición rápida UI: `150ms cubic-bezier(0.16, 1, 0.3, 1)`
-  - Resorte orgánico: `stiffness: 200, damping: 28`
-  - *Accesibilidad*: `@media (prefers-reduced-motion: reduce)` fuerza transiciones inmediatas (0ms).
+- **Elevación / Sombras (OKLCH)**:
+  - `shadow-sm`: `0 1px 2px 0 oklch(0.15 0.01 240 / 0.06)`
+  - `shadow-md`: `0 4px 10px -2px oklch(0.15 0.01 240 / 0.09)`
+  - `shadow-popover`: `0 12px 24px -6px oklch(0.15 0.01 240 / 0.14)`
+- **Física de Movimiento (`emil-kowalski` presets)**:
+  - Transición rápida UI (`--ease-out`): `150ms cubic-bezier(0.23, 1, 0.32, 1)`
+  - Presets Spring: rápido `{ stiffness: 450, damping: 35, mass: 0.8 }` · medio `{ stiffness: 300, damping: 30, mass: 1.0 }` · drawer `{ stiffness: 220, damping: 28, mass: 1.0 }`
+  - *Accesibilidad*: `@media (prefers-reduced-motion: reduce)` elimina traslaciones (`x`/`y`/`scale`) y degrada a fades `<= 100ms` o transición inmediata.
 
 ---
 

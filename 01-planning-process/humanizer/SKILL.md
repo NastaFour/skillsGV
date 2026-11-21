@@ -93,3 +93,14 @@ Lee el texto como si estuvieras frente a un colega en un café:
 - **Transiciones mecánicas de manual**: Forzar conectores en cada párrafo ("Por consiguiente", "No obstante lo anterior", "Dicho esto").
 - **Tono neutro despersonalizado**: Escribir como si nadie tuviera una opinión o una postura clara sobre el tema.
 - **Simetría forzada en viñetas**: Hacer que todas las viñetas tengan exactamente la misma longitud y comiencen con el mismo tiempo verbal de forma artificial.
+
+---
+
+## 🔬 Métricas Psicolingüísticas & UI Microcopy Deslop (`deslop`)
+
+1. **Diversidad Léxica & Varianza Sintáctica (Anti-Plantilla)**: Evita repetir las mismas aperturas en cards/secciones (`"Descubre..."`, `"Gestiona..."`, `"Unlock..."`, `"Elevate..."`, `"Seamless..."`). Alterna longitudes (`4–24` palabras) y elimina *hedging* vacío (`"podría llegar a permitir"`, `"diseñado para ayudarte a"`).
+2. **Cohesión Referencial Directa**: Sustituye referencias vagas (`"Esta solución integral"`, `"Dicho ecosistema"`) por el sustantivo concreto del dominio.
+3. **Purga de Microcopy UI (Bilingüe EN/ES)**:
+   - ❌ Eyebrows vacíos (`"NEW FEATURE"`, `"INNOVACIÓN"`, `"SOLUCIÓN INTEGRAL"`) ➔ Quitarlos o reemplazarlos por un dato verificable (`"4 min setup"`, `"Cupos abiertos · Lun–Vie"`).
+   - ❌ Botones genéricos (`"Aprende más"`, `"Learn more"`, `"Comenzar ahora"`, `"Get started"`) ➔ Acción específica (`"Ver horarios y precios"`, `"Probar demo en vivo"`, `"Reservar clase de prueba"`).
+   - ❌ Metadatos concatenados con slashes (`"Rápido / Seguro / Moderno"` o `"A / B / C"`) ➔ Elegir 1 afirmación fuerte o listar métricas reales.

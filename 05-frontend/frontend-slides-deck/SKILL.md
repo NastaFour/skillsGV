@@ -5,7 +5,7 @@ license: MIT
 compatibility: "Compatible with Gentle-AI 4.4.0+, modern browsers, Mermaid, inline SVG, and single-file HTML5. Requires zero external runtime dependencies."
 allowed-tools: Read Write Edit Bash(node:*,pnpm:*) Glob Grep
 metadata:
-  trigger: ["frontend slides", "html presentation", "slide deck", "pitch deck", "diagram design", "architecture diagram", "svg diagram", "presentacion html", "diagramas de arquitectura"]
+  trigger: ["frontend slides", "html presentation", "slide deck", "pitch deck", "presentation slides", "presentacion web", "diapositivas", "diagram design", "architecture diagram", "editorial diagram", "diagrama editorial", "svg diagram", "presentacion html", "diagramas de arquitectura"]
   scope: "global, project"
   version: "1.0.0"
   author: skillsGV
@@ -43,7 +43,7 @@ Before generating slides, emit the **3-Line `Design Read`** referencing **Archet
 
 When embedding diagrams inside slides, documentation, or `TRD.md`/`APP_FLOW.md`:
 1. **Choose the Right Medium**:
-   - **Inline Bespoke SVG**: Best for hero architecture slides, data-flow pipelines, and visual metaphors where custom typography, exact OKLCH tokens, and subtle CSS pulse animations elevate comprehension.
+   - **Inline Bespoke SVG**: Best for hero architecture slides, data-flow pipelines, and visual metaphors (see [`references/editorial-diagrams.md`](references/editorial-diagrams.md) for exploded axonometrics, sequence lanes, and brand-matched HTML+SVG diagrams).
    - **Mermaid (`flowchart LR/TD`, `sequenceDiagram`)**: Best for living markdown specifications (`TRD.md`, `APP_FLOW.md`, `odd/tasks/<feature>.md`).
    - **Box-Drawing ASCII (`┌─┐ │ └─┘`)**: Best for inline code comments, CLI help output, and terminal-native documentation.
 2. **Visual Hierarchy in Diagrams**:
