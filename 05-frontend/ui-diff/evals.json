@@ -1,0 +1,37 @@
+{
+  "evals": [
+    {
+      "id": "ui-diff-pr-before-after",
+      "prompt": "/ui-diff before after screenshots for UI PR and visual regression diff",
+      "files": [],
+      "expected_output": "Run ui-diff.mjs in diff mode comparing before/after URLs across desktop (1280x800) and mobile (390x844) light/dark viewports, marking changed pixels, checking DOM geometry (overflow, fold clipping, sibling alignment drift, tap targets), and producing a concise UX summary.",
+      "expectations": [
+        "routes-to:ui-diff",
+        "contains:ui-diff.mjs",
+        "contains:diff",
+        "contains:UX"
+      ]
+    },
+    {
+      "id": "ui-diff-dom-geometry-audit",
+      "prompt": "run dom geometry audit and screenshot diff on localhost frontend",
+      "files": [],
+      "expected_output": "Execute node 05-frontend/ui-diff/scripts/ui-diff.mjs --url http://localhost:4321 --mode auto --json to verify horizontal-overflow, above-fold-clipping, sibling-alignment-drift, and generate contact-sheet-2x2.png (degrades cleanly if Playwright is unavailable).",
+      "expectations": [
+        "routes-to:ui-diff",
+        "contains:--mode auto",
+        "contains:contact-sheet-2x2.png"
+      ]
+    },
+    {
+      "id": "ui-diff-negative-backend",
+      "prompt": "run database migration sql schema validation in postgres",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use postgresql / prisma-orm / backend-driven rather than ui-diff for backend database migration validation.",
+      "expectations": [
+        "not-routes-to:ui-diff"
+      ]
+    }
+  ]
+}
