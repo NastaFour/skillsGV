@@ -30,9 +30,9 @@ Emit before touching backend code:
 
 ### Phase 2 — Composable Backend Capability Matrix (`<= 5` skills/turn)
 Load only relevant domain skills cleanly alongside `backend-driven`:
-- **Contracts & Auth**: `api-design`, `modern-ts-backend`, `api-response-normalizer`, `auth-security`
-- **Data & Concurrency**: `postgresql-prisma`, `booking-scheduling-domain`
-- **Resilience & Ops**: `rate-limiting-design`, `background-jobs-queues`, `file-uploads-storage`, `notifications-multichannel`, `reports-exports`, `nodejs-module-loading`, `performance-caching`, `observability-logging`
+- **Contracts & Auth**: `api-design`, `modern-ts-backend`, `api-response-normalizer`, `jwt-bcrypt`, `security-audit`
+- **Data & Concurrency**: `postgresql`, `prisma-orm`, `booking-scheduling-domain`
+- **Resilience & Ops**: `rate-limiting-design`, `background-jobs-queues`, `file-uploads-storage`, `notifications-multichannel`, `reports-exports`, `nodejs-module-loading`, `performance-refactor`, `observability`, `monitoring`
 
 ### Phase 3 — Deterministic Gate (`verify-backend-gates.mjs`)
 Run after implementation and before completion:

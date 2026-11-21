@@ -56,7 +56,11 @@ test("ui-diff: evaluateDomGeometry detects Rosan Dance style geometry bugs and p
         ],
       },
     ],
-    tapTargets: [{ selector: "button.tiny", width: 32, height: 32 }],
+    tapTargets: [
+      { selector: "button.tiny", width: 20, height: 20 },
+      { selector: "button.desktop-compact", width: 80, height: 32 },
+      { selector: "a.inline-prose", width: 50, height: 18, inlineTextLink: true },
+    ],
     brokenImages: [{ src: "/missing.webp", alt: "Hero" }],
     monoProseNodes: [{ selector: "p.subtitle", textPreview: "Academia de baile..." }],
     consoleErrors: ["Hydration mismatch"],

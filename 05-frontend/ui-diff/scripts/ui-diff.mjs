@@ -131,14 +131,16 @@ export function evaluateDomGeometry(metrics) {
   }
 
   for (const target of metrics?.tapTargets || []) {
+    if (target.inlineTextLink) continue;
     const minDim = Math.min(target.width ?? 0, target.height ?? 0);
-    if (minDim < 40) {
+    const tapFloor = vp.width <= 480 ? 40 : 24;
+    if (minDim < tapFloor) {
       issues.push({
         severity: "error",
         check: "small-tap-target",
         viewport: vpName,
         selector: target.selector,
-        msg: `Interactive element ${target.selector} is ${Math.round(target.width)}x${Math.round(target.height)}px (< 40px floor).`,
+        msg: `Interactive element ${target.selector} is ${Math.round(target.width)}x${Math.round(target.height)}px (< ${tapFloor}px floor).`,
       });
     } else if (minDim < 44 && vp.width <= 480) {
       issues.push({
@@ -222,7 +224,11 @@ function killProcessTree(child) {
     if (process.platform === "win32") {
       spawnSync("taskkill", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore" });
     } else {
-      child.kill("SIGTERM");
+      try {
+        process.kill(-child.pid, "SIGTERM");
+      } catch {
+        child.kill("SIGTERM");
+      }
     }
   } catch {}
 }
@@ -237,7 +243,7 @@ async function collectPageMetrics(page, viewportName, viewport) {
     };
 
     const heroFoldItems = [];
-    const hero = document.querySelector("main section, main > div, [data-hero]");
+    const hero = document.querySelector("[data-hero]") || document.querySelector("main section, main > div");
     if (hero) {
       for (const el of hero.querySelectorAll("h1, a, button, dl")) {
         if (!isVisible(el)) continue;
@@ -269,14 +275,36 @@ async function collectPageMetrics(page, viewportName, viewport) {
       }
     }
 
+    for (const grid of document.querySelectorAll("[data-uniform-grid], [class*='grid'], [class*='bento']")) {
+      if (!isVisible(grid)) continue;
+      const children = [...grid.children].filter(isVisible);
+      if (children.length < 2) continue;
+      const xs = children.map((c) => c.getBoundingClientRect().left);
+      if (new Set(xs.map((x) => Math.round(x / 10))).size > 1) {
+        siblingGroups.push({
+          kind: "uniform-grid",
+          selector: grid.tagName.toLowerCase() + (grid.className ? `.${String(grid.className).trim().split(/\s+/)[0]}` : ""),
+          items: children.map((c, idx) => {
+            const r = c.getBoundingClientRect();
+            return { label: String(idx), top: r.top, height: r.height };
+          }),
+        });
+      }
+    }
+
     const tapTargets = [];
     for (const el of document.querySelectorAll("a, button, input, select, textarea")) {
       if (!isVisible(el)) continue;
       const r = el.getBoundingClientRect();
+      const inlineTextLink =
+        el.tagName.toLowerCase() === "a" &&
+        getComputedStyle(el).display === "inline" &&
+        Boolean(el.closest("p, li, dd, blockquote, small"));
       tapTargets.push({
         selector: el.tagName.toLowerCase() + (el.id ? `#${el.id}` : ""),
         width: r.width,
         height: r.height,
+        inlineTextLink,
       });
     }
 
@@ -505,7 +533,7 @@ async function main() {
 
   try {
     if (cmd) {
-      serverProc = spawn(cmd, { shell: true, stdio: "ignore" });
+      serverProc = spawn(cmd, { shell: true, stdio: "ignore", detached: process.platform !== "win32" });
       if (!url) url = `http://127.0.0.1:${port}`;
       await waitForHttpReady(url, readyTimeout);
     }

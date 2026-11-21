@@ -141,6 +141,9 @@ test("set-models.mjs supports --frontend and --agent overrides without downgradi
     "utf8"
   );
 
+  const dshPresetPath = join(ROOT, "gentle-ai-dsh", "preset", "agent.cordis.yml");
+  const presetBefore = readFileSync(dshPresetPath, "utf8");
+
   const res = run(SET_MODELS, [
     "--frontend", "anthropic/claude-opus-4-6",
     "--agent", "frontend-critic:google/gemini-4-neon",
@@ -151,6 +154,13 @@ test("set-models.mjs supports --frontend and --agent overrides without downgradi
   const saved = readJson(profPath);
   assert.equal(saved.profiles.gemini.overrides["frontend-builder"], "anthropic/claude-opus-4-6");
   assert.equal(saved.profiles.gemini.overrides["frontend-critic"], "google/gemini-4-neon");
+  assert.equal(readFileSync(dshPresetPath, "utf8"), presetBefore, "custom --profiles fixture must not mutate repo dsh preset");
+
+  const secretAttempt = run(SET_MODELS, [
+    "--frontend", "sk-ant-api03-1234567890abcdef",
+    "--profiles", profPath,
+  ]);
+  assert.equal(secretAttempt.code, 2, "must reject sk-ant-... API keys in --frontend");
 });
 
 test("apply.mjs --runtime claude-code patches .claude/agents/*.md frontmatter surgically with backup", (t) => {

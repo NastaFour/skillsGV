@@ -776,6 +776,11 @@ function runClaudeCode(opts, roster, profile) {
   }
 
   const changed = results.filter((r) => r.status === "changed");
+  if (opts.apply && changed.length > 0 && opts.json) {
+    for (const r of changed) {
+      backupAndWrite(r.file, r.nextText);
+    }
+  }
   if (opts.json) {
     console.log(
       JSON.stringify(
@@ -783,6 +788,7 @@ function runClaudeCode(opts, roster, profile) {
           runtime: "claude-code",
           agentsDir,
           profile: profile.name,
+          applied: Boolean(opts.apply),
           changes: results.map(({ nextText: _drop, ...rest }) => rest),
         },
         null,
@@ -867,9 +873,9 @@ function computeDshPresetChanges(text, profile) {
   };
   const changes = [];
   const pairs = [
-    { label: "DSH_STRONG_PROVIDER", current: current.strongProvider, desired: strong.provider },
+    { label: "DSH_STRONG_PROVIDER", current: current.strongProvider, desired: strong.provider ?? current.strongProvider },
     { label: "DSH_STRONG_MODEL", current: current.strongModel, desired: strong.model },
-    { label: "DSH_FLASH_PROVIDER", current: current.flashProvider, desired: flash.provider },
+    { label: "DSH_FLASH_PROVIDER", current: current.flashProvider, desired: flash.provider ?? current.flashProvider },
     { label: "DSH_FLASH_MODEL", current: current.flashModel, desired: flash.model },
   ];
   for (const p of pairs) {
@@ -1019,12 +1025,15 @@ function runDsh(opts, roster, profile, providers) {
 function runList(opts, roster, profile) {
   const opencodeExists = existsSync(opts.config || DEFAULT_OPENCODE_CONFIG);
   const dshExists = existsSync(DSH_PRESET_PATH);
+  const claudeDir = defaultClaudeAgentsDir();
+  const claudeExists = existsSync(claudeDir);
 
   console.log("\nDetected runtimes:");
   console.log(
-    `  opencode: ${opencodeExists ? "config found" : "not detected"} (${opts.config || DEFAULT_OPENCODE_CONFIG})`
+    `  opencode:    ${opencodeExists ? "config found" : "not detected"} (${opts.config || DEFAULT_OPENCODE_CONFIG})`
   );
-  console.log(`  dsh:      ${dshExists ? "preset found" : "not detected"} (${DSH_PRESET_PATH})`);
+  console.log(`  dsh:         ${dshExists ? "preset found" : "not detected"} (${DSH_PRESET_PATH})`);
+  console.log(`  claude-code: ${claudeExists ? "agents dir found" : "not detected"} (${claudeDir})`);
   console.log(`\nCurrent profile: ${profile.name} (strong=${profile.strong}, flash=${profile.flash})\n`);
 
   if (opencodeExists) {

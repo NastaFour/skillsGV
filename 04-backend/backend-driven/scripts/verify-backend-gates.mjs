@@ -272,11 +272,23 @@ function runSiblingCheckers(srcDir, signals, rootDir) {
         warnings: parsed.warnings || 0,
       });
     } else {
+      const failed = res.status !== 0 || Boolean(res.error);
+      const errReason = (res.stderr || res.error?.message || `exit-${res.status}`).trim().slice(0, 200);
+      if (failed) {
+        siblingIssues.push({
+          severity: "error",
+          check: "sibling-script-exec",
+          source: spec.skill,
+          msg: `Sibling checker ${spec.skill}/${spec.file} failed without valid JSON output (${errReason || "non-zero exit"}).`,
+        });
+      }
       siblingResults.push({
         skill: spec.skill,
         script: spec.file,
-        status: res.status === 0 ? "passed" : "failed",
-        reason: res.status === 0 ? "no-json" : (res.stderr || `exit-${res.status}`).slice(0, 200),
+        status: failed ? "failed" : "passed",
+        errors: failed ? 1 : 0,
+        warnings: 0,
+        reason: failed ? errReason : "no-json",
       });
     }
   }

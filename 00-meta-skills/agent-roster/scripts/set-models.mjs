@@ -63,6 +63,7 @@ const SECRET_SHAPE_PATTERNS = [
   /^AKIA[0-9A-Z]{8,}$/, // AWS access key id
   /^ASIA[0-9A-Z]{8,}$/, // AWS temporary access key id
   /^sk_live_|^sk_test_/, // Stripe secret keys
+  /^sk-[A-Za-z0-9_-]{10,}/, // OpenAI / Anthropic secret keys (sk-..., sk-ant-..., sk-proj-...)
   /^xox[baprs]-/, // Slack tokens
   /^ya29\./, // Google OAuth access token
   /^AIza[0-9A-Za-z_-]{10,}$/, // Google API key
@@ -103,6 +104,8 @@ function parseArgs(argv) {
     list: false,
     dryRun: false,
     apply: false,
+    noSync: false,
+    sync: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -145,6 +148,8 @@ function parseArgs(argv) {
     else if (a === "--list") opts.list = true;
     else if (a === "--dry-run") opts.dryRun = true;
     else if (a === "--apply") opts.apply = true;
+    else if (a === "--no-sync") opts.noSync = true;
+    else if (a === "--sync") opts.sync = true;
     else if (a === "--help" || a === "-h") {
       printHelp();
       process.exit(0);
@@ -166,7 +171,17 @@ function parseArgs(argv) {
       console.error(`--save-provider id must be lowercase-hyphen (got "${opts.saveProvider}")`);
       process.exit(2);
     }
-    if (opts.all || opts.strong || opts.mid || opts.cheap || opts.flash || opts.profile || opts.saveProfile) {
+    if (
+      opts.all ||
+      opts.strong ||
+      opts.mid ||
+      opts.cheap ||
+      opts.flash ||
+      opts.frontend ||
+      (opts.agentOverrides && Object.keys(opts.agentOverrides).length > 0) ||
+      opts.profile ||
+      opts.saveProfile
+    ) {
       console.error("--save-provider cannot be combined with tier/profile flags.");
       process.exit(2);
     }
@@ -454,6 +469,9 @@ function detectedRuntimes() {
   const list = [];
   if (existsSync(DEFAULT_OPENCODE_CONFIG)) list.push("opencode");
   if (existsSync(DSH_PRESET_PATH)) list.push("dsh");
+  const localClaude = join(process.cwd(), ".claude", "agents");
+  const homeClaude = join(homedir(), ".claude", "agents");
+  if (existsSync(localClaude) || existsSync(homeClaude)) list.push("claude-code");
   return list;
 }
 
@@ -477,6 +495,11 @@ function printSummaryTable(roster, resolved, runtime) {
 }
 
 function delegateToApply(opts, resolved) {
+  const isCustomProfilesFixture =
+    Boolean(opts.profilesPath) && resolve(opts.profilesPath).toLowerCase() !== resolve(PROFILES_PATH).toLowerCase();
+  if (opts.noSync || (opts.apply && isCustomProfilesFixture && !opts.sync)) {
+    return;
+  }
   const runtimes = detectedRuntimes();
   if (runtimes.length === 0) {
     console.log("\n⚠️  No runtime detected (no opencode config, no dsh preset). Nothing to delegate.");

@@ -17,7 +17,7 @@ metadata:
 
 ## 🚦 Modes & Execution Contract
 
-1. **`capture` (Greenfield / Baseline)**: Captures desktop & mobile light/dark screenshots into `.ui-diff/baseline/`, generates `.ui-diff/contact-sheet-2x2.png`, and runs quantitative `evaluateDomGeometry` checks (`horizontal-overflow`, `above-fold-clipping`, `sibling-alignment-drift > 4px`, `grid-height-variance > 16px`, `small-tap-target < 40px`, `broken-image`, `mono-prose`, `console-error`).
+1. **`capture` (Greenfield / Baseline)**: Captures desktop & mobile light/dark screenshots into `.ui-diff/baseline/`, generates `.ui-diff/contact-sheet-2x2.png`, and runs quantitative `evaluateDomGeometry` checks (`horizontal-overflow`, `above-fold-clipping`, `sibling-alignment-drift > 4px`, `grid-height-variance > 16px`, `small-tap-target < 40px mobile / < 24px desktop`, `broken-image`, `mono-prose`, `console-error`).
 2. **`diff` (PRs & Refactors)**: Compares `--url <after>` against `--before-url <before>` (or saved `.ui-diff/baseline/`) with `animations: "disabled"` and `reducedMotion: "reduce"`, writing red-highlighted pixel masks under `.ui-diff/diff/`.
 3. **`auto` (Default)**: Uses `diff` if `.ui-diff/baseline/` or `--before-url` exists; otherwise runs `capture` (greenfield-safe, never crashes).
 4. **Degraded Fallback**: If Playwright is absent from the workspace, emits `{ "status": "degraded", "reason": "playwright-unavailable" }` and exits `0` (or `3` under `--strict-browser`) so builds fall back cleanly to static gates.

@@ -7,6 +7,7 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const IGNORED_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", "coverage", ".ui-diff"]);
 const CODE_EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".css", ".astro", ".vue", ".svelte"]);
@@ -14,7 +15,7 @@ const TOKEN_FILE_RE = /(token|theme|variables)/i;
 
 const isCliEntry =
   Boolean(process.argv[1]) &&
-  resolve(process.argv[1]).toLowerCase() === resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")).toLowerCase();
+  resolve(process.argv[1]).toLowerCase() === resolve(fileURLToPath(import.meta.url)).toLowerCase();
 
 function printHelp() {
   console.log(`legacy-scan.mjs — Modern Web Guidance legacy pattern scanner

@@ -148,8 +148,12 @@ function runV4StaticChecks(srcDir, files, signals) {
       const line = lines[i];
       if (/^\s*(?:\/\/|\/\*|\*|<!--)/.test(line)) continue;
 
-      if (isUiFile && /<(?:div|span)\b[^>]*\bonClick\s*=/i.test(line)) {
-        if (!/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(line)) {
+      const tagWindow = lines.slice(i, Math.min(i + 6, lines.length)).join(" ");
+
+      if (isUiFile && /<(?:div|span)\b/i.test(line)) {
+        const tagMatch = tagWindow.match(/<(?:div|span)\b([^>]*)>/i);
+        const attrs = tagMatch ? tagMatch[1] : line;
+        if (/\bonClick\s*=/i.test(attrs) && !/\b(?:role|tabIndex|tabindex|onKeyDown|onKeyUp)\s*=/.test(attrs)) {
           findings.push({
             severity: "error",
             check: "non-semantic-clickable",
@@ -180,19 +184,24 @@ function runV4StaticChecks(srcDir, files, signals) {
         });
       }
 
-      if (isUiFile && /<p\b[^>]*\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(line)) {
-        findings.push({
-          severity: "error",
-          check: "mono-prose",
-          file: rel,
-          line: i + 1,
-          msg: "font-mono used on <p> prose — reserve monospace strictly for numeric/code telemetry.",
-        });
+      if (isUiFile && /<p\b/i.test(line)) {
+        const pMatch = tagWindow.match(/<p\b([^>]*)>/i);
+        const pAttrs = pMatch ? pMatch[1] : line;
+        if (/\bclass(?:Name)?=["'][^"']*\bfont-mono\b/i.test(pAttrs)) {
+          findings.push({
+            severity: "error",
+            check: "mono-prose",
+            file: rel,
+            line: i + 1,
+            msg: "font-mono used on <p> prose — reserve monospace strictly for numeric/code telemetry.",
+          });
+        }
       }
 
-      if (isUiFile) {
-        for (const m of line.matchAll(/<img\b([^>]*)>/gi)) {
-          const attrs = m[1] || "";
+      if (isUiFile && /<img\b/i.test(line)) {
+        const imgTagMatch = tagWindow.match(/<img\b([^>]*)>/i);
+        if (imgTagMatch) {
+          const attrs = imgTagMatch[1] || "";
           const hasAlt = /\balt\s*=/.test(attrs);
           const hasSize = /\b(?:width|height)\s*=|\baspect-|\bfill\b/.test(attrs);
           if (!hasAlt || !hasSize) {
@@ -403,10 +412,39 @@ function main() {
         encoding: "utf8",
         timeout: 60000,
       });
+      const rawOut = (liveExec.stdout || "").trim();
       try {
-        liveAudit = JSON.parse((liveExec.stdout || "").trim() || "{}");
-      } catch {
-        liveAudit = { status: "error", ok: false, errors: 1, warnings: 0, issues: [{ severity: "error", check: "ui-diff-parse", msg: (liveExec.stderr || "invalid json").slice(0, 200) }] };
+        if (liveExec.error || !rawOut) {
+          throw new Error((liveExec.stderr || liveExec.error?.message || `ui-diff exited with code ${liveExec.status ?? 1}`).trim());
+        }
+        const parsed = JSON.parse(rawOut);
+        if (liveExec.status !== 0 && (typeof parsed.errors !== "number" || parsed.errors === 0)) {
+          liveAudit = {
+            ...parsed,
+            status: "error",
+            ok: false,
+            errors: 1,
+            warnings: parsed.warnings || 0,
+            issues: [
+              ...(Array.isArray(parsed.issues) ? parsed.issues : []),
+              {
+                severity: "error",
+                check: "ui-diff-exec",
+                msg: (liveExec.stderr || `ui-diff exited with status ${liveExec.status}`).trim().slice(0, 200),
+              },
+            ],
+          };
+        } else {
+          liveAudit = parsed;
+        }
+      } catch (err) {
+        liveAudit = {
+          status: "error",
+          ok: false,
+          errors: 1,
+          warnings: 0,
+          issues: [{ severity: "error", check: "ui-diff-parse", msg: (liveExec.stderr || err?.message || "invalid json").trim().slice(0, 200) }],
+        };
       }
     } else {
       liveAudit = { status: "skipped", reason: "ui-diff not installed", ok: true, errors: 0, warnings: 0, issues: [] };

@@ -79,4 +79,16 @@ test("legacy-scan.mjs returns 0 issues on modern native web primitives", (t) => 
   assert.equal(res.status, 0, res.stderr);
   const json = JSON.parse(res.stdout);
   assert.equal(json.issues.length, 0, `expected 0 issues, got ${JSON.stringify(json.issues)}`);
+
+  // Invoking legacy-scan.mjs from a path containing spaces (%20 in file URL) must still execute main()
+  const spaceDir = join(dir, "path with spaces");
+  mkdirSync(spaceDir, { recursive: true });
+  const spaceScript = join(spaceDir, "legacy-scan.mjs");
+  writeFileSync(spaceScript, readFileSync(LEGACY_SCAN_CLI, "utf8"), "utf8");
+  const spaceRes = spawnSync(process.execPath, [spaceScript, "--srcDir", join(dir, "src"), "--json"], {
+    cwd: dir,
+    encoding: "utf8",
+  });
+  assert.equal(spaceRes.status, 0, spaceRes.stderr);
+  assert.ok(spaceRes.stdout.trim().startsWith("{"), "expected JSON output when invoked from path with spaces");
 });

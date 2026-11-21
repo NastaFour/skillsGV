@@ -319,7 +319,7 @@ const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 // UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
 const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animaciones|animation|animations|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
 const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
-const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|api|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|schema|esquema|postgres|prisma|reducer|state\s+machine|service|resolver|typescript|ts\b|vista\s+materializada|materialized\s+view)\b/i;
+const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|rest\s+api|graphql|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|postgres|postgresql|prisma|state\s+machine|resolver|vista\s+materializada|materialized\s+view|fastify|express|nestjs|bullmq|jwt|rate\s+limit)\b/i;
 
 const isUiTask =
   UNAMBIGUOUS_UI_MARKERS.test(query) ||
@@ -352,8 +352,9 @@ if (isUiTask && validSkillNames.has("design-driven") && !tier1toLoad.includes("d
   if (tier1toLoad.length < 5) tier1toLoad.push("design-driven");
   else tier1toLoad[4] = "design-driven";
 }
-if (isBackendTask && validSkillNames.has("backend-driven") && !tier1toLoad.includes("backend-driven") && tier1toLoad.length < 5) {
-  tier1toLoad.push("backend-driven");
+if (isBackendTask && validSkillNames.has("backend-driven") && !tier1toLoad.includes("backend-driven")) {
+  if (tier1toLoad.length < 5) tier1toLoad.push("backend-driven");
+  else tier1toLoad[4] = "backend-driven";
 }
 
 const output = {
