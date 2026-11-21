@@ -15,22 +15,27 @@ Antes de redactar las 3 opciones del **Creative Pitch**, clasificá el producto 
 
 ---
 
-## 🗣️ Modo Predeterminado (Greenfield Interactivo): Creative Pitch en 1 Mensaje
+## 🗣️ Modo Predeterminado (Greenfield Interactivo): Creative Pitch + Preguntas D1b en 1 Mensaje
 
-Enviá **1 único mensaje conciso** con **3 conceptos concretos diseñados para ESE negocio** (máximo `3` líneas por opción: Dirección/Chasis + Paleta/Tipografía + Pieza Firma + Skills Phase 2 auto-vinculadas) y **frená hasta recibir respuesta**:
+Enviá **1 único mensaje conciso** que combine **los 3 conceptos proactivos diseñados para ESE negocio** + **las 5 preguntas clave del cuestionario D1b** (para que el usuario pueda elegir un concepto rápido y/o afinar cualquiera de las 5 dimensiones antes de generar `DESIGN_SYSTEM.md`), y **frená hasta recibir respuesta**:
 
 ```markdown
-Para que esta interfaz salga única y con impacto real (sin plantillas genéricas), armé 3 direcciones concretas:
+Para que esta interfaz salga única y con impacto real (sin plantillas genéricas), armé **3 conceptos iniciales** y las **5 preguntas D1b** para definir tu `DESIGN_SYSTEM.md`:
 
-1. **Crisp Editorial ([Chasis])** — [Paleta luz/acento + par tipográfico]. *Pieza firma*: [detalle tipográfico/espacial sin JS pesado]. *(Skills: `tailwind-4`, `refactoring-ui`, `micro-interactions`)*
-2. **Interactive Kinetic ([Chasis])** — [Paleta luz/acento + ritmo]. *Pieza firma*: [elemento interactivo útil pensada para el usuario — ej. ruleta de estilos, comparador vivo o timeline scrubbed]. *(Skills: `emil-kowalski`, `motion-gsap`, `micro-interactions`)*
-3. **[Immersive Stage / Editorial SVG según Dominio] ([Chasis H])** — [Inversión lateral de cliché]. *Pieza firma `[Beyond-Baseline]`*: [escena 3D/shader acotada en zona focal o diagrama SVG arquitectónico]. *(Skills: [`scroll-world-storytelling` / `three-js-web` / `shader-dev` | `frontend-slides-deck`])*
+### A. 3 Conceptos Propuestos (Creative Pitch)
+1. **Crisp Editorial ([Chasis])** — [Paleta luz/acento + par tipográfico]. *Pieza firma*: [detalle tipográfico/espacial sin JS pesado]. *(Skills Phase 2: `tailwind-4`, `micro-interactions`, `modern-web-guidance`)*
+2. **Interactive Kinetic ([Chasis])** — [Paleta luz/acento + ritmo]. *Pieza firma*: [elemento interactivo útil pensado para el usuario — ej. ruleta de estilos, comparador vivo o timeline con ScrollTrigger]. *(Skills Phase 2: `emil-kowalski`, `motion-gsap`, `micro-interactions`)*
+3. **[Immersive Stage / Editorial SVG según Dominio] ([Chasis H])** — [Inversión lateral de cliché]. *Pieza firma `[Beyond-Baseline]`*: [escena 3D/shader acotada en zona focal o diagrama SVG arquitectónico]. *(Skills Phase 2: [`scroll-world-storytelling` / `three-js-web` / `shader-dev` | `frontend-slides-deck`])*
 
-Elegí `1`, `2` o `3` (podés ajustar modo claro/oscuro, color o pedir "desde cero"), y si querés usar un modelo específico de tu API key para construir el frontend indicalo acá `[opcional · default: actual]`.
+### B. Preguntas D1b (respondé eligiendo `1`, `2` o `3` y/o ajustando cualquiera de estos 5 puntos)
+1. **Personalidad y Anti-Referencia**: ¿Qué 3 adjetivos definen la marca y a qué cliché NO querés que se parezca jamás?
+2. **Geometría y Estructura (Chasis A–H)**: ¿Preferís amplitud editorial (`Gallery`/`Monograph`), precisión densa (`Precision`/`Spec-Sheet`) o algo disruptivo (`Bespoke H`)?
+3. **Luz y Acento (OKLCH)**: ¿Modo claro cálido, oscuro profundo o adaptativo, y qué tono de acento principal?
+4. **Voz Tipográfica**: ¿Editorial con Serif de alto contraste, Sans geométrica limpia o técnica con telemetría `tabular-nums`?
+5. **Pieza Firma (`[Beyond-Baseline]`) y Modelo Constructor**: ¿Qué interacción única sumamos en la zona focal (`Rule of One`) y con qué modelo de tu API key querés que corra `frontend-builder` `[opcional · default: actual]`?
 ```
 
-- **Fallback "desde cero"**: solo si el usuario pide responder las 5 dimensiones manuales (Personalidad/Anti-Referencia, Geometría, Luz/Acento, Tipografía, Detalle Firma), desplegá las 5 preguntas en un solo bloque.
-- **One-Shot (`"one-shot"` / `"sin preguntas"` / `"sorprendeme"` / Swarms)**: elegí automáticamente la Opción 2 o 3 habilitada por la Matriz de Dominio, registrá el `Design Read` y escribí `DESIGN_SYSTEM.md` completo antes de codificar.
+- **One-Shot (`"one-shot"` / `"sin preguntas"` / `"sorprendeme"` / Swarms)**: elegí automáticamente la Opción 2 o 3 habilitada por la Matriz de Dominio, respondé la síntesis D1b y escribí `DESIGN_SYSTEM.md` completo antes de codificar.
 
 ---
 
