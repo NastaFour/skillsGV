@@ -1,0 +1,61 @@
+{
+  "evals": [
+    {
+      "id": "design-driven-greenfield-pitch",
+      "prompt": "design-driven D1b para nueva landing de estudio de arquitectura con DESIGN_SYSTEM.md",
+      "files": [],
+      "expected_output": "Phase 1 Creative Pitch (1 concise message, Domain Eligibility Matrix) -> 3 concrete options (Crisp Editorial, Interactive Kinetic, Immersive 2D/3D/Shader) -> persist DESIGN_SYSTEM.md with Runtime Contract, Craft Budget (Rule of One), and Capability & Skill Manifest -> 3-line Design Read -> Phase 2 Positive-Only Canvas (zero audit skills during build) -> Phase 3 verify-frontend-gates.mjs --live + ui-diff + 1 blind Subtractive critic.",
+      "expectations": [
+        "routes-to:design-driven",
+        "contains:Creative Pitch",
+        "contains:DESIGN_SYSTEM.md",
+        "contains:Craft Budget",
+        "contains:Design Read",
+        "contains:verify-frontend-gates.mjs"
+      ]
+    },
+    {
+      "id": "design-driven-think-outside-box",
+      "prompt": "think outside the box y definir chasis arquetipico H para frontend studio",
+      "files": [],
+      "expected_output": "Archetype H (Bespoke / Think Outside the Box): Cliché Inversion + Cross-Domain Metaphor + 3 Mechanical Laws + [Beyond-Baseline]. Honors Floor-Not-Ceiling with OKLCH tokens, WCAG 2.2 AA, prefers-reduced-motion, and micro-interactions concentric radii.",
+      "expectations": [
+        "routes-to:design-driven",
+        "contains:Archetype H",
+        "contains:Beyond-Baseline",
+        "contains:OKLCH"
+      ]
+    },
+    {
+      "id": "design-driven-gate-runner",
+      "prompt": "run verify-frontend-gates and validate design read contract",
+      "files": [],
+      "expected_output": "Run Layer 0 deterministic gate: node 05-frontend/design-driven/scripts/verify-frontend-gates.mjs --srcDir src --webDir . --live http://localhost:4321 (checks .astro/.tsx/.vue/.svelte, DOM geometry alignment, fold clipping, overflow, and ui-diff).",
+      "expectations": [
+        "routes-to:design-driven",
+        "contains:verify-frontend-gates.mjs",
+        "contains:--live"
+      ]
+    },
+    {
+      "id": "design-driven-negative-backend-sql",
+      "prompt": "optimize postgresql database indexes and prisma migrations",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use postgresql and prisma-orm skills rather than design-driven for backend database index and migration optimization.",
+      "expectations": [
+        "not-routes-to:design-driven"
+      ]
+    },
+    {
+      "id": "design-driven-negative-backend-auth",
+      "prompt": "implement jwt authentication middleware and bcrypt password hashing in express",
+      "files": [],
+      "should_trigger": false,
+      "expected_output": "Use jwt-bcrypt and expressjs rather than design-driven for pure backend authentication endpoints.",
+      "expectations": [
+        "not-routes-to:design-driven"
+      ]
+    }
+  ]
+}
