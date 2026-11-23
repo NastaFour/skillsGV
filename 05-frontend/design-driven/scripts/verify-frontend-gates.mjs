@@ -119,7 +119,9 @@ function detectStackSignals(webDir, srcDir) {
     hasScrollApi,
     hasHeavySdk: Boolean(deps["@stripe/stripe-js"] || deps.leaflet || deps["mapbox-gl"] || hasHeavySdk),
     hasI18n: Boolean(deps.i18next || deps["react-i18next"] || deps["react-intl"] || deps["next-intl"]),
-    hasMobile: Boolean(deps["react-native"] || deps.expo),
+    hasExpo: Boolean(deps.expo || deps["expo-router"] || existsSync(join(webDir, "app.json"))),
+    hasReactNative: Boolean(deps["react-native"] || deps.expo || deps["expo-router"]),
+    hasMobile: Boolean(deps["react-native"] || deps.expo || deps["expo-router"]),
     hasInteractiveJsx,
     files,
   };
@@ -443,8 +445,9 @@ function main() {
     { name: "check-scroll", category: "05-frontend", skill: "scroll-animations", file: "check-scroll.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasScrollApi, dedupe: [] },
     { name: "check-module-level-loads", category: "05-frontend", skill: "lazy-loading-patterns", file: "check-module-level-loads.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasHeavySdk, dedupe: [] },
     { name: "check-hardcoded-strings", category: "05-frontend", skill: "i18n-localization", file: "check-hardcoded-strings.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasI18n, dedupe: [] },
-    { name: "check-offline-sync", category: "05-frontend", skill: "offline-sync-mobile", file: "check-offline-sync.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
-    { name: "check-deep-links", category: "05-frontend", skill: "deep-linking-mobile", file: "check-deep-links.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasMobile, dedupe: [] },
+    { name: "check-offline-sync", category: "05-frontend", skill: "offline-sync-mobile", file: "check-offline-sync.mjs", args: ["--srcDir", srcDir, "--json"], run: signals.hasReactNative, dedupe: [] },
+    { name: "check-deep-links", category: "05-frontend", skill: "deep-linking-mobile", file: "check-deep-links.mjs", args: ["--dir", webDir, "--json"], run: signals.hasExpo, dedupe: [] },
+    { name: "check-mobile-antipatterns", category: "05-frontend", skill: "expo-production-auditor", file: "check-mobile-antipatterns.mjs", args: ["--srcDir", srcDir, "--webDir", webDir, "--json"], run: signals.hasReactNative, dedupe: [] },
     { name: "legacy-scan", category: "05-frontend", skill: "modern-web-guidance", file: "legacy-scan.mjs", args: ["--srcDir", srcDir, "--json"], run: Boolean(resolveSiblingScript("05-frontend", "modern-web-guidance", "legacy-scan.mjs")), dedupe: ["legacy-100vh"] },
   ];
 

@@ -21,8 +21,8 @@ Objective: Upgrade `skillsGV` to **Gentle-AI 5.0.0** (Provider Contract `1.6.0`)
 
 ## Tasks
 
-- [ ] **WU1** (`S1`, `S4`) | Route: `inline` (isolated Risk item 3/5) | Gentle-AI `5.0.0` (Contract `1.6.0`) canonical contract + review/workflow/kernel sync + `design-driven` `On-Demand Detail / Texturing Opt-In` rule | Commit: `pending`
-- [ ] **WU2** (`S3`) | Route: `inline` (isolated Risk item 3) | Standalone `05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs` + safe `hasExpo`/`hasReactNative` & `check-deep-links` `--dir` fix in `verify-frontend-gates.mjs` + `test/mobile-gates.test.mjs` | Commit: `pending`
+- [x] **WU1** (`S1`, `S4`) | Route: `inline` (isolated Risk item 3/5) | Gentle-AI `5.0.0` (Contract `1.6.0`) canonical contract + review/workflow/kernel sync + `design-driven` `On-Demand Detail / Texturing Opt-In` rule | Commit: `43a4bd8`
+- [x] **WU2** (`S3`) | Route: `inline` (isolated Risk item 3) | Standalone `05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs` + safe `hasExpo`/`hasReactNative` & `check-deep-links` `--dir` fix in `verify-frontend-gates.mjs` + `test/mobile-gates.test.mjs` (`18/18` tests GREEN, `validate:strict` `255 pass · 0 errors · 0 warnings`) | Commit: `WU2`
 - [ ] **WU3** (`S2`, `S4`) | Route: `inline` (isolated Risk item 3/5) | Upgrade `react-native`, `expo-production-auditor`, `store-deployment-eas`; add `swiftui-native`, `kotlin-android-compose`, `mobile-automation-mcp` + `mcp-manifest.json`; purge 47 phantoms in `skill-router.mjs`; update `overlap-matrix.json`, `routing-corpus.jsonl`, `PROSE_COUNT_DOCS` (`255` -> `258`), `test/router.test.mjs`; run full sync, replay, validator, doctor, tests | Commit: `pending`
 
 ## Log
