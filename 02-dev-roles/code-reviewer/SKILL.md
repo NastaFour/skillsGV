@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Provider Contract 1.6.0), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
+description: "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Review Integration v2 / Capabilities v1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
 license: MIT
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*) Read
@@ -47,7 +47,7 @@ Run the four Rs in order. Every review answers the selected lenses explicitly �
 
 **Rules**: Diagnose before prescribing (R1-R3 before R4); never combine read-only review with source edits in the same pass.
 
-**Native RDD Note (Provider Contract `1.6.0`)**: When native RDD is enabled (`gentle-ai review mode status`), `gentle-ai review assess --json` records the assessed tier/outcome (`passive`, `under_budget`, `review_due`) per commit, the bounded correction budget is frozen by the binary at review START, and full lifecycle rules live in [`_shared/review-ledger-contract.md`](../../_shared/review-ledger-contract.md). If the native `gentle-ai` review binary is unavailable, report `receipt-driven development: unavailable` and apply this 4R review under ordinary repository policy.
+**Native RDD Note (Gentle-AI 5.0.0, Review Integration `v2`)**: When native RDD is enabled (`gentle-ai review mode status` — on by default in `5.0.0` unless opted out via `disable`), `gentle-ai review assess --json` records the assessed tier/outcome (`passive`, `under_budget`, `review_due`) per commit, the bounded correction budget is frozen by the binary at review START, and full lifecycle rules live in [`_shared/review-ledger-contract.md`](../../_shared/review-ledger-contract.md). If the native `gentle-ai` review binary is unavailable, report `receipt-driven development: unavailable` and apply this 4R review under ordinary repository policy.
 
 ---
 
@@ -96,7 +96,7 @@ When a change carries high architectural or security blast radius, escalate to [
 
 - [`references/4r-framework.md`](references/4r-framework.md) — 4R checklist
 - [`references/review-policy.md`](references/review-policy.md) — Causal review policy
-- [Review Ledger Contract](../../_shared/review-ledger-contract.md) — Native Compact Review Orchestration (Gentle-AI 5.0.0, Provider Contract `1.6.0`)
+- [Review Ledger Contract](../../_shared/review-ledger-contract.md) — Native Compact Review Orchestration (Gentle-AI 5.0.0, Review Integration `v2` / Capabilities `v1.5`)
 - [`../rdd-defect-workflow/SKILL.md`](../rdd-defect-workflow/SKILL.md) — Receipt-Driven Development workflow
 - [`../../06-code-quality/app-resource-efficiency/SKILL.md`](../../06-code-quality/app-resource-efficiency/SKILL.md) — CPU, RAM, GPU, I/O backpressure & LLM token budgets
 - [`../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md`](../../06-code-quality/karpathy-ponytail-simplicity/SKILL.md) — Surgical diffs, YAGNI & anti-overengineering guards

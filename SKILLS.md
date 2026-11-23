@@ -102,7 +102,7 @@ Catálogo de **258 skills** compatible con [agentskills.io](https://agentskills.
 | systematic-debugging | [02-dev-roles/systematic-debugging/SKILL.md](02-dev-roles/systematic-debugging/SKILL.md) ← 4-phase systematic debugging: root-cause tracing, isolation, fix verification (Superpowers) |
 | verification-before-completion | [02-dev-roles/verification-before-completion/SKILL.md](02-dev-roles/verification-before-completion/SKILL.md) ← evidence before assertions, pre-commit/PR proof check (Superpowers) |
 | archify | [02-dev-roles/archify/SKILL.md](02-dev-roles/archify/SKILL.md) ← Usala para crear diagramas Excalidraw, flujos y mapas de arquitectura visual té… |
-| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← 6 |
+| gentle-ai-review-4r | [02-dev-roles/gentle-ai-review-4r/SKILL.md](02-dev-roles/gentle-ai-review-4r/SKILL.md) ← Use when running proportionate native code reviews, selecting 4R lenses, managi… |
 | live-cve-security-intel | [02-dev-roles/live-cve-security-intel/SKILL.md](02-dev-roles/live-cve-security-intel/SKILL.md) ← Use at the end of a project, before release, or during High-Risk (Item 2/5) rev… |
 
 ## 03-ai-ml

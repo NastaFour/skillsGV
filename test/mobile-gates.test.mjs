@@ -9,6 +9,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scanMobileAntipatterns } from "../05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..");
@@ -227,4 +228,42 @@ test("verify-frontend-gates does NOT fire mobile checks on pure web projects", (
   const parsed = JSON.parse(res.stdout);
   assert.equal(parsed.scripts.some((s) => s.name === "check-mobile-antipatterns"), false);
   assert.equal(parsed.scripts.some((s) => s.name === "check-deep-links"), false);
+});
+
+test("scanMobileAntipatterns handles single-line nesting, arrow-prop horizontal ScrollView, SectionList, and literal '+' requires", () => {
+  const singleLine = scanMobileAntipatterns(
+    "export const A = () => (<ScrollView><FlatList data={[]} renderItem={() => null} /></ScrollView>);",
+    "A.tsx"
+  );
+  assert.equal(singleLine.some((i) => i.check === "nested-virtualized-list"), true, "detects single-line ScrollView > FlatList");
+
+  const multiArrowHorizontal = scanMobileAntipatterns(
+    [
+      "<ScrollView",
+      "  onScroll={() => handle()}",
+      "  horizontal>",
+      "  <FlatList data={[]} renderItem={() => null} />",
+      "</ScrollView>",
+    ].join("\n"),
+    "B.tsx"
+  );
+  assert.deepEqual(multiArrowHorizontal, [], "arrow callback with '>' must not drop horizontal prop");
+
+  const sectionNested = scanMobileAntipatterns(
+    "<ScrollView>\n  <SectionList sections={[]} />\n</ScrollView>",
+    "Section.tsx"
+  );
+  assert.equal(sectionNested.some((i) => i.check === "nested-virtualized-list"), true, "detects SectionList inside ScrollView");
+
+  const plusLiteral = scanMobileAntipatterns(
+    "const icon = require('./assets/icon+2x.png');",
+    "Literal.tsx"
+  );
+  assert.deepEqual(plusLiteral, [], "literal filename containing '+' is static and valid");
+
+  const dynamicIdent = scanMobileAntipatterns("const mod = require(dynamicPath);", "DynIdent.tsx");
+  assert.equal(dynamicIdent.some((i) => i.check === "dynamic-require-asset"), true, "detects identifier require(var)");
+
+  const dynamicConcat = scanMobileAntipatterns("const mod = require('./a/' + name);", "DynConcat.tsx");
+  assert.equal(dynamicConcat.some((i) => i.check === "dynamic-require-asset"), true, "detects string concat require()");
 });

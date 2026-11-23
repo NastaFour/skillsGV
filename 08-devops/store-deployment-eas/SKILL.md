@@ -32,7 +32,7 @@ Deterministic release pipeline for React Native / Expo apps targeting Apple App 
 Never queue a store build until local static & runtime verification passes:
 1. Run `expo-production-auditor`:
    ```bash
-   node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --dir <projectRoot> --json
+   node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --srcDir <projectRoot> --json
    ```
 2. Run E2E smoke tests (`mobile-automation-mcp` / Maestro `.yaml` flows) against a release-like build on simulator/emulator.
 3. Confirm native binary boundary: lock `runtimeVersion` (`policy: "appVersion"` or `"fingerprint"`) whenever changing native dependencies, permissions, or `app.config.ts` plugins before shipping OTA updates.

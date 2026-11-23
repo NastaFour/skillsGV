@@ -11,7 +11,7 @@ metadata:
 
 # 🌿 odd-workflow — Organic Driven Development (Gentle-AI 5.0.0)
 
-The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 5.0.0 ODD** (Provider Contract `1.6.0`, Go module `/v5`) with **One-Shot Pre-Flight Blueprinting**, **3-Tier Delegated Verification (`_shared/verify-method.md`)**, **Auto-EGM Plan Gate**, and **Pre-Release Live CVE Gate**.
+The universal, disciplined protocol for software delivery across AI agents. Combines **Gentle-AI 5.0.0 ODD** (Review Integration `v2` / Capabilities `v1.5`, Go module `/v5`) with **One-Shot Pre-Flight Blueprinting**, **3-Tier Delegated Verification (`_shared/verify-method.md`)**, **Auto-EGM Plan Gate**, and **Pre-Release Live CVE Gate**.
 
 ---
 

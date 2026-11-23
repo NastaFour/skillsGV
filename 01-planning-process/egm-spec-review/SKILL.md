@@ -14,7 +14,7 @@ metadata:
 
 # 🐘🐠 EGM Spec Review — Mandatory Auto-EGM Gate for Large Plans
 
-Coordinates deep-context specification authoring (**Elephant**) with zero-context adversarial subagent critics (**Goldfishes**) from the external EGM plugin installed at `~/.gemini/config/plugins/egm/` before committing to code under `skillsGV` ODD (`Gentle-AI 5.0.0`, Contract `1.6.0`).
+Coordinates deep-context specification authoring (**Elephant**) with zero-context adversarial subagent critics (**Goldfishes**) from the external EGM plugin installed at `~/.gemini/config/plugins/egm/` before committing to code under `skillsGV` ODD (`Gentle-AI 5.0.0`, Review Integration `v2`).
 
 ---
 

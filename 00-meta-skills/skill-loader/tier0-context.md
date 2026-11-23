@@ -14,7 +14,7 @@ Validates that all SKILL.md files in the catalog comply with the agentskills.io 
 Unit, integration, and E2E testing patterns for fullstack apps — fast deterministic unit tests vs ephemeral-database integration tests (PGlite, Testcontainers, SQLite in-memory). Use when writing tests with Vitest, Supertest, or React Testing Library. Do NOT use for penetration testing or security audits.
 
 ## code-reviewer
-Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Provider Contract 1.6.0), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass.
+Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Review Integration v2 / Capabilities v1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass.
 
 ## engram-integration
 Persistent cross-session memory for AI coding agents via the Engram binary — one-liner setup (engram setup <agent>), 20 MCP tools (mem_save/mem_search/mem_judge...), SQLite+FTS5, git sync, optional cloud. Use when an agent should remember decisions and bugs across sessions instead of starting over.

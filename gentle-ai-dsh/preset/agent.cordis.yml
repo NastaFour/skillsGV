@@ -120,18 +120,14 @@
 
 - id: mcp-open-design
   name: '@deepseek-ai/dsh-mcp-client'
+  disabled: !!js "!process.env.OPEN_DESIGN_MCP_COMMAND"
   config:
     serverName: open-design
     transport: stdio
-    command: 'C:\Users\j1347\AppData\Local\Programs\Open Design\Open Design.exe'
-    args:
-      - 'C:\Users\j1347\AppData\Local\Programs\Open Design\resources\app\prebundled\daemon\daemon-cli.mjs'
-      - mcp
+    command: !!js process.env.OPEN_DESIGN_MCP_COMMAND
+    args: !!js "(() => { try { return JSON.parse(process.env.OPEN_DESIGN_MCP_ARGS || '[\"mcp\"]'); } catch { return ['mcp']; } })()"
     env:
-      OD_DATA_DIR: 'C:\Users\j1347\AppData\Roaming\Open Design\namespaces\release-stable-win\data'
-      OD_SIDECAR_IPC_PATH: '\\.\pipe\open-design-release-stable-win-daemon'
-      OD_MCP_BOOTSTRAP_COMMAND: 'C:\Users\j1347\AppData\Local\Programs\Open Design\Open Design.exe'
-      OD_MCP_BOOTSTRAP_ARGS: '["--headless"]'
+      OD_DATA_DIR: !!js process.env.OD_DATA_DIR || ''
       ELECTRON_RUN_AS_NODE: '1'
     toolCallTimeoutMs: 120000
     failOnStartupError: false

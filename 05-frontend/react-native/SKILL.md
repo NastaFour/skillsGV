@@ -66,4 +66,4 @@ Follow Callstack's empirical optimization cycle — never refactor state or memo
 
 ## Anti-Patterns Guardrail
 
-Before finishing mobile code changes, run `expo-production-auditor` (`node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --dir <projectDir>`) to block `runOnJS`, `expo-av`, dynamic `require()`, and nested virtualized lists automatically. For simulator E2E verification, hand off to `mobile-automation-mcp`.
+Before finishing mobile code changes, run `expo-production-auditor` (`node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --srcDir <projectDir>`) to block `runOnJS`, `expo-av`, dynamic `require()`, and nested virtualized lists automatically. For simulator E2E verification, hand off to `mobile-automation-mcp`.

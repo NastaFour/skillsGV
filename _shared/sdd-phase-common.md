@@ -127,13 +127,13 @@ Este guard existe para reducir el agotamiento del reviewer y mantener la entrega
 
 *(Nota: el bloque de cierre `## Key Learnings` en workers fue retirado a partir de Gentle-AI 4.6.0 / 5.0.0).*
 
-## F. Contrato RDD — integración con el ciclo de review nativo (Gentle-AI 5.0.0, Provider Contract 1.6.0)
+## F. Contrato RDD — integración con el ciclo de review nativo (Gentle-AI 5.0.0, Review Integration v2 / Capabilities v1.5)
 
 El catálogo NO reimplementa el mecanismo de review: se integra al ciclo nativo del binario `gentle-ai` (Native Compact Review Orchestration). El contrato completo del ciclo vive en `_shared/review-ledger-contract.md` y es SOLO para el orquestador y el CLI nativo — nunca se pasa a lentes, refuters, jueces, correctores ni validadores.
 
 **Dos posiciones activas:**
 
-1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness corre el preflight selectorless (`gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent <runtime> --next-transition`) sobre el candidato del worktree actual y rutea SOLO desde el `next_transition` devuelto — nunca desde prosa, gates ni estado ambiente. En `5.0.0`, el Stop hook evalúa la misma decisión `review-due` y respeta escalaciones explícitas; la autoridad legacy `v1` fue eliminada. No abre un presupuesto de review por su cuenta.
+1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness corre el preflight selectorless (`gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent <runtime> --next-transition`) sobre el candidato del worktree actual y rutea SOLO desde el `next_transition` devuelto — nunca desde prosa, gates ni estado ambiente. En `5.0.0`, el Stop hook evalúa la misma decisión `review-due` y respeta escalaciones explícitas; compact `v2` es el ciclo ordinario único (conservando compatibilidad `legacy-v1` de solo lectura y `review repair --preflight` para diagnóstico de autoridad dañada). No abre un presupuesto de review por su cuenta.
 2. **Pre-archive**: el pipeline es `sdd-verify` → preflight de review → `sdd-archive`; mismo preflight, mismo ruteo.
 
 **Regla de entrada**: se entra al ciclo una vez por candidato, tras una implementación autorizada que muta fuente y antes de reportarla completa, cuando el interruptor de review del usuario está activo (`gentle-ai review mode status` lo lee sin mutarlo). El envelope de consentimiento del START decide por candidato; un runtime que corre el preflight él mismo entrega al agente los tokens START exactos y nunca corre START.
@@ -142,7 +142,7 @@ El catálogo NO reimplementa el mecanismo de review: se integra al ciclo nativo 
 
 **Assessment de solo lectura**: `gentle-ai review assess --cwd <repo> --json` (envelope `gentle-ai.review-assessment/v1`) expone el tier de riesgo (`passive|medium|high`), `review_due` y `review_due_reason` SIN crear autoridad de review. Sirve para graduar la verificación (p. ej. verifier independiente en tier alto) sin entrar al lifecycle.
 
-**Presupuestos y stops**: START congela los lentes, el presupuesto de corrección y el presupuesto de contexto por rol (`200 KiB`). Stops clave: `correction_context_budget_exceeded` → liberar autoridad vía la ruta única `gentle-ai review abandon --lineage <id> --expected-revision <rev> --maintainer-authorization <binding> --reason operator_disposition` y revisar como candidatos más chicos; `managed_assets_outdated` → correr el `sync` que nombra el continuation y re-consultar STATUS; `lens_context_budget_exceeded` → reducir scope y transacción nueva. La tabla completa de stops vive en `_shared/review-ledger-contract.md`.
+**Presupuestos y stops**: START congela los lentes, el presupuesto de corrección y el presupuesto de contexto por rol (`200 KiB`). Stops clave: `correction_context_budget_exceeded` → liberar autoridad vía la ruta única `gentle-ai review abandon --lineage <id> --expected-revision <rev> --actor <operator> --maintainer-authorization <binding> --reason operator_disposition` y revisar como candidatos más chicos; `managed_assets_outdated` → correr el `sync` que nombra el continuation y re-consultar STATUS; `lens_context_budget_exceeded` → reducir scope y transacción nueva. La tabla completa de stops vive en `_shared/review-ledger-contract.md`.
 
 **Gates informativos**: los comandos `review validate`/gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) son compatibility/informational only — NUNCA descubren autoridad ni deciden la entrega (habilitados devuelven `invalidated/unmanaged`; deshabilitados, `disabled/unmanaged`). Commit, push, PR y release quedan FUERA del lifecycle: son decisiones humanas bajo la política ordinaria del repositorio.
 
@@ -150,6 +150,6 @@ El catálogo NO reimplementa el mecanismo de review: se integra al ciclo nativo 
 
 **Retoma de sesión**: antes de continuar, resuelva el estado del candidato con el STATUS nativo y siga su `next_transition` (recibe el mismo binding; un target consumido no se re-ofrece).
 
-**Opt-in**: la activación es propiedad del usuario y se realiza con el comando nativo (`gentle-ai review mode enable --scope global`; `status` y `disable` aceptan scope `global|clone`). El catálogo NO DEBE activarlo ni desactivarlo por sí mismo. Con el modo inactivo no se entra al ciclo y el pipeline no falla por su ausencia.
+**Interruptor de usuario (on por defecto en 5.0.0)**: el control de activación es propiedad exclusiva del usuario (`gentle-ai review mode disable --scope global|clone` para desactivar o `gentle-ai review mode enable --scope global` para rehabilitar; `status` consulta sin mutar). El catálogo NO DEBE activarlo ni desactivarlo por sí mismo. Con el modo inactivo no se entra al ciclo y el pipeline no falla por su ausencia.
 
 **Lentes**: la ejecución de lentes la decide la capa nativa. Las skills del catálogo (`02-dev-roles/code-reviewer` — lentes 4R; `02-dev-roles/judgment-day` — doble juez adversarial) son mapeables a los lentes nativos, pero el catálogo no ejecuta lentes propios.

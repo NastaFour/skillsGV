@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1795415049961,
+  "generatedAt": 1795417215295,
   "schemaVersion": 1,
   "skillCount": 9,
   "skills": [
@@ -25,7 +25,7 @@
     },
     {
       "name": "code-reviewer",
-      "description": "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Provider Contract 1.6.0), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
+      "description": "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Review Integration v2 / Capabilities v1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
     },
     {
       "name": "engram-integration",

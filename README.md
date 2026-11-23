@@ -8,7 +8,7 @@
 [![Skills Count](https://img.shields.io/badge/skills-258-purple.svg)](#categories)
 [![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%205.0.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 5.0.0 Organic-Driven Development (ODD, Provider Contract `1.6.0`, module `/v5`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine v4.1 (`design-driven`, `/ui-diff`, `verify-frontend-gates.mjs`)**, a **3-Phase Backend Engine (`backend-driven`, `verify-backend-gates.mjs`)**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 5.0.0 Organic-Driven Development (ODD, Review Integration `v2` / Capabilities `v1.5`, module `/v5`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine v4.1 (`design-driven`, `/ui-diff`, `verify-frontend-gates.mjs`)**, a **3-Phase Backend Engine (`backend-driven`, `verify-backend-gates.mjs`)**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 

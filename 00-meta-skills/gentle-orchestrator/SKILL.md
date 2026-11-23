@@ -48,7 +48,7 @@ metadata:
 | verifier | mid | qa-tester / testing-patterns | verificador independiente en `mktemp -d` para Alto Riesgo `1–6` |
 | jd-judge-a / jd-judge-b | strong | judgment-day | jueces A y B (ciego adversarial) |
 | jd-fix-agent | mid | jd-fix-agent | aplica fixes acotados del veredicto |
-| review-risk / readability / reliability / resilience | cheap | gentle-ai-review-4r | lentes 4R nativos (R1–R4, Contract `1.6.0`) |
+| review-risk / readability / reliability / resilience | cheap | gentle-ai-review-4r | lentes 4R nativos (R1–R4, Review Integration `v2`) |
 | review-refuter / review-validator | cheap | rdd-defect-workflow | refutación e inspección inmutable de validación |
 
 ## Retry / Recovery & Cierre

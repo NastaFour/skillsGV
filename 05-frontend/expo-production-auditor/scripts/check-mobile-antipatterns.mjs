@@ -73,13 +73,56 @@ function detectReanimated4OrWorklets(webDir) {
   }
 }
 
-function extractScrollViewAttrs(lines, startIdx) {
+function extractJsxOpeningTag(lines, startIdx, startCol) {
   let buf = "";
-  for (let i = startIdx; i < Math.min(startIdx + 12, lines.length); i++) {
-    buf += lines[i] + "\n";
-    if (/>/.test(lines[i])) break;
+  let quote = null;
+  let escape = false;
+  let braceDepth = 0;
+  const maxEnd = Math.min(startIdx + 12, lines.length);
+
+  for (let i = startIdx; i < maxEnd; i++) {
+    const line = lines[i];
+    const fromCol = i === startIdx ? startCol : 0;
+    for (let c = fromCol; c < line.length; c++) {
+      const ch = line[c];
+      buf += ch;
+      if (quote) {
+        if (escape) {
+          escape = false;
+        } else if (ch === "\\") {
+          escape = true;
+        } else if (ch === quote) {
+          quote = null;
+        }
+        continue;
+      }
+      if (ch === "'" || ch === '"' || ch === "`") {
+        quote = ch;
+      } else if (ch === "{") {
+        braceDepth++;
+      } else if (ch === "}" && braceDepth > 0) {
+        braceDepth--;
+      } else if (ch === ">" && braceDepth === 0) {
+        return buf;
+      }
+    }
+    buf += "\n";
   }
   return buf;
+}
+
+function hasDynamicRequireAsset(line) {
+  const reqRe = /\brequire\s*\(/g;
+  let m;
+  while ((m = reqRe.exec(line)) !== null) {
+    const rest = line.slice(m.index + m[0].length);
+    const staticQuoted = /^\s*(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")\s*\)/.test(rest);
+    if (staticQuoted) continue;
+    const btMatch = rest.match(/^\s*(`(?:\\.|[^`\\])*`)\s*\)/);
+    if (btMatch && !/\$\{/.test(btMatch[1])) continue;
+    return true;
+  }
+  return false;
 }
 
 export function scanMobileAntipatterns(content, relFile, opts = {}) {
@@ -117,7 +160,7 @@ export function scanMobileAntipatterns(content, relFile, opts = {}) {
     }
 
     // 3. Dynamic require() breaking Metro static asset bundling
-    if (/\brequire\s*\(\s*(?:`[^`]*\$\{[^}]+\}|[^)]*\+)/.test(line)) {
+    if (hasDynamicRequireAsset(line)) {
       issues.push({
         severity: "error",
         check: "dynamic-require-asset",
@@ -127,26 +170,31 @@ export function scanMobileAntipatterns(content, relFile, opts = {}) {
       });
     }
 
-    // 4. Nested FlatList/FlashList inside non-horizontal ScrollView
-    if (/<ScrollView\b/.test(line)) {
-      const tagText = extractScrollViewAttrs(lines, i);
-      const isSelfClosing = /\/>/.test(tagText);
+    // 4. Nested FlatList/SectionList/FlashList inside non-horizontal ScrollView
+    const svMatch = /<ScrollView\b/g;
+    let svm;
+    while ((svm = svMatch.exec(line)) !== null) {
+      const tagText = extractJsxOpeningTag(lines, i, svm.index);
+      const isSelfClosing = /\/\s*>$/.test(tagText.trim());
       const isHorizontal = /\bhorizontal(?:\s*=\s*\{?\s*true\s*\}?|\b(?!\s*=))/.test(tagText);
       if (!isSelfClosing) {
         scrollStack.push({ isHorizontal });
       }
     }
-    if (scrollStack.some((s) => !s.isHorizontal) && /<(?:FlatList|FlashList)\b/.test(line)) {
+    if (scrollStack.some((s) => !s.isHorizontal) && /<(?:FlatList|SectionList|FlashList)\b/.test(line)) {
       issues.push({
         severity: "warning",
         check: "nested-virtualized-list",
         file: relFile,
         line: lineNo,
-        msg: "Virtualized FlatList/FlashList nested inside vertical ScrollView degrades windowing and freezes scrolling — use ListHeaderComponent or FlashList.",
+        msg: "Virtualized FlatList/SectionList/FlashList nested inside vertical ScrollView degrades windowing and freezes scrolling — use ListHeaderComponent or FlashList.",
       });
     }
-    if (/<\/ScrollView\s*>/.test(line) && scrollStack.length > 0) {
-      scrollStack.pop();
+    const closeMatches = line.match(/<\/ScrollView\s*>/g);
+    if (closeMatches) {
+      for (let k = 0; k < closeMatches.length && scrollStack.length > 0; k++) {
+        scrollStack.pop();
+      }
     }
   }
 

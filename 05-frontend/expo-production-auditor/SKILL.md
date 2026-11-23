@@ -33,7 +33,7 @@ Deterministic pre-release gatekeeper for Expo and React Native codebases. Combin
 Run the bundled standalone checker directly (or automatically through `verify-frontend-gates.mjs` when `hasReactNative` is detected):
 
 ```bash
-node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --dir <projectRoot> --json
+node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --srcDir <projectRoot> --json
 ```
 
 ### Enforced Rules
