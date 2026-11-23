@@ -41,3 +41,7 @@
 {"id":"web-animation-sources-direct","query":"search curated web animation sources and hover effects animation references","expectedPrimary":"web-animation-sources","group":"motion-animation-pipeline","source":"v3.3-routing"}
 {"id":"egm-large-plan-gate","query":"mejorar este plan grande y arquitectura de alta logica antes de codear con heavy logic plan gate","expectedPrimary":"egm-spec-review","group":"spec-ideation-review","source":"v3.3-routing"}
 {"id":"backend-driven-canonical","query":"run verify-backend-gates check before releasing the API service","expectedPrimary":"backend-driven","group":"backend-orchestration","source":"overlap-matrix"}
+{"id":"mobile-react-native-canonical","query":"build expo router screen with flashlist v2 and reanimated 4 scheduleOnRN","expectedPrimary":"react-native","group":"mobile-native-ecosystem","source":"overlap-matrix"}
+{"id":"mobile-swiftui-native","query":"refactor ios native ui view using swiftui swift 6 @Observable and navigationstack","expectedPrimary":"swiftui-native","group":"mobile-native-ecosystem","source":"overlap-matrix"}
+{"id":"mobile-kotlin-compose","query":"optimize jetpack compose lazycolumn performance and edge-to-edge android in kotlin android","expectedPrimary":"kotlin-android-compose","group":"mobile-native-ecosystem","source":"overlap-matrix"}
+{"id":"mobile-automation-mcp-e2e","query":"run maestro mcp and mobile-mcp simulator e2e verification on ios simulator","expectedPrimary":"mobile-automation-mcp","group":"mobile-native-ecosystem","source":"overlap-matrix"}

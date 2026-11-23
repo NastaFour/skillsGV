@@ -1,53 +1,62 @@
 ---
 name: store-deployment-eas
-description: "Deployment patterns for publishing Expo and React Native apps to Apple App Store and Google Play Store using EAS (Expo Application Services). Covers EAS Build, Submit, Update (OTA), environment profiles (development/preview/production), and version management. Use when preparing for production release, submitting to stores, or configuring OTA updates. Do not use for web-only deployments."
+description: >
+  Trigger: eas build, eas submit, eas update, eas workflows, app store connect, asc cli,
+  testflight release. End-to-end mobile release engineering for Expo Application Services
+  (EAS Build, EAS Submit, EAS Update OTA, EAS Workflows CI) and App Store Connect CLI (`asc`)
+  release validation, staged rollouts, metadata parity, and crash/submission health triage. Use
+  when automating iOS or Android store builds, TestFlight/Play internal distribution, OTA update
+  channels, or App Store Connect pre-submission checks. Do NOT use for writing RN UI screens (use
+  react-native), running simulator E2E tests (use mobile-automation-mcp), or web hosting deploys.
 license: MIT
-compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Expo SDK 52+ and EAS CLI."
+allowed-tools: Read Write Edit Bash(pnpm:*,eas:*,asc:*,node:*)
 metadata:
-  trigger: ["app store", "play store", "eas build", "eas submit", "eas update", "ota update", "production deploy", "store deploy", "expo publish", "production release"]
+  author: skillsGV
+  version: "2.0.0"
+  category: 08-devops
+  tags: [eas, expo, app-store-connect, google-play, ota, mobile-devops, ci-cd]
+  trigger: ["eas build", "eas submit", "eas update", "eas workflows", "app store connect", "asc cli", "testflight release"]
   scope: [global, project]
-  version: "1.1.0"
-allowed-tools: Bash(node:*) Read
+  related-skills:
+    - expo-production-auditor
+    - react-native
+    - mobile-automation-mcp
 ---
 
-# 🚀 Store Deployment (Expo EAS Build, Submit & OTA)
+# Store Deployment, EAS Workflows & App Store Connect CLI (v2.0)
 
-Deploy Expo and React Native applications to the Apple App Store and Google Play Store using EAS (Expo Application Services). Covers native builds, store submission, OTA updates, and multi-environment configuration.
+Deterministic release pipeline for React Native / Expo apps targeting Apple App Store / TestFlight and Google Play Console. Zero ad-hoc manual clicks when CLI + workflow automation can validate builds before review.
 
-## 📋 When to Use
+## 1. Pre-Build & Pre-Submit Hard Gates
 
-- Use when preparing a mobile binary for staging or production release
-- Use when submitting a build to App Store Connect (TestFlight) or Google Play Console
-- Use when configuring `eas update` OTA channels for JS/asset hotfixes that do not modify native code
-- Do NOT use for local development server startup (use `pnpm --filter <mobile-package> start`)
-
-## 🚦 Hard Rules
-
-- **Always** maintain isolated EAS profiles (`development`, `preview`/`staging`, `production`) in `eas.json`
-- **Always** manage user-facing `version` and native build numbers (`ios.buildNumber`, `android.versionCode` or `"autoIncrement": true`) before store submission
-- **Never** submit a build to production tracks without verifying the `preview`/`staging` binary first
-- **Always** verify runtime compatibility (`runtimeVersion` policy in `app.json` / `app.config.ts`) before publishing an `eas update` OTA bundle so incompatible native binaries never crash
-- **Never** hardcode environment-specific API URLs in source files — inject them via EAS environment variables (`EXPO_PUBLIC_*`) per profile
-
-## 🛠️ Workflow
-
-1. Read EAS setup: [eas-setup.md](references/eas-setup.md)
-2. Read release process: [release-process.md](references/release-process.md)
-3. Run the checker to verify EAS configuration:
+Never queue a store build until local static & runtime verification passes:
+1. Run `expo-production-auditor`:
    ```bash
-   node 08-devops/store-deployment-eas/scripts/check-eas-config.mjs
+   node 05-frontend/expo-production-auditor/scripts/check-mobile-antipatterns.mjs --dir <projectRoot> --json
    ```
+2. Run E2E smoke tests (`mobile-automation-mcp` / Maestro `.yaml` flows) against a release-like build on simulator/emulator.
+3. Confirm native binary boundary: lock `runtimeVersion` (`policy: "appVersion"` or `"fingerprint"`) whenever changing native dependencies, permissions, or `app.config.ts` plugins before shipping OTA updates.
 
-## 🚀 Floor, Not Ceiling (`[Beyond-Baseline]`)
+## 2. EAS Build, Update & Declarative Workflows
 
-Standard EAS Build + manual Submit is the baseline. Automate mobile release engineering as the team scales (annotate with `[Beyond-Baseline: <reason>]`):
-- **Fingerprint-Based Runtime Versioning**: Use `"runtimeVersion": { "policy": "fingerprint" }` (`@expo/fingerprint`) to automatically detect when native dependencies or config plugins change, routing pure JS diffs to `eas update` and native diffs to `eas build`.
-- **Automated CI Release Tracks**: Trigger `eas build --profile production --auto-submit --non-interactive` from GitHub Actions on signed release tags.
+Use `pnpm dlx eas-cli` (or repo-local `eas` binary) and declarative `.eas/workflows/` pipelines:
 
-## 📚 References
+- **Profiles (`eas.json`)**:
+  - `development`: internal client (`developmentClient: true`, `distribution: "internal"`)
+  - `preview`: TestFlight / internal APK (`channel: "preview"`)
+  - `production`: signed store `.ipa` / `.aab` (`channel: "production"`, `autoIncrement: true`)
+- **EAS Workflows (`.eas/workflows/*.yml`)**: Chain `fingerprint -> build (only when fingerprint changed) -> maestro e2e -> submit` in CI so JS-only changes ship via `eas update` instead of wasting full native binary builds.
+- **OTA Update Safety (`eas update`)**:
+  - Target explicit channels (`--channel preview`, `--channel production`) with rollouts/branches matching the native binary fingerprint.
+  - Never push native module additions or `Info.plist`/`AndroidManifest.xml` permission edits via OTA — bump binary version and rebuild.
 
-- [EAS Setup](references/eas-setup.md) — `eas.json`, profiles, signing credentials
-- [Release Process](references/release-process.md) — version bump → build → submit → OTA rollout
-- [`expo-production-auditor`](../../05-frontend/expo-production-auditor/SKILL.md) — pre-build production audit
-- [`ci-cd`](../ci-cd/SKILL.md) — CI/CD pipeline integration
-- [`env-management`](../../06-code-quality/env-management/SKILL.md) — environment variables per profile
+## 3. App Store Connect CLI (`asc`) Release Discipline
+
+For Apple App Store Connect metadata, strict preflight checks, TestFlight distribution, phased rollout, and submission triage, read the detailed reference playbook:
+
+- [asc-cli-release-flow.md](references/asc-cli-release-flow.md)
+
+Core invariants:
+- Run `asc validate --app "APP_ID" --version "1.2.3" --platform IOS --strict --output table` before every review submission.
+- Keep canonical metadata rooted cleanly (`./metadata` per ASC conventions) and dry-run release actions (`asc release stage --dry-run`) before confirming.
+- Bind submissions to explicit `--build-number` values (`asc review submit --build-number`), never ambiguous `--latest` flags on shared release branches.

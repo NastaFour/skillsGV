@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **255 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **258 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -165,7 +165,7 @@ Catálogo de **255 skills** compatible con [agentskills.io](https://agentskills.
 | nextjs | [05-frontend/nextjs/SKILL.md](05-frontend/nextjs/SKILL.md) ← DEPRECATED. Use nextjs-15 instead. |
 | push-notifications | [05-frontend/push-notifications/SKILL.md](05-frontend/push-notifications/SKILL.md) ← Implementation of mobile push notifications across Expo, React Native, APNs, an… |
 | pwa-capacitor | [05-frontend/pwa-capacitor/SKILL.md](05-frontend/pwa-capacitor/SKILL.md) ← Standards for Progressive Web Apps (PWA) and Ionic Capacitor hybrid mobile buil… |
-| react-native | [05-frontend/react-native/SKILL.md](05-frontend/react-native/SKILL.md) ← Guidelines for cross-platform React Native development |
+| react-native | [05-frontend/react-native/SKILL.md](05-frontend/react-native/SKILL.md) ← Production React Native and Expo SDK 53-56+ engineering covering Expo Router fi… |
 | react-vite | [05-frontend/react-vite/SKILL.md](05-frontend/react-vite/SKILL.md) ← Standards and guidelines for React and Vite SPA development |
 | react-19 | [05-frontend/react-19/SKILL.md](05-frontend/react-19/SKILL.md) ← React 19 with React Compiler, no manual memoization |
 | nextjs-15 | [05-frontend/nextjs-15/SKILL.md](05-frontend/nextjs-15/SKILL.md) ← Next.js 15 App Router, Server Actions |
@@ -217,6 +217,8 @@ Catálogo de **255 skills** compatible con [agentskills.io](https://agentskills.
 | modern-web-guidance | [05-frontend/modern-web-guidance/SKILL.md](05-frontend/modern-web-guidance/SKILL.md) ← baseline web features + legacy-scan |
 | shader-dev | [05-frontend/shader-dev/SKILL.md](05-frontend/shader-dev/SKILL.md) ← custom GLSL / SDF shaders |
 | ui-diff | [05-frontend/ui-diff/SKILL.md](05-frontend/ui-diff/SKILL.md) ← visual regression, DOM geometry & 2x2 contact sheet |
+| kotlin-android-compose | [05-frontend/kotlin-android-compose/SKILL.md](05-frontend/kotlin-android-compose/SKILL.md) ← Official Google Android Jetpack Compose performance, layout, UI correctness, an… |
+| swiftui-native | [05-frontend/swiftui-native/SKILL.md](05-frontend/swiftui-native/SKILL.md) ← Apple-platform native UI and state architecture for SwiftUI (iOS, iPadOS, macOS… |
 
 ## 06-code-quality
 
@@ -285,6 +287,7 @@ Catálogo de **255 skills** compatible con [agentskills.io](https://agentskills.
 | figma-mcp | [11-mcp-hybrid/figma-mcp/SKILL.md](11-mcp-hybrid/figma-mcp/SKILL.md) ← inspección de archivos Figma (design context, metadata, tokens, screenshots) vía servidor MCP |
 | open-design | [11-mcp-hybrid/open-design/SKILL.md](11-mcp-hybrid/open-design/SKILL.md) ← OpenDesign por MCP (mcp__open-design__*), CLI od de respaldo |
 | openseo | [11-mcp-hybrid/openseo/SKILL.md](11-mcp-hybrid/openseo/SKILL.md) ← Usala para auditar SEO técnico, schemas JSON-LD y visibilidad en motores de IA… |
+| mobile-automation-mcp | [11-mcp-hybrid/mobile-automation-mcp/SKILL.md](11-mcp-hybrid/mobile-automation-mcp/SKILL.md) ← Live mobile simulator and emulator verification via Maestro MCP, mobile-mcp acc… |
 
 ## professional-planner
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 255
+    "skills": 258
   },
   "categories": [
     {
@@ -32,7 +32,7 @@
     {
       "id": "05-frontend",
       "title": "Frontend",
-      "count": 59
+      "count": 61
     },
     {
       "id": "06-code-quality",
@@ -57,7 +57,7 @@
     {
       "id": "11-mcp-hybrid",
       "title": "MCP Hybrids",
-      "count": 9
+      "count": 10
     },
     {
       "id": "12-matt-pocock",
@@ -1522,6 +1522,16 @@
       "autoInvoke": true
     },
     {
+      "name": "kotlin-android-compose",
+      "path": "05-frontend/kotlin-android-compose/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
       "name": "lazy-loading-patterns",
       "path": "05-frontend/lazy-loading-patterns/SKILL.md",
       "category": "05-frontend",
@@ -1768,6 +1778,16 @@
       "tier": "full",
       "tier0": false,
       "deprecated": true,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "swiftui-native",
+      "path": "05-frontend/swiftui-native/SKILL.md",
+      "category": "05-frontend",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
       "note": null,
       "autoInvoke": false
     },
@@ -2289,6 +2309,16 @@
       "tier0": false,
       "deprecated": false,
       "note": "← benchmarking y evaluación de agentes mediante corpus de journeys",
+      "autoInvoke": false
+    },
+    {
+      "name": "mobile-automation-mcp",
+      "path": "11-mcp-hybrid/mobile-automation-mcp/SKILL.md",
+      "category": "11-mcp-hybrid",
+      "tier": "full",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
       "autoInvoke": false
     },
     {

@@ -285,3 +285,26 @@ test('skill-router detects Spanish plural animaciones as UI task and injects des
     `Expected design-driven in router output, got ${JSON.stringify(res)}`
   );
 });
+
+test('all router pools and static skill sets reference only existing catalog.json skills', async () => {
+  const mod = await import('../00-meta-skills/skill-router/scripts/skill-router.mjs');
+  const catalog = JSON.parse(readFileSync(join(REPO_ROOT, 'catalog.json'), 'utf8'));
+  const catalogNames = new Set((catalog.skills || []).map((s) => s.name));
+  assert.ok(catalogNames.size >= 258, `Expected >= 258 catalog skills, got ${catalogNames.size}`);
+
+  const buckets = {
+    ...mod.PHASE_SKILL_POOLS,
+    PHASE3_CRITIC_ONLY_SKILLS: [...mod.PHASE3_CRITIC_ONLY_SKILLS],
+    HEAVY_KINETIC_2B_SKILLS: [...mod.HEAVY_KINETIC_2B_SKILLS],
+    TIER0_SKILLS: [...mod.TIER0_SKILLS],
+  };
+
+  for (const [bucketName, names] of Object.entries(buckets)) {
+    const missing = names.filter((name) => !catalogNames.has(name));
+    assert.deepEqual(
+      missing,
+      [],
+      `Found phantom skill(s) in ${bucketName}: ${missing.join(', ')}`
+    );
+  }
+});

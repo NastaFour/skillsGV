@@ -132,6 +132,12 @@
       "canonical": "backend-driven",
       "members": ["backend-driven", "modern-ts-backend", "api-design"],
       "note": "backend-driven gobierna el motor backend en 3 fases (Backend Read, despacho de capacidades y verify-backend-gates); modern-ts-backend y api-design cubren arquitectura Hono/Drizzle y contratos REST."
+    },
+    {
+      "id": "mobile-native-ecosystem",
+      "canonical": "react-native",
+      "members": ["react-native", "expo-production-auditor", "swiftui-native", "kotlin-android-compose", "mobile-automation-mcp", "store-deployment-eas"],
+      "note": "react-native es canónica para Expo/React Native; expo-production-auditor audita pre-release, swiftui-native y kotlin-android-compose cubren UI nativa SwiftUI y Kotlin/Compose (sin mezclar Flutter), mobile-automation-mcp conduce simuladores vía Maestro/mobile-mcp y store-deployment-eas automatiza EAS + App Store Connect CLI."
     }
   ]
 }
