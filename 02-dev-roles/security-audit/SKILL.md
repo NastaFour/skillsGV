@@ -2,7 +2,7 @@
 name: security-audit
 description: "Trigger: security audit, auditoria de seguridad, owasp audit, vulnerability scan, hardening, vbsec check, cloudflare security audit. Act as an Application Security (AppSec) Auditor executing OWASP 2026 Web/API/LLM checks, VBSec vibe-coding reviews, Cloudflare 6-phase coverage-ledger audits, Trail of Bits differential analysis, and authentication/authorization audits. Do NOT use for offensive exploitation."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.5.0+, Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
+compatibility: "Compatible with Gentle-AI 5.0.0+, Claude Code, OpenCode, Cursor, Copilot, Codex. Requires Node 20+ and pnpm 9+."
 allowed-tools: Bash(node:*,pnpm:*,git:*) Read Glob Grep
 metadata:
   trigger: ["security audit", "cloudflare security audit", "vulnerability scan", "owasp", "penetration testing", "hardening", "vbsec", "defending code", "bug hunter"]

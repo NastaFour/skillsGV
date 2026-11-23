@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -215,6 +216,43 @@ test("dangerous --mirror is rejected (exit 2) before any mutation", () => {
 
     // The legitimate mirror is still writable after the rejected attempts.
     assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--write"]), 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("syncMirror rewrites ../../../_shared/ imports to ../../_shared/ in flat mirror scripts and checkMirror verifies", () => {
+  const { root, cat, mir } = makeFixture();
+  try {
+    writeFileSync(
+      join(cat, "_shared", "eval-harness.mjs"),
+      'export const HARNESS_VERSION = "ok";\n',
+      "utf8"
+    );
+    writeFileSync(
+      join(cat, "00-meta", "skill-a", "scripts", "run.mjs"),
+      'import { HARNESS_VERSION } from "../../../_shared/eval-harness.mjs";\nconst pattern = \'"../../../_shared/\';\nconsole.log(HARNESS_VERSION, pattern);\n',
+      "utf8"
+    );
+
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--write"]), 0);
+    const syncedScript = readFileSync(join(mir, "skill-a", "scripts", "run.mjs"), "utf8");
+    assert.match(syncedScript, /from "\.\.\/\.\.\/_shared\/eval-harness\.mjs"/);
+    assert.doesNotMatch(syncedScript, /from ["']\.\.\/\.\.\/\.\.\/_shared\//);
+    assert.ok(syncedScript.includes("const pattern = '\"../../../_shared/';"), "preserves non-import string literal");
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--check"]), 0);
+
+    const execRes = spawnSync(process.execPath, [join(mir, "skill-a", "scripts", "run.mjs")], { encoding: "utf8" });
+    assert.equal(execRes.status, 0, execRes.stderr);
+    assert.match(execRes.stdout, /^ok /m);
+
+    // Un-rewritten verbatim copy must be flagged by checkMirror
+    writeFileSync(
+      join(mir, "skill-a", "scripts", "run.mjs"),
+      readFileSync(join(cat, "00-meta", "skill-a", "scripts", "run.mjs"), "utf8"),
+      "utf8"
+    );
+    assert.equal(runCli(["--catalog", cat, "--mirror", mir, "--check"]), 1);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

@@ -38,6 +38,7 @@ Para que esta interfaz salga única y con impacto real (sin plantillas genérica
 ```
 
 - **One-Shot (`"one-shot"` / `"sin preguntas"` / `"sorprendeme"` / Swarms)**: elegí automáticamente la Opción 2 o 3 habilitada por la Matriz de Dominio, respondé la síntesis D1b y escribí `DESIGN_SYSTEM.md` completo antes de codificar.
+- **Texturizado & Detalle Bajo Demanda**: la primera pasada prioriza media real verificada, jerarquía tipográfica, geometría DOM limpia y micro-interacciones táctiles; reservá texturas procedurales pesadas, emblemas multi-capa o efectos de post-procesado para referencias visuales provistas en Fase 1 o pedido explícito del usuario.
 
 ---
 

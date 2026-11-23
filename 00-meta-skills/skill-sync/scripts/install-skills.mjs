@@ -761,18 +761,26 @@ function fixSharedImports(skillDestDir) {
   const scriptsDir = join(skillDestDir, "scripts");
   if (!existsSync(scriptsDir)) return;
   let changed = 0;
-  for (const e of readdirSync(scriptsDir, { withFileTypes: true })) {
-    if (!e.isFile() || !e.name.endsWith(".mjs")) continue;
-    const p = join(scriptsDir, e.name);
-    const src = readFileSync(p, "utf8");
-    const rewritten = src
-      .split('"../../../_shared/').join('"../../_shared/')
-      .split("'../../../_shared/").join("'../../_shared/");
-    if (rewritten !== src) {
-      writeFileSync(p, rewritten);
-      changed++;
+  function walk(dir, depth) {
+    const fromPrefix = "../".repeat(3 + depth) + "_shared/";
+    const toPrefix = "../".repeat(2 + depth) + "_shared/";
+    const escapedFrom = fromPrefix.replace(/\//g, "\\/");
+    const specRe = new RegExp(`((?:from\\s+|import\\s+|import\\s*\\(\\s*|require\\s*\\(\\s*)(["']))${escapedFrom}`, "g");
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name);
+      if (e.isDirectory()) {
+        walk(p, depth + 1);
+      } else if (e.isFile() && /\.(?:mjs|js|cjs)$/i.test(e.name)) {
+        const src = readFileSync(p, "utf8");
+        const rewritten = src.replace(specRe, `$1${toPrefix}`);
+        if (rewritten !== src) {
+          writeFileSync(p, rewritten);
+          changed++;
+        }
+      }
     }
   }
+  walk(scriptsDir, 0);
   if (changed) console.log(`  🔧 rewrote _shared imports in ${changed} script(s)`);
 }
 

@@ -19,7 +19,7 @@
     },
     "openseo": {
       "purpose": "Auditar SEO técnico, indexación, rastreo y visibilidad en motores de IA con OpenSEO",
-      "install": "npx skills add every-app/open-seo (o conectar endpoint MCP de OpenSEO)",
+      "install": "pnpm dlx skills add every-app/open-seo (o conectar endpoint MCP de OpenSEO)",
       "spec": "https://github.com/every-app/open-seo",
       "requiredBy": [
         "openseo"
@@ -27,10 +27,26 @@
     },
     "playwright": {
       "purpose": "Inspección de browser en vivo, toma de snapshots del DOM y capturas antes de generar pruebas E2E",
-      "install": "npx @executeautomation/playwright-mcp-server (o servidor MCP oficial de Playwright)",
+      "install": "pnpm dlx @executeautomation/playwright-mcp-server (o servidor MCP oficial de Playwright)",
       "spec": "https://github.com/executeautomation/mcp-playwright",
       "requiredBy": [
         "playwright"
+      ]
+    },
+    "maestro": {
+      "purpose": "Ejecución declarativa de flujos E2E móviles (.yaml), inspección de jerarquía visual y smoke tests en iOS Simulator / Android Emulator",
+      "install": "maestro mcp (requiere Maestro CLI >= 1.39 instalado en PATH)",
+      "spec": "https://docs.maestro.dev/getting-started/maestro-mcp",
+      "requiredBy": [
+        "mobile-automation-mcp"
+      ]
+    },
+    "mobile-mcp": {
+      "purpose": "Automatización en vivo de simuladores iOS/Android mediante árbol de accesibilidad nativo y fallback por coordenadas cuando el árbol no expone nodos",
+      "install": "pnpm dlx @mobilenext/mobile-mcp@latest",
+      "spec": "https://github.com/mobile-next/mobile-mcp",
+      "requiredBy": [
+        "mobile-automation-mcp"
       ]
     }
   }

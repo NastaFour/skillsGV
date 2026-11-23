@@ -26,6 +26,7 @@ Enforces intentional, anti-slop UI across **2 execution tiers** and **3 non-bloc
 
 - **Floor**: (1) Prior 3-line `Design Read` (1-line `< 50` lines); (2) Real domain data + full states (`hover`, `focus-visible`, `active`, `disabled`, `loading`, `error`); (3) Semantic OKLCH tokens (`--surface-*`, `--text-*`, `--accent-*`, `--border-*`); (4) WCAG 2.2 AA, `prefers-reduced-motion`, zero `0–2px` wireframe box-walls and zero `" / "` clutter.
 - **Ceiling (`[Beyond-Baseline]`)**: Archetypes `A–G` are launchpads; **Archetype H (`Bespoke`)** unlocks bold lateral aesthetics governed by the **`Rule of One` (`Craft Budget`)**: 1 high-craft focal zone, 80% calm readable canvas.
+- **On-Demand Detail / Reference Fidelity**: Default Phase 2 builds prioritize clean verified real media (`naturalWidth > 0`), DOM geometry, typography hierarchy, and tactile micro-interactions; heavy procedural texturing, bespoke multi-part vector emblems, and shader post-processing remain **opt-in** when explicitly requested or anchored to a user-supplied reference image extracted in Phase 1.
 
 ## 🔄 The 3-Phase Frontend Engine v4 (Subagent Context-Split across All Frontend Skills)
 

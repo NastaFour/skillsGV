@@ -285,3 +285,51 @@ test('skill-router detects Spanish plural animaciones as UI task and injects des
     `Expected design-driven in router output, got ${JSON.stringify(res)}`
   );
 });
+
+test('all router pools and static skill sets reference only existing, non-deprecated catalog.json skills', async () => {
+  const mod = await import('../00-meta-skills/skill-router/scripts/skill-router.mjs');
+  const catalog = JSON.parse(readFileSync(join(REPO_ROOT, 'catalog.json'), 'utf8'));
+  const catalogNames = new Set((catalog.skills || []).map((s) => s.name));
+  const deprecatedNames = new Set((catalog.skills || []).filter((s) => s.deprecated).map((s) => s.name));
+  assert.ok(catalogNames.size >= 258, `Expected >= 258 catalog skills, got ${catalogNames.size}`);
+
+  const buckets = {
+    ...mod.PHASE_SKILL_POOLS,
+    PHASE3_CRITIC_ONLY_SKILLS: [...mod.PHASE3_CRITIC_ONLY_SKILLS],
+    HEAVY_KINETIC_2B_SKILLS: [...mod.HEAVY_KINETIC_2B_SKILLS],
+    TIER0_SKILLS: [...mod.TIER0_SKILLS],
+  };
+
+  for (const [bucketName, names] of Object.entries(buckets)) {
+    const missing = names.filter((name) => !catalogNames.has(name));
+    assert.deepEqual(
+      missing,
+      [],
+      `Found phantom skill(s) in ${bucketName}: ${missing.join(', ')}`
+    );
+    const deprecated = names.filter((name) => deprecatedNames.has(name));
+    assert.deepEqual(
+      deprecated,
+      [],
+      `Found deprecated skill(s) in ${bucketName}: ${deprecated.join(', ')}`
+    );
+  }
+});
+
+test('mobile UI queries set isUiTask=true and keep expo-production-auditor out of phase2a', () => {
+  const stdout = execFileSync(
+    'node',
+    [
+      join(REPO_ROOT, '00-meta-skills/skill-router/scripts/skill-router.mjs'),
+      '--query',
+      'build expo react-native app with swiftui-native',
+      '--phase-plan',
+      '--json',
+    ],
+    { encoding: 'utf8' }
+  );
+  const res = JSON.parse(stdout);
+  assert.equal(res.isUiTask, true);
+  assert.equal(res.phasePlan.phase2a.includes('expo-production-auditor'), false);
+  assert.ok(res.tier1toLoad.includes('design-driven'));
+});

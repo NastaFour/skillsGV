@@ -36,6 +36,7 @@ import {
   existsSync,
   readdirSync,
   readFileSync,
+  writeFileSync,
   copyFileSync,
   mkdirSync,
   rmSync,
@@ -182,6 +183,27 @@ export function sharedUnion(catalogRoot, mirrorRoot) {
 }
 
 /**
+ * Computes the expected mirror bytes for a canonical skill file.
+ * Rewrites `../../../_shared/` imports inside `scripts/` to `../../_shared/`
+ * because the addon mirror flattens `<category>/<skill>/scripts/` to `<skill>/scripts/`.
+ */
+function expectedMirrorBuffer(rel, canonicalFull) {
+  const normRel = rel.split("\\").join("/");
+  const raw = readFileSync(canonicalFull);
+  if (/^scripts\/.*\.(?:mjs|js|cjs)$/i.test(normRel)) {
+    const text = raw.toString("utf8");
+    const rewritten = text.replace(
+      /((?:from\s+|import\s+|import\s*\(\s*|require\s*\(\s*)(["']))\.\.\/\.\.\/\.\.\/_shared\//g,
+      "$1../../_shared/"
+    );
+    if (rewritten !== text) {
+      return Buffer.from(rewritten, "utf8");
+    }
+  }
+  return raw;
+}
+
+/**
  * Compares the canonical catalog against the mirror.
  * Returns { pass, missingSkills, orphanSkills, skillDivergences, totalCanonicalSkills, totalMirrorSkills }
  */
@@ -228,9 +250,9 @@ export function checkMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEF
         missingInMirror.push(rel);
       } else {
         const mirrorFull = mirrorFileMap.get(rel);
-        const canBuf = readFileSync(full);
+        const expectedBuf = expectedMirrorBuffer(rel, full);
         const mirBuf = readFileSync(mirrorFull);
-        if (Buffer.compare(canBuf, mirBuf) !== 0) {
+        if (Buffer.compare(expectedBuf, mirBuf) !== 0) {
           modified.push(rel);
         }
       }
@@ -331,23 +353,23 @@ export function syncMirror(catalogRoot = DEFAULT_CATALOG_ROOT, mirrorRoot = DEFA
     const canonicalFileMap = new Map(canonicalFiles.map((f) => [f.rel, f.full]));
     const mirrorFileMap = new Map(mirrorFiles.map((f) => [f.rel, f.full]));
 
-    // Copy new or modified files
+    // Copy new or modified files (applying flat-mirror _shared import rewrite)
     for (const [rel, srcFull] of canonicalFileMap.entries()) {
       const destFull = join(mirrorDir, rel);
+      const expectedBuf = expectedMirrorBuffer(rel, srcFull);
       let needsCopy = false;
       if (!existsSync(destFull)) {
         needsCopy = true;
       } else {
-        const srcBuf = readFileSync(srcFull);
         const destBuf = readFileSync(destFull);
-        if (Buffer.compare(srcBuf, destBuf) !== 0) {
+        if (Buffer.compare(expectedBuf, destBuf) !== 0) {
           needsCopy = true;
         }
       }
 
       if (needsCopy) {
         mkdirSync(dirname(destFull), { recursive: true });
-        copyFileSync(srcFull, destFull);
+        writeFileSync(destFull, expectedBuf);
         copiedFiles++;
       }
     }

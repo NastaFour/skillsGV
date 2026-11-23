@@ -13,7 +13,7 @@ metadata:
 
 # 🚚 Skill: Tier 0/1 Loader (skill-loader)
 
-Reduces the **~110 SKILL.md files × full body** overload (~110K tokens) into a
+Reduces the **258 SKILL.md files × full body** overload (~110K tokens) into a
 **~2K-token Tier 0 + 3-5K Tier 1** per turn, by enforcing a tier system on top
 of the catalog.
 
@@ -23,7 +23,7 @@ of the catalog.
 
 | Tier | Definition | When Loaded | Where |
 |------|------------|-------------|-------|
-| **0** | Always-on house meta: skill-router, skill-validator, skill-sync, skill-creator, skill-loader, odd-workflow, agents, idea-to-prd-express, project-tracker, session-notes, decision-gate, dod-checker, engram-integration, kill-switches | Agent boot | Inline in system prompt (`tier0-context.json`) |
+| **0** | Always-on house meta (9 canonical): odd-workflow, skill-router, skill-loader, skill-validator, testing-patterns, code-reviewer, engram-integration, dod-checker, decision-gate | Agent boot | Inline in system prompt (`tier0-context.json`) |
 | **1** | Skills selected per turn by `skill-router` via `tier1toLoad[]` | Each turn | `tier1-instructions.txt` |
 | **2** | Everything else | On demand, only after explicit re-route | Direct Read |
 

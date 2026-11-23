@@ -5,10 +5,10 @@
 [![Specification](https://img.shields.io/badge/spec-agentskills.io-success.svg)](https://agentskills.io/specification)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Package Manager](https://img.shields.io/badge/package%20manager-pnpm%20only-orange.svg)](#package-manager-rules)
-[![Skills Count](https://img.shields.io/badge/skills-255-purple.svg)](#categories)
-[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%204.6.0)-brightgreen.svg)](#organic-driven-development)
+[![Skills Count](https://img.shields.io/badge/skills-258-purple.svg)](#categories)
+[![Process](https://img.shields.io/badge/process-ODD%20(Gentle--AI%205.0.0)-brightgreen.svg)](#organic-driven-development)
 
-> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 4.6.0 Organic-Driven Development (ODD, Provider Contract `1.6.0`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine v4 (`design-driven`, `/ui-diff`, `verify-frontend-gates.mjs`)**, a **3-Phase Backend Engine (`backend-driven`, `verify-backend-gates.mjs`)**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
+> **Portable multi-agent skill catalog and process harness** for AI coding assistants. Brings [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) 5.0.0 Organic-Driven Development (ODD, Review Integration `v2` / Capabilities `v1.5`, module `/v5`), NVIDIA `SkillSpector`/`SkillEvaluator` gates, Cloudflare 6-phase AppSec auditing, a **3-Phase Frontend Engine v4.1 (`design-driven`, `/ui-diff`, `verify-frontend-gates.mjs`)**, a **3-Phase Backend Engine (`backend-driven`, `verify-backend-gates.mjs`)**, dual-judge adversarial review (Judgment Day), persistent memory (Engram), and deterministic keyword routing to **ANY** agent — whether running on cheap flash models or flagship reasoning models.
 >
 > 🌐 *Para documentación en Español, ver [`README.es.md`](README.es.md).*
 
@@ -22,9 +22,9 @@ Most AI coding setups suffer from two extremes:
 
 **skillsGV solves this with a structured, layered harness:**
 
-- 🎯 **255 skills** complying with [agentskills.io](https://agentskills.io/specification), scored `0–100` under **NVIDIA `SkillEvaluator` Tier-1 Quality Score (`--quality-score >= 70`)** and verified across **7 harnesses** (`--harness-check`).
+- 🎯 **258 skills** complying with [agentskills.io](https://agentskills.io/specification), scored `0–100` under **NVIDIA `SkillEvaluator` Tier-1 Quality Score (`--quality-score >= 70`)** and verified across **7 harnesses** (`--harness-check`).
 - ⚡ **Two-Tier Progressive Disclosure**: Tier 0 baseline (~2K tokens) + Tier 1 loaded strictly on-demand via deterministic keyword routing (`skill-router`).
-- 🔄 **ODD-Exclusive Workflow (Gentle-AI 4.6.0) + Auto-EGM Plan Gate**: Authorize → Explore (CodeGraph first) → Keep authorized work moving (tool-backed human decisions) → Classify → **Auto-EGM Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md): 3 Goldfishes default, 5 critical; 0 overhead on Small) → `odd/tasks/<feature>.md` + parent-adjudicated `## Allowed edit surfaces` (no `## Key Learnings` bloat) → 3-tier verification (`_shared/verify-method.md` in `mktemp -d` + differential check + orchestrator-owned next step when corrections exhaust) → Selective install (`--skills <list>`) & always-on kernel triggers → Close with `Risk: item N (reason)` or `Risk: none`.
+- 🔄 **ODD-Exclusive Workflow (Gentle-AI 5.0.0) + Auto-EGM Plan Gate**: Authorize → Explore (CodeGraph first) → Keep authorized work moving (tool-backed human decisions) → Classify → **Auto-EGM Plan Review** ([`egm-spec-review`](01-planning-process/egm-spec-review/SKILL.md): 3 Goldfishes default, 5 critical; 0 overhead on Small) → `odd/tasks/<feature>.md` + parent-adjudicated `## Allowed edit surfaces` (no `## Key Learnings` bloat) → 3-tier verification (`_shared/verify-method.md` in `mktemp -d` + differential check + orchestrator-owned next step when corrections exhaust) + unified `review-due` & `gentle-ai review abandon` → Selective install (`--skills <list>`) & always-on kernel triggers → Close with `Risk: item N (reason)` or `Risk: none`.
 - ⚖️ **Adversarial Verification (Judgment Day)**: Two blind, independent LLM judges review substantive diffs before declaring completion.
 - 🛡️ **Defensive Security, Cloudflare 6-Phase Audit, NVIDIA `SkillSpector` & `prompt-shield`**: Static skill/MCP checks (`TT1–6`, `LP1–4`, `TP1–4`, `RP1–3`, `SC8`, `SC10`), Cloudflare Coverage Ledger & `confirmed` 6-tuple certainty contract (`security-audit`), `prompt-shield` (`safe_read.py`), live OSV.dev CVEs (`live-cve-security-intel`), and runtime `ai-safety-agent-guard`.
 - 🏗️ **250-Point Production Engineering & Distributed SRE**: Complete readiness checklist (`production-readiness-250`) and fault-tolerant distributed resilience (`distributed-resilience-sre`) covering monetary math (no floats for money), UTC/IANA timezones, idempotency keys, outbox/DLQ patterns, circuit breakers, and graceful `SIGTERM` shutdowns.
@@ -105,7 +105,7 @@ flowchart TD
 |---|:---:|:---:|:---:|
 | **Standardized Skills** | ❌ | ✅ | ✅ (agentskills.io) |
 | **Progressive Disclosure** | ❌ | ⚠️ (Manual) | ✅ (Tier 0/1 deterministic routing) |
-| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 4.6.0 alignment) |
+| **Organic Process (ODD)** | ❌ | ❌ | ✅ (Gentle-AI 5.0.0 alignment) |
 | **Dual-Judge Review** | ❌ | ❌ | ✅ (`judgment-day`) |
 | **Persistent Memory** | ❌ | ❌ | ✅ (Engram MCP) |
 | **Anti-Slop Design System** | ❌ | ❌ | ✅ (3-Phase Engine + `verify-frontend-gates.mjs`) |
@@ -179,7 +179,7 @@ node 00-meta-skills/skill-sync/scripts/install-skills.mjs --rollback
 
 ## 📂 Categories
 
-The catalog contains **255 skills** distributed across structured domains:
+The catalog contains **258 skills** distributed across structured domains:
 
 | Category | Path | Key Skills & Focus |
 |---|---|---|

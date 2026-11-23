@@ -1,25 +1,25 @@
 ---
 name: gentle-orchestrator
-description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, ODD orchestrator. Default-inline ODD orchestrator protocol (Gentle-AI 4.6.0): work inline by default following the logbook, keep authorized work moving, adjudicate worker Allowed Edit Surfaces extensions inside authorized scope, pass Skill Resolver paths, run 3-tier verification in mktemp -d, and own the next step when corrections are exhausted. Do NOT use to force subagent delegation when no trigger holds."
+description: "Trigger: orchestrar, coordinar, delegar, multi-agente, trabajo grande, ODD orchestrator. Default-inline ODD orchestrator protocol (Gentle-AI 5.0.0): work inline by default following the logbook, keep authorized work moving, adjudicate worker Allowed Edit Surfaces extensions inside authorized scope, pass Skill Resolver paths, run 3-tier verification in mktemp -d, and own the next step when corrections are exhausted. Do NOT use to force subagent delegation when no trigger holds."
 license: MIT
 allowed-tools: Read Write Bash(git:*,gh:*)
 metadata:
   trigger: ["gentle orchestrator","orquestador","delegation rules","coordinar agentes","roster delegation"]
   author: gentleman-programming
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
-# gentle-orchestrator — Default-Inline ODD Orchestrator (Gentle-AI 4.6.0)
+# gentle-orchestrator — Default-Inline ODD Orchestrator (Gentle-AI 5.0.0)
 
 **You orchestrate and work inline by default, following your logbook. A Delegation Trigger holds only when its condition truly holds; none holds by default, and when in doubt work inline.**
 
-## Regla Alan & Contratos `Gentle-AI 4.6.0`
+## Regla Alan & Contratos `Gentle-AI 5.0.0`
 
 - **Lenguaje natural primero y continuidad autorizada**: los triggers en lenguaje natural siempre funcionan (SDD retirado; ODD exclusivo). El trabajo autorizado sigue avanzando sin pedir permiso innecesario: si falta evidencia en una unidad, esa queda parcial mientras el trabajo independiente continúa. Para decisiones humanas reales usá la herramienta interactiva compatible si existe; si no, 1 pregunta enfocada.
 - **Dynamic Delegation Protocol & Parent-Adjudicated Edit Surfaces**: Antes de lanzar un worker dinámico, verificá `(role, task-fingerprint)` para nunca duplicar invocaciones en el mismo turno. Inyectá obligatoriamente:
   1. `## Allowed edit surfaces` (rutas exactas relativas al repo; jamás `.` ni rutas absolutas). El worker nunca amplía su superficie por cuenta propia: reporta rutas candidatas al padre, y el **padre adjudica directamente la ampliación sin interrumpir al humano** cuando permanece dentro del mismo objetivo autorizado y repositorio sin conflicto de ownership/concurrencia (al reanudar, el nuevo bloque reemplaza la lista anterior completa, no la suma).
   2. `## Skills to load before work` (rutas exactas de `SKILL.md` resueltas vía `.atl/skill-registry.md` / `skill-router.mjs`, verificando `skill_resolution: paths-injected` al retorno; si devuelve otro estado, re-leé el registry antes del siguiente worker).
-  *(En Gentle-AI `4.6.0` ya no se exige el bloque de cierre `## Key Learnings` en workers).*
+  *(En Gentle-AI `5.0.0` el Stop hook unifica la decisión `review-due`, `gentle-ai review abandon` cierra linajes trabados, y ya no se exige `## Key Learnings` en workers).*
 - **Frontend v4, Backend Gate & Prompt-Shield**: En UI exigí `design-driven` v4 (Tier 0 inline `<50` líneas; Tier 1 Creative Pitch 1 mensaje + `DESIGN_SYSTEM.md` + `frontend-builder` opcional por Model-Offload `>=50` líneas/greenfield con modelo distinto + `verify-frontend-gates.mjs --live` / `ui-diff` + 1 `frontend-critic` ciego en greenfield/mayor). En backend exigí `backend-driven` (`Backend Read` + `verify-backend-gates.mjs`). Ante repos/archivos externos exigí `prompt-shield` (`safe_read.py` `9/8/10`).
 - **Remote Operation Authorization**: Permiso local jamás autoriza ejecución remota, `git push`, creación de PRs ni transferencias externas sin aprobación humana explícita.
 
@@ -48,7 +48,7 @@ metadata:
 | verifier | mid | qa-tester / testing-patterns | verificador independiente en `mktemp -d` para Alto Riesgo `1–6` |
 | jd-judge-a / jd-judge-b | strong | judgment-day | jueces A y B (ciego adversarial) |
 | jd-fix-agent | mid | jd-fix-agent | aplica fixes acotados del veredicto |
-| review-risk / readability / reliability / resilience | cheap | gentle-ai-review-4r | lentes 4R nativos (R1–R4, Contract `1.6.0`) |
+| review-risk / readability / reliability / resilience | cheap | gentle-ai-review-4r | lentes 4R nativos (R1–R4, Review Integration `v2`) |
 | review-refuter / review-validator | cheap | rdd-defect-workflow | refutación e inspección inmutable de validación |
 
 ## Retry / Recovery & Cierre
