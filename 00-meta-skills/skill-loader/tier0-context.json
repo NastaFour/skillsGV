@@ -1,11 +1,11 @@
 {
-  "generatedAt": 1795289299133,
+  "generatedAt": 1795414432106,
   "schemaVersion": 1,
   "skillCount": 9,
   "skills": [
     {
       "name": "odd-workflow",
-      "description": "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 4.6.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, keep authorized work moving, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, enforce parent-adjudicated Allowed Edit Surfaces and 3-tier verification in mktemp -d, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
+      "description": "Trigger: odd workflow, organic driven development, flujo odd, trabajo sustancial, odd task. Use when executing development under Gentle-AI 5.0.0 Organic Driven Development (ODD) in harnesses without native gentle-ai: authorize, explore, keep authorized work moving, classify by 3 criteria, track in odd/tasks/<feature>.md, synthesize a 5-line One-Shot Pre-Flight Blueprint, enforce parent-adjudicated Allowed Edit Surfaces and 3-tier verification in mktemp -d, commit in ~400-line reviewable slices (high-risk isolated), run Pre-Release Live CVE Gate, and close with observed evidence and Risk line. Do NOT use when gentle-ai is already active in the system prompt."
     },
     {
       "name": "skill-router",
@@ -25,7 +25,7 @@
     },
     {
       "name": "code-reviewer",
-      "description": "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 4.4.0 proportionate review rules (Provider Contract 1.5), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
+      "description": "Trigger: code reviewer, review, code review, PR review, verification loop, audit code. Conduct a rigorous, causal code review using the 4R Framework, Gentle-AI 5.0.0 proportionate review rules (Provider Contract 1.6.0), and ECC verification loops. Use before committing, before PR creation, or during High-Risk (1-6) verification. Do NOT use to mutate code during a read-only review pass."
     },
     {
       "name": "engram-integration",

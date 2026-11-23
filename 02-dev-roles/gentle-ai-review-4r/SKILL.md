@@ -1,35 +1,35 @@
 ---
 name: gentle-ai-review-4r
-description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.6. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 4.6.0. Do NOT use for informal prose proofreading or non-code document editing."
+description: "Trigger: gentle-ai review, 4R lenses, review assess, review_due, under_budget, Receipt-Driven Development, Provider Contract 1.6. Use when running proportionate native code reviews, selecting R1-R4 lenses, managing review slices, or escalating high-risk changes under Gentle-AI 5.0.0. Do NOT use for informal prose proofreading or non-code document editing."
 license: MIT
-compatibility: "Compatible with Gentle-AI 4.6.0+ (Provider Contract 1.6.0), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
+compatibility: "Compatible with Gentle-AI 5.0.0+ (Provider Contract 1.6.0), Claude Code, OpenCode, Cursor, Gemini CLI, Antigravity."
 allowed-tools: Read Write Bash(gentle-ai:*,git:*,node:*) Glob Grep
 metadata:
   trigger: ["gentle-ai review", "4R lenses", "review assess", "review_due", "under_budget", "lentes 4R", "revision proporcional", "provider contract 1.6"]
   scope: "global, project"
-  version: "1.2.0"
+  version: "1.3.0"
   author: skillsGV
 ---
 
 # 🛡️ Gentle-AI Review 4R — Proportionate Native Review & RDD Facade
 
-Operational guide for the **Gentle-AI 4.6.0** native review facade (`gentle-ai review`, Provider Contract `1.6.0`). Replaces rigid line-count review gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, `--request-context` / `--target-evidence` binding, non-blocking finding propagation on stopped reviews, orchestrator-owned next steps when a worker exhausts corrections, and cryptographically bound receipt lineage when Receipt-Driven Development (RDD) is enabled.
+Operational guide for the **Gentle-AI 5.0.0** native review facade (`gentle-ai review`, Provider Contract `1.6.0`, Go module `/v5`). Canonical lifecycle rules live in [`_shared/review-ledger-contract.md`](../../_shared/review-ledger-contract.md). Replaces rigid line-count gates and small-model verifier bias with **risk-proportionate 4R lens selection**, isolated high-risk slices, **a unified `review-due` decision** across Stop hooks and review entry, single-route lineage abandonment (`gentle-ai review abandon`), `--request-context` / `--target-evidence` binding, and cryptographically bound receipt lineage when RDD is enabled.
 
 ---
 
-## 🚫 Core Invariants (Gentle-AI 4.6.0 / Contract 1.6.0)
+## 🚫 Core Invariants (Gentle-AI 5.0.0 / Contract 1.6.0)
 
 1. **OPT-IN USER AUTHORITY & GRACEFUL FALLBACK**: RDD mode is strictly user-owned (`gentle-ai review mode enable --scope global`). Never enable or disable RDD autonomously. When `gentle-ai review mode status` reports disabled, operate under ordinary repository policy (`disabled/unmanaged`). When the `gentle-ai` binary is absent or the repository is on an unsupported SMB/UNC network path (`\\server\share`), report `receipt-driven development: unavailable` and continue under ordinary repository policy.
-2. **HIGH-RISK ONLY `review_due`**: In Gentle-AI 4.4.0, `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk (`items 1..6`). A medium-risk candidate reports `under_budget` regardless of authored line count.
+2. **HIGH-RISK ONLY & UNIFIED `review_due`**: `gentle-ai review assess` flags `review_due: true` **only** when the candidate is high risk (`items 1..6`). In `5.0.0`, Stop hooks read the exact same `review-due` decision as the review entry path, legacy `v1` review authority is removed, and explicit `--escalate-item <1-6> --escalate-reason "<why>"` always reaches review entry.
 3. **ISOLATED HIGH-RISK SLICES**: Before committing a unit whose `Risk:` line names any High-Risk Item (`1..6`), **close and review any pending `under_budget` slice first**, then give the high-risk unit its own isolated commit and review cycle.
 4. **NO SMALL-MODEL VERIFIER BIAS**: Independent verification is triggered strictly by high-risk classification (`--escalate-item <1-6> --escalate-reason "<why>"`), never because a smaller or faster model authored the change.
-5. **SINGLE BOUNDED CORRECTION TRANSACTION**: When a review reports actionable defects, forecast correction size with `capture-correction-plan --correction-lines <N>` (`N > 0`) **before** editing source files.
+5. **SINGLE BOUNDED CORRECTION TRANSACTION**: When a review reports actionable defects, forecast correction size with `capture-correction-plan --correction-lines <N>` (`N > 0`) **before** editing source files. Use `gentle-ai review abandon` for stuck lineages (`review repair --preflight` is retired in `5.0.0`).
 
 ---
 
 ## 🔍 The 4R Review Lenses & Proportionate Selection
 
-At `gentle-ai review start`, the agent selects the exact lenses matching the candidate's risk surface via `--lenses <list>` and documents the rationale with `--lenses-reason "<text>"` (plus optional `--request-context <file>` and `--target-evidence <value>` in Protocol `1.5`):
+At `gentle-ai review start`, the agent selects the exact lenses matching the candidate's risk surface via `--lenses <list>` and documents the rationale with `--lenses-reason "<text>"` (plus `--request-context <file>` and `--target-evidence <value>` under Contract `1.6.0`):
 
 | Lens ID | Lens Name | Focus Surface | When to Select |
 |---|---|---|---|
@@ -40,7 +40,7 @@ At `gentle-ai review start`, the agent selects the exact lenses matching the can
 
 ---
 
-## 🔄 Native Review Lifecycle Workflow (Protocol `1.5`)
+## 🔄 Native Review Lifecycle Workflow (Contract `1.6.0`)
 
 ```mermaid
 flowchart TD
@@ -60,7 +60,7 @@ flowchart TD
 ### Canonical CLI Sequence
 
 ```bash
-# 1. Inspect current RDD mode, capabilities (v1.5), and preflight state
+# 1. Inspect current RDD mode, capabilities (5.0.0), and base-ref preflight state
 gentle-ai review capabilities
 gentle-ai review mode status
 gentle-ai review status --contract gentle-ai.review-integration/v2 --next-transition
@@ -83,8 +83,9 @@ gentle-ai review capture-result --status approved
 
 # 6. If a bounded correction is required before approval:
 gentle-ai review capture-correction-plan --correction-lines 28
-# (If lineage or state drifts, run diagnostic preflight before repair)
-gentle-ai review repair --preflight
+# (If a lineage gets stuck or exceeds correction budget, use the single 5.0.0 abandonment route;
+#  run `gentle-ai review abandon` with no flags to print the exact 8-line binding template)
+gentle-ai review abandon --lineage <id> --expected-revision <rev> --maintainer-authorization <binding> --reason operator_disposition
 ```
 
 ---
@@ -102,9 +103,9 @@ Every code change must close with `Risk: item N (<reason>)` or `Risk: none`. Any
 
 ---
 
-## ⚖️ Before & After: Legacy Gate vs Gentle-AI 4.4.0 4R Review
+## ⚖️ Before & After: Legacy Gate vs Gentle-AI 5.0.0 4R Review
 
-| ❌ Legacy / Dogmatic Review | ✅ Gentle-AI 4.4.0 Proportionate 4R Review |
+| ❌ Legacy / Dogmatic Review | ✅ Gentle-AI 5.0.0 Proportionate 4R Review |
 |---|---|
 | Forces full 4-lens review on a 180-line low-risk docs/test update | `review assess` reports `under_budget`; zero unnecessary subagent overhead |
 | Mixes a 300-line routine refactor with a 40-line auth guard change in one commit | Closes the `under_budget` refactor slice first; isolates the Item 2 auth change in its own commit with `--lenses R1,R3` |

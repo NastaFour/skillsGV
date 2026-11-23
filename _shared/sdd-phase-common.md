@@ -125,40 +125,24 @@ SDD debe proteger la carga cognitiva del reviewer, no solo generar tareas.
 
 Este guard existe para reducir el agotamiento del reviewer y mantener la entrega segura. No lo trate como ruido de proceso opcional.
 
-## F. Cierre con aprendizajes clave
+*(Nota: el bloque de cierre `## Key Learnings` en workers fue retirado a partir de Gentle-AI 4.6.0 / 5.0.0).*
 
-Cierre su **reporte final** (el envelope) con una sección `## Key Learnings` para habilitar la captura pasiva de Engram.
-
-**Formato**: lista numerada de 1-5 ítems. Cada ítem es una oración factual autónoma de ≥20 caracteres y ≥4 palabras.
-
-**Ejemplo**:
-
-```markdown
-## Key Learnings
-
-1. La validación asíncrona en la fase apply detectó una condición de carrera en escrituras concurrentes.
-2. La regeneración de goldens requiere el flag `-update` antes de re-ejecutar.
-3. Los contratos de review acotado deben mantenerse consistentes entre `sdd-phase-common.md` y el mapa del harness.
-```
-
-Esto aplica a su respuesta final de texto al orquestador, no a salidas intermedias ni contenido de artefactos. Engram extraerá y persistirá estos aprendizajes automáticamente.
-
-## G. Contrato RDD — integración con el ciclo de review nativo (gentle-ai 3.4.0)
+## F. Contrato RDD — integración con el ciclo de review nativo (Gentle-AI 5.0.0, Provider Contract 1.6.0)
 
 El catálogo NO reimplementa el mecanismo de review: se integra al ciclo nativo del binario `gentle-ai` (Native Compact Review Orchestration). El contrato completo del ciclo vive en `_shared/review-ledger-contract.md` y es SOLO para el orquestador y el CLI nativo — nunca se pasa a lentes, refuters, jueces, correctores ni validadores.
 
 **Dos posiciones activas:**
 
-1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness corre el preflight selectorless (`gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent <runtime> --next-transition`) sobre el candidato del worktree actual y rutea SOLO desde el `next_transition` devuelto — nunca desde prosa, gates ni estado ambiente. No abre un presupuesto de review por su cuenta.
+1. **Post-apply, por unidad de trabajo**: al cerrar el `apply` de una WU, el harness corre el preflight selectorless (`gentle-ai review status --cwd <repo> --contract gentle-ai.review-integration/v2 --agent <runtime> --next-transition`) sobre el candidato del worktree actual y rutea SOLO desde el `next_transition` devuelto — nunca desde prosa, gates ni estado ambiente. En `5.0.0`, el Stop hook evalúa la misma decisión `review-due` y respeta escalaciones explícitas; la autoridad legacy `v1` fue eliminada. No abre un presupuesto de review por su cuenta.
 2. **Pre-archive**: el pipeline es `sdd-verify` → preflight de review → `sdd-archive`; mismo preflight, mismo ruteo.
 
 **Regla de entrada**: se entra al ciclo una vez por candidato, tras una implementación autorizada que muta fuente y antes de reportarla completa, cuando el interruptor de review del usuario está activo (`gentle-ai review mode status` lo lee sin mutarlo). El envelope de consentimiento del START decide por candidato; un runtime que corre el preflight él mismo entrega al agente los tokens START exactos y nunca corre START.
 
-**Ciclo atómico (4 pasos)**: (1) *preflight-only* — STATUS solo preflightea el candidato actual y devuelve exactamente un START; (2) *freeze-once* — se invoca solo el START devuelto con sus tokens exactos (lineage, revisión, target); (3) *stay-bound* — toda transición posterior se satisface con los tokens exactos que nombra cada `next_transition`; (4) *acknowledge-exactly* — solo el acknowledgement exacto quema autoridad y artefactos (envelope `gentle-ai.review-acknowledged/v1`); un acknowledgement errado, viejo o re-lanzado se rechaza sin crear recibo ni autoridad de entrega. Un target ya acknowledged está consumido (`target_already_acknowledged`): no se re-revisiona; la entrega sigue la política ordinaria del repositorio.
+**Ciclo atómico (4 pasos)**: (1) *preflight-only* — STATUS solo preflightea el candidato actual (respondiendo archivos untracked base-ref vía ruta tipada `collect`) y devuelve exactamente un START; (2) *freeze-once* — se invoca solo el START devuelto con sus tokens exactos (lineage, revisión, target); (3) *stay-bound* — toda transición posterior se satisface con los tokens exactos que nombra cada `next_transition`; (4) *acknowledge-exactly* — solo el acknowledgement exacto quema autoridad y artefactos (envelope `gentle-ai.review-acknowledged/v1`); un acknowledgement errado, viejo o re-lanzado se rechaza sin crear recibo ni autoridad de entrega. Un target ya acknowledged está consumido (`target_already_acknowledged`): no se re-revisiona; la entrega sigue la política ordinaria del repositorio.
 
 **Assessment de solo lectura**: `gentle-ai review assess --cwd <repo> --json` (envelope `gentle-ai.review-assessment/v1`) expone el tier de riesgo (`passive|medium|high`), `review_due` y `review_due_reason` SIN crear autoridad de review. Sirve para graduar la verificación (p. ej. verifier independiente en tier alto) sin entrar al lifecycle.
 
-**Presupuestos y stops**: START congela los lentes, el presupuesto de corrección y el presupuesto de contexto por rol (200 KiB en 3.4.0). Stops clave: `correction_context_budget_exceeded` → liberar autoridad con `gentle-ai review abandon` y revisar como candidatos más chicos; `managed_assets_outdated` → correr el `sync` que nombra el continuation y re-consultar STATUS; `lens_context_budget_exceeded` → reducir scope y transacción nueva. La tabla completa de stops vive en el contrato.
+**Presupuestos y stops**: START congela los lentes, el presupuesto de corrección y el presupuesto de contexto por rol (`200 KiB`). Stops clave: `correction_context_budget_exceeded` → liberar autoridad vía la ruta única `gentle-ai review abandon --lineage <id> --expected-revision <rev> --maintainer-authorization <binding> --reason operator_disposition` y revisar como candidatos más chicos; `managed_assets_outdated` → correr el `sync` que nombra el continuation y re-consultar STATUS; `lens_context_budget_exceeded` → reducir scope y transacción nueva. La tabla completa de stops vive en `_shared/review-ledger-contract.md`.
 
 **Gates informativos**: los comandos `review validate`/gates (`post-apply`, `pre-commit`, `pre-push`, `pre-pr`, `release`) son compatibility/informational only — NUNCA descubren autoridad ni deciden la entrega (habilitados devuelven `invalidated/unmanaged`; deshabilitados, `disabled/unmanaged`). Commit, push, PR y release quedan FUERA del lifecycle: son decisiones humanas bajo la política ordinaria del repositorio.
 
