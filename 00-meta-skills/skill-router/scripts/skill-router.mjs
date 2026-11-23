@@ -136,10 +136,8 @@ export const PHASE_SKILL_POOLS = {
   phase2a: [
     "react-19",
     "nextjs-15",
-    "nextjs",
     "react-vite",
     "tailwind-4",
-    "tailwindcss",
     "angular-core",
     "angular-architecture",
     "angular-forms",
@@ -149,7 +147,6 @@ export const PHASE_SKILL_POOLS = {
     "ui-ux-pro-max",
     "modern-web-guidance",
     "forms-validation-react",
-    "state-management",
     "zustand-5",
     "zod-4",
     "lazy-loading-patterns",
@@ -170,10 +167,7 @@ export const PHASE_SKILL_POOLS = {
     "push-notifications",
     "pwa-capacitor",
     "maps-gps",
-    "store-deployment-eas",
-    "expo-production-auditor",
     "electron",
-    "electronjs",
     "micro-interactions",
     "emil-kowalski",
   ],
@@ -208,6 +202,7 @@ export const PHASE_SKILL_POOLS = {
     "ux-auditor-agent",
     "motion-accessibility",
     "frontend-debugging-protocol",
+    "expo-production-auditor",
     "mobile-automation-mcp",
   ],
 };
@@ -519,7 +514,7 @@ const STRUCTURED_FLOW_MARKERS = /\b(sdd|spec-first|openspec|formal spec|waterfal
 const suggestsStructuredFlow = STRUCTURED_FLOW_MARKERS.test(qLower);
 
 // UI Surface Markers: auto-trigger design governance for any visual/UI task (Spanish & English)
-const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animaciones|animation|animations|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner)\b/i;
+const UNAMBIGUOUS_UI_MARKERS = /\b(ui|ux|frontend|front-end|css|tailwind|jsx|tsx|boton|botones|button|modal|dialog|drawer|popup|navbar|sidebar|hero|landing|dashboard|formulario|form|pantalla|screen|animaci[oó]n|animaciones|animation|animations|motion|dark\s*mode|light\s*mode|paleta|palette|tipograf[ií]a|typography|layout|card|tarjeta|toast|tooltip|skeleton|spinner|swiftui|jetpack\s+compose|react\s+native|react-native|expo\s+router|expo\s+ui)\b/i;
 const AMBIGUOUS_UI_MARKERS = /\b(vista|vistas|view|views|page|pages|p[aá]gina|estado|state|style|styles|estilo|estilos|tema|theme|disen[oa]s?|design|interfaz|interfaces|componente|componentes|component|components|tabla|table|icono|icon)\b/i;
 const PURE_LOGIC_BACKEND_MARKERS = /\b(backend|rest\s+api|graphql|endpoint|endpoints?|controller|middleware|sql|migration|database|base\s+de\s+datos|postgres|postgresql|prisma|state\s+machine|resolver|vista\s+materializada|materialized\s+view|fastify|express|nestjs|bullmq|jwt|rate\s+limit)\b/i;
 const FULLSTACK_BACKEND_MARKERS = /\b(fullstack|full-stack|backend|rest\s+api|graphql|endpoint|endpoints|controller|middleware|migration|prisma|fastify|express|nestjs|bullmq)\b/i;

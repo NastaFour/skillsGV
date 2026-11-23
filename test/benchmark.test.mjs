@@ -3,8 +3,13 @@ import assert from 'node:assert/strict';
 import { calculateMetrics, formatMarkdown, formatTerminal } from '../scripts/benchmark-evals.mjs';
 import { REPO_ROOT } from '../_shared/catalog-manifest.mjs';
 
+let cachedMetrics;
+function getMetrics() {
+  return (cachedMetrics ??= calculateMetrics(REPO_ROOT));
+}
+
 test('benchmark-evals calculates runtime-derived metrics for the catalog', () => {
-  const metrics = calculateMetrics(REPO_ROOT);
+  const metrics = getMetrics();
 
   // Token metrics: every figure derives from the two measured byte counts.
   assert.ok(metrics.tokens.baselineTokens > 0, 'baseline tokens must be positive');
@@ -35,7 +40,7 @@ test('benchmark-evals calculates runtime-derived metrics for the catalog', () =>
 });
 
 test('benchmark-evals formatters report only measured figures', () => {
-  const metrics = calculateMetrics(REPO_ROOT);
+  const metrics = getMetrics();
   const md = formatMarkdown(metrics);
   assert.ok(md.includes('skillsGV Benchmark'), 'markdown must contain title');
   assert.ok(/historical monolithic kernel/i.test(md), 'markdown must label the baseline as a fixed historical reference');

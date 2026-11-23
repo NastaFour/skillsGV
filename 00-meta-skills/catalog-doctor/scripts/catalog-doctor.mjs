@@ -591,11 +591,15 @@ export function runDoctorSuite(root = REPO_ROOT, options = {}) {
         cwd: root,
         encoding: "utf8",
         env: { ...process.env },
+        timeout: 60_000,
       });
     } catch (err) {
       code = err.status ?? 1;
       stdout = err.stdout ?? "";
       stderr = err.stderr ?? "";
+      if (err.code === "ETIMEDOUT") {
+        stderr += "\nCheck timed out after 60s";
+      }
     }
 
     const evaluated = check.parseResult(stdout, code, stderr);
