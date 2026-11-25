@@ -979,7 +979,7 @@ function verifyActivation(target, injectResults, dryRun) {
       }
     }
   }
-  console.log(`    verify activation: references/canary-activation.md (catalog repo)`);
+  console.log(`    verify activation: run "node install.mjs --dry-run" or "pnpm doctor"`);
 }
 
   // Activation layer (project installs): always-on kernel + .gitignore guard.

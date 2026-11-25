@@ -49,7 +49,7 @@ Exit code `0` indicates zero blocking findings; exit code `1` reports blocking f
 
 ## 2. Deep Links, Navigation & Native Hygiene
 
-- Verify Expo Router universal link manifests (`check-deep-links.mjs --dir <webBuildDir>` when Expo web/universal routing is enabled) and confirm iOS `associatedDomains` + Android `intentFilters` match live domain verification files.
+- Verify Expo Router universal link manifests (`check-deep-links.mjs --dir <projectRoot>` when Expo web/universal routing is enabled) and confirm iOS `associatedDomains` + Android `intentFilters` match live domain verification files.
 - Audit native config plugins and `runtimeVersion` policies (`app.config.ts`) before cutting OTA `eas update` payloads so JS bundles never boot against incompatible native modules.
 - Confirm `@expo/ui`, `expo-image`, and `expo-symbols` assets resolve cleanly across both iOS and Android without missing material fallbacks or hardcoded `Dimensions.get()` constants.
 

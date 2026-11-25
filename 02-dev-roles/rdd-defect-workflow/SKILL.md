@@ -77,5 +77,5 @@ Return `rdd_mode`, `provider_contract` (`capabilities/v1.5`, `review-integration
 ## References
 
 - [`_shared/review-ledger-contract.md`](../../_shared/review-ledger-contract.md) — full native receipt contract (Gentle-AI 5.0.0, Review Integration `v2` / Capabilities `v1.5`).
-- `_shared/sdd-phase-common.md` (section G) — catalog-side RDD integration contract.
+- `_shared/sdd-phase-common.md` (section F) — catalog-side RDD integration contract.
 - `00-meta-skills/harness-map.md` — harness extension points (RDD active positions and lens mapping).

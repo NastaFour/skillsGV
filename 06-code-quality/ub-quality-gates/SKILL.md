@@ -3,7 +3,7 @@ name: ub-quality-gates
 description: "Trigger: ub-mode, uncle bob, crapper, crap score, dryer, mutator, mutation testing, attack the premise. Deterministic post-implementation code-rigor gates adapted from Robert C. Martin's ub-mode (0BSD): CRAP score (< 10), structural AST clone detection (dryer < 0.82), differential mutation testing (mutator), and net-new structural heuristics (Attack the Premise, Separate Before Serializing, Idempotent Operations). Use when running quantitative complexity, clone, or mutation gates on non-trivial logic. Do NOT use for TDD workflows (use testing-patterns or tdd), commit/PR slicing (use work-unit-commits), general SOLID architecture (use solid-clean-code), or UI/CSS-only diffs."
 license: 0BSD
 compatibility: "Compatible with Claude Code, OpenCode, Cursor, Copilot, Codex, Gemini CLI, Antigravity. Optional Python 3 CLIs (unclebob/crapper, dryer, mutator) with graceful manual fallback."
-allowed-tools: Read Bash(pnpm:*,git:*,python:*,where.exe:*,crapper:*,dryer:*,mutator:*)
+allowed-tools: Read Bash(pnpm:*,git:*,python:*,python3:*,where.exe:*,crapper:*,dryer:*,mutator:*)
 metadata:
   author: skillsGV
   version: "1.0.0"
@@ -31,7 +31,7 @@ Run these gates after code changes are working to eliminate hidden complexity, s
 | Gate Tool | Threshold | Differential Invocation (`pnpm`-safe) | Exit Codes |
 | :--- | :--- | :--- | :--- |
 | **`crapper`** | `CRAP < 10` per function (`CC² × (1 − cov)³ + CC`) | `crapper --changed --threshold 10 --coverage-command "pnpm test:coverage"` (or `--use-existing-coverage`) | `0` pass · `2` score over threshold · `ENOENT`/`127` missing |
-| **`dryer`** | Jaccard similarity `< 0.82` (`--min-lines 4 --min-nodes 20`) | `dryer --changed --threshold 0.82 --format text` | `0` report complete · `1` usage · `2` unknown format |
+| **`dryer`** | Jaccard similarity `< 0.82` (`--min-lines 4 --min-nodes 20`) | `dryer --changed --threshold 0.82 --format text` | `0` report complete (even when clones `>= 0.82` are found — inspect stdout or `.metrics/dry.edn`) · `1` usage · `2` unknown format |
 | **`mutator`** | `0` surviving covered mutants; delete dead code | `mutator --changed --max-workers 3 --test-command "pnpm test"` | `0` all killed · `2` baseline tests red · `3` survivor found |
 
 ### Scoping & `mutator` Guardrails
@@ -48,7 +48,7 @@ Probe each binary deterministically without hardcoding POSIX-only relative paths
 Probe order (run until found):
   1. PATH check:       Windows -> where.exe <tool>    | POSIX -> command -v <tool>
   2. Local venv check: Windows -> .venv\Scripts\<tool>.exe | POSIX -> .venv/bin/<tool>
-  3. Module check:     python -m <tool> --help
+  3. Module check:     python -m <tool> --help (or python3 -m <tool> --help on POSIX)
   4. Not found (ENOENT / exit 127): execute manual fallback below and report disclosure line.
 
 Expected snapshot artifacts (when executed):
