@@ -106,6 +106,15 @@ function detectStackSignals(webDir, srcDir) {
     if (/ShaderMaterial|gl_FragColor|\.glsl|\.wgsl/.test(txt)) hasShaders = true;
   }
 
+  let hasExpoConfig = false;
+  const appJsonPath = join(webDir, "app.json");
+  if (existsSync(appJsonPath)) {
+    try {
+      const appCfg = JSON.parse(readFileSync(appJsonPath, "utf8"));
+      hasExpoConfig = Boolean(appCfg?.expo);
+    } catch {}
+  }
+
   return {
     hasPkg: Boolean(pkg),
     hasMotion: Boolean(deps.motion || deps["framer-motion"]),
@@ -119,7 +128,7 @@ function detectStackSignals(webDir, srcDir) {
     hasScrollApi,
     hasHeavySdk: Boolean(deps["@stripe/stripe-js"] || deps.leaflet || deps["mapbox-gl"] || hasHeavySdk),
     hasI18n: Boolean(deps.i18next || deps["react-i18next"] || deps["react-intl"] || deps["next-intl"]),
-    hasExpo: Boolean(deps.expo || deps["expo-router"] || existsSync(join(webDir, "app.json"))),
+    hasExpo: Boolean(deps.expo || deps["expo-router"] || hasExpoConfig),
     hasReactNative: Boolean(deps["react-native"] || deps.expo || deps["expo-router"]),
     hasMobile: Boolean(deps["react-native"] || deps.expo || deps["expo-router"]),
     hasInteractiveJsx,
@@ -422,7 +431,15 @@ function main() {
     : srcDirArg
       ? dirname(resolve(srcDirArg))
       : process.cwd();
-  const srcDir = srcDirArg ? resolve(srcDirArg) : join(webDir, "src");
+  const srcDir = srcDirArg
+    ? resolve(srcDirArg)
+    : [join(webDir, "src"), join(webDir, "app"), webDir].find((candidate) => {
+        try {
+          return existsSync(candidate) && statSync(candidate).isDirectory();
+        } catch {
+          return false;
+        }
+      }) || join(webDir, "src");
 
   if (!existsSync(srcDir) || !statSync(srcDir).isDirectory()) {
     usageError(`--srcDir "${srcDir}" is not an existing directory`);

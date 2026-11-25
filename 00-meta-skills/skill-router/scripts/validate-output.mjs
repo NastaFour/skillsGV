@@ -100,6 +100,10 @@ export function validateRouterOutput(output, ctx) {
         "ai-design-check-stageshow",
         "web-design-guidelines",
         "ux-auditor-agent",
+        "expo-production-auditor",
+        "mobile-automation-mcp",
+        "frontend-debugging-protocol",
+        "ui-diff",
       ]);
       for (const bucketKey of ["phase1", "phase2a", "phase2b", "phase3a", "phase3b"]) {
         const arr = output.phasePlan[bucketKey];

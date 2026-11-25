@@ -267,3 +267,77 @@ test("scanMobileAntipatterns handles single-line nesting, arrow-prop horizontal 
   const dynamicConcat = scanMobileAntipatterns("const mod = require('./a/' + name);", "DynConcat.tsx");
   assert.equal(dynamicConcat.some((i) => i.check === "dynamic-require-asset"), true, "detects string concat require()");
 });
+
+test("verify-frontend-gates resolves app/ automatically when --srcDir is omitted on Expo Router projects", (t) => {
+  const dir = makeFixture(t, "skillsgv-vfg-expo-appdir-");
+  mkdirSync(join(dir, "app"), { recursive: true });
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({
+      name: "expo-appdir-test",
+      dependencies: {
+        expo: "^55.0.0",
+        "expo-router": "^55.0.0",
+        "react-native": "^0.81.0",
+      },
+    }),
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "app.json"),
+    JSON.stringify({
+      expo: {
+        name: "AppDirDemo",
+        scheme: "appdirdemo",
+        ios: { associatedDomains: ["applinks:appdirdemo.example.com"] },
+      },
+    }),
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "app", "index.tsx"),
+    `import { View, Text } from "react-native";\nexport default function Home() { return <View><Text>OK</Text></View>; }\n`,
+    "utf8"
+  );
+
+  const res = runCli(FRONTEND_GATES_CLI, [
+    "--webDir", dir,
+    "--skip-build-config",
+    "--json",
+  ]);
+  assert.equal(res.code, 0, `Expected app/ auto-detection pass: ${res.stdout} ${res.stderr}`);
+  const parsed = JSON.parse(res.stdout);
+  assert.equal(parsed.ok, true);
+  assert.ok(parsed.scripts.some((s) => s.name === "check-mobile-antipatterns" && s.status === "pass"));
+  assert.ok(parsed.scripts.some((s) => s.name === "check-deep-links" && s.status === "pass"));
+});
+
+test("verify-frontend-gates ignores non-Expo app.json on pure web projects", (t) => {
+  const dir = makeFixture(t, "skillsgv-vfg-nonexpo-appjson-");
+  mkdirSync(join(dir, "src"), { recursive: true });
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({ name: "web-with-appjson", dependencies: { react: "^19.0.0" } }),
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "app.json"),
+    JSON.stringify({ name: "web-app", version: "1.0.0" }),
+    "utf8"
+  );
+  writeFileSync(
+    join(dir, "src", "App.tsx"),
+    `export function App() { return <main className="bg-surface-canvas text-text-primary">Web</main>; }\n`,
+    "utf8"
+  );
+
+  const res = runCli(FRONTEND_GATES_CLI, [
+    "--srcDir", join(dir, "src"),
+    "--webDir", dir,
+    "--skip-build-config",
+    "--json",
+  ]);
+  assert.equal(res.code, 0, `Expected non-Expo app.json to pass without deep-links error: ${res.stdout}`);
+  const parsed = JSON.parse(res.stdout);
+  assert.equal(parsed.scripts.some((s) => s.name === "check-deep-links"), false);
+});

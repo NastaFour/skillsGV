@@ -22,7 +22,7 @@ The **Skill Distiller** bridges generic catalog skills and repository-specific e
 
 | Anti-Pattern | Why It Is Banned | Enforced Alternative |
 |---|---|---|
-| **Contaminating Global Catalog** | Project-specific rules (internal DTOs, custom RPC) must never leak into the universal 258-skill catalog. | Write distilled skills strictly to `<target>/.agent/skills/<domain>/`. |
+| **Contaminating Global Catalog** | Project-specific rules (internal DTOs, custom RPC) must never leak into the universal 259-skill catalog. | Write distilled skills strictly to `<target>/.agent/skills/<domain>/`. |
 | **Vague Generic Guidance** | An LLM falls back to sloppy defaults if a project skill only gives polite recommendations. | Include mandatory Negative Constraints (Absolute Bans) and Before/After tables in every generated skill. |
 | **Unapproved Package Runners** | Inconsistent command execution breaks monorepos and CI pipelines. | Bind generated skills to monorepo approved package managers (pnpm only). |
 | **Undocumented Invariants** | Unwritten domain rules force repeated developer corrections. | Extract domain entities, validation schemas, and error hierarchies into explicit patterns. |

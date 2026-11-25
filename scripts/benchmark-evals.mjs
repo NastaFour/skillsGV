@@ -18,7 +18,7 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { REPO_ROOT, runOfflineEvaluations } from "../_shared/eval-harness.mjs";
 
@@ -162,6 +162,15 @@ function runCli() {
   console.log(formatTerminal(metrics));
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+function isMainModule() {
+  if (!process.argv[1]) return false;
+  const selfPath = resolve(fileURLToPath(import.meta.url));
+  const entryPath = resolve(process.argv[1]);
+  return process.platform === "win32"
+    ? selfPath.toLowerCase() === entryPath.toLowerCase()
+    : selfPath === entryPath;
+}
+
+if (isMainModule()) {
   runCli();
 }
