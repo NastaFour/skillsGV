@@ -106,8 +106,8 @@
     {
       "id": "code-simplicity-efficiency",
       "canonical": "solid-clean-code",
-      "members": ["solid-clean-code", "karpathy-ponytail-simplicity", "app-resource-efficiency"],
-      "note": "solid-clean-code es el estándar arquitectónico canónico (SOLID/DRY/KISS/Vertical Slice); karpathy-ponytail-simplicity impone diffs quirúrgicos anti-overengineering y prosa concisa; app-resource-efficiency optimiza cuellos medidos de CPU/RAM/GPU/IO y presupuesto de tokens. En consultas arquitectónicas generales gana solid-clean-code; los triggers específicos enrutan a la skill especializada."
+      "members": ["solid-clean-code", "karpathy-ponytail-simplicity", "app-resource-efficiency", "ub-quality-gates"],
+      "note": "solid-clean-code es el estándar arquitectónico canónico (SOLID/DRY/KISS/Vertical Slice); karpathy-ponytail-simplicity impone diffs quirúrgicos anti-overengineering y prosa concisa; app-resource-efficiency optimiza cuellos medidos de CPU/RAM/GPU/IO y presupuesto de tokens; ub-quality-gates ejecuta gates cuantitativos (crapper CRAP < 10, dryer clones AST, mutator diferencial) y heurísticas Attack the Premise / idempotencia. En consultas arquitectónicas generales gana solid-clean-code; los triggers específicos enrutan a la skill especializada."
     },
     {
       "id": "spec-ideation-review",

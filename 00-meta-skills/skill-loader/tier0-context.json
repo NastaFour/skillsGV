@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1795418656536,
+  "generatedAt": 1795582887822,
   "schemaVersion": 1,
   "skillCount": 9,
   "skills": [
@@ -9,7 +9,7 @@
     },
     {
       "name": "skill-router",
-      "description": "Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 258 skills to 3-5."
+      "description": "Deterministic router that pre-selects which skills an agent should load, replacing ~80% of stochastic LLM-based skill selection with exact trigger matching. Outputs primary skill + secondary candidates + ODD/trivial flags. Use BEFORE any agent turn that might invoke another skill, to shrink the agent's decision surface from 259 skills to 3-5."
     },
     {
       "name": "skill-loader",

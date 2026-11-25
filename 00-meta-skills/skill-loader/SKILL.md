@@ -13,7 +13,7 @@ metadata:
 
 # 🚚 Skill: Tier 0/1 Loader (skill-loader)
 
-Reduces the **258 SKILL.md files × full body** overload (~110K tokens) into a
+Reduces the **259 SKILL.md files × full body** overload (~110K tokens) into a
 **~2K-token Tier 0 + 3-5K Tier 1** per turn, by enforcing a tier system on top
 of the catalog.
 

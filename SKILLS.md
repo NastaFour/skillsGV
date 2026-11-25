@@ -1,6 +1,6 @@
 # SKILLS.md — Índice de Skills · Portable 2026 (pnpm)
 
-Catálogo de **258 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
+Catálogo de **259 skills** compatible con [agentskills.io](https://agentskills.io/specification), Claude Code, Cursor, OpenCode, Copilot, Codex, Gemini CLI, Antigravity, Kiro, Windsurf y DeepSeek IDE. Agnóstico al proyecto: las skills se aplican a cualquier monorepo pnpm. Incluye metodologías adaptadas con permiso de [Anthropic `skills`](https://github.com/anthropics/skills), [Vercel Labs `agent-skills`](https://github.com/vercel-labs/agent-skills), [obra `superpowers`](https://github.com/obra/superpowers) y [Gentleman Programming](https://github.com/Gentleman-Programming) (Engram, gentle-ai, GGA, Gentleman.Dots, gentleman-skills).
 
 > **Convención pnpm-only**: `npm`/`npx` están rechazados en todo el catálogo. Usar `pnpm` para instalar y correr scripts, y `pnpm dlx` como reemplazo de `npx`. El validador (`validate-skills.mjs --strict`) marca toda mención como ERROR salvo excepción documentada vía frontmatter `allows-npm`. El directorio `gentle-ai-dsh/` (addon DeepSeek Harness) es un bundle vendored y no forma parte de este índice.
 
@@ -245,6 +245,7 @@ Catálogo de **258 skills** compatible con [agentskills.io](https://agentskills.
 | production-readiness-250 | [06-code-quality/production-readiness-250/SKILL.md](06-code-quality/production-readiness-250/SKILL.md) ← Execute the 250-point Senior Production Engineering, Data Precision, Edge-Case,… |
 | app-resource-efficiency | [06-code-quality/app-resource-efficiency/SKILL.md](06-code-quality/app-resource-efficiency/SKILL.md) ← Audits and optimizes CPU offloading, bounded RAM streaming, GPU/VRAM disposal &… |
 | karpathy-ponytail-simplicity | [06-code-quality/karpathy-ponytail-simplicity/SKILL.md](06-code-quality/karpathy-ponytail-simplicity/SKILL.md) ← Synthesizes Andrej Karpathy's anti-stumble coding guidelines, Ponytail veteran… |
+| ub-quality-gates | [06-code-quality/ub-quality-gates/SKILL.md](06-code-quality/ub-quality-gates/SKILL.md) ← Deterministic post-implementation code-rigor gates adapted from Robert C |
 
 ## 07-testing
 

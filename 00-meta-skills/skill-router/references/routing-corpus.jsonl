@@ -45,3 +45,4 @@
 {"id":"mobile-swiftui-native","query":"refactor ios native ui view using swiftui swift 6 @Observable and navigationstack","expectedPrimary":"swiftui-native","group":"mobile-native-ecosystem","source":"overlap-matrix"}
 {"id":"mobile-kotlin-compose","query":"optimize jetpack compose lazycolumn performance and edge-to-edge android in kotlin android","expectedPrimary":"kotlin-android-compose","group":"mobile-native-ecosystem","source":"overlap-matrix"}
 {"id":"mobile-automation-mcp-e2e","query":"run maestro mcp and mobile-mcp simulator e2e verification on ios simulator","expectedPrimary":"mobile-automation-mcp","group":"mobile-native-ecosystem","source":"overlap-matrix"}
+{"id":"ub-quality-gates-metrics","query":"run crapper crap score dryer ast clone and mutator mutation testing on changed files","expectedPrimary":"ub-quality-gates","group":"code-simplicity-efficiency","source":"overlap-matrix"}

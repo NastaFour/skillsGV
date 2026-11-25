@@ -1,7 +1,7 @@
 {
   "version": 1,
   "totals": {
-    "skills": 258
+    "skills": 259
   },
   "categories": [
     {
@@ -37,7 +37,7 @@
     {
       "id": "06-code-quality",
       "title": "Code Quality",
-      "count": 21
+      "count": 22
     },
     {
       "id": "07-testing",
@@ -2126,6 +2126,16 @@
       "path": "06-code-quality/typescript/SKILL.md",
       "category": "06-code-quality",
       "tier": "core",
+      "tier0": false,
+      "deprecated": false,
+      "note": null,
+      "autoInvoke": false
+    },
+    {
+      "name": "ub-quality-gates",
+      "path": "06-code-quality/ub-quality-gates/SKILL.md",
+      "category": "06-code-quality",
+      "tier": "full",
       "tier0": false,
       "deprecated": false,
       "note": null,
